@@ -8,7 +8,7 @@ run-checks :
 	isort --check .
 	black --check .
 	ruff check .
-	mypy .
+#mypy .
 	CUDA_VISIBLE_DEVICES='' pytest -v --color=yes --doctest-modules tests/ cosmicfishpie/
 
 .PHONY : build

@@ -12,10 +12,10 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Cosmology",
 ]
 authors = [
-    {name = "Allen Institute for Artificial Intelligence", email = "contact@allenai.org"}
+    {name = "Santiago Casas, Matteo Martinelli, Sefa Pamuk, Sabarish V.M.", email = "s.casas@protonmail.com"}
 ]
 requires-python = ">=3.8"
 dependencies = [

@@ -1,23 +1,23 @@
 Installation
 ============
 
-**my-package** supports Python >= 3.8.
+**cosmicfishpie** supports Python >= 3.8.
 
 ## Installing with `pip`
 
-**my-package** is available [on PyPI](https://pypi.org/project/my-package/). Just run
+**cosmicfishpie** is available [on PyPI](https://pypi.org/project/cosmicfishpie/). Just run
 
 ```bash
-pip install my-package
+pip install cosmicfishpie
 ```
 
 ## Installing from source
 
-To install **my-package** from source, first clone [the repository](https://github.com/allenai/python-package-template):
+To install **cosmicfishpie** from source, first clone [the repository](https://github.com/santiagocasas/cosmicfishpie):
 
 ```bash
-git clone https://github.com/allenai/python-package-template.git
-cd python-package-template
+git clone https://github.com/santiagocasas/cosmicfishpie.git
+cd cosmicfishpie
 ```
 
 Then run

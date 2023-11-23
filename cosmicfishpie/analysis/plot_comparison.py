@@ -12,8 +12,8 @@ import numpy as np
 import seaborn as sns
 from mpl_toolkits import axes_grid1
 
-from . import fisher_operations as fo
-from . import utilities as fu
+from cosmicfishpie.analysis import fisher_operations as fo
+from cosmicfishpie.analysis import utilities as fu
 
 plt.style.use("tableau-colorblind10")
 

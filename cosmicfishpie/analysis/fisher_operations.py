@@ -29,7 +29,7 @@ import math
 
 import numpy as np
 
-from . import fisher_matrix as fm
+from cosmicfishpie.analysis import fisher_matrix as fm
 
 # ***************************************************************************************
 

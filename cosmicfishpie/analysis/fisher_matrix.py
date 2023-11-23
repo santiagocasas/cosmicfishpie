@@ -33,7 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import utilities as fu
+from cosmicfishpie.analysis import utilities as fu
 
 # ***************************************************************************************
 

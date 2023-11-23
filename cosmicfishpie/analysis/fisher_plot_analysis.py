@@ -30,11 +30,10 @@ import os
 
 import numpy as np
 
-from . import __init__ as CosmicFishPyLib
-from . import fisher_derived as fd
-from . import fisher_matrix as fm
-from . import fisher_operations as fo
-from . import utilities as fu
+from cosmicfishpie.analysis import fisher_derived as fd
+from cosmicfishpie.analysis import fisher_matrix as fm
+from cosmicfishpie.analysis import fisher_operations as fo
+from cosmicfishpie.analysis import utilities as fu
 
 # ***************************************************************************************
 
@@ -89,6 +88,7 @@ class CosmicFish_FisherAnalysis:
 
         """
         # create class instances:
+        self.feedback = 1
         self.fisher_list = []
         self.fisher_name_list = []
         # check wether we have to do something:
@@ -176,14 +176,14 @@ class CosmicFish_FisherAnalysis:
 
         # import fisher matrices:
         for file in fisher_files:
-            if CosmicFishPyLib.__feedback__ > 1:
+            if self.feedback > 1:
                 print("Trying to import: " + file + " as a Fisher matrix: ", end=" ")
             try:
                 self.fisher_list.append(fm.fisher_matrix(file_name=file))
                 self.fisher_name_list.append(self.fisher_list[-1].name)
-                if CosmicFishPyLib.__feedback__ > 1:
+                if self.feedback > 1:
                     print("SUCCESS")
-                if CosmicFishPyLib.__feedback__ == 1:
+                if self.feedback == 1:
                     print("Imported as a Fisher matrix: " + file)
                 # remove from the derived fishers if necessary:
                 derived_fisher_files.remove(file)

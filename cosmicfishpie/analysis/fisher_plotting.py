@@ -7,26 +7,22 @@ from getdist.gaussian_mixtures import GaussianND
 
 from cosmicfishpie.utilities.utils import filesystem as ffs
 
-from . import fisher_matrix as fm
-from . import fisher_plot_analysis as fpa
-from . import plot_comparison as pc
+from cosmicfishpie.analysis import fisher_matrix as fm
+from cosmicfishpie.analysis import fisher_plot_analysis as fpa
+from cosmicfishpie.analysis import plot_comparison as pc
 
-matplotlib.rcParams.update({"font.size": 22})
-matplotlib.rcParams.update({"font.family": "cm"})
 params = {
-    "mathtext.fontset": "cm",
+    "mathtext.fontset": "stix",
+    "font.size": 22,
     "mathtext.rm": "serif",
     "mathtext.bf": "serif:bold",
     "mathtext.it": "serif:italic",
     "mathtext.sf": "sans\\-serif",
     "text.usetex": False,
-    "font.family": "serif",
+    "font.family": "STIXGeneral",
     "font.weight": "normal",
-    "font.serif": "Computer Modern",
 }
-
 matplotlib.rcParams.update(params)
-matplotlib.rcParams["text.usetex"]
 
 
 class fisher_plotting:

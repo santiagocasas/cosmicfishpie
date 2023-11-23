@@ -188,27 +188,27 @@ class CosmicFish_FisherAnalysis:
                 # remove from the derived fishers if necessary:
                 derived_fisher_files.remove(file)
             except Exception as e:
-                if CosmicFishPyLib.__feedback__ > 1:
+                if self.feedback > 1:
                     print("FAIL")
                     print(("Exception: ", e))
         # import derived fisher matrices:
         if with_derived:
             for file in derived_fisher_files:
                 # get the derived matrix:
-                if CosmicFishPyLib.__feedback__ > 1:
+                if self.feedback > 1:
                     print("Trying to import: " + file + " as a derived Fisher matrix: ", end=" ")
                 try:
                     fisher_derived = fd.fisher_derived(file_name=file)
-                    if CosmicFishPyLib.__feedback__ > 1:
+                    if self.feedback > 1:
                         print("SUCCESS")
                 except BaseException:
                     fisher_derived = None
-                    if CosmicFishPyLib.__feedback__ > 1:
+                    if self.feedback > 1:
                         print("FAIL")
                 # add derived to the fisher matrix when possible:
                 if fisher_derived is not None:
                     for i in range(len(self.fisher_name_list)):
-                        if CosmicFishPyLib.__feedback__ > 1:
+                        if self.feedback > 1:
                             print(
                                 "Trying to add derived from: "
                                 + fisher_derived.name
@@ -221,9 +221,9 @@ class CosmicFish_FisherAnalysis:
                                 fisher_matrix=self.fisher_list[i], preserve_input=True
                             )
                             self.fisher_name_list[i] = self.fisher_list[i].name
-                            if CosmicFishPyLib.__feedback__ > 1:
+                            if self.feedback > 1:
                                 print("SUCCESS")
-                            if CosmicFishPyLib.__feedback__ == 1:
+                            if self.feedback == 1:
                                 print(
                                     "Added derived parameters from: "
                                     + fisher_derived.name
@@ -231,7 +231,7 @@ class CosmicFish_FisherAnalysis:
                                     + self.fisher_list[i].name
                                 )
                         except BaseException:
-                            if CosmicFishPyLib.__feedback__ > 1:
+                            if self.feedback > 1:
                                 print("FAIL")
 
     # -----------------------------------------------------------------------------------

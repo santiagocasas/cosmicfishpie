@@ -23,8 +23,8 @@ from cosmicfishpie import VERSION, VERSION_SHORT  # noqa: E402
 # -- Project information -----------------------------------------------------
 
 project = "cosmicfishpie"
-copyright = f"{datetime.today().year}, Allen Institute for Artificial Intelligence"
-author = "Allen Institute for Artificial Intelligence"
+copyright = f"{datetime.today().year}, RWTH Aachen University"
+author = "S. Casas, M. Martinelli, S. Pamuk, Sabarish V.M."
 version = VERSION_SHORT
 release = VERSION
 
@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx_copybutton",
     "sphinx_autodoc_typehints",
+    "sphinx_rtd_theme"
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.

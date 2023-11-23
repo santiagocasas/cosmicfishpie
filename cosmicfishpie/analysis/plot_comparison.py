@@ -1,17 +1,21 @@
 
 # Code for comparison of Fisher Matrix entries
 # Taken from original plfmat.py code by Dida Markovic and Santiago Casas
-import seaborn as sns
-from . import fisher_operations as fo
-from . import utilities as fu
 import os
-import numpy as np
-from mpl_toolkits import axes_grid1
-import matplotlib.patches as mpatches
-import matplotlib.ticker as ticker
+
 import matplotlib
+import matplotlib.patches as mpatches
+
 # matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
+import seaborn as sns
+from mpl_toolkits import axes_grid1
+
+from . import fisher_operations as fo
+from . import utilities as fu
+
 plt.style.use('tableau-colorblind10')
 
 

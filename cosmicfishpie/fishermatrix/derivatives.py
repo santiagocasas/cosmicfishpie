@@ -5,12 +5,13 @@ This is the derivatives engine of CosmicFish.
 
 """
 
-import numpy as np
-import cosmicfishpie.fishermatrix.config as cfg
-from cosmicfishpie.utilities.utils import printing as upt
+import copy
 from time import time
 
-import copy
+import numpy as np
+
+import cosmicfishpie.fishermatrix.config as cfg
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 class derivatives:

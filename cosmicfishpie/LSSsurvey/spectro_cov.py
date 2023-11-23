@@ -4,13 +4,15 @@
 This module contains cls calculations (only LSS atm).
 
 """
+import copy
+from time import time
+
 import numpy as np
+
 import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.fishermatrix.derivatives import derivatives
-from time import time
 from cosmicfishpie.utilities.utils import printing as upt
-import copy
 
 
 class SpectroCov:

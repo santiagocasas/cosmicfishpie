@@ -4,15 +4,17 @@
 This is the main engine for LSS Fisher Matrix.
 
 """
-import numpy as np
-from itertools import product
-from time import time
-import pandas as pd
 import copy
 import datetime
+from itertools import product
+from time import time
+
+import numpy as np
+import pandas as pd
+
+import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
-import cosmicfishpie.fishermatrix.config as cfg
 from cosmicfishpie.utilities.utils import printing as upt
 
 pd.set_option('display.float_format', '{:.9E}'.format)

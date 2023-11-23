@@ -1,15 +1,17 @@
 # This class defines global variables that will not change through
 # the computation of one fisher matrix
 
-import numpy as np
-import os
 import glob
-import yaml
+import os
 from copy import deepcopy
-from cosmicfishpie.cosmology.nuisance import Nuisance
-import cosmicfishpie.cosmology.cosmology as cosmology
-from cosmicfishpie.utilities.utils import printing as upt
 from time import time
+
+import numpy as np
+import yaml
+
+import cosmicfishpie.cosmology.cosmology as cosmology
+from cosmicfishpie.cosmology.nuisance import Nuisance
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 def init(options=dict(),

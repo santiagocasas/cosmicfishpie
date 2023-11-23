@@ -4,16 +4,18 @@
 This is the main engine for CMB Fisher Matrix.
 
 """
-import os
-import numpy as np
-from itertools import product
-from time import time
-import pandas as pd
 import copy
 import datetime
-import cosmicfishpie.fishermatrix.derivatives as fishderiv
+import os
+from itertools import product
+from time import time
+
+import numpy as np
+import pandas as pd
+
 import cosmicfishpie.CMBsurvey.CMB_obs as CMB_obs
 import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.fishermatrix.derivatives as fishderiv
 from cosmicfishpie.utilities.utils import printing as upt
 
 pd.set_option('display.float_format', '{:.9E}'.format)

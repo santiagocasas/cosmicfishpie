@@ -1,15 +1,15 @@
 import os
-import matplotlib.pyplot as plt
+
 import matplotlib
+import matplotlib.pyplot as plt
+from getdist import plots
+from getdist.gaussian_mixtures import GaussianND
+
+from cosmicfishpie.utilities.utils import filesystem as ffs
 
 from . import fisher_matrix as fm
 from . import fisher_plot_analysis as fpa
 from . import plot_comparison as pc
-
-from cosmicfishpie.utilities.utils import filesystem as ffs
-
-from getdist import plots
-from getdist.gaussian_mixtures import GaussianND
 
 matplotlib.rcParams.update({'font.size': 22})
 matplotlib.rcParams.update({'font.family': 'cm'})

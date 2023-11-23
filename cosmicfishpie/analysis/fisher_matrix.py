@@ -27,11 +27,13 @@
 
 # ***************************************************************************************
 
-import os
 import copy
-import numpy as np
-from . import utilities as fu
+import os
 from pathlib import Path
+
+import numpy as np
+
+from . import utilities as fu
 
 # ***************************************************************************************
 

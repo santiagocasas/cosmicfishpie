@@ -4,17 +4,20 @@
 This module contains cls calculations (only LSS atm).
 
 """
-from cosmicfishpie.utilities.utils import printing as upt
+from itertools import product
 from time import time
-import cosmicfishpie.fishermatrix.config as cfg
-import cosmicfishpie.LSSsurvey.photo_window as photo_window
-import cosmicfishpie.cosmology.nuisance as nuisance
-import cosmicfishpie.cosmology.cosmology as cosmology
+
 import numpy as np
+from joblib import Memory
 from scipy import integrate
 from scipy.interpolate import interp1d
-from itertools import product
-from joblib import Memory
+
+import cosmicfishpie.cosmology.cosmology as cosmology
+import cosmicfishpie.cosmology.nuisance as nuisance
+import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.LSSsurvey.photo_window as photo_window
+from cosmicfishpie.utilities.utils import printing as upt
+
 cachedir = './cache'
 memory = Memory(cachedir, verbose=0)
 

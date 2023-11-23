@@ -23,11 +23,13 @@
 
 # ***************************************************************************************
 
-import math
-import numpy as np
 import itertools as it
-from scipy.stats.distributions import chi2
+import math
 import os
+
+import numpy as np
+from scipy.stats.distributions import chi2
+
 # ***************************************************************************************
 
 

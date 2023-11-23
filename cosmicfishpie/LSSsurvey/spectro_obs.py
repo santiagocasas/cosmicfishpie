@@ -4,15 +4,15 @@
 This module contains cls calculations (only LSS atm).
 
 """
-import numpy as np
-
 from copy import deepcopy
+from time import time
+
+import numpy as np
+from scipy.interpolate import CubicSpline
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
 import cosmicfishpie.fishermatrix.config as cfg
-from scipy.interpolate import CubicSpline
-from time import time
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 

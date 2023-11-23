@@ -6,23 +6,26 @@ This is the main engine of CosmicFish.
 """
 import os
 import sys
-from time import time
 from copy import deepcopy
-import pandas as pd
-import numpy as np
-from scipy.integrate import simps
 from itertools import product
-import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
-import cosmicfishpie.LSSsurvey.photo_cov as photo_cov
-import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
-import cosmicfishpie.LSSsurvey.spectro_cov as spec_cov
+from time import time
+
+import numpy as np
+import pandas as pd
+from scipy.integrate import simps
+
 import cosmicfishpie.CMBsurvey.CMB_cov as CMB_cov
 import cosmicfishpie.fishermatrix.config as cfg
-from cosmicfishpie.utilities.utils import numerics as unu
-#from cosmicfishpie.cosmology.cosmology import *
-from cosmicfishpie.utilities.utils import printing as upt
-from cosmicfishpie.utilities.utils import filesystem as ufs
+import cosmicfishpie.LSSsurvey.photo_cov as photo_cov
+import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+import cosmicfishpie.LSSsurvey.spectro_cov as spec_cov
+import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.analysis import fisher_matrix as fm
+
+#from cosmicfishpie.cosmology.cosmology import *
+from cosmicfishpie.utilities.utils import filesystem as ufs
+from cosmicfishpie.utilities.utils import numerics as unu
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 def ray_session(num_cpus=4, restart=True, shutdown=False):

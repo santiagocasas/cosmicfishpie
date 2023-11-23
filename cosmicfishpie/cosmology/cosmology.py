@@ -7,21 +7,27 @@ This module contains useful cosmological functions.
 
 import os
 import sys
-import numpy as np
 import types
-import cosmicfishpie.fishermatrix.config as cfg
-from glob import glob
 from copy import deepcopy
-from scipy.interpolate import UnivariateSpline, RectBivariateSpline, InterpolatedUnivariateSpline
-from scipy.signal import savgol_filter
+from glob import glob
+from time import time
+from warnings import warn
+
+import numpy as np
+import scipy.constants as sconst
+from joblib import Memory
 from scipy import integrate
+from scipy.interpolate import (
+    InterpolatedUnivariateSpline,
+    RectBivariateSpline,
+    UnivariateSpline,
+)
+from scipy.signal import savgol_filter
+
+import cosmicfishpie.fishermatrix.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upr
-from warnings import warn
-import scipy.constants as sconst
-from time import time
 
-from joblib import Memory
 cachedir = 'memory_cache'
 memory = Memory(cachedir, verbose=0)
 

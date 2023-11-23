@@ -25,9 +25,11 @@
 
 # ***************************************************************************************
 
-import numpy as np
-from . import fisher_matrix as fm
 import math
+
+import numpy as np
+
+from . import fisher_matrix as fm
 
 # ***************************************************************************************
 

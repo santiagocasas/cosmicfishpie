@@ -22,17 +22,19 @@
 
 """
 
+import copy
+import math
+
 # ***************************************************************************************
 import os
-import math
-import copy
+
 import numpy as np
-from . import utilities as fu
-from . import fisher_matrix as fm
-from . import fisher_derived as fd
-from . import fisher_operations as fo
 
 from . import __init__ as CosmicFishPyLib
+from . import fisher_derived as fd
+from . import fisher_matrix as fm
+from . import fisher_operations as fo
+from . import utilities as fu
 
 # ***************************************************************************************
 

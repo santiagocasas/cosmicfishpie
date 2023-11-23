@@ -1,7 +1,8 @@
-import numpy as np
 import os
 import subprocess
 from configparser import ConfigParser
+
+import numpy as np
 
 
 class printing:

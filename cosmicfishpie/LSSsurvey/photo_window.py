@@ -6,7 +6,7 @@ This module returns the window functions for LSS surveys.
 """
 
 import numpy as np
-from scipy.integrate import romberg, trapz
+from scipy.integrate import trapz
 from scipy.special import erf
 import cosmicfishpie.fishermatrix.config as cfg
 

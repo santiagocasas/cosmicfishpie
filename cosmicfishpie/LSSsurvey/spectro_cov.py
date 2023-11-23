@@ -5,20 +5,12 @@ This module contains cls calculations (only LSS atm).
 
 """
 import numpy as np
-from itertools import product
-from copy import deepcopy
-
-import cosmicfishpie.cosmology.cosmology as cosmology
-import cosmicfishpie.cosmology.nuisance as nuisance
 import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.fishermatrix.derivatives import derivatives
-
 from time import time
-from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 import copy
-import os
 
 
 class SpectroCov:

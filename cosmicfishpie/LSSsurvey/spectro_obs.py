@@ -10,11 +10,8 @@ from copy import deepcopy
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
-import cosmicfishpie.LSSsurvey.photo_window as photo_window
 import cosmicfishpie.fishermatrix.config as cfg
-
 from scipy.interpolate import CubicSpline
-
 from time import time
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
@@ -331,7 +328,7 @@ class ComputeGalSpectro:
                                                                  tracer=self.tracer)
             else:
                 bterm = bfun(z)
-        elif self.use_bias_funcs == False:
+        elif self.use_bias_funcs is False:
             # returns len(zmids)-1 if z above max(zmids)
             zii = unu.bisection(zmidsbins, z)
             # returns 0 if z below min(zmids)
@@ -403,7 +400,7 @@ class ComputeGalSpectro:
             The calculated FoG term, which is 1 if either FoG_switch is False or linear_switch is True.
             Otherwise, it depends on the specified mode.
         """
-        if (self.FoG_switch == False) or (self.linear_switch):
+        if (self.FoG_switch is False) or (self.linear_switch):
             fog = 1
         elif mode == 'Lorentz':
             fog = 1 / (1 + (k * mu * self.sigmapNL(z))**2)
@@ -700,11 +697,8 @@ class ComputeGalIM(ComputeGalSpectro):
 
         T_HI = self.Temperature(z)
         extra_shotnoise = 0.  # Set to identically zero for the moment, otherwise self.extraPshot
-
         lorentzFoG = self.FingersOfGod(z, k, mu, mode='Lorentz')
-        p_dd = self.normalized_pdd(z, k)
         p_dd_DW = self.dewiggled_pdd(z, k, mu)
-
         beam_damping_term_si = self.beta_SD(z, k, mu) if si == 'I' else 1
         beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == 'I' else 1
         extra_shotnoise_si = np.sqrt(extra_shotnoise) if si == 'g' else 0

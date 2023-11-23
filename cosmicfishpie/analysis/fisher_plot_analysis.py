@@ -23,7 +23,6 @@
 """
 
 # ***************************************************************************************
-
 import os
 import math
 import copy
@@ -32,7 +31,6 @@ from . import utilities as fu
 from . import fisher_matrix as fm
 from . import fisher_derived as fd
 from . import fisher_operations as fo
-from builtins import dict
 
 from . import __init__ as CosmicFishPyLib
 

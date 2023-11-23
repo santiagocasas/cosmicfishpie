@@ -25,7 +25,6 @@
 
 import math
 import numpy as np
-import scipy.special as sp
 import itertools as it
 from scipy.stats.distributions import chi2
 import os
@@ -293,8 +292,7 @@ def mkdirp(dirpath):
         try:
             os.makedirs(outdir)
             print((str(outdir) + ' directory created'))
-        except OSError as e:
-            if e.errno != errno.EEXIST:
+        except OSError :
                 raise
     else:
         print((str(outdir) + '  exists already'))

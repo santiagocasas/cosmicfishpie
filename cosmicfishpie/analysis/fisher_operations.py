@@ -341,7 +341,6 @@ def information_gain(
         info_gain = info_gain + np.trace(temp)
         # compute variance:
         temp = np.dot(temp, temp)
-        info_variance = np.trace(temp)
     # output
     info_gain = info_gain / 2.0 / units
     return info_gain

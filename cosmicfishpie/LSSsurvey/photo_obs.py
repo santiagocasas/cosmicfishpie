@@ -5,7 +5,6 @@ This module contains cls calculations (only LSS atm).
 
 """
 from cosmicfishpie.utilities.utils import printing as upt
-from cosmicfishpie.utilities.utils import numerics as unu
 from time import time
 import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.LSSsurvey.photo_window as photo_window
@@ -350,18 +349,13 @@ class ComputeCls:
         return Wwl, WIA
 
     def integral_efficiency(self, i):
-        cosmopars = self.cosmopars
-        photopars = self.photopars  # called here for memoization
         # expensive calculation doesn't need to
         # be performed if cosmopars and photopars are the same
         zint_mat = np.linspace(self.z, self.z[-1], self.zsamp)
         zint_mat = zint_mat.T
-        diffz = np.diff(zint_mat)
         z = self.z
         ngal_func = self.window.norm_ngal_photoz
         comoving_func = self.cosmo.comoving
-        # intp = memo_integral_efficiency(i, ngal_func, comoving_func, z,
-        #                             zint_mat, diffz)
         intp = faster_integral_efficiency(i, ngal_func, comoving_func, z)
         return intp
 

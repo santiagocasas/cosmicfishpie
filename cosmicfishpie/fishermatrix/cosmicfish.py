@@ -6,27 +6,20 @@ This is the main engine of CosmicFish.
 """
 import os
 import sys
+from time import time
+from copy import deepcopy
+import pandas as pd
 import numpy as np
-from scipy import integrate
-from scipy.interpolate import interp1d
 from scipy.integrate import simps
 from itertools import product
-from time import time
-import pandas as pd
-from copy import deepcopy
-import copy
-import yaml
-import datetime
-import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
 import cosmicfishpie.LSSsurvey.photo_cov as photo_cov
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 import cosmicfishpie.LSSsurvey.spectro_cov as spec_cov
-import cosmicfishpie.CMBsurvey.CMB_obs as CMB_obs
 import cosmicfishpie.CMBsurvey.CMB_cov as CMB_cov
 import cosmicfishpie.fishermatrix.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
-from cosmicfishpie.cosmology.cosmology import *
+#from cosmicfishpie.cosmology.cosmology import *
 from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.utilities.utils import filesystem as ufs
 from cosmicfishpie.analysis import fisher_matrix as fm

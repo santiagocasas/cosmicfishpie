@@ -5,18 +5,13 @@ This module contains useful cosmological functions.
 
 """
 
-import os, sys
+import os
+import sys
 import numpy as np
 import types
 import cosmicfishpie.fishermatrix.config as cfg
 from glob import glob
-
-from joblib import Memory
-cachedir = 'memory_cache'
-memory = Memory(cachedir, verbose=0)
-
 from copy import deepcopy
-from scipy.interpolate import interp1d, interp2d
 from scipy.interpolate import UnivariateSpline, RectBivariateSpline, InterpolatedUnivariateSpline
 from scipy.signal import savgol_filter
 from scipy import integrate
@@ -25,6 +20,11 @@ from cosmicfishpie.utilities.utils import printing as upr
 from warnings import warn
 import scipy.constants as sconst
 from time import time
+
+from joblib import Memory
+cachedir = 'memory_cache'
+memory = Memory(cachedir, verbose=0)
+
 
 
 def _dcom_func_trapz(zi, interpolfunc):
@@ -159,8 +159,10 @@ class boltzmann_code:
         self.cambcosmopars = self.changebasis_camb(self.cambcosmopars, camb)
         upr.debug_print(self.cambcosmopars)
         tend_basis = time()
-        if self.settings['feedback'] > 2: print('')
-        if self.settings['feedback'] > 2: print('Basis change took {:.2f} s'.format(tend_basis-tini_basis))
+        if self.settings['feedback'] > 2: 
+            print('')
+        if self.settings['feedback'] > 2: 
+            print('Basis change took {:.2f} s'.format(tend_basis-tini_basis))
         self.print_camb_params(self.cambcosmopars, feedback=self.settings['feedback'])
         
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
@@ -173,8 +175,6 @@ class boltzmann_code:
                                             )
         #TODO: nonlinear options to be selectable
         self.cambclasspars.NonLinear = camb.model.NonLinear_both
-
-        #MM: mod for CMB
         self.cambclasspars.set_for_lmax(4000, lens_potential_accuracy=1)
 
     def class_setparams(self,cosmopars,Class):
@@ -188,8 +188,10 @@ class boltzmann_code:
         self.kmin_pk = 1e-4
         self.zmax_pk =self.classcosmopars['z_max_pk']
         tend_basis = time()
-        if self.settings['feedback'] > 2: print('')
-        if self.settings['feedback'] > 2: print('Basis change took {:.2f} s'.format(tend_basis-tini_basis))
+        if self.settings['feedback'] > 2: 
+            print('')
+        if self.settings['feedback'] > 2: 
+            print('Basis change took {:.2f} s'.format(tend_basis-tini_basis))
         self.print_class_params(self.classcosmopars, feedback=self.settings['feedback'])
 
     def changebasis_camb(self,cosmopars, camb):
@@ -247,13 +249,13 @@ class boltzmann_code:
             rescaleAs = True
 
         try:
-            myparpars=camb.set_params(**cambpars) # to see which methods are being called: verbose=True
+            camb.set_params(**cambpars) # to see which methods are being called: verbose=True
         except camb.CAMBUnknownArgumentError as argument:
             print("Remove parameter from cambparams: ", str(argument))
 
             #pars= camb.set_params(redshifts=[0.], kmax=50.0,accurate_massive_neutrino_transfers=True,lmax=1000, lens_potential_accuracy=1,**cambpars)
 
-        if rescaleAs==True:
+        if rescaleAs is True:
             cambpars['As'] = self.rescale_LP(cambpars,camb,insigma8)
 
         cambpars['MassiveNuMethod']= 0
@@ -286,7 +288,8 @@ class boltzmann_code:
             print('Reference As = ', ini_As)
             print('Reference sig8 = ', test_sig8)
             print('Rescaled As  = ', final_As)
-            if get_rescaled_s8 : print('Rescaled sig8 = ', final_sig8)
+            if get_rescaled_s8:
+                print('Rescaled sig8 = ', final_sig8)
         return final_As
 
     def changebasis_class(self,cosmopars, Class):
@@ -322,16 +325,23 @@ class boltzmann_code:
             elif 'Omeganu' in classpars:
                 classpars['Omega_ncdm'] = classpars.pop('Omeganu')
 
-            if '100omega_b' in classpars: classpars['omega_b'] = (1/100)*classpars.pop('100omega_b')
-            if 'Omegab' in classpars: classpars['Omega_b'] = classpars.pop('Omegab')
+            if '100omega_b' in classpars: 
+                classpars['omega_b'] = (1/100)*classpars.pop('100omega_b')
+            if 'Omegab' in classpars: 
+                classpars['Omega_b'] = classpars.pop('Omegab')
             if 'Omegam' in classpars:
                  classpars['Omega_cdm'] = classpars.pop('Omegam') - classpars['Omega_b'] - classpars['Omega_ncdm']
 
-            if 'w0'     in classpars: classpars['w0_fld'] = classpars.pop('w0')
-            if 'wa'     in classpars: classpars['wa_fld'] = classpars.pop('wa')
-            if 'logAs'   in classpars: classpars['A_s']    = np.exp(classpars.pop('logAs'))*1.e-10
-            if '10^9As'   in classpars: classpars['A_s']    = classpars.pop('10^9As')*1.e-9
-            if 'ns'     in classpars: classpars['n_s'] = classpars.pop('ns')
+            if 'w0'     in classpars: 
+                classpars['w0_fld'] = classpars.pop('w0')
+            if 'wa'     in classpars: 
+                classpars['wa_fld'] = classpars.pop('wa')
+            if 'logAs'   in classpars: 
+                classpars['A_s']    = np.exp(classpars.pop('logAs'))*1.e-10
+            if '10^9As'   in classpars: 
+                classpars['A_s']    = classpars.pop('10^9As')*1.e-9
+            if 'ns'     in classpars: 
+                classpars['n_s'] = classpars.pop('ns')
 
 
             return classpars
@@ -356,7 +366,9 @@ class boltzmann_code:
         tini_camb = time()
         self.results = types.SimpleNamespace()
         cambres = camb.get_results(self.cambclasspars)
-        if self.settings['feedback'] > 2 : tres = time(); print('Time for Results = ',tres-tini_camb)
+        if self.settings['feedback'] > 2 : 
+            tres = time()
+        print('Time for Results = ',tres-tini_camb)
         Pk_l, self.results.zgrid, self.results.kgrid = cambres.get_matter_power_interpolator(
                                                      hubble_units=False,
                                                      k_hunit=False,
@@ -417,7 +429,9 @@ class boltzmann_code:
         Pk_cb_nl=1/f_cb**2 * (Pk_nl.P(self.results.zgrid, self.results.kgrid)-2 * Pk_cross_l.P(self.results.zgrid, self.results.kgrid)*f_cb*f_nu - Pk_nunu_l.P(self.results.zgrid, self.results.kgrid) * f_nu**2)
         self.results.Pk_cb_nl = RectBivariateSpline(self.results.zgrid, self.results.kgrid, Pk_cb_nl)
         
-        if self.settings['feedback'] > 2 : tPk = time(); print('Time for lin+nonlin Pk = ',tPk - tres)
+        if self.settings['feedback'] > 2 : 
+            tPk = time()
+            print('Time for lin+nonlin Pk = ',tPk - tres)
 
         P_kz_0 = self.results.Pk_l(0., self.results.kgrid)
         D_g_norm_kz = np.sqrt(self.results.Pk_l(self.results.zgrid, self.results.kgrid)/P_kz_0)
@@ -432,12 +446,10 @@ class boltzmann_code:
                                           (D_g_cb_norm_kz),
                                           kx=3, ky=3)
 
-        if self.settings['feedback'] > 2 : tDzk = time(); print('Time for Growth factor = ',tDzk - tPk)
-        #f_g_kz =  cambres.get_redshift_evolution(self.results.kgrid, self.results.zgrid, ['growth']) ##rows are k, columns are z
-        #self.results.f_growthrate_zk=RectBivariateSpline(self.results.zgrid, self.results.kgrid,
-        #                                 (f_g_kz[:,:,0]).T,
-        #                                 kx=3, ky=3)
-        #print(dir(cambres))
+        if self.settings['feedback'] > 2 : 
+            tDzk = time()
+            print('Time for Growth factor = ',tDzk - tPk)
+        
         def f_deriv(k_array,k_fix = False,fixed_k = 1e-3):
             z_array = self.results.zgrid
             if k_fix :
@@ -466,7 +478,9 @@ class boltzmann_code:
         f_cb_z_k_array,z_array = f_cb_deriv(self.results.kgrid)
         self.results.f_growthrate_cb_zk = RectBivariateSpline(z_array,self.results.kgrid,f_cb_z_k_array.T)
 
-        if self.settings['feedback'] > 2 : tfzk = time(); print('Time for Growth factor = ',tfzk - tDzk)
+        if self.settings['feedback'] > 2 : 
+            tfzk = time() 
+            print('Time for Growth factor = ',tfzk - tDzk)
 
         def get_sigma8(z_range):
             R=8./ (cambres.Params.H0 / 100.0)
@@ -493,18 +507,22 @@ class boltzmann_code:
         self.results.s8_cb_of_z = get_sigma8_cb(self.results.zgrid)
         self.results.s8_of_z = get_sigma8(self.results.zgrid)
 
-        if self.settings['feedback'] > 2 : ts8 = time(); print('Time for Growth factor = ',ts8 - tfzk)
-        #MM: adding CMB
+        if self.settings['feedback'] > 2: 
+            ts8 = time()
+            print('Time for Growth factor = ',ts8 - tfzk)
+        
         if self.cambcosmopars['Want_CMB'] :
             powers = cambres.get_cmb_power_spectra(CMB_unit='muK')
             self.results.camb_cmb = powers['total']
         tend_camb = time()
-        if self.settings['feedback'] > 2 : print('Time for CMB = ',tend_camb - ts8)
-        if self.settings['feedback'] > 1: print('')
-        if self.settings['feedback'] > 1: print('Cosmology computation took {:.2f} s'.format(tend_camb-tini_camb))
+        if self.settings['feedback'] > 2: 
+            print('Time for CMB = ',tend_camb - ts8)
+        if self.settings['feedback'] > 1: 
+            print('')
+        if self.settings['feedback'] > 1: 
+            print('Cosmology computation took {:.2f} s'.format(tend_camb-tini_camb))
 
     def class_results(self, Class): # Get your CLASS results from here
-        tini_class = time()
         self.results = types.SimpleNamespace()
         classres = Class()
         classres.set(self.classcosmopars)
@@ -514,9 +532,9 @@ class boltzmann_code:
         self.results.ang_dist = np.vectorize(classres.angular_distance)
         self.results.com_dist = np.vectorize(classres.comoving_distance)
         h = classres.h()
-        sigma8R = (lambda zz: classres.sigma(R=8/classres.h(), z=zz))
+        sigma8R = (lambda zz: classres.sigma(R=8/h, z=zz))
         self.results.s8_of_z = np.vectorize(sigma8R)
-        sigma8_cb_R = (lambda zz: classres.sigma_cb(R=8/classres.h(), z=zz))
+        sigma8_cb_R = (lambda zz: classres.sigma_cb(R=8/h, z=zz))
         self.results.s8_cb_of_z = np.vectorize(sigma8_cb_R)
         self.results.Om_m = np.vectorize(classres.Om_m)
         
@@ -612,7 +630,7 @@ class external_input:
         self.external = external #cfg.external
         self.settings = extra_settings #cfg.settings
         self.activate_MG = None
-        if self.settings['external_activateMG']==True or self.settings['activateMG']=='external':
+        if self.settings['external_activateMG'] is True or self.settings['activateMG']=='external':
             self.activate_MG = 'external'
             upr.debug_print("********EXTERNAL: activateMG = 'external'")
         if not fiducialcosmopars or not external or not extra_settings:
@@ -704,7 +722,7 @@ class external_input:
     def get_param_string_from_value(self,cosmopars):
         rel_tol = 1e-5
         for parname in self.param_names:
-            if np.isclose(cosmopars[parname],self.fiducialpars[parname], rtol=rel_tol)==False:
+            if np.isclose(cosmopars[parname],self.fiducialpars[parname], rtol=rel_tol) is False:
                 if self.fiducialpars[parname] != 0:
                     delta_eps = (cosmopars[parname]/self.fiducialpars[parname])-1.0
                 elif self.fiducialpars[parname] == 0.:
@@ -720,7 +738,7 @@ class external_input:
                 #print('delta_eps after = {:.6f}'.format(delta_eps))
                 eps_string='{:.1E}'.format(abs(delta_eps))
                 eps_string = eps_string.replace(".","p")
-                if self.external['E-00']==False:
+                if self.external['E-00'] is False:
                     eps_string = eps_string.replace("E-0","E-")
                 folder_parname = self.folder_param_dict[parname]
                 param_folder_string = folder_parname+'_'+sign_string+'_'+'eps'+'_'+eps_string
@@ -730,12 +748,11 @@ class external_input:
         return param_folder_string
 
     def calculate_interpol_results(self, parameter_string='fiducial_eps_0'):
-        tini_input = time()
         pk_units_factor = 1 ## units in all the code are in Mpc or Mpc^-1
         r_units_factor = 1
         k_units_factor = 1
         c = sconst.speed_of_light/1000
-        if self.external != None:
+        if self.external is not None:
             k_units = self.external['k-units']
             r_units = self.external['r-units']
             if k_units=='h/Mpc':
@@ -749,7 +766,7 @@ class external_input:
         self.results = types.SimpleNamespace()
         self.results.zgrid = self.input_arrays[('z_grid',parameter_string)].flatten()
         self.results.kgrid = (k_units_factor)*self.input_arrays[('k_grid',parameter_string)].flatten()
-        if self.k_arr_special_file != None:
+        if self.k_arr_special_file is not None:
             self.results.kgrid_special = (k_units_factor)*self.input_arrays[('k_grid_special', parameter_string)].flatten()
         else:
             self.results.kgrid_special = self.results.kgrid
@@ -973,9 +990,9 @@ class cosmo_functions:
     Returns:
         float: The value of the MM power spectrum at the given redshift and wavenumber.
     """     
-        if nonlinear==True:
+        if nonlinear is True:
             power = self.results.Pk_nl(z, k, grid=False)
-        elif nonlinear==False:
+        elif nonlinear is False:
             power = self.results.Pk_l(z, k, grid=False)
         return power        
 
@@ -991,9 +1008,9 @@ class cosmo_functions:
     Returns:
         The value of the CB power spectrum at the given redshift and wavenumber.
     """        
-        if nonlinear==True:
+        if nonlinear is True:
             power = self.results.Pk_cb_nl(z, k, grid=False)
-        elif nonlinear==False:
+        elif nonlinear is False:
             power = self.results.Pk_cb_l(z, k, grid=False)
         return power
 
@@ -1172,7 +1189,7 @@ class cosmo_functions:
         if tracer != 'matter':
             warn('Did not recognize tracer: reverted to matter')
 
-        if gamma==False:
+        if gamma is False:
             fg  = self.results.f_growthrate_zk(z, k, grid=False)
         else:
             #Assumes standard Omega_matter evolution in z 
@@ -1218,7 +1235,7 @@ class cosmo_functions:
             mu = 1 + E11*Omega_DE
             eta = 1 + E22*Omega_DE
             Sigma = (mu/2)*(1+eta)
-        elif self.settings['external_activateMG']==True or self.settings['activateMG']=='external':
+        elif self.settings['external_activateMG'] is True or self.settings['activateMG']=='external':
             Sigma = self.results.SigWL_zk(z, k, grid=False)
 
         return Sigma

@@ -130,7 +130,7 @@ def init(options=dict(),
             lendir = len(fidudir)
             if lendir < 1:
                 raise ValueError(
-                    "External directory does not contain fiducial folder:  {:s} ".format(dd))
+                    "External directory does not contain fiducial folder ")
             for dd in external['folder_paramnames']:
                 subdirs = glob.glob(
                     os.path.join(

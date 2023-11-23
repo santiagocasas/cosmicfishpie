@@ -28,7 +28,6 @@
 # ***************************************************************************************
 
 import os
-import math
 import copy
 import numpy as np
 from . import utilities as fu

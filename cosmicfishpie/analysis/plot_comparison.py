@@ -3,22 +3,12 @@
 # Taken from original plfmat.py code by Dida Markovic and Santiago Casas
 import seaborn as sns
 from . import fisher_operations as fo
-from . import fisher_matrix as fm
-from . import colors as fc
 from . import utilities as fu
-import glob
-import itertools as it
-import copy
 import os
-import sys
-import math
-import argparse
 import numpy as np
 from mpl_toolkits import axes_grid1
 import matplotlib.patches as mpatches
 import matplotlib.ticker as ticker
-import matplotlib.lines as mlines
-import matplotlib.gridspec as gridspec
 import matplotlib
 # matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -288,7 +278,6 @@ def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels
                 ax.scatter(x_arr, darky_arr[ii, :], color=cols[ii], marker=marks[ii], s=(
                     LW * 8)**2, label=lbl, alpha=aalpha - 0.1, zorder=3 + ii)
             else:
-                ms = 0
                 lbl = None
     patchlist = []
     legpatch = []
@@ -347,7 +336,6 @@ def process_fish_errs(
         print_errors=True,
         transform_latex_dict=dict()):
     # Cycle through files and get the errors and the present parameters
-    nf = len(fishers_list)
     print(("Fishers names: ", fishers_name))
     for nn, ff in zip(fishers_name, fishers_list):
         ff.name = nn

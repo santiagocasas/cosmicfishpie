@@ -5,14 +5,10 @@ This module contains cls calculations (only LSS atm).
 
 """
 from cosmicfishpie.utilities.utils import printing as upt
-from cosmicfishpie.utilities.utils import numerics as unu
 from time import time
 import cosmicfishpie.fishermatrix.config as cfg
-import cosmicfishpie.cosmology.nuisance as nuisance
 import cosmicfishpie.cosmology.cosmology as cosmology
 import numpy as np
-from scipy import integrate
-from scipy.interpolate import interp1d
 from itertools import product
 from joblib import Memory
 cachedir = './cache'
@@ -25,7 +21,6 @@ class ComputeCls:
 
         self.feed_lvl = cfg.settings['feedback']
 
-        tini = time()
         upt.time_print(feedback_level=self.feed_lvl, min_level=0,
                        text='-> Started Cls calculation',
                        instance=self)
@@ -47,7 +42,7 @@ class ComputeCls:
         cfg.specs['ellmax'] = cfg.specs['lmax_CMB']
         cfg.specs['ellmin'] = cfg.specs['lmin_CMB']
 
-        if print_info_specs == True:
+        if print_info_specs:
             self.print_numerical_specs()
 
     def compute_all(self):

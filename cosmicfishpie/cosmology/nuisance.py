@@ -6,21 +6,12 @@ This module contains nuisance parameter functions.
 """
 
 import os
-import sys
 import numpy as np
-import types
 import cosmicfishpie.fishermatrix.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
-
-from scipy.interpolate import interp1d, UnivariateSpline
-from scipy.interpolate import InterpolatedUnivariateSpline
-
+from scipy.interpolate import interp1d, UnivariateSpline, InterpolatedUnivariateSpline
 from cosmicfishpie.utilities.utils import printing as upr
-from copy import deepcopy
-from scipy import integrate
 
-import scipy.constants as sconst
-from time import time
 
 
 class Nuisance:

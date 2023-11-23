@@ -118,9 +118,8 @@ class filesystem:
             try:
                 os.makedirs(outdir)
                 print((str(outdir) + ' directory created'))
-            except OSError as e:
-                if e.errno != errno.EEXIST:
-                    raise
+            except OSError:
+                raise
         else:
             print((str(outdir) + '  exists already'))
         return None

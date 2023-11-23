@@ -27,10 +27,8 @@
 # ***************************************************************************************
 
 import os
-import math
 import copy
 import numpy as np
-from . import utilities as fu
 from . import fisher_matrix as fm
 
 # ***************************************************************************************
@@ -363,7 +361,6 @@ class fisher_derived():
         # compute the derived inverse Fisher matrix:
         A = temp_derived_matrix
         AT = np.transpose(temp_derived_matrix)
-        original_fisher = fisher_matrix.get_fisher_inverse()
         fisher_new_inverse = np.dot(
             np.dot(AT, fisher_matrix.get_fisher_inverse()), A)
         # get initial PCA and spectral cutoff:

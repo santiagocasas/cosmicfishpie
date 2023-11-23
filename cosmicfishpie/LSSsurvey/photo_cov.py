@@ -4,7 +4,6 @@
 This is the main engine for LSS Fisher Matrix.
 
 """
-import os
 import numpy as np
 from itertools import product
 from time import time

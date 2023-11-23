@@ -250,7 +250,7 @@ class fisher_derived():
             for line in f:
                 if line[0] != '#' and line[1] != '#':
                     split_line = [i.strip() for i in line.split('    ')]
-                    split_line = [i for i in split_line if i is not '']
+                    split_line = [i for i in split_line if i != '']
                     temp_line = split_line[0].strip()
                     if temp_line[-1] == '*':
                         derived_param_names.append(temp_line[0:-1])

@@ -198,11 +198,16 @@ class boltzmann_code:
 
         cambpars = deepcopy(cosmopars)
 
-        if 'h'      in cambpars: cambpars['H0']    = cambpars.pop('h')*100
-        if 'Omegab' in cambpars: cambpars['ombh2'] = cambpars.pop('Omegab')*(cambpars['H0']/100)**2
-        if 'Omegak' in cambpars: cambpars['omk']   = cambpars.pop('Omegak')
-        if 'w0'     in cambpars: cambpars['w']     = cambpars.pop('w0')
-        if 'logAs'  in cambpars: cambpars['As']    = np.exp(cambpars.pop('logAs'))*1.e-10
+        if 'h'      in cambpars: 
+            cambpars['H0']    = cambpars.pop('h')*100
+        if 'Omegab' in cambpars: 
+            cambpars['ombh2'] = cambpars.pop('Omegab')*(cambpars['H0']/100)**2
+        if 'Omegak' in cambpars: 
+            cambpars['omk']   = cambpars.pop('Omegak')
+        if 'w0'     in cambpars: 
+            cambpars['w']     = cambpars.pop('w0')
+        if 'logAs'  in cambpars: 
+            cambpars['As']    = np.exp(cambpars.pop('logAs'))*1.e-10
 
         upr.debug_print("DEBUG:  --> ", cosmopars)
         shareDeltaNeff = cfg.settings['ShareDeltaNeff']
@@ -532,10 +537,8 @@ class boltzmann_code:
         self.results.ang_dist = np.vectorize(classres.angular_distance)
         self.results.com_dist = np.vectorize(classres.comoving_distance)
         h = classres.h()
-        sigma8R = (lambda zz: classres.sigma(R=8/h, z=zz))
-        self.results.s8_of_z = np.vectorize(sigma8R)
-        sigma8_cb_R = (lambda zz: classres.sigma_cb(R=8/h, z=zz))
-        self.results.s8_cb_of_z = np.vectorize(sigma8_cb_R)
+        self.results.s8_of_z = np.vectorize(lambda zz: classres.sigma(R=8/h, z=zz))
+        self.results.s8_cb_of_z = np.vectorize(lambda zz: classres.sigma_cb(R=8/h, z=zz))
         self.results.Om_m = np.vectorize(classres.Om_m)
         
         #Calculate the Matter fractions for CB Powerspectrum
@@ -685,7 +688,7 @@ class external_input:
         else:
             k_grid_filename = glob(os.path.join(self.directory,'fiducial_eps_0',k_arr_file+'.*'))[0]
             self.input_arrays[('k_grid',parameter_string)]=  np.loadtxt(k_grid_filename)
-        if self.k_arr_special_file != None:
+        if self.k_arr_special_file is not None:
             k_grid_special_filename = glob(os.path.join(self.directory,'fiducial_eps_0',self.k_arr_special_file+'.*'))[0]
             self.input_arrays[('k_grid_special', parameter_string)]=  np.loadtxt(k_grid_special_filename)
         # check if background_Hz list exists, if not, take fiducial one
@@ -702,7 +705,7 @@ class external_input:
         self.input_arrays[('f_zk',parameter_string)]=    np.loadtxt(glob(os.path.join(self.directory,parameter_string,f_zk_file+'.*'))[0])
         self.input_arrays[('Pkl_zk',parameter_string)]=  np.loadtxt(glob(os.path.join(self.directory,parameter_string,Pl_zk_file+'.*' ))[0])
         self.input_arrays[('Pknl_zk',parameter_string)]= np.loadtxt(glob(os.path.join(self.directory,parameter_string,Pnl_zk_file+'.*'))[0])
-        if SigWL_zk_file != None:
+        if SigWL_zk_file is not None:
             self.input_arrays[('SigWL_zk',parameter_string)]= np.loadtxt(glob(os.path.join(self.directory,parameter_string,SigWL_zk_file+'.*'))[0])
         if self.cb_files_on:
             s8cb_z_file = self.external['file_names']['s8cb_z']

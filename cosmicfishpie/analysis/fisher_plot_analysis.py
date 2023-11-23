@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 #
 # This file is part of CosmicFish.
 #
@@ -11,7 +11,7 @@
 # The full text of the license can be found in the file LICENSE at
 # the top level of the CosmicFish distribution.
 #
-#----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 """
 .. module:: fisher_plot_analysis
@@ -28,15 +28,16 @@ import os
 import math
 import copy
 import numpy as np
-from . import utilities         as fu
-from . import fisher_matrix     as fm
-from . import fisher_derived    as fd
+from . import utilities as fu
+from . import fisher_matrix as fm
+from . import fisher_derived as fd
 from . import fisher_operations as fo
 from builtins import dict
 
 from . import __init__ as CosmicFishPyLib
 
 # ***************************************************************************************
+
 
 class CosmicFish_FisherAnalysis():
     """
@@ -65,7 +66,12 @@ class CosmicFish_FisherAnalysis():
 
     # -----------------------------------------------------------------------------------
 
-    def __init__( self, fisher_list=None, fisher_path=None, search_fisher_guess=False, with_derived=True ):
+    def __init__(
+            self,
+            fisher_list=None,
+            fisher_path=None,
+            search_fisher_guess=False,
+            with_derived=True):
         """
         **CosmicFish_FisherAnalysis class constructor**. The constructor builds the Fisher matrices list.
         If all the arguments of the constructor are None then the Fisher list will be created and will be empty.
@@ -86,16 +92,19 @@ class CosmicFish_FisherAnalysis():
 
         """
         # create class instances:
-        self.fisher_list      = []
+        self.fisher_list = []
         self.fisher_name_list = []
         # check wether we have to do something:
-        if not ( fisher_list==None and fisher_path==None ):
+        if not (fisher_list is None and fisher_path is None):
             # do the initialization from fisher_list:
-            if not fisher_list==None:
+            if fisher_list is not None:
                 self.add_fisher_matrix(fisher_list)
             # do the initialization from path:
-            if not fisher_path==None:
-                self.search_fisher_path( fisher_path=fisher_path, search_fisher_guess=search_fisher_guess, with_derived=with_derived )
+            if fisher_path is not None:
+                self.search_fisher_path(
+                    fisher_path=fisher_path,
+                    search_fisher_guess=search_fisher_guess,
+                    with_derived=with_derived)
 
     # -----------------------------------------------------------------------------------
 
@@ -109,7 +118,11 @@ class CosmicFish_FisherAnalysis():
 
     # -----------------------------------------------------------------------------------
 
-    def search_fisher_path(self, fisher_path, search_fisher_guess=False, with_derived=True ):
+    def search_fisher_path(
+            self,
+            fisher_path,
+            search_fisher_guess=False,
+            with_derived=True):
         """
         Searches a path for fisher matrices.
         Will detect wether fisher_path contains directly the paths to the Fisher files or folder.
@@ -126,7 +139,7 @@ class CosmicFish_FisherAnalysis():
         :type with_derived: :class:`bool`
 
         """
-        fisher_path = copy.deepcopy( fu.make_list(fisher_path) )
+        fisher_path = copy.deepcopy(fu.make_list(fisher_path))
         # explore all paths:
         fisher_files = []
         derived_fisher_files = []
@@ -139,33 +152,53 @@ class CosmicFish_FisherAnalysis():
                 # search for all files with fisher_matrix in the name and fisher_matrix_derived in the name
                 # this is the standard cosmicfish output and should be safe if you are using cosmicfish.
                 # get the file list:
-                files = [ os.path.join(path, f) for f in os.listdir(path) if os.path.isfile( os.path.join(path, f) )]
+                files = [
+                    os.path.join(
+                        path,
+                        f) for f in os.listdir(path) if os.path.isfile(
+                        os.path.join(
+                            path,
+                            f))]
                 # filter the list by guessing the names to get Fisher matrices:
                 for f in files:
                     f_temp = os.path.basename(f)
                     if 'fisher_matrix' in f_temp and '.dat' in f_temp and '_derived' not in f_temp:
-                        fisher_files.append( f )
-                # filter the list by guessing the names to get derived Fisher matrices:
+                        fisher_files.append(f)
+                # filter the list by guessing the names to get derived Fisher
+                # matrices:
                 for f in files:
                     f_temp = os.path.basename(f)
                     if 'fisher_matrix' in f_temp and '_derived' in f_temp and '.dat' in f_temp:
-                        derived_fisher_files.append( f )
+                        derived_fisher_files.append(f)
             else:
                 # search for all the files and try to import them as fisher matrices then as derived fishers
                 # get the file list:
-                files = [ os.path.join(path, f) for f in os.listdir(path) if os.path.isfile( os.path.join(path, f) )]
+                files = [
+                    os.path.join(
+                        path,
+                        f) for f in os.listdir(path) if os.path.isfile(
+                        os.path.join(
+                            path,
+                            f))]
                 for f in files:
-                    fisher_files.append( f )
-                    derived_fisher_files.append( f )
+                    fisher_files.append(f)
+                    derived_fisher_files.append(f)
 
         # import fisher matrices:
         for file in fisher_files:
-            if CosmicFishPyLib.__feedback__ > 1: print('Trying to import: '+file+' as a Fisher matrix: ', end=' ')
+            if CosmicFishPyLib.__feedback__ > 1:
+                print(
+                    'Trying to import: ' +
+                    file +
+                    ' as a Fisher matrix: ',
+                    end=' ')
             try:
-                self.fisher_list.append( fm.fisher_matrix( file_name = file ))
-                self.fisher_name_list.append( self.fisher_list[-1].name )
-                if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
-                if CosmicFishPyLib.__feedback__ == 1: print('Imported as a Fisher matrix: '+file)
+                self.fisher_list.append(fm.fisher_matrix(file_name=file))
+                self.fisher_name_list.append(self.fisher_list[-1].name)
+                if CosmicFishPyLib.__feedback__ > 1:
+                    print('SUCCESS')
+                if CosmicFishPyLib.__feedback__ == 1:
+                    print('Imported as a Fisher matrix: ' + file)
                 # remove from the derived fishers if necessary:
                 derived_fisher_files.remove(file)
             except Exception as e:
@@ -176,24 +209,45 @@ class CosmicFish_FisherAnalysis():
         if with_derived:
             for file in derived_fisher_files:
                 # get the derived matrix:
-                if CosmicFishPyLib.__feedback__ > 1: print('Trying to import: '+file+' as a derived Fisher matrix: ', end=' ')
+                if CosmicFishPyLib.__feedback__ > 1:
+                    print(
+                        'Trying to import: ' +
+                        file +
+                        ' as a derived Fisher matrix: ',
+                        end=' ')
                 try:
-                    fisher_derived = fd.fisher_derived( file_name = file )
-                    if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
-                except:
+                    fisher_derived = fd.fisher_derived(file_name=file)
+                    if CosmicFishPyLib.__feedback__ > 1:
+                        print('SUCCESS')
+                except BaseException:
                     fisher_derived = None
-                    if CosmicFishPyLib.__feedback__ > 1: print('FAIL')
+                    if CosmicFishPyLib.__feedback__ > 1:
+                        print('FAIL')
                 # add derived to the fisher matrix when possible:
                 if fisher_derived is not None:
-                    for i in range( len( self.fisher_name_list) ):
-                        if CosmicFishPyLib.__feedback__ > 1: print('Trying to add derived from: '+fisher_derived.name+' to the Fisher matrix: '+self.fisher_list[i].name, end=' ')
+                    for i in range(len(self.fisher_name_list)):
+                        if CosmicFishPyLib.__feedback__ > 1:
+                            print(
+                                'Trying to add derived from: ' +
+                                fisher_derived.name +
+                                ' to the Fisher matrix: ' +
+                                self.fisher_list[i].name,
+                                end=' ')
                         try:
-                            self.fisher_list[i] = fisher_derived.add_derived( fisher_matrix=self.fisher_list[i], preserve_input=True )
+                            self.fisher_list[i] = fisher_derived.add_derived(
+                                fisher_matrix=self.fisher_list[i], preserve_input=True)
                             self.fisher_name_list[i] = self.fisher_list[i].name
-                            if CosmicFishPyLib.__feedback__ > 1: print('SUCCESS')
-                            if CosmicFishPyLib.__feedback__ == 1: print('Added derived parameters from: '+fisher_derived.name+' to Fisher matrix: '+self.fisher_list[i].name)
-                        except:
-                            if CosmicFishPyLib.__feedback__ > 1: print('FAIL')
+                            if CosmicFishPyLib.__feedback__ > 1:
+                                print('SUCCESS')
+                            if CosmicFishPyLib.__feedback__ == 1:
+                                print(
+                                    'Added derived parameters from: ' +
+                                    fisher_derived.name +
+                                    ' to Fisher matrix: ' +
+                                    self.fisher_list[i].name)
+                        except BaseException:
+                            if CosmicFishPyLib.__feedback__ > 1:
+                                print('FAIL')
 
     # -----------------------------------------------------------------------------------
 
@@ -212,18 +266,22 @@ class CosmicFish_FisherAnalysis():
         #
         for i in fisher_in:
             # check wether all the input elements are Fisher matrices:
-            if not isinstance( i, fm.fisher_matrix ):
-                raise ValueError('The input element is not a Fisher matrix of type fisher_matrix.')
+            if not isinstance(i, fm.fisher_matrix):
+                raise ValueError(
+                    'The input element is not a Fisher matrix of type fisher_matrix.')
             else:
                 # get the name of the Fisher matrix:
                 name_temp = copy.deepcopy(i.name)
                 # check wether it is already an element of the list:
                 if name_temp in self.fisher_name_list:
-                    raise ValueError('A Fisher matrix with name '+name_temp+' already exists.')
+                    raise ValueError(
+                        'A Fisher matrix with name ' +
+                        name_temp +
+                        ' already exists.')
                 else:
                     # add it to the Fisher list:
                     self.fisher_name_list.append(name_temp)
-                    self.fisher_list.append( copy.deepcopy(i) )
+                    self.fisher_list.append(copy.deepcopy(i))
 
     # -----------------------------------------------------------------------------------
 
@@ -239,10 +297,11 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # get the fishers:
         fisher_list = []
         for name in names_temp:
@@ -263,18 +322,22 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # get names to delete:
-        names_to_delete = [ i for i in names_temp if i in self.fisher_name_list ]
+        names_to_delete = [i for i in names_temp if i in self.fisher_name_list]
         # get indeces to delete:
-        indexes_to_delete = [ i for i, s in enumerate(self.fisher_name_list) if s in names_to_delete ]
-        # delete them. We have to use this way because fisher_matrix might not have a delete method and we do not want to move in memory the arrays.
+        indexes_to_delete = [
+            i for i, s in enumerate(
+                self.fisher_name_list) if s in names_to_delete]
+        # delete them. We have to use this way because fisher_matrix might not
+        # have a delete method and we do not want to move in memory the arrays.
         for i in range(len(indexes_to_delete)):
-            self.fisher_name_list.pop(indexes_to_delete[i]-i)
-            self.fisher_list.pop(indexes_to_delete[i]-i)
+            self.fisher_name_list.pop(indexes_to_delete[i] - i)
+            self.fisher_list.pop(indexes_to_delete[i] - i)
 
     # -----------------------------------------------------------------------------------
 
@@ -289,15 +352,17 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # get the parameter names:
         parameter_names = []
         for i in self.get_fisher_matrix(names_temp):
             for j in i.param_names:
-                if j not in parameter_names: parameter_names.append(j)
+                if j not in parameter_names:
+                    parameter_names.append(j)
 
         return parameter_names
 
@@ -316,18 +381,24 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # create the empty Fisher list:
         temp = CosmicFish_FisherAnalysis()
         # get the parameter names:
         for fish in self.get_fisher_matrix(names_temp):
-            parameters = [ par for par in params if par in fish.get_param_names() ]
-            if len(parameters) == 0: continue # skip the element if it has no parameters
-            temp.add_fisher_matrix( fisher = fo.reshuffle( fish, parameters,
-                                                           update_names=update_names ) )
+            parameters = [
+                par for par in params if par in fish.get_param_names()]
+            if len(parameters) == 0:
+                continue  # skip the element if it has no parameters
+            temp.add_fisher_matrix(
+                fisher=fo.reshuffle(
+                    fish,
+                    parameters,
+                    update_names=update_names))
 
         return temp
 
@@ -348,18 +419,24 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
-            names_temp = copy.deepcopy( self.fisher_name_list )
+        if names is None:
+            names_temp = copy.deepcopy(self.fisher_name_list)
         else:
-            names_temp = copy.deepcopy( [ i for i in fu.make_list(names) if i in self.fisher_name_list ] )
+            names_temp = copy.deepcopy(
+                [i for i in fu.make_list(names) if i in self.fisher_name_list])
 
         # create the empty Fisher list:
         temp = CosmicFish_FisherAnalysis()
         # get the parameter names:
         for fish in self.get_fisher_matrix(names_temp):
-            parameters = [ par for par in params if par in fish.get_param_names() ]
-            if len(parameters)>0:
-                temp.add_fisher_matrix( fisher = fo.marginalise( fish, parameters , update_names=update_names) )
+            parameters = [
+                par for par in params if par in fish.get_param_names()]
+            if len(parameters) > 0:
+                temp.add_fisher_matrix(
+                    fisher=fo.marginalise(
+                        fish,
+                        parameters,
+                        update_names=update_names))
 
         return temp
 
@@ -376,10 +453,11 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # get the parameter names:
 
         # get the names in latex:
@@ -388,15 +466,24 @@ class CosmicFish_FisherAnalysis():
             for fish in self.get_fisher_matrix(names_temp):
                 try:
                     latex_names[name] = fish.get_param_name_latex(name)
-                except:
+                except BaseException:
                     continue
-                if name in latex_names: continue
+                if name in latex_names:
+                    continue
 
         return latex_names
 
     # -----------------------------------------------------------------------------------
 
-    def compute_plot_range(self, params=None, confidence_level=0.6827, range_factors={'default':1.0}, names=None, nice=True, dimensions=1 ):
+    def compute_plot_range(
+            self,
+            params=None,
+            confidence_level=0.6827,
+            range_factors={
+                'default': 1.0},
+            names=None,
+            nice=True,
+            dimensions=1):
         """
         Function that computes a meaningfull plot range for the plots involving the specified parameters
         and the specified Fisher names.
@@ -414,66 +501,82 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # process parameters:
         total_paramnames_list = self.get_parameter_list(names_temp)
-        if params==None:
+        if params is None:
             params_temp = total_paramnames_list
         else:
-            params_temp = [ i for i in fu.make_list(params) if i in total_paramnames_list ]
+            params_temp = [i for i in fu.make_list(
+                params) if i in total_paramnames_list]
         # get the fishers:
         fisher_temp_list = self.get_fisher_matrix(names_temp)
         # compute the confidence coefficient:
-        confidence_coefficient = fu.confidence_coefficient( confidence_level, dimensions=dimensions )
+        confidence_coefficient = fu.confidence_coefficient(
+            confidence_level, dimensions=dimensions)
         # get the ranges:
         rangefinal = []
         for i in params_temp:
             lower_bound = []
-            upper_bound  = []
+            upper_bound = []
             for j in fisher_temp_list:
                 # get the index of the parameter:
                 try:
                     index = j.get_param_index(i)
-                except:
+                except BaseException:
                     continue
                 # get sigma and fiducial:
-                sigma    = j.get_fisher_inverse()[index,index]
-                sigma    = math.sqrt( sigma )
+                sigma = j.get_fisher_inverse()[index, index]
+                sigma = math.sqrt(sigma)
                 fiducial = j.get_fiducial(i)
-                #apply rescaling factor
+                # apply rescaling factor
                 resc_def = range_factors['default']
-                # try to find rescaling factor for given parameter, otherwise return default
-                resc     = range_factors.get(i, resc_def)
+                # try to find rescaling factor for given parameter, otherwise
+                # return default
+                resc = range_factors.get(i, resc_def)
 
-                #create sigmarang
-                sigmarang = confidence_coefficient*sigma*resc
+                # create sigmarang
+                sigmarang = confidence_coefficient * sigma * resc
                 # apply a coefficient to safeguard:
                 if not nice:
                     sigma = sigmarang
                 # store the values:
                 if nice:
-                    lower_bound.append(fu.significant_digits( (fiducial-sigmarang, sigmarang), mode=2, digits=1 ) )
-                    upper_bound.append(fu.significant_digits( (fiducial+sigmarang, sigmarang), mode=0, digits=1 ) )
+                    lower_bound.append(
+                        fu.significant_digits(
+                            (fiducial - sigmarang, sigmarang), mode=2, digits=1))
+                    upper_bound.append(
+                        fu.significant_digits(
+                            (fiducial + sigmarang, sigmarang), mode=0, digits=1))
                 else:
-                    lower_bound.append(fiducial-sigmarang)
-                    upper_bound.append(fiducial+sigmarang)
+                    lower_bound.append(fiducial - sigmarang)
+                    upper_bound.append(fiducial + sigmarang)
             # decide what to use:
             upper_bound = np.array(upper_bound)
             lower_bound = np.array(lower_bound)
-            rangefinal.append([ float(str(np.amin(lower_bound))), float(str(np.amax(upper_bound))) ])
+            rangefinal.append(
+                [float(str(np.amin(lower_bound))), float(str(np.amax(upper_bound)))])
 
         dict = {}
-        for i,j in zip(params_temp,range(len(params_temp))):
+        for i, j in zip(params_temp, range(len(params_temp))):
             dict[i] = rangefinal[j]
 
         return dict
 
     # -----------------------------------------------------------------------------------
 
-    def compute_gaussian( self, params=None, confidence_level=0.6827, names=None, num_points=100, normalized=False, nice_bounds=True ):
+    def compute_gaussian(
+            self,
+            params=None,
+            confidence_level=0.6827,
+            names=None,
+            num_points=100,
+            normalized=False,
+            nice_bounds=True):
         """
         Function that computes the (1D) gaussian distribution of a given parameter.
         Returns a dictionary with all the meaningul information about the gaussian.
@@ -495,62 +598,82 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # process parameters:
         total_paramnames_list = self.get_parameter_list(names_temp)
-        if params==None:
+        if params is None:
             params_temp = total_paramnames_list
         else:
-            params_temp = [ i for i in fu.make_list(params) if i in total_paramnames_list ]
+            params_temp = [i for i in fu.make_list(
+                params) if i in total_paramnames_list]
         # get the fishers:
         fisher_temp_list = self.get_fisher_matrix(names_temp)
         # compute the confidence coefficient:
-        confidence_coefficient = fu.confidence_coefficient( confidence_level, dimensions=1 )
+        confidence_coefficient = fu.confidence_coefficient(
+            confidence_level, dimensions=1)
         # get the plot ranges:
-        plot_ranges = self.compute_plot_range( params=params_temp, confidence_level=confidence_level, names=names_temp, nice=nice_bounds, dimensions=1 )
+        plot_ranges = self.compute_plot_range(
+            params=params_temp,
+            confidence_level=confidence_level,
+            names=names_temp,
+            nice=nice_bounds,
+            dimensions=1)
         # get the distributions:
         gaussian_distro = {}
         for par1 in params_temp:
             dict_names = {}
-            for mat,name in zip(fisher_temp_list,names_temp):
+            for mat, name in zip(fisher_temp_list, names_temp):
                 # get the index of the parameter:
                 try:
                     index = mat.get_param_index(par1)
-                except:
-                    dict_names[name] = [np.array([0.0]), np.array([0.0]), [0.0,0.0]]
+                except BaseException:
+                    dict_names[name] = [
+                        np.array(
+                            [0.0]), np.array(
+                            [0.0]), [
+                            0.0, 0.0]]
                     continue
                 # get sigma and fiducial:
-                sigma    = math.sqrt( mat.get_fisher_inverse()[index,index] )
+                sigma = math.sqrt(mat.get_fisher_inverse()[index, index])
                 fiducial = mat.get_fiducial(par1)
                 # get optimal x:
                 if nice_bounds:
                     lower_bound = plot_ranges[par1][0]
                     upper_bound = plot_ranges[par1][1]
                 else:
-                    lower_bound = fiducial -confidence_coefficient*sigma
-                    upper_bound = fiducial +confidence_coefficient*sigma
+                    lower_bound = fiducial - confidence_coefficient * sigma
+                    upper_bound = fiducial + confidence_coefficient * sigma
 
-                #nice_points_fact = 0.33  #factor to increase the range of plotted line in x when the plot range restricts the gaussian too much
-                #num_points = int(3*num_points)
-                #x_points = np.linspace( lower_bound-abs(nice_points_fact*lower_bound), upper_bound+abs(nice_points_fact*upper_bound), num_points )
-                x_points = np.linspace( lower_bound, upper_bound, num_points )
+                # nice_points_fact = 0.33  #factor to increase the range of plotted line in x when the plot range restricts the gaussian too much
+                # num_points = int(3*num_points)
+                # x_points = np.linspace( lower_bound-abs(nice_points_fact*lower_bound), upper_bound+abs(nice_points_fact*upper_bound), num_points )
+                x_points = np.linspace(lower_bound, upper_bound, num_points)
                 # get y:
                 if normalized:
-                    y_points = np.array([ np.exp( -( x-fiducial )**2/(2.0*sigma**2) )/( sigma*np.sqrt(2.0*math.pi) ) for x in x_points ])
+                    y_points = np.array([np.exp(-(x - fiducial)**2 / (2.0 * sigma**2)) / (
+                        sigma * np.sqrt(2.0 * math.pi)) for x in x_points])
                 else:
-                    y_points = np.array([ np.exp( -( x-fiducial )**2/(2.0*sigma**2) ) for x in x_points ])
+                    y_points = np.array(
+                        [np.exp(-(x - fiducial)**2 / (2.0 * sigma**2)) for x in x_points])
 
-                dict_names[name] = [x_points, y_points, [fiducial,sigma]]
+                dict_names[name] = [x_points, y_points, [fiducial, sigma]]
             gaussian_distro[par1] = dict_names
 
         return gaussian_distro
 
     # -----------------------------------------------------------------------------------
 
-    def compute_ellipse(self, params1=None, params2=None, confidence_level=0.6827, names=None, num_points=100):
+    def compute_ellipse(
+            self,
+            params1=None,
+            params2=None,
+            confidence_level=0.6827,
+            names=None,
+            num_points=100):
         """
         Function that computes the (2D) ellipses for a given parameters combination.
         Returns a dictionary with all the meaningul information about the ellipses.
@@ -570,58 +693,71 @@ class CosmicFish_FisherAnalysis():
 
         """
         # process names:
-        if names==None:
+        if names is None:
             names_temp = self.fisher_name_list
         else:
-            names_temp = [ i for i in fu.make_list(names) if i in self.fisher_name_list ]
+            names_temp = [i for i in fu.make_list(
+                names) if i in self.fisher_name_list]
         # process parameters:
         total_paramnames_list = self.get_parameter_list(names_temp)
-        if params1==None:
+        if params1 is None:
             params_temp_1 = total_paramnames_list
         else:
-            params_temp_1 = [ i for i in fu.make_list(params1) if i in total_paramnames_list ]
-        if params2==None:
+            params_temp_1 = [i for i in fu.make_list(
+                params1) if i in total_paramnames_list]
+        if params2 is None:
             params_temp_2 = total_paramnames_list
         else:
-            params_temp_2 = [ i for i in fu.make_list(params2) if i in total_paramnames_list ]
+            params_temp_2 = [i for i in fu.make_list(
+                params2) if i in total_paramnames_list]
         # get the fishers:
         fisher_temp_list = self.get_fisher_matrix(names_temp)
         # compute the confidence coefficient:
-        confidence_coefficient = fu.confidence_coefficient( confidence_level, dimensions=2 )
-        #print("2D confidence coefficients: ", confidence_coefficient)
+        confidence_coefficient = fu.confidence_coefficient(
+            confidence_level, dimensions=2)
+        # print("2D confidence coefficients: ", confidence_coefficient)
         # get the distributions:
         gaussian_distro = {}
         for par1 in params_temp_1:
             dict_names_1 = {}
             for par2 in params_temp_2:
                 dict_names_2 = {}
-                for mat,name in zip(fisher_temp_list,names_temp):
+                for mat, name in zip(fisher_temp_list, names_temp):
                     # get the index of the parameter:
                     try:
                         index_1 = mat.get_param_index(par1)
                         index_2 = mat.get_param_index(par2)
-                    except:
-                        dict_names_2[name] = [np.array([0.0]), np.array([0.0]), [0.0, 0.0, 0.0, 0.0, 0.0]]
+                    except BaseException:
+                        dict_names_2[name] = [
+                            np.array(
+                                [0.0]), np.array(
+                                [0.0]), [
+                                0.0, 0.0, 0.0, 0.0, 0.0]]
                         continue
                     # get sigmas:
-                    sigma_x  = mat.get_fisher_inverse()[index_1,index_1]
-                    sigma_y  = mat.get_fisher_inverse()[index_2,index_2]
-                    sigma_xy = mat.get_fisher_inverse()[index_1,index_2]
+                    sigma_x = mat.get_fisher_inverse()[index_1, index_1]
+                    sigma_y = mat.get_fisher_inverse()[index_2, index_2]
+                    sigma_xy = mat.get_fisher_inverse()[index_1, index_2]
                     # get fiducial:
                     fiducial_x = mat.get_fiducial(par1)
                     fiducial_y = mat.get_fiducial(par2)
                     # compute the ellipse coefficients:
-                    coeff_a = confidence_coefficient*math.sqrt((sigma_x + sigma_y)/2.0 + math.sqrt( (sigma_x - sigma_y)**2/4.0 + sigma_xy**2 ))
-                    coeff_b = confidence_coefficient*math.sqrt((sigma_x + sigma_y)/2.0 - math.sqrt( (sigma_x - sigma_y)**2/4.0 + sigma_xy**2 ))
-                    theta_0 = math.atan2( (2.0*sigma_xy), (sigma_x - sigma_y) )/2.0
+                    coeff_a = confidence_coefficient * \
+                        math.sqrt((sigma_x + sigma_y) / 2.0 + math.sqrt((sigma_x - sigma_y)**2 / 4.0 + sigma_xy**2))
+                    coeff_b = confidence_coefficient * \
+                        math.sqrt((sigma_x + sigma_y) / 2.0 - math.sqrt((sigma_x - sigma_y)**2 / 4.0 + sigma_xy**2))
+                    theta_0 = math.atan2(
+                        (2.0 * sigma_xy), (sigma_x - sigma_y)) / 2.0
                     # generate the ellipses
-                    angles  = np.linspace( 0, 2.0*math.pi, num_points )
-                    x_points = np.array( [+coeff_a*math.cos(theta)*math.cos(theta_0)
-                                          -coeff_b*math.sin(theta)*math.sin(theta_0) + fiducial_x for theta in angles ] )
-                    y_points = np.array( [+coeff_a*math.cos(theta)*math.sin(theta_0)
-                                          +coeff_b*math.sin(theta)*math.cos(theta_0) + fiducial_y for theta in angles ] )
+                    angles = np.linspace(0, 2.0 * math.pi, num_points)
+                    x_points = np.array([+coeff_a * math.cos(theta) * math.cos(theta_0) - coeff_b * math.sin(
+                        theta) * math.sin(theta_0) + fiducial_x for theta in angles])
+                    y_points = np.array([+coeff_a * math.cos(theta) * math.sin(theta_0) + coeff_b * math.sin(
+                        theta) * math.cos(theta_0) + fiducial_y for theta in angles])
                     # save the result:
-                    dict_names_2[name] = [x_points, y_points, [fiducial_x, fiducial_y, coeff_a, coeff_b, theta_0]]
+                    dict_names_2[name] = [
+                        x_points, y_points, [
+                            fiducial_x, fiducial_y, coeff_a, coeff_b, theta_0]]
                 dict_names_1[par2] = dict_names_2
             gaussian_distro[par1] = dict_names_1
 

@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 #
 # This file is part of CosmicFish.
 #
@@ -11,7 +11,7 @@
 # The full text of the license can be found in the file LICENSE at
 # the top level of the CosmicFish distribution.
 #
-#----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------
 
 """
 .. module:: utilities
@@ -31,7 +31,8 @@ from scipy.stats.distributions import chi2
 import os
 # ***************************************************************************************
 
-def num_to_mant_exp( num ):
+
+def num_to_mant_exp(num):
     """
     This function returns the (base 10) exponent and mantissa of a number.
 
@@ -45,13 +46,14 @@ def num_to_mant_exp( num ):
         exponent = math.floor(math.log10(abs(num)))
     except ValueError:  # Case of log10(0)
         return (0, 0)   # Convention: 0 = 0*10^0
-    mantissa = num/10**exponent
+    mantissa = num / 10**exponent
 
     return (mantissa, int(exponent))
 
 # ***************************************************************************************
 
-def mant_exp_to_num( mant_exp ):
+
+def mant_exp_to_num(mant_exp):
     """
     This function returns a float built with the given (base 10) mantissa and exponent.
 
@@ -61,10 +63,12 @@ def mant_exp_to_num( mant_exp ):
     :rtype: :class:`float`
 
     """
-    return mant_exp[0]*10**mant_exp[1]
+    return mant_exp[0] * 10**mant_exp[1]
 
 # ***************************************************************************************
-def nice_number( num, mode=1, digits=1 ):
+
+
+def nice_number(num, mode=1, digits=1):
     """
     This function returns a nice number built with num. This is useful to build
     the axes of a plot.
@@ -86,21 +90,21 @@ def nice_number( num, mode=1, digits=1 ):
 
     """
     # extract mantissa and exponent:
-    mant, exp = num_to_mant_exp( num )
+    mant, exp = num_to_mant_exp(num)
     # select the working mode and do the truncation:
-    if ( mode==0 ):
-        mant = np.ceil( mant*10**(digits-1) )/10**(digits-1)
-    elif ( mode==1 ):
-        mant = np.round( mant, digits-1)
-    elif ( mode==2 ):
-        mant = np.floor( mant*10**(digits-1) )/10**(digits-1)
+    if (mode == 0):
+        mant = np.ceil(mant * 10**(digits - 1)) / 10**(digits - 1)
+    elif (mode == 1):
+        mant = np.round(mant, digits - 1)
+    elif (mode == 2):
+        mant = np.floor(mant * 10**(digits - 1)) / 10**(digits - 1)
     else:
-        raise ValueError( 'Wrong worging mode for Fisher_utilities.nice_number' )
+        raise ValueError('Wrong worging mode for Fisher_utilities.nice_number')
 
-    return mant_exp_to_num( ( mant, exp ) )
+    return mant_exp_to_num((mant, exp))
 
 
-#def nice_number( num, mode=0 ):
+# def nice_number( num, mode=0 ):
 #    """
 #    This function returns a nice number built with num. This is useful to build the axes of a plot.
 #    The nice number is built by taking the first digit of the number.
@@ -136,7 +140,8 @@ v_nice_number = np.vectorize(nice_number)
 
 # ***************************************************************************************
 
-def significant_digits( num_err, mode=1, digits=1 ):
+
+def significant_digits(num_err, mode=1, digits=1):
     """
     This function returns the number in num_err at the precision of error.
 
@@ -156,25 +161,32 @@ def significant_digits( num_err, mode=1, digits=1 ):
 
     """
     number = num_err[0]
-    error  = num_err[1]
+    error = num_err[1]
     number_mant_exp = num_to_mant_exp(number)
-    error_mant_exp  = num_to_mant_exp(error)
+    error_mant_exp = num_to_mant_exp(error)
 
-    temp = mant_exp_to_num( (number_mant_exp[0], number_mant_exp[1]-error_mant_exp[1]) )
+    temp = mant_exp_to_num(
+        (number_mant_exp[0],
+         number_mant_exp[1] -
+         error_mant_exp[1]))
     # select the working mode
-    if ( mode==0 ):
-        temp = np.ceil( temp*10**(digits-1) )/10**(digits-1)
-    elif ( mode==1 ):
-        temp = np.round( temp, digits-1 )
-    elif ( mode==2 ):
-        temp = np.floor( temp*10**(digits-1) )/10**(digits-1)
+    if (mode == 0):
+        temp = np.ceil(temp * 10**(digits - 1)) / 10**(digits - 1)
+    elif (mode == 1):
+        temp = np.round(temp, digits - 1)
+    elif (mode == 2):
+        temp = np.floor(temp * 10**(digits - 1)) / 10**(digits - 1)
     else:
-        raise ValueError('Fisher_utilities.significant_digits called with mode='+str(mode)+' legal values are 0,1,2')
+        raise ValueError(
+            'Fisher_utilities.significant_digits called with mode=' +
+            str(mode) +
+            ' legal values are 0,1,2')
 
-    return temp*10**(error_mant_exp[1])
+    return temp * 10**(error_mant_exp[1])
 # ***************************************************************************************
 
-def confidence_coefficient( confidence_level, dimensions=1 ):
+
+def confidence_coefficient(confidence_level, dimensions=1):
     """
     This function returns the number of sigmas given a confidence level.
      See page 815 of Numerical Recipes, Press et al., 2007
@@ -204,12 +216,20 @@ def print_table(table):
     # print it to screen:
     print()
     for line in table:
-        print("| " + " | ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " |")
+        print(
+            "| " +
+            " | ".join(
+                "{:{}}".format(
+                    x,
+                    col_width[i]) for i,
+                x in enumerate(line)) +
+            " |")
     print()
 
 # ***************************************************************************************
 
-def make_list( elements ):
+
+def make_list(elements):
     """
     Checks if elements is a list.
     If yes returns elements without modifying it.
@@ -227,7 +247,8 @@ def make_list( elements ):
 
 # ***************************************************************************************
 
-def grouper( n, iterable, fillvalue=None ):
+
+def grouper(n, iterable, fillvalue=None):
     """
     This small function regroups a list in sub lists of n elements
 
@@ -238,8 +259,8 @@ def grouper( n, iterable, fillvalue=None ):
     :rtype: list
 
     """
-    args = [iter(iterable)]*n
-    return list( it.izip_longest(fillvalue=fillvalue, *args) )
+    args = [iter(iterable)] * n
+    return list(it.izip_longest(fillvalue=fillvalue, *args))
 
 # ***************************************************************************************
 
@@ -265,18 +286,18 @@ def mkdirp(dirpath):
     :rtype:   NoneType
     """
     outdir = os.path.dirname(dirpath)
-           # create directory if it does not exist
-    if outdir=='':
+    # create directory if it does not exist
+    if outdir == '':
         print('Output root is on working directory')
     elif not os.path.exists(outdir):
         try:
             os.makedirs(outdir)
-            print((str(outdir)+' directory created'))
+            print((str(outdir) + ' directory created'))
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
     else:
-        print((str(outdir)+'  exists already'))
+        print((str(outdir) + '  exists already'))
     return None
 
 
@@ -288,13 +309,12 @@ def rel_median_error(array, percentage=True):
     :return: difference of each element compared to median of array
     :rtype: Numpy array
     """
-    perfact=1
+    perfact = 1
     if percentage:
-        perfact=100
-    median=np.median(np.array(array),0)
-    relerr=perfact*(array-median)/median
+        perfact = 100
+    median = np.median(np.array(array), 0)
+    relerr = perfact * (array - median) / median
     return relerr
-
 
 
 def CosmicFish_write_header(name):
@@ -311,8 +331,8 @@ def CosmicFish_write_header(name):
     print("**************************************************************")
     print("   _____               _     _____     __  ")
     print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
-    print(" / /__/ _ \(_-</  ' \/ / __/ _// (_-</ _ \ ")
-    print(" \___/\___/___/_/_/_/_/\__/_/ /_/___/_//_/ Py Lib")
+    print(" / /__/ _ \\(_-</  ' \\/ / __/ _// (_-</ _ \\ ")
+    print(" \\___/\\___/___/_/_/_/_/\\__/_/ /_/___/_//_/ Py Lib")
     print(" ")
     print("**************************************************************")
     print(name)

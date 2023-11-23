@@ -5,11 +5,10 @@ import matplotlib.pyplot as plt
 from getdist import plots
 from getdist.gaussian_mixtures import GaussianND
 
-from cosmicfishpie.utilities.utils import filesystem as ffs
-
 from cosmicfishpie.analysis import fisher_matrix as fm
 from cosmicfishpie.analysis import fisher_plot_analysis as fpa
 from cosmicfishpie.analysis import plot_comparison as pc
+from cosmicfishpie.utilities.utils import filesystem as ffs
 
 params = {
     "mathtext.fontset": "stix",

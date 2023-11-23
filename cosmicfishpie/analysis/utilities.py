@@ -46,10 +46,11 @@ def num_to_mant_exp(num):
     try:
         exponent = math.floor(math.log10(abs(num)))
     except ValueError:  # Case of log10(0)
-        return (0, 0)   # Convention: 0 = 0*10^0
+        return (0, 0)  # Convention: 0 = 0*10^0
     mantissa = num / 10**exponent
 
     return (mantissa, int(exponent))
+
 
 # ***************************************************************************************
 
@@ -64,7 +65,8 @@ def mant_exp_to_num(mant_exp):
     :rtype: :class:`float`
 
     """
-    return mant_exp[0] * 10**mant_exp[1]
+    return mant_exp[0] * 10 ** mant_exp[1]
+
 
 # ***************************************************************************************
 
@@ -93,14 +95,14 @@ def nice_number(num, mode=1, digits=1):
     # extract mantissa and exponent:
     mant, exp = num_to_mant_exp(num)
     # select the working mode and do the truncation:
-    if (mode == 0):
-        mant = np.ceil(mant * 10**(digits - 1)) / 10**(digits - 1)
-    elif (mode == 1):
+    if mode == 0:
+        mant = np.ceil(mant * 10 ** (digits - 1)) / 10 ** (digits - 1)
+    elif mode == 1:
         mant = np.round(mant, digits - 1)
-    elif (mode == 2):
-        mant = np.floor(mant * 10**(digits - 1)) / 10**(digits - 1)
+    elif mode == 2:
+        mant = np.floor(mant * 10 ** (digits - 1)) / 10 ** (digits - 1)
     else:
-        raise ValueError('Wrong worging mode for Fisher_utilities.nice_number')
+        raise ValueError("Wrong worging mode for Fisher_utilities.nice_number")
 
     return mant_exp_to_num((mant, exp))
 
@@ -166,24 +168,24 @@ def significant_digits(num_err, mode=1, digits=1):
     number_mant_exp = num_to_mant_exp(number)
     error_mant_exp = num_to_mant_exp(error)
 
-    temp = mant_exp_to_num(
-        (number_mant_exp[0],
-         number_mant_exp[1] -
-         error_mant_exp[1]))
+    temp = mant_exp_to_num((number_mant_exp[0], number_mant_exp[1] - error_mant_exp[1]))
     # select the working mode
-    if (mode == 0):
-        temp = np.ceil(temp * 10**(digits - 1)) / 10**(digits - 1)
-    elif (mode == 1):
+    if mode == 0:
+        temp = np.ceil(temp * 10 ** (digits - 1)) / 10 ** (digits - 1)
+    elif mode == 1:
         temp = np.round(temp, digits - 1)
-    elif (mode == 2):
-        temp = np.floor(temp * 10**(digits - 1)) / 10**(digits - 1)
+    elif mode == 2:
+        temp = np.floor(temp * 10 ** (digits - 1)) / 10 ** (digits - 1)
     else:
         raise ValueError(
-            'Fisher_utilities.significant_digits called with mode=' +
-            str(mode) +
-            ' legal values are 0,1,2')
+            "Fisher_utilities.significant_digits called with mode="
+            + str(mode)
+            + " legal values are 0,1,2"
+        )
 
-    return temp * 10**(error_mant_exp[1])
+    return temp * 10 ** (error_mant_exp[1])
+
+
 # ***************************************************************************************
 
 
@@ -203,6 +205,7 @@ def confidence_coefficient(confidence_level, dimensions=1):
 
 # ***************************************************************************************
 
+
 def print_table(table):
     """
     This function prints on the screen a nicely formatted table.
@@ -217,15 +220,9 @@ def print_table(table):
     # print it to screen:
     print()
     for line in table:
-        print(
-            "| " +
-            " | ".join(
-                "{:{}}".format(
-                    x,
-                    col_width[i]) for i,
-                x in enumerate(line)) +
-            " |")
+        print("| " + " | ".join("{:{}}".format(x, col_width[i]) for i, x in enumerate(line)) + " |")
     print()
+
 
 # ***************************************************************************************
 
@@ -246,6 +243,7 @@ def make_list(elements):
     else:
         return [elements]
 
+
 # ***************************************************************************************
 
 
@@ -262,6 +260,7 @@ def grouper(n, iterable, fillvalue=None):
     """
     args = [iter(iterable)] * n
     return list(it.izip_longest(fillvalue=fillvalue, *args))
+
 
 # ***************************************************************************************
 
@@ -288,16 +287,16 @@ def mkdirp(dirpath):
     """
     outdir = os.path.dirname(dirpath)
     # create directory if it does not exist
-    if outdir == '':
-        print('Output root is on working directory')
+    if outdir == "":
+        print("Output root is on working directory")
     elif not os.path.exists(outdir):
         try:
             os.makedirs(outdir)
-            print((str(outdir) + ' directory created'))
-        except OSError :
-                raise
+            print((str(outdir) + " directory created"))
+        except OSError:
+            raise
     else:
-        print((str(outdir) + '  exists already'))
+        print((str(outdir) + "  exists already"))
     return None
 
 
@@ -339,5 +338,6 @@ def CosmicFish_write_header(name):
     print(" This application was developed using the CosmicFish code.")
     print("**************************************************************")
     print()
+
 
 # ***************************************************************************************

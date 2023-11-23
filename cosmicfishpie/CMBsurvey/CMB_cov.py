@@ -18,24 +18,21 @@ import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 from cosmicfishpie.utilities.utils import printing as upt
 
-pd.set_option('display.float_format', '{:.9E}'.format)
+pd.set_option("display.float_format", "{:.9E}".format)
 
 
 class CMBCov:
-
     def __init__(self, cosmopars, print_info_specs=False):
-
         self.cosmopars = cosmopars
         self.observables = []
         for key in cfg.obs:  # LENSING TO BE ADDED
-            if key in ['CMB_T', 'CMB_E', 'CMB_B']:
+            if key in ["CMB_T", "CMB_E", "CMB_B"]:
                 self.observables.append(key)
 
         self.print_info = print_info_specs
-        self.feed_lvl = cfg.settings['feedback']
+        self.feed_lvl = cfg.settings["feedback"]
 
     def getcls(self, allpars):
-
         # Here call to functions getting windows and then do cls
 
         # Splitting the dictionary of full parameters
@@ -73,76 +70,79 @@ class CMBCov:
         noisy_cls = copy.deepcopy(cls)
 
         # MM: kind of copy pasting the original cosmicfish stuff
-#        temp1 = self.cosmopars['TCMB']*np.pi/180./60.
-#        temp2 = 180.*60.*np.sqrt(8.*np.log(2.))/np.pi
+        #        temp1 = self.cosmopars['TCMB']*np.pi/180./60.
+        #        temp2 = 180.*60.*np.sqrt(8.*np.log(2.))/np.pi
 
-#        noisevar_temp = (np.array(cfg.specs['CMB_temp_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
-#        noisevar_pol  = (np.array(cfg.specs['CMB_pol_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
-#        sigma2        = -1.*(np.array(cfg.specs['CMB_fwhm'])/temp2 )**2
+        #        noisevar_temp = (np.array(cfg.specs['CMB_temp_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
+        #        noisevar_pol  = (np.array(cfg.specs['CMB_pol_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
+        #        sigma2        = -1.*(np.array(cfg.specs['CMB_fwhm'])/temp2 )**2
 
-#        TT_Noise  = np.zeros((len(noisy_cls['ells'])))
-#        pol_Noise = np.zeros((len(noisy_cls['ells'])))
-#        for ind,sig2 in enumerate(sigma2):
-#            TT_Noise  += np.exp(noisy_cls['ells']*(noisy_cls['ells']+1)*sig2)/noisevar_temp[ind]
-#            pol_Noise += np.exp(noisy_cls['ells']*(noisy_cls['ells']+1)*sig2)/noisevar_pol[ind]
+        #        TT_Noise  = np.zeros((len(noisy_cls['ells'])))
+        #        pol_Noise = np.zeros((len(noisy_cls['ells'])))
+        #        for ind,sig2 in enumerate(sigma2):
+        #            TT_Noise  += np.exp(noisy_cls['ells']*(noisy_cls['ells']+1)*sig2)/noisevar_temp[ind]
+        #            pol_Noise += np.exp(noisy_cls['ells']*(noisy_cls['ells']+1)*sig2)/noisevar_pol[ind]
 
-#        for obs in self.observables:
-#            if obs == 'CMB_T':
-#                noisy_cls[obs+'x'+obs] += 1/TT_Noise
-#            elif obs == 'CMB_E' or obs == 'CMB_B':
-#                noisy_cls[obs+'x'+obs] += 1/pol_Noise
+        #        for obs in self.observables:
+        #            if obs == 'CMB_T':
+        #                noisy_cls[obs+'x'+obs] += 1/TT_Noise
+        #            elif obs == 'CMB_E' or obs == 'CMB_B':
+        #                noisy_cls[obs+'x'+obs] += 1/pol_Noise
 
         arcmin_to_rad = 0.000290888
         # norm          = ls*(ls+1)/(2.*np.pi)
 
         thetab = [
-            arcmin_to_rad *
-            beam /
-            np.sqrt(
-                8. *
-                np.log(2.)) for beam in cfg.specs['CMB_fwhm']]
+            arcmin_to_rad * beam / np.sqrt(8.0 * np.log(2.0)) for beam in cfg.specs["CMB_fwhm"]
+        ]
 
-        Bell = [np.exp(ang**2. * noisy_cls['ells'] *
-                       (noisy_cls['ells'] + 1) / 2.) for ang in thetab]
+        Bell = [
+            np.exp(ang**2.0 * noisy_cls["ells"] * (noisy_cls["ells"] + 1) / 2.0) for ang in thetab
+        ]
 
-        wtemp = [(arcmin_to_rad * cfg.specs['CMB_fwhm'][ind] * cfg.specs['CMB_temp_sens']
-                  [ind])**(-2.) for ind in range(len(cfg.specs['CMB_fwhm']))]
-        wpol = [(arcmin_to_rad * cfg.specs['CMB_fwhm'][ind] * cfg.specs['CMB_pol_sens']
-                 [ind])**(-2.) for ind in range(len(cfg.specs['CMB_fwhm']))]
+        wtemp = [
+            (arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_temp_sens"][ind]) ** (-2.0)
+            for ind in range(len(cfg.specs["CMB_fwhm"]))
+        ]
+        wpol = [
+            (arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_pol_sens"][ind]) ** (-2.0)
+            for ind in range(len(cfg.specs["CMB_fwhm"]))
+        ]
 
-        TTnoise_chan = np.zeros(
-            (len(
-                cfg.specs['CMB_fwhm']), len(
-                noisy_cls['ells'])))
-        polnoise_chan = np.zeros(
-            (len(
-                cfg.specs['CMB_fwhm']), len(
-                noisy_cls['ells'])))
+        TTnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
+        polnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
 
-        for ind in range(len(cfg.specs['CMB_fwhm'])):
+        for ind in range(len(cfg.specs["CMB_fwhm"])):
             TTnoise_chan[ind, :] = Bell[ind][:] / wtemp[ind]
             polnoise_chan[ind, :] = Bell[ind][:] / wpol[ind]
 
-        if len(cfg.specs['CMB_fwhm']) > 1:
-            TTnoise = np.array([self.sum_inv_squares(TTnoise_chan[:, ind])
-                               for ind in range(len(noisy_cls['ells']))])
-            polnoise = np.array([self.sum_inv_squares(polnoise_chan[:, ind])
-                                for ind in range(len(noisy_cls['ells']))])
+        if len(cfg.specs["CMB_fwhm"]) > 1:
+            TTnoise = np.array(
+                [
+                    self.sum_inv_squares(TTnoise_chan[:, ind])
+                    for ind in range(len(noisy_cls["ells"]))
+                ]
+            )
+            polnoise = np.array(
+                [
+                    self.sum_inv_squares(polnoise_chan[:, ind])
+                    for ind in range(len(noisy_cls["ells"]))
+                ]
+            )
         else:
             TTnoise = TTnoise_chan[0, :]
             polnoise = polnoise_chan[0, :]
 
         for obs in self.observables:
-            if obs == 'CMB_T':
-                noisy_cls[obs + 'x' + obs] += TTnoise
-            elif obs == 'CMB_E' or obs == 'CMB_B':
-                noisy_cls[obs + 'x' + obs] += polnoise
+            if obs == "CMB_T":
+                noisy_cls[obs + "x" + obs] += TTnoise
+            elif obs == "CMB_E" or obs == "CMB_B":
+                noisy_cls[obs + "x" + obs] += polnoise
 
         return noisy_cls
 
     def sum_inv_squares(self, arr):
-
-        res = np.sqrt(sum([i**(-2) for i in arr]))
+        res = np.sqrt(sum([i ** (-2) for i in arr]))
 
         return 1 / res
 
@@ -161,7 +161,7 @@ class CMBCov:
 
         """
 
-        pd.set_option('display.float_format', '{:.9E}'.format)
+        pd.set_option("display.float_format", "{:.9E}".format)
 
         covvec = []
 
@@ -170,13 +170,14 @@ class CMBCov:
         for o in self.observables:
             cols.append(o)
 
-        for ind, ell in enumerate(noisy_cls['ells']):
+        for ind, ell in enumerate(noisy_cls["ells"]):
             covdf = pd.DataFrame(index=cols, columns=cols)
-            covdf = covdf.fillna(0.)
+            covdf = covdf.fillna(0.0)
 
             for obs1, obs2 in product(self.observables, self.observables):
-                covdf.at[obs1, obs2] = (noisy_cls[obs1 + 'x' + obs2][ind] /
-                                        np.sqrt(np.sqrt(cfg.specs['fsky_' + obs1] * cfg.specs['fsky_' + obs2])))
+                covdf.at[obs1, obs2] = noisy_cls[obs1 + "x" + obs2][ind] / np.sqrt(
+                    np.sqrt(cfg.specs["fsky_" + obs1] * cfg.specs["fsky_" + obs2])
+                )
 
             covvec.append(covdf)
 
@@ -187,27 +188,24 @@ class CMBCov:
         allpars = {}
         allpars.update(self.cosmopars)
 
-        obstring = ''
+        obstring = ""
         for obs in self.observables:
             obstring = obstring + obs
 
         # Check free pars are in the fiducial
         for key in cfg.freeparams:
             if key not in allpars:
-                print(
-                    'ERROR: free param ' +
-                    key +
-                    ' does not have a fiducial value!')
+                print("ERROR: free param " + key + " does not have a fiducial value!")
                 return None
 
-        if not os.path.exists('./raw_results'):
-            os.makedirs('./raw_results')
+        if not os.path.exists("./raw_results"):
+            os.makedirs("./raw_results")
 
         # compute fiducial
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Computing fiducial')
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Computing fiducial")
         t1 = datetime.datetime.now().timestamp()
 
         # fiducial_csv = './raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial.csv'
@@ -219,10 +217,10 @@ class CMBCov:
         # fiducial.to_csv(fiducial_csv, index=False)
 
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Fiducial generated in {:.2f} s'.format(t2 - t1))
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Fiducial generated in {:.2f} s".format(t2 - t1))
 
         # with open('./raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial.txt', 'w') as f:
         #    f.write(fiducial.to_string(header = True, index = False))
@@ -235,15 +233,15 @@ class CMBCov:
         t1 = datetime.datetime.now().timestamp()
         # add noise
         noisy_cls = self.getclsnoise(cls)
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Noise added to fiducial')
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Noise added to fiducial")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Noisy Cls generated in {:.2f} s'.format(t2 - t1))
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Noisy Cls generated in {:.2f} s".format(t2 - t1))
 
         # TODO: fix pandas stuff
         # noisy_fiducial = pd.DataFrame(noisy_cls, columns=noisy_cls.keys())
@@ -257,21 +255,21 @@ class CMBCov:
         self.noisy_cls = noisy_cls
         t1 = datetime.datetime.now().timestamp()
         self.covmat = self.get_covmat(noisy_cls)
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Computed covariance matrix')
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Computed covariance matrix")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Covmat of Cls generated in {:.2f} s'.format(t2 - t1))
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Covmat of Cls generated in {:.2f} s".format(t2 - t1))
 
         tfin = datetime.datetime.now().timestamp()
-        if cfg.settings['feedback'] > 0:
-            print('')
-        if cfg.settings['feedback'] > 0:
-            print('Total calculation in {:.2f} s'.format(tfin - tini))
+        if cfg.settings["feedback"] > 0:
+            print("")
+        if cfg.settings["feedback"] > 0:
+            print("Total calculation in {:.2f} s".format(tfin - tini))
 
         return self.noisy_cls, self.covmat
 
@@ -304,10 +302,14 @@ class CMBCov:
             #    derivative = pd.DataFrame(derivs[par], columns=derivs[par].keys())
             #    derivative.to_csv(deriv_csv, index=False)
 
-            upt.time_print(feedback_level=self.feed_lvl, min_level=1,
-                           text='-->> Derivatives computed in ',
-                           time_ini=tder1,
-                           time_fin=tder2, instance=self)
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=1,
+                text="-->> Derivatives computed in ",
+                time_ini=tder1,
+                time_fin=tder2,
+                instance=self,
+            )
 
             # with open('./raw_results/'+cfg.settings['outroot']+'_'+obstring+'_derivative_'+par+'.txt', 'w') as f:
             #    f.write(derivative.to_string(header = True, index = False))

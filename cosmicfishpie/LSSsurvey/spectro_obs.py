@@ -20,25 +20,32 @@ from cosmicfishpie.utilities.utils import printing as upt
 class ComputeGalSpectro:
     # Class attributes shared among all class instances
 
-    def __init__(self, cosmopars, fiducial_cosmopars=None,
-                 spectrobiaspars=None,
-                 spectrononlinearpars=None,
-                 PShotpars=None, fiducial_cosmo=None,
-                 bias_samples=['g', 'g'],
-                 use_bias_funcs=True):
-
+    def __init__(
+        self,
+        cosmopars,
+        fiducial_cosmopars=None,
+        spectrobiaspars=None,
+        spectrononlinearpars=None,
+        PShotpars=None,
+        fiducial_cosmo=None,
+        bias_samples=["g", "g"],
+        use_bias_funcs=True,
+    ):
         tini = time()
-        self.feed_lvl = cfg.settings['feedback']
-        upt.time_print(feedback_level=self.feed_lvl, min_level=1,
-                       text='Entered ComputeGalSpectro',
-                       instance=self)
+        self.feed_lvl = cfg.settings["feedback"]
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=1,
+            text="Entered ComputeGalSpectro",
+            instance=self,
+        )
 
         self.observables = cfg.obs
         # if 'GCsp' not in self.observables:
         #    raise AttributeError("Observables list not defined properly")
 
-        self.s8terms = cfg.settings['bfs8terms']
-        self.tracer = cfg.settings['GCsp_Tracer']
+        self.s8terms = cfg.settings["bfs8terms"]
+        self.tracer = cfg.settings["GCsp_Tracer"]
 
         if fiducial_cosmopars is None:
             self.fiducial_cosmopars = deepcopy(cfg.fiducialparams)
@@ -52,11 +59,12 @@ class ComputeGalSpectro:
                         feedback_level=self.feed_lvl,
                         min_level=3,
                         text="Fiducial cosmology parameters: {}".format(
-                            self.fiducialcosmo.cosmopars),
-                        instance=self)
+                            self.fiducialcosmo.cosmopars
+                        ),
+                        instance=self,
+                    )
                 except BaseException:
-                    upt.debug_print(
-                        "Fiducial cosmology from config.py raised an error")
+                    upt.debug_print("Fiducial cosmology from config.py raised an error")
                     # raise
                     try:
                         self.fiducialcosmo = fiducial_cosmo
@@ -64,20 +72,21 @@ class ComputeGalSpectro:
                             feedback_level=self.feed_lvl,
                             min_level=3,
                             text="Fiducial cosmology parameters: {}".format(
-                                self.fiducialcosmo.cosmopars),
-                            instance=self)
+                                self.fiducialcosmo.cosmopars
+                            ),
+                            instance=self,
+                        )
                     except BaseException:
-                        upt.debug_print(
-                            "Fiducial cosmology from input arguments raised an error")
+                        upt.debug_print("Fiducial cosmology from input arguments raised an error")
                         raise
             except BaseException:
                 print(" >>>>> Fiducial cosmology could not be loaded, recomputing....")
                 print(" **** In ComputeGalSpectro: Calculating fiducial cosmology...")
                 self.fiducialcosmo = cosmology.cosmo_functions(
-                    self.fiducial_cosmopars, cfg.input_type)
+                    self.fiducial_cosmopars, cfg.input_type
+                )
         else:
-            print(
-                "Error: In ComputeGalSpectro fiducial_cosmopars not equal to cfg.fiducialparams")
+            print("Error: In ComputeGalSpectro fiducial_cosmopars not equal to cfg.fiducialparams")
             raise AttributeError
 
         self.cosmopars = cosmopars
@@ -116,10 +125,14 @@ class ComputeGalSpectro:
         # create interpolators, for if the asked z is not the z of the zbins
         # (maybe this is stupid)
         if not self.spectrononlinearpars == dict():
-            sigmap_input = [self.spectrononlinearpars['sigmap_{}'.format(
-                i)] for i in range(len(self.nuisance.gcsp_zbins_mids()))]
-            sigmav_input = [self.spectrononlinearpars['sigmav_{}'.format(
-                i)] for i in range(len(self.nuisance.gcsp_zbins_mids()))]
+            sigmap_input = [
+                self.spectrononlinearpars["sigmap_{}".format(i)]
+                for i in range(len(self.nuisance.gcsp_zbins_mids()))
+            ]
+            sigmav_input = [
+                self.spectrononlinearpars["sigmav_{}".format(i)]
+                for i in range(len(self.nuisance.gcsp_zbins_mids()))
+            ]
             self.sigmap_inter = CubicSpline(self.gcsp_z_bin_mids, sigmap_input)
             self.sigmav_inter = CubicSpline(self.gcsp_z_bin_mids, sigmav_input)
 
@@ -127,37 +140,44 @@ class ComputeGalSpectro:
             **self.cosmopars,
             **self.spectrobiaspars,
             **self.PShotpars,
-            **self.spectrononlinearpars}
+            **self.spectrononlinearpars,
+        }
         self.fiducial_allpars = {
             **self.cosmopars,
             **self.spectrobiaspars,
             **self.PShotpars,
-            **self.spectrononlinearpars}  # Seems wrong but is never used. should get it from cfg
+            **self.spectrononlinearpars,
+        }  # Seems wrong but is never used. should get it from cfg
 
         self.set_internal_kgrid()
         self.activate_terms()
         self.set_spectro_specs()
         tend = time()
-        upt.time_print(feedback_level=self.feed_lvl, min_level=1,
-                       text='GalSpec initialization done in: ',
-                       time_ini=tini, time_fin=tend, instance=self)
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=1,
+            text="GalSpec initialization done in: ",
+            time_ini=tini,
+            time_fin=tend,
+            instance=self,
+        )
 
     def set_internal_kgrid(self):
-        cfg.specs['kmax'] = cfg.specs['kmax_GCsp']
-        cfg.specs['kmin'] = cfg.specs['kmin_GCsp']
+        cfg.specs["kmax"] = cfg.specs["kmax_GCsp"]
+        cfg.specs["kmin"] = cfg.specs["kmin_GCsp"]
         kmin_int = 0.001
         kmax_int = 5
         self.k_grid = np.logspace(np.log10(kmin_int), np.log10(kmax_int), 1024)
         self.dk_grid = np.diff(self.k_grid)[0]
 
     def activate_terms(self):
-        self.linear_switch = cfg.settings['GCsp_linear']
-        self.FoG_switch = cfg.settings['FoG_switch']
-        self.APbool = cfg.settings['AP_effect']
-        self.fix_cosmo_nl_terms = cfg.settings['fix_cosmo_nl_terms']
+        self.linear_switch = cfg.settings["GCsp_linear"]
+        self.FoG_switch = cfg.settings["FoG_switch"]
+        self.APbool = cfg.settings["AP_effect"]
+        self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
 
     def set_spectro_specs(self):
-        self.dz_err = cfg.specs['spec_sigma_dz']
+        self.dz_err = cfg.specs["spec_sigma_dz"]
 
     def qparallel(self, z):
         """
@@ -206,8 +226,7 @@ class ComputeGalSpectro:
         Function that rescales the k-array, when the kmax-kmin integration units are fixed in h/Mpc,
         while the rest of the code is defined in 1/Mpc.
         """
-        h_change = self.cosmo.cosmopars['h'] / \
-            self.fiducialcosmo.cosmopars['h']
+        h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
         kh = k * h_change
         return kh
 
@@ -239,7 +258,7 @@ class ComputeGalSpectro:
         if not self.APbool:
             return k, mu
         elif self.APbool:
-            sum = self.kpar(z, k, mu)**2 + self.kper(z, k, mu)**2
+            sum = self.kpar(z, k, mu) ** 2 + self.kper(z, k, mu) ** 2
             kap = np.sqrt(sum)
             muap = self.kpar(z, k, mu) / kap
             return kap, muap
@@ -255,8 +274,7 @@ class ComputeGalSpectro:
         Returns:
             Calculates the supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
         """
-        err = self.dz_err * (1 + z) * \
-            (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
+        err = self.dz_err * (1 + z) * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
         return np.exp(-(1 / 2) * err**2)  # Gaussian
 
     def BAO_term(self, z):
@@ -282,7 +300,7 @@ class ComputeGalSpectro:
         if not self.APbool:
             bao = 1
         else:
-            bao = 1 / (self.qperpendicular(z)**2 * self.qparallel(z))
+            bao = 1 / (self.qperpendicular(z) ** 2 * self.qparallel(z))
 
         return bao
 
@@ -297,7 +315,7 @@ class ComputeGalSpectro:
     #     bstr = bstr+'_'
     #     return bstr
 
-    def bterm_fid(self, z, bias_sample='g'):
+    def bterm_fid(self, z, bias_sample="g"):
         """
         Calculates the fiducial bias term at a given redshift `z`, of either galaxies or intensity mapping.
 
@@ -313,19 +331,18 @@ class ComputeGalSpectro:
         float
         The value of the bias term at `z`.
         """
-        if bias_sample == 'g':
+        if bias_sample == "g":
             # This attribute is created when ComputeGalSpectro is called
             bfun = self.gcsp_bias_of_z
             zmidsbins = self.gcsp_z_bin_mids
             bdict = self.spectrobiaspars
-        elif bias_sample == 'I':
+        elif bias_sample == "I":
             bfun = self.IM_bias_of_z  # This attribute is created when ComputeGalIM is called
             zmidsbins = self.IM_z_bin_mids
             bdict = self.IMbiaspars
         if self.use_bias_funcs:
             if self.s8terms:
-                bterm = bfun(z) * self.fiducialcosmo.sigma8_of_z(z,
-                                                                 tracer=self.tracer)
+                bterm = bfun(z) * self.fiducialcosmo.sigma8_of_z(z, tracer=self.tracer)
             else:
                 bterm = bfun(z)
         elif self.use_bias_funcs is False:
@@ -333,18 +350,17 @@ class ComputeGalSpectro:
             zii = unu.bisection(zmidsbins, z)
             # returns 0 if z below min(zmids)
             zii += 1  # get bin index from 1 to len(Nbins)
-            bkey, bval = self.nuisance.bterm_z_key(zii, zmidsbins,
-                                                   self.fiducialcosmo,
-                                                   bias_sample=bias_sample)
+            bkey, bval = self.nuisance.bterm_z_key(
+                zii, zmidsbins, self.fiducialcosmo, bias_sample=bias_sample
+            )
 
             bterm = bdict[bkey]
-            if 'ln' in bkey:
+            if "ln" in bkey:
                 # Exponentiate bias term which is in ln()
                 bterm = np.exp(bterm)
         return bterm
 
-    def kaiserTerm(self, z, k, mu, b_i=None,
-                   just_rsd=False, bias_sample='g'):
+    def kaiserTerm(self, z, k, mu, b_i=None, just_rsd=False, bias_sample="g"):
         """
         Computes the Kaiser redshift-space distortion term.
 
@@ -365,7 +381,10 @@ class ComputeGalSpectro:
                 bterm = self.bterm_fid(z, bias_sample=bias_sample)
             except KeyError as ke:
                 print(
-                    " The key {} is not in dictionary. Check observables and parameters being used".format(ke))
+                    " The key {} is not in dictionary. Check observables and parameters being used".format(
+                        ke
+                    )
+                )
                 raise ke
         if self.s8terms:
             fterm = self.cosmo.fsigma8_of_z(z, k, tracer=self.tracer)
@@ -373,13 +392,13 @@ class ComputeGalSpectro:
             fterm = self.cosmo.f_growthrate(z, k, tracer=self.tracer)
 
         if not just_rsd:
-            kaiser = (bterm + fterm * mu**2)
+            kaiser = bterm + fterm * mu**2
         elif just_rsd:
-            kaiser = (1 + (fterm / bterm) * mu**2)
+            kaiser = 1 + (fterm / bterm) * mu**2
 
         return kaiser
 
-    def FingersOfGod(self, z, k, mu, mode='Lorentz'):
+    def FingersOfGod(self, z, k, mu, mode="Lorentz"):
         """
         Calculates the Fingers of God effect in redshift-space power spectra.
 
@@ -402,8 +421,8 @@ class ComputeGalSpectro:
         """
         if (self.FoG_switch is False) or (self.linear_switch):
             fog = 1
-        elif mode == 'Lorentz':
-            fog = 1 / (1 + (k * mu * self.sigmapNL(z))**2)
+        elif mode == "Lorentz":
+            fog = 1 / (1 + (k * mu * self.sigmapNL(z)) ** 2)
         else:
             print("FoG mode not implemented")
             fog = 1
@@ -422,8 +441,7 @@ class ComputeGalSpectro:
         else:
             sp = np.sqrt(self.P_ThetaTheta_Moments(zz, 2))
             if not self.spectrononlinearpars == dict():
-                sp *= self.sigmap_inter(zz) / \
-                    np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
+                sp *= self.sigmap_inter(zz) / np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
         return sp
 
     def sigmavNL(self, zz, mu):
@@ -443,8 +461,7 @@ class ComputeGalSpectro:
             f2 = self.P_ThetaTheta_Moments(zz, 2)
             sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
             if not self.spectrononlinearpars == dict():
-                sv *= self.sigmav_inter(zz) / \
-                    np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
+                sv *= self.sigmav_inter(zz) / np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
         return sv
 
     def P_ThetaTheta_Moments(self, zz, moment=0):
@@ -465,7 +482,9 @@ class ComputeGalSpectro:
         else:
             cosmoF = self.cosmo
 
-        def f_mom(k): return (cosmoF.f_growthrate(zz, k)**moment)
+        def f_mom(k):
+            return cosmoF.f_growthrate(zz, k) ** moment
+
         ff = f_mom(self.k_grid).flatten()
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
@@ -488,7 +507,7 @@ class ComputeGalSpectro:
         """
         s8_denominator = 1
         if self.s8terms:
-            s8_denominator = self.cosmo.sigma8_of_z(z, tracer=self.tracer)**2
+            s8_denominator = self.cosmo.sigma8_of_z(z, tracer=self.tracer) ** 2
 
         p_dd = self.cosmo.matpow(z, k, tracer=self.tracer)  # P_{delta,delta}
         self.p_dd = p_dd / s8_denominator
@@ -509,15 +528,14 @@ class ComputeGalSpectro:
         """
         s8_denominator = 1
         if self.s8terms:
-            s8_denominator = self.cosmo.sigma8_of_z(z, tracer=self.tracer)**2
+            s8_denominator = self.cosmo.sigma8_of_z(z, tracer=self.tracer) ** 2
 
-        p_nw = self.cosmo.nonwiggle_pow(
-            z, k, tracer=self.tracer)  # P_{delta,delta}
+        p_nw = self.cosmo.nonwiggle_pow(z, k, tracer=self.tracer)  # P_{delta,delta}
         self.p_nw = p_nw / s8_denominator
         return self.p_nw
 
     def dewiggled_pdd(self, z, k, mu):
-        """"
+        """ "
         Calculates the normalized dewiggled powerspectrum
 
         Args:
@@ -536,12 +554,13 @@ class ComputeGalSpectro:
         if self.linear_switch:
             gmudamping = 0
         else:
-            gmudamping = self.sigmavNL(z, mu)**2
+            gmudamping = self.sigmavNL(z, mu) ** 2
 
         self.p_dd = self.normalized_pdd(z, k)
         self.p_dd_NW = self.normalized_pnw(z, k)
-        self.p_dd_DW = (self.p_dd * np.exp(-gmudamping * k**2) +
-                        self.p_dd_NW * (1 - np.exp(-gmudamping * k**2)))
+        self.p_dd_DW = self.p_dd * np.exp(-gmudamping * k**2) + self.p_dd_NW * (
+            1 - np.exp(-gmudamping * k**2)
+        )
         return self.p_dd_DW
 
     def observed_Pgg(self, z, k, mu, b_i=None):
@@ -565,9 +584,9 @@ class ComputeGalSpectro:
 
         """
         if self.feed_lvl > 1:
-            print('')
+            print("")
         if self.feed_lvl > 1:
-            print('    Computing Pgg for {}'.format(self.observables))
+            print("    Computing Pgg for {}".format(self.observables))
         tstart = time()
 
         k = self.k_units_change(k)  # has to be done before spec_err and AP
@@ -575,19 +594,23 @@ class ComputeGalSpectro:
         k, mu = self.kmu_alc_pac(z, k, mu)
 
         baoterm = self.BAO_term(z)
-        kaiser = self.kaiserTerm(z, k, mu, b_i, bias_sample='g')
+        kaiser = self.kaiserTerm(z, k, mu, b_i, bias_sample="g")
 
         extra_shotnoise = self.extraPshot
-        lorentzFoG = self.FingersOfGod(z, k, mu, mode='Lorentz')
+        lorentzFoG = self.FingersOfGod(z, k, mu, mode="Lorentz")
         p_dd_DW = self.dewiggled_pdd(z, k, mu)
 
-        pgg_obs = baoterm * (kaiser**2) * p_dd_DW * \
-            lorentzFoG * (error_z**2) + extra_shotnoise
+        pgg_obs = baoterm * (kaiser**2) * p_dd_DW * lorentzFoG * (error_z**2) + extra_shotnoise
 
         tend = time()
-        upt.time_print(feedback_level=self.feed_lvl, min_level=1,
-                       text='observed P_gg computation took: ',
-                       time_ini=tstart, time_fin=tend, instance=self)
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=1,
+            text="observed P_gg computation took: ",
+            time_ini=tstart,
+            time_fin=tend,
+            instance=self,
+        )
         return pgg_obs
 
     def lnpobs_gg(self, z, k, mu, b_i=None):
@@ -596,23 +619,32 @@ class ComputeGalSpectro:
 
 
 class ComputeGalIM(ComputeGalSpectro):
-
-    def __init__(self, cosmopars, fiducial_cosmopars=None,
-                 spectrobiaspars=None, IMbiaspars=None,
-                 PShotpars=None, fiducial_cosmo=None,
-                 use_bias_funcs=True, bias_samples=['I', 'I']):
-
-        super().__init__(cosmopars, fiducial_cosmopars=fiducial_cosmopars,
-                         spectrobiaspars=spectrobiaspars,
-                         PShotpars=PShotpars,
-                         fiducial_cosmo=fiducial_cosmo,
-                         use_bias_funcs=True, bias_samples=bias_samples)
+    def __init__(
+        self,
+        cosmopars,
+        fiducial_cosmopars=None,
+        spectrobiaspars=None,
+        IMbiaspars=None,
+        PShotpars=None,
+        fiducial_cosmo=None,
+        use_bias_funcs=True,
+        bias_samples=["I", "I"],
+    ):
+        super().__init__(
+            cosmopars,
+            fiducial_cosmopars=fiducial_cosmopars,
+            spectrobiaspars=spectrobiaspars,
+            PShotpars=PShotpars,
+            fiducial_cosmo=fiducial_cosmo,
+            use_bias_funcs=True,
+            bias_samples=bias_samples,
+        )
 
         tini = time()
-        self.feed_lvl = cfg.settings['feedback']
-        print('Entered ComputeGalIM')
+        self.feed_lvl = cfg.settings["feedback"]
+        print("Entered ComputeGalIM")
 
-        if 'IM' not in self.observables:
+        if "IM" not in self.observables:
             raise AttributeError("Observables list not defined properly")
         self.fiducial_IMbiaspars = cfg.IMbiasparams
         self.use_bias_funcs = use_bias_funcs
@@ -627,25 +659,38 @@ class ComputeGalIM(ComputeGalSpectro):
         self.IM_bias_of_z = self.nuisance.IM_bias
         self.IM_z_bin_mids = self.nuisance.IM_zbins_mids()
         print("Bias samples", self.bias_samples)
-        self.allpars = {**self.cosmopars, **self.spectrobiaspars,
-                        **self.IMbiaspars, **self.PShotpars}
-        self.fiducial_allpars = {**self.cosmopars, **self.spectrobiaspars,
-                                 **self.fiducial_IMbiaspars, **self.PShotpars}
+        self.allpars = {
+            **self.cosmopars,
+            **self.spectrobiaspars,
+            **self.IMbiaspars,
+            **self.PShotpars,
+        }
+        self.fiducial_allpars = {
+            **self.cosmopars,
+            **self.spectrobiaspars,
+            **self.fiducial_IMbiaspars,
+            **self.PShotpars,
+        }
 
         tend = time()
-        upt.time_print(feedback_level=self.feed_lvl, min_level=1,
-                       text='GalIM initialization done in: ',
-                       time_ini=tini, time_fin=tend, instance=self)
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=1,
+            text="GalIM initialization done in: ",
+            time_ini=tini,
+            time_fin=tend,
+            instance=self,
+        )
 
     def set_IM_specs(self):
-        self.Dd = cfg.specs['D_dish']  # Dish diameter in m
+        self.Dd = cfg.specs["D_dish"]  # Dish diameter in m
         self.lambda_21 = 21 / 100  # 21cm in m
-        self.fsky_IM = cfg.specs['fsky_IM']  # sky fraction for IM
-        self.t_tot = cfg.specs['time_tot'] * 3600  # * 3600s -> in s
-        self.N_d = cfg.specs['N_dish']
+        self.fsky_IM = cfg.specs["fsky_IM"]  # sky fraction for IM
+        self.t_tot = cfg.specs["time_tot"] * 3600  # * 3600s -> in s
+        self.N_d = cfg.specs["N_dish"]
         # self.cosmo.c is in km/s
         # HZ, for MHz: MHz /1e6
-        self.f_21 = ((self.cosmo.c * 1000) / self.lambda_21)
+        self.f_21 = (self.cosmo.c * 1000) / self.lambda_21
 
     # def IM_bias(self, z):
     #     """
@@ -660,10 +705,9 @@ class ComputeGalIM(ComputeGalSpectro):
 
     def Temperature(self, z):
         """obtaining the temperature (T^2(z)) for the Power Spectrum (PHI(z))"""
-        h = self.cosmopars['h']
-        H0 = self.cosmo.Hubble(0.)
-        temp = 189 * h * (1 + z)**2 * \
-            (H0 / self.cosmo.Hubble(z)) * self.Omega_HI(z)
+        h = self.cosmopars["h"]
+        H0 = self.cosmo.Hubble(0.0)
+        temp = 189 * h * (1 + z) ** 2 * (H0 / self.cosmo.Hubble(z)) * self.Omega_HI(z)
         # temperature in mK
         return temp
 
@@ -678,13 +722,12 @@ class ComputeGalIM(ComputeGalSpectro):
         tol = 1.0e-12
         k = np.atleast_1d(k)
         mu = np.atleast_1d(mu)
-        expo = k**2 * (1 - mu**2) * \
-            self.fiducialcosmo.comoving(z)**2 * self.theta_b(z)**2
+        expo = k**2 * (1 - mu**2) * self.fiducialcosmo.comoving(z) ** 2 * self.theta_b(z) ** 2
         bet = np.exp(-expo / (16.0 * np.log(2.0)))
         bet[np.abs(bet) < tol] = tol
         return bet
 
-    def observed_P_HI(self, z, k, mu, bsi_z=None, bsj_z=None, si='I', sj='I'):
+    def observed_P_HI(self, z, k, mu, bsi_z=None, bsj_z=None, si="I", sj="I"):
         k = self.k_units_change(k)  # has to be done before spec_err and AP
         error_z = self.spec_err_z(z, k, mu)  # before rescaling of k,mu by AP
         k, mu = self.kmu_alc_pac(z, k, mu)
@@ -696,22 +739,24 @@ class ComputeGalIM(ComputeGalSpectro):
         kaiser_bsj = self.kaiserTerm(z, k, mu, bsj_z, bias_sample=sj)
 
         T_HI = self.Temperature(z)
-        extra_shotnoise = 0.  # Set to identically zero for the moment, otherwise self.extraPshot
-        lorentzFoG = self.FingersOfGod(z, k, mu, mode='Lorentz')
+        extra_shotnoise = 0.0  # Set to identically zero for the moment, otherwise self.extraPshot
+        lorentzFoG = self.FingersOfGod(z, k, mu, mode="Lorentz")
         p_dd_DW = self.dewiggled_pdd(z, k, mu)
-        beam_damping_term_si = self.beta_SD(z, k, mu) if si == 'I' else 1
-        beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == 'I' else 1
-        extra_shotnoise_si = np.sqrt(extra_shotnoise) if si == 'g' else 0
-        extra_shotnoise_sj = np.sqrt(extra_shotnoise) if sj == 'g' else 0
-        error_z_si = error_z if si == 'g' else 1
-        error_z_sj = error_z if sj == 'g' else 1
-        temp_HI_si = T_HI if si == 'I' else 1
-        temp_HI_sj = T_HI if sj == 'I' else 1
+        beam_damping_term_si = self.beta_SD(z, k, mu) if si == "I" else 1
+        beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == "I" else 1
+        extra_shotnoise_si = np.sqrt(extra_shotnoise) if si == "g" else 0
+        extra_shotnoise_sj = np.sqrt(extra_shotnoise) if sj == "g" else 0
+        error_z_si = error_z if si == "g" else 1
+        error_z_sj = error_z if sj == "g" else 1
+        temp_HI_si = T_HI if si == "I" else 1
+        temp_HI_sj = T_HI if sj == "I" else 1
 
-        factors_si = kaiser_bsi * beam_damping_term_si * \
-            error_z_si * temp_HI_si + extra_shotnoise_si
-        factors_sj = kaiser_bsj * beam_damping_term_sj * \
-            error_z_sj * temp_HI_sj + extra_shotnoise_sj
+        factors_si = (
+            kaiser_bsi * beam_damping_term_si * error_z_si * temp_HI_si + extra_shotnoise_si
+        )
+        factors_sj = (
+            kaiser_bsj * beam_damping_term_sj * error_z_sj * temp_HI_sj + extra_shotnoise_sj
+        )
 
         p_obs = baoterm * lorentzFoG * p_dd_DW * factors_si * factors_sj
 

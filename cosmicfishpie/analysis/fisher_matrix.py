@@ -38,7 +38,7 @@ from . import utilities as fu
 # ***************************************************************************************
 
 
-class fisher_matrix():
+class fisher_matrix:
     """
     This class contains the relevant code to define a fisher matrix
     and basic operations on it.
@@ -69,31 +69,31 @@ class fisher_matrix():
     # class getters:
 
     def get_fisher_matrix(self):
-        """ :returns: the fisher matrix as a numpy array. """
+        """:returns: the fisher matrix as a numpy array."""
         return self.fisher_matrix
 
     def get_fisher_eigenvalues(self):
-        """ :returns: the eigenvalues of the Fisher matrix as a numpy array. """
+        """:returns: the eigenvalues of the Fisher matrix as a numpy array."""
         return self.fisher_eigenvalues
 
     def get_fisher_eigenvectors(self):
-        """ :returns: the eigenvectors of the Fisher matrix. """
+        """:returns: the eigenvectors of the Fisher matrix."""
         return self.fisher_eigenvectors
 
     def get_fisher_inverse(self):
-        """ :returns: the inverse of the Fisher matrix. """
+        """:returns: the inverse of the Fisher matrix."""
         return self.fisher_matrix_inv
 
     def get_param_names(self):
-        """ :returns: the parameter names of the Fisher matrix. """
+        """:returns: the parameter names of the Fisher matrix."""
         return self.param_names
 
     def get_param_names_latex(self):
-        """ :returns: the parameter names, in LaTeX format of the Fisher matrix. """
+        """:returns: the parameter names, in LaTeX format of the Fisher matrix."""
         return self.param_names_latex
 
     def get_param_fiducial(self):
-        """ :returns: the fiducial values of the parameters of the Fisher matrix. """
+        """:returns: the fiducial values of the parameters of the Fisher matrix."""
         return self.param_fiducial
 
     # -----------------------------------------------------------------------------------
@@ -159,8 +159,7 @@ class fisher_matrix():
         if isinstance(name, str):
             return self.param_names_latex[self.get_param_index(name)]
         elif len(name) > 1:
-            return [self.param_names_latex[i]
-                    for i in self.get_param_index(name)]
+            return [self.param_names_latex[i] for i in self.get_param_index(name)]
 
     def get_fiducial(self, name):
         """
@@ -180,13 +179,14 @@ class fisher_matrix():
     # -----------------------------------------------------------------------------------
 
     def __init__(
-            self,
-            fisher_matrix=None,
-            param_names=None,
-            param_names_latex=None,
-            fiducial=None,
-            file_name=None,
-            name=''):
+        self,
+        fisher_matrix=None,
+        param_names=None,
+        param_names_latex=None,
+        fiducial=None,
+        file_name=None,
+        name="",
+    ):
         """
         **fisher_matrix class constructor**. The constructor will read from file the Fisher matrix if it is initialized
         with the name of a file (and the file exists). Otherwise it will read the matrix and the
@@ -215,21 +215,22 @@ class fisher_matrix():
         # check that the input is legal:
         if fisher_matrix is None and file_name is None:
             raise ValueError(
-                'Error in initializing the Fisher matrix: fisher_matrix and file_name are both None.')
+                "Error in initializing the Fisher matrix: fisher_matrix and file_name are both None."
+            )
         # initialize all the objects:
-        self.fisher_cutoff = 10**(-9)
-        self.fisher_spectrum = 10**(10)
+        self.fisher_cutoff = 10 ** (-9)
+        self.fisher_spectrum = 10 ** (10)
         self.fisher_matrix = np.array([])
         self.file_name = file_name
-        self.path = ''
+        self.path = ""
         self.name = name
-        self.indir = ''
+        self.indir = ""
         self.num_params = 0
         self.fisher_eigenvalues = np.array([])
         self.fisher_eigenvectors = np.array([[]])
         self.fisher_matrix_inv = np.array([[]])
-        self.param_names = ['']
-        self.param_names_latex = ['']
+        self.param_names = [""]
+        self.param_names_latex = [""]
         self.param_fiducial = np.array([])
         self.param_names_dict = {}
         # initialize the Fisher matrix:
@@ -254,15 +255,13 @@ class fisher_matrix():
         try:
             self.check_symmetric()
         except ValueError as ve:
-            print('Exception: ', ve)
+            print("Exception: ", ve)
             print("Symmetrizing matrix... ")
             self.make_symmetric()
 
         # protection against matrices with zeros
-        zeros_row = np.where(~self.fisher_matrix.any(axis=1))[
-            0]  # find rows with zeros
-        zeros_col = np.where(~self.fisher_matrix.any(axis=0))[
-            0]  # find cols with zeros
+        zeros_row = np.where(~self.fisher_matrix.any(axis=1))[0]  # find rows with zeros
+        zeros_col = np.where(~self.fisher_matrix.any(axis=0))[0]  # find cols with zeros
         if zeros_col.any() and zeros_col.any():
             print("Columns and Rows with zeros will be deleted")
             temp_mat = np.delete(self.fisher_matrix, zeros_row, axis=0)
@@ -276,10 +275,8 @@ class fisher_matrix():
             try:
                 self.load_paramnames_from_file()
             except ValueError:
-                self.param_names = ['p' + str(i + 1)
-                                    for i in range(self.num_params)]
-                self.param_names_latex = [
-                    'p' + str(i + 1) for i in range(self.num_params)]
+                self.param_names = ["p" + str(i + 1) for i in range(self.num_params)]
+                self.param_names_latex = ["p" + str(i + 1) for i in range(self.num_params)]
                 self.param_fiducial = np.array([0.0 for i in self.param_names])
         else:
             self.param_names = copy.deepcopy(param_names)
@@ -293,14 +290,15 @@ class fisher_matrix():
         self.param_fiducial = np.array(self.param_fiducial)
         # check the validity:
         if len(self.param_names) != self.num_params:
-            raise ValueError('The input param_names has not ' +
-                             str(self.num_params) + ' elements.')
+            raise ValueError("The input param_names has not " + str(self.num_params) + " elements.")
         if len(self.param_names_latex) != self.num_params:
-            raise ValueError('The input param_names_latex has not ' +
-                             str(self.num_params) + ' elements.')
+            raise ValueError(
+                "The input param_names_latex has not " + str(self.num_params) + " elements."
+            )
         if len(self.param_fiducial) != self.num_params:
-            raise ValueError('The input param_fiducial has not ' +
-                             str(self.num_params) + ' elements.')
+            raise ValueError(
+                "The input param_fiducial has not " + str(self.num_params) + " elements."
+            )
         # create a dictionary of param names:
         self.param_names_dict = {}
         for i in range(len(self.param_names)):
@@ -324,21 +322,21 @@ class fisher_matrix():
 
         """
         if file_name is None:
-            name = os.path.join(self.indir, self.name + '.paramnames')
+            name = os.path.join(self.indir, self.name + ".paramnames")
         else:
             name = file_name
         # check input:
         if not os.path.isfile(name):
-            raise ValueError('No .paramnames file found at: ' + name)
+            raise ValueError("No .paramnames file found at: " + name)
         # parse the param names:
         self.param_names = []
         self.param_names_latex = []
         self.param_fiducial = []
         with open(name) as f:
             for line in f:
-                if line[0] != '#' and line[1] != '#':
-                    split_line = [i.strip() for i in line.split('    ')]
-                    split_line = [i for i in split_line if i != '']
+                if line[0] != "#" and line[1] != "#":
+                    split_line = [i.strip() for i in line.split("    ")]
+                    split_line = [i for i in split_line if i != ""]
                     self.param_names.append(split_line[0].strip())
                     if len(split_line) == 1:
                         # latex and fiducial missing:
@@ -349,24 +347,22 @@ class fisher_matrix():
                         try:
                             temp = float(split_line[1].strip())
                             self.param_fiducial.append(temp)
-                            self.param_names_latex.append(
-                                split_line[0].strip())
+                            self.param_names_latex.append(split_line[0].strip())
                         except BaseException:
                             temp = 0.0
                             self.param_fiducial.append(temp)
-                            self.param_names_latex.append(
-                                split_line[1].strip())
+                            self.param_names_latex.append(split_line[1].strip())
                     elif len(split_line) >= 3:
                         # nothing is missing:
                         self.param_names_latex.append(split_line[1].strip())
-                        self.param_fiducial.append(
-                            float(split_line[2].strip()))
+                        self.param_fiducial.append(float(split_line[2].strip()))
         self.param_fiducial = np.array(self.param_fiducial)
         # print("DEBUG: ", self.param_names_latex)
         # check the validity of the param names:
         if len(self.param_names) != self.num_params:
             raise ValueError(
-                'Error in load_paramnames_from_file: wrong number of parameters in the .paramnames file')
+                "Error in load_paramnames_from_file: wrong number of parameters in the .paramnames file"
+            )
 
     # -----------------------------------------------------------------------------------
 
@@ -379,33 +375,34 @@ class fisher_matrix():
 
         """
         if file_name is None:
-            name = self.indir + '/' + self.name + '.paramnames'
+            name = self.indir + "/" + self.name + ".paramnames"
         else:
             name = file_name
         # open the output file:
-        out_file = open(name, 'w')
+        out_file = open(name, "w")
         # write the header:
-        out_file.write('#\n')
-        out_file.write(
-            '# This file contains the parameter names for a Fisher matrix.\n')
-        out_file.write('#\n')
+        out_file.write("#\n")
+        out_file.write("# This file contains the parameter names for a Fisher matrix.\n")
+        out_file.write("#\n")
         # write the parameters:
         if sum(self.get_param_fiducial()) == 0:
             print("** warning: all fiducials are set to zero in .paramnames file")
         for ind in range(self.num_params):
             param_name = self.get_param_name(ind + 1)
-            out_file.write(str(param_name) +
-                           '    ' +
-                           str(self.get_param_name_latex(param_name)) +
-                           '    ' +
-                           str(self.get_fiducial(param_name)) +
-                           '\n')
+            out_file.write(
+                str(param_name)
+                + "    "
+                + str(self.get_param_name_latex(param_name))
+                + "    "
+                + str(self.get_fiducial(param_name))
+                + "\n"
+            )
         # close the output file:
         out_file.close()
 
     # -----------------------------------------------------------------------------------
 
-    def save_to_file(self, file_name, simple_header=False, file_format='.txt'):
+    def save_to_file(self, file_name, simple_header=False, file_format=".txt"):
         """
         Saves the fisher matrix to a file. Notice that the file name has to be specified
         to avoid overwriting an existing fisher matrix.
@@ -416,51 +413,48 @@ class fisher_matrix():
         """
         # save the param name file:
         file_name = Path(file_name)
-        if (file_name.suffix in ['.txt', '.dat', '.mat']):
-            file_name = str(file_name.with_suffix(''))
+        if file_name.suffix in [".txt", ".dat", ".mat"]:
+            file_name = str(file_name.with_suffix(""))
         else:
             file_name = str(file_name)
-        self.save_paramnames_to_file(file_name=file_name + '.paramnames')
+        self.save_paramnames_to_file(file_name=file_name + ".paramnames")
         # open the output file:
-        out_file = open(file_name + file_format, 'w')
+        out_file = open(file_name + file_format, "w")
         # write the header:
         if not simple_header:
-            out_file.write('#\n')
+            out_file.write("#\n")
             out_file.write(
-                '# This file contains a Fisher matrix created with the CosmicFish code.\n')
-            out_file.write('#\n')
-            out_file.write('# The parameters of this Fisher matrix are:\n')
-            out_file.write('#\n')
+                "# This file contains a Fisher matrix created with the CosmicFish code.\n"
+            )
+            out_file.write("#\n")
+            out_file.write("# The parameters of this Fisher matrix are:\n")
+            out_file.write("#\n")
             # write the param names commented:
             for ind in range(self.num_params):
                 param_name = self.get_param_name(ind + 1)
-                out_file.write('#' +
-                               '    ' +
-                               str(ind +
-                                   1) +
-                               '    ' +
-                               str(param_name) +
-                               '    ' +
-                               str(self.get_param_name_latex(param_name)) +
-                               '    ' +
-                               str(self.get_fiducial(param_name)) +
-                               '\n')
-            out_file.write('#\n')
+                out_file.write(
+                    "#"
+                    + "    "
+                    + str(ind + 1)
+                    + "    "
+                    + str(param_name)
+                    + "    "
+                    + str(self.get_param_name_latex(param_name))
+                    + "    "
+                    + str(self.get_fiducial(param_name))
+                    + "\n"
+                )
+            out_file.write("#\n")
         elif simple_header:
-            parnamsarr = [
-                self.get_param_name(
-                    ind +
-                    1) for ind in range(
-                    self.num_params)]
-            out_file.write('#  ' + '    '.join(parnamsarr))
-            out_file.write('\n')
+            parnamsarr = [self.get_param_name(ind + 1) for ind in range(self.num_params)]
+            out_file.write("#  " + "    ".join(parnamsarr))
+            out_file.write("\n")
         # write the fisher matrix:
         fisher_matrix = self.get_fisher_matrix()
         for i in range(self.num_params):
             for j in range(self.num_params):
-                out_file.write(
-                    str(format(fisher_matrix[i, j], '.16E')) + '     ')
-            out_file.write('\n')
+                out_file.write(str(format(fisher_matrix[i, j], ".16E")) + "     ")
+            out_file.write("\n")
 
         # close the output file:
         out_file.close()
@@ -488,33 +482,34 @@ class fisher_matrix():
                 ind1 = self.param_names_dict[i] - 1
                 ind2 = other.param_names_dict[i] - 1
                 if not np.allclose(
-                        self.param_fiducial[ind1],
-                        other.param_fiducial[ind2],
-                        rtol=1e-6):
-                    print('Warning in addition: parameter ' +
-                          str(i) +
-                          ' has different fiducials: ' +
-                          str(self.param_fiducial[ind1]) +
-                          ' and ' +
-                          str(other.param_fiducial[ind2]))
+                    self.param_fiducial[ind1], other.param_fiducial[ind2], rtol=1e-6
+                ):
+                    print(
+                        "Warning in addition: parameter "
+                        + str(i)
+                        + " has different fiducials: "
+                        + str(self.param_fiducial[ind1])
+                        + " and "
+                        + str(other.param_fiducial[ind2])
+                    )
                     print("Accepted relative tolerance: " + str(rtol))
                 if not np.allclose(
-                        self.param_fiducial[ind1],
-                        other.param_fiducial[ind2],
-                        rtol=rtol):
-                    raise ValueError('Error in addition: parameter ' +
-                                     str(i) +
-                                     ' has different fiducials: ' +
-                                     str(self.param_fiducial[ind1]) +
-                                     ' and ' +
-                                     str(other.param_fiducial[ind2]))
+                    self.param_fiducial[ind1], other.param_fiducial[ind2], rtol=rtol
+                ):
+                    raise ValueError(
+                        "Error in addition: parameter "
+                        + str(i)
+                        + " has different fiducials: "
+                        + str(self.param_fiducial[ind1])
+                        + " and "
+                        + str(other.param_fiducial[ind2])
+                    )
             # otherwise we add them:
             else:
                 ind = other.param_names_dict[i] - 1
                 param_names_new.append(i)
                 param_names_latex_new.append(other.param_names_latex[ind])
-                param_fiducial_new = np.append(
-                    param_fiducial_new, other.param_fiducial[ind])
+                param_fiducial_new = np.append(param_fiducial_new, other.param_fiducial[ind])
         # initialize an empty matrix:
         num_param_new = len(param_names_new)
         new_matrix = np.zeros([num_param_new, num_param_new])
@@ -547,8 +542,9 @@ class fisher_matrix():
             fisher_matrix=new_matrix,
             param_names=param_names_new,
             param_names_latex=param_names_latex_new,
-            fiducial=param_fiducial_new)
-        fisher_new.name = self.name + '_' + other.name
+            fiducial=param_fiducial_new,
+        )
+        fisher_new.name = self.name + "_" + other.name
         fisher_new.path = self.path
         fisher_new.indir = self.indir
 
@@ -562,20 +558,22 @@ class fisher_matrix():
         Notice that also name, path and indir are checked.
         """
         try:
-            return_value = isinstance(other, fisher_matrix) and \
-                np.allclose(self.fisher_cutoff, other.fisher_cutoff) and \
-                np.allclose(self.fisher_matrix, other.fisher_matrix) and \
-                self.path == other.path and \
-                self.name == other.name and \
-                self.indir == other.indir and \
-                self.num_params == other.num_params and \
-                np.allclose(self.fisher_eigenvalues, other.fisher_eigenvalues) and \
-                np.allclose(self.fisher_eigenvectors, other.fisher_eigenvectors) and \
-                np.allclose(self.fisher_matrix_inv, other.fisher_matrix_inv) and \
-                self.param_names == other.param_names and \
-                self.param_names_latex == other.param_names_latex and \
-                np.allclose(self.param_fiducial, other.param_fiducial) and \
-                self.param_names_dict == other.param_names_dict
+            return_value = (
+                isinstance(other, fisher_matrix)
+                and np.allclose(self.fisher_cutoff, other.fisher_cutoff)
+                and np.allclose(self.fisher_matrix, other.fisher_matrix)
+                and self.path == other.path
+                and self.name == other.name
+                and self.indir == other.indir
+                and self.num_params == other.num_params
+                and np.allclose(self.fisher_eigenvalues, other.fisher_eigenvalues)
+                and np.allclose(self.fisher_eigenvectors, other.fisher_eigenvectors)
+                and np.allclose(self.fisher_matrix_inv, other.fisher_matrix_inv)
+                and self.param_names == other.param_names
+                and self.param_names_latex == other.param_names_latex
+                and np.allclose(self.param_fiducial, other.param_fiducial)
+                and self.param_names_dict == other.param_names_dict
+            )
         except BaseException:
             return_value = False
 
@@ -609,15 +607,12 @@ class fisher_matrix():
         :rtype:  :class:`bool`
         """
         symm_bool = np.allclose(
-            self.fisher_matrix,
-            np.transpose(
-                self.fisher_matrix),
-            rtol=1e-03,
-            atol=1e-06)
+            self.fisher_matrix, np.transpose(self.fisher_matrix), rtol=1e-03, atol=1e-06
+        )
         if not symm_bool:
             raise ValueError(
-                'The input Fisher matrix {} is not equal to its transpose'.format(
-                    self.name))
+                "The input Fisher matrix {} is not equal to its transpose".format(self.name)
+            )
         return symm_bool
 
     def make_symmetric(self, method=None):
@@ -627,10 +622,10 @@ class fisher_matrix():
         m = self.fisher_matrix
         if method is None:
             # method = 'average'
-            method = 'tril'
-        if method == 'average':
+            method = "tril"
+        if method == "average":
             sym = (1 / 2) * (m.T + m)
-        elif method == 'tril':
+        elif method == "tril":
             sym = np.tril(m) + np.triu(m, 1)
 
         self.fisher_matrix = sym
@@ -703,19 +698,13 @@ class fisher_matrix():
             # write:
             temp = np.diag(self.fisher_eigenvalues)
             # get the Fisher:
-            self.fisher_matrix = np.dot(
-                fisher_eigenvectors, np.dot(
-                    temp, fisher_eigenvectors.T))
+            self.fisher_matrix = np.dot(fisher_eigenvectors, np.dot(temp, fisher_eigenvectors.T))
             # redo PCA:
             (self.fisher_eigenvalues, self.fisher_eigenvectors) = self.PCA()
 
     # -----------------------------------------------------------------------------------
 
-    def get_confidence_bounds(
-            self,
-            confidence_level=0.6827,
-            marginal=True,
-            cache=False):
+    def get_confidence_bounds(self, confidence_level=0.6827, marginal=True, cache=False):
         """
         Computes the marginal 1D confidence bounds on the Fisher parameters
 
@@ -727,8 +716,7 @@ class fisher_matrix():
         """
         # check input:
         if confidence_level < 0.0 or confidence_level > 1.0:
-            raise ValueError(
-                'Invalid confidence level. Legal input is between 0 and 1.')
+            raise ValueError("Invalid confidence level. Legal input is between 0 and 1.")
         # invert the Fisher matrix:
         if cache:
             fisher_matrix_inv_temp = self.fisher_matrix_inv
@@ -770,15 +758,14 @@ class fisher_matrix():
         try:
             self.check_symmetric()
         except ValueError as ve:
-            print('Exception: ', ve)
+            print("Exception: ", ve)
             print("Symmetrizing matrix... ")
             self.make_symmetric()
         # get the number of parameters:
         self.num_params = self.fisher_matrix.shape[0]
         # load the parameter names:
-        self.param_names = ['p' + str(i + 1) for i in range(self.num_params)]
-        self.param_names_latex = ['p' + str(i + 1)
-                                  for i in range(self.num_params)]
+        self.param_names = ["p" + str(i + 1) for i in range(self.num_params)]
+        self.param_names_latex = ["p" + str(i + 1) for i in range(self.num_params)]
         self.param_fiducial = np.array([0.0 for i in self.param_names])
         # re-create a dictionary of param names:
         self.param_names_dict = {}
@@ -804,7 +791,10 @@ class fisher_matrix():
         # check the input:
         if len(param_names) != self.num_params:
             raise ValueError(
-                'set_param_names: the input param_names has not ' + str(self.num_params) + ' elements.')
+                "set_param_names: the input param_names has not "
+                + str(self.num_params)
+                + " elements."
+            )
         # accept input:
         self.param_names = copy.deepcopy(param_names)
         # overwrite the latex parameter names:
@@ -824,8 +814,7 @@ class fisher_matrix():
         :type trans_param_dict: :class:`dict` of :class:`string`
 
         """
-        new_names = [trans_param_dict.get(pp, pp) for pp in
-                     self.param_names]
+        new_names = [trans_param_dict.get(pp, pp) for pp in self.param_names]
         # overwrite the latex parameter names:
         self.param_names = copy.deepcopy(new_names)
         # re-create a dictionary of param names:
@@ -845,8 +834,10 @@ class fisher_matrix():
         # check the input:
         if len(param_names_latex) != self.num_params:
             raise ValueError(
-                'set_param_names_latex: the input param_names_latex has not ' + str(
-                    self.num_params) + ' elements.')
+                "set_param_names_latex: the input param_names_latex has not "
+                + str(self.num_params)
+                + " elements."
+            )
         # accept input:
         self.param_names_latex = copy.deepcopy(param_names_latex)
 
@@ -861,10 +852,12 @@ class fisher_matrix():
         # check the input:
         if len(fiducial) != self.num_params:
             raise ValueError(
-                'set_fiducial: the input fiducial has not ' + str(self.num_params) + ' elements.')
+                "set_fiducial: the input fiducial has not " + str(self.num_params) + " elements."
+            )
         # accept input:
         self.param_fiducial = np.array(fiducial)
 
     # -----------------------------------------------------------------------------------
+
 
 # ***************************************************************************************

@@ -1,4 +1,3 @@
-
 # Code for comparison of Fisher Matrix entries
 # Taken from original plfmat.py code by Dida Markovic and Santiago Casas
 import os
@@ -16,27 +15,27 @@ from mpl_toolkits import axes_grid1
 from . import fisher_operations as fo
 from . import utilities as fu
 
-plt.style.use('tableau-colorblind10')
+plt.style.use("tableau-colorblind10")
 
 
 snscolors = sns.color_palette("colorblind")
-marks = ['o', 's', '*', 'X', 'p', '^', 'v', '8', 'D', 'P']
+marks = ["o", "s", "*", "X", "p", "^", "v", "8", "D", "P"]
 # Colorblind list is 10 elements long, as well as markers list
 # This will crash if more than 10 Fishers to compare are requested
 
-matplotlib.rcParams['savefig.transparent'] = False
-matplotlib.rcParams['figure.autolayout'] = True
+matplotlib.rcParams["savefig.transparent"] = False
+matplotlib.rcParams["figure.autolayout"] = True
 # matplotlib.rcParams['xtick.major.pad']     = 4.0
 # matplotlib.rcParams['ytick.major.pad']     = 4.0
 # matplotlib.rcParams['axes.labelpad']       = 5.0
 # matplotlib.rcParams['savefig.dpi']         = 300
 # matplotlib.rcParams['savefig.pad_inches']  = 0.0
 # use latex for all text handling. The following fonts
-matplotlib.rcParams['text.usetex'] = False
+matplotlib.rcParams["text.usetex"] = False
 # matplotlib.rcParams['text.latex.preamble'] =
 # '\usepackage{amsmath},\usepackage{pgfplots},\usepackage[T1]{fontenc}'
 # If True (default), the text will be antialiased.
-matplotlib.rcParams['text.antialiased'] = True
+matplotlib.rcParams["text.antialiased"] = True
 # This only affects the Agg backend.
 
 
@@ -69,35 +68,45 @@ def calc_y_range(axis, yrang=None):
     return (yymin, yymax, locat)
 
 
-def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels=None,
-                   lightdark_names=['marg.', 'unmarg.'],
-                   cols=[], plotdark=True, plotlight=True,
-                   yrang=None,
-                   x_limpad=0.2,
-                   fish_leg_loc='upper left',
-                   LW=2, colordark='darkgrey', colorlight='lightgrey', alpha=0.7,
-                   light_hatch='/',
-                   patches_legend_loc='upper right',
-                   patches_legend_fontsize=16,
-                   dots_legend_fontsize=20,
-                   ylabelfontsize=20,
-                   ncol_legend=None,
-                   legend_title_fontsize=None, legend_title=None,
-                   y_label='Differences'  # r'% differences on ' +r'$\sigma_i$'
-                   ,
-                   yticklabsize=18,
-                   xticklabsize=18,
-                   xtickfontsize=15,
-                   xticksrotation=0
-                   ):
+def og_plot_shades(
+    ax,
+    x_arr,
+    x_names,
+    lighty_arr=None,
+    darky_arr=None,
+    mats_labels=None,
+    lightdark_names=["marg.", "unmarg."],
+    cols=[],
+    plotdark=True,
+    plotlight=True,
+    yrang=None,
+    x_limpad=0.2,
+    fish_leg_loc="upper left",
+    LW=2,
+    colordark="darkgrey",
+    colorlight="lightgrey",
+    alpha=0.7,
+    light_hatch="/",
+    patches_legend_loc="upper right",
+    patches_legend_fontsize=16,
+    dots_legend_fontsize=20,
+    ylabelfontsize=20,
+    ncol_legend=None,
+    legend_title_fontsize=None,
+    legend_title=None,
+    y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
+    yticklabsize=18,
+    xticklabsize=18,
+    xtickfontsize=15,
+    xticksrotation=0,
+):
     LW = LW
     # plt.style.use('tableau-colorblind10')
     colD = colordark  # 'lightslategray'
     colL = colorlight
     aalpha = alpha
     darkgreypatch = mpatches.Patch(color=colD, alpha=aalpha)
-    lightgreypatch = mpatches.Patch(
-        color=colL, alpha=aalpha, hatch=light_hatch)
+    lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
     # if cols==[]:
     #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
     cols = snscolors
@@ -126,8 +135,9 @@ def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_lab
 
     for ii, lbl in enumerate(mats_labels):
         if plotlight:
-            ax.plot(x_arr, lighty_arr[ii, :], marks[ii],
-                    c=cols[ii], ms=LW * 8, alpha=aalpha, label=lbl)
+            ax.plot(
+                x_arr, lighty_arr[ii, :], marks[ii], c=cols[ii], ms=LW * 8, alpha=aalpha, label=lbl
+            )
         if plotdark:
             if not plotlight:
                 ms = LW * 8
@@ -135,15 +145,16 @@ def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_lab
             else:
                 ms = 0
                 lbl = None
-            ax.plot(x_arr,
-                    darky_arr[ii,
-                              :],
-                    marks[ii],
-                    c=cols[ii],
-                    ms=ms,
-                    mew=2,
-                    alpha=aalpha,
-                    label=lbl)
+            ax.plot(
+                x_arr,
+                darky_arr[ii, :],
+                marks[ii],
+                c=cols[ii],
+                ms=ms,
+                mew=2,
+                alpha=aalpha,
+                label=lbl,
+            )
     if plotlight:
         ax.fill_between(
             x_arr,
@@ -154,10 +165,19 @@ def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_lab
             edgecolor=colL,
             alpha=aalpha,
             linewidth=0.0,
-            hatch=light_hatch)
+            hatch=light_hatch,
+        )
     if plotdark:
-        ax.fill_between(x_arr, min_d, max_d, interpolate=True, facecolor=colD,
-                        edgecolor=colD, alpha=aalpha, linewidth=0.0)
+        ax.fill_between(
+            x_arr,
+            min_d,
+            max_d,
+            interpolate=True,
+            facecolor=colD,
+            edgecolor=colD,
+            alpha=aalpha,
+            linewidth=0.0,
+        )
     patchlist = []
     legpatch = []
     if plotlight:
@@ -167,36 +187,38 @@ def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_lab
         patchlist.append(darkgreypatch)
         legpatch.append(lightdark_names[1])
     if plotlight or plotdark:
-        leg2 = ax.legend(patchlist, legpatch, loc=patches_legend_loc,
-                         ncol=2, fontsize=patches_legend_fontsize)
+        leg2 = ax.legend(
+            patchlist, legpatch, loc=patches_legend_loc, ncol=2, fontsize=patches_legend_fontsize
+        )
 
-    ax.legend(loc=fish_leg_loc, ncol=nc,
-              fontsize=dots_legend_fontsize,
-              handlelength=2, numpoints=1,
-              title=legend_title, title_fontsize=legend_title_fontsize
-              )
+    ax.legend(
+        loc=fish_leg_loc,
+        ncol=nc,
+        fontsize=dots_legend_fontsize,
+        handlelength=2,
+        numpoints=1,
+        title=legend_title,
+        title_fontsize=legend_title_fontsize,
+    )
     # bbox_to_anchor=(1.05, 1.05),
     ax.add_artist(leg2)
     # ax.axhline(y=0.0, ls=':', c='k', alpha=0.2) # we don't want the zero-line
     ax.set_ylabel(y_label, labelpad=1, fontsize=ylabelfontsize)
     ax.set_xlim([min(x_arr) - x_limpad, max(x_arr) + x_limpad])
-    ax.tick_params(axis='x', direction='in', pad=10, labelsize=xticklabsize)
-    ax.tick_params(axis='y', direction='in', pad=10, labelsize=yticklabsize)
+    ax.tick_params(axis="x", direction="in", pad=10, labelsize=xticklabsize)
+    ax.tick_params(axis="y", direction="in", pad=10, labelsize=yticklabsize)
     ax.set_xticks(x_arr)
-    ax.set_xticklabels(
-        x_names,
-        fontsize=xtickfontsize,
-        rotation=xticksrotation)
+    ax.set_xticklabels(x_names, fontsize=xtickfontsize, rotation=xticksrotation)
     ax.yaxis.tick_left()
-    ax.yaxis.set_ticks_position('both')
+    ax.yaxis.set_ticks_position("both")
     ax.xaxis.tick_bottom()
-    ax.xaxis.set_ticks_position('both')
+    ax.xaxis.set_ticks_position("both")
 
     ymin, ymax, locaty = calc_y_range(ax, yrang)
     ax.set_ylim([ymin, ymax])
     majorLocator = ticker.MultipleLocator(locaty)
     minorLocator = ticker.MultipleLocator(locaty)
-    majorFormatter = ticker.FormatStrFormatter('%.2f')
+    majorFormatter = ticker.FormatStrFormatter("%.2f")
     ax.yaxis.set_major_locator(majorLocator)
     ax.yaxis.set_major_formatter(majorFormatter)
     ax.yaxis.set_minor_locator(minorLocator)
@@ -204,35 +226,45 @@ def og_plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_lab
     return ax
 
 
-def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels=None,
-                lightdark_names=['marg.', 'unmarg.'],
-                cols=[], plotdark=True, plotlight=True,
-                yrang=None,
-                x_limpad=0.2,
-                fish_leg_loc='upper left',
-                LW=2, colordark='darkgrey', colorlight='lightgrey', alpha=0.7,
-                light_hatch='/',
-                patches_legend_loc='upper right',
-                patches_legend_fontsize=16,
-                dots_legend_fontsize=20,
-                ylabelfontsize=20,
-                ncol_legend=None,
-                legend_title_fontsize=None, legend_title=None,
-                y_label='Differences'  # r'% differences on ' +r'$\sigma_i$'
-                ,
-                yticklabsize=18,
-                xticklabsize=18,
-                xtickfontsize=15,
-                xticksrotation=0
-                ):
+def plot_shades(
+    ax,
+    x_arr,
+    x_names,
+    lighty_arr=None,
+    darky_arr=None,
+    mats_labels=None,
+    lightdark_names=["marg.", "unmarg."],
+    cols=[],
+    plotdark=True,
+    plotlight=True,
+    yrang=None,
+    x_limpad=0.2,
+    fish_leg_loc="upper left",
+    LW=2,
+    colordark="darkgrey",
+    colorlight="lightgrey",
+    alpha=0.7,
+    light_hatch="/",
+    patches_legend_loc="upper right",
+    patches_legend_fontsize=16,
+    dots_legend_fontsize=20,
+    ylabelfontsize=20,
+    ncol_legend=None,
+    legend_title_fontsize=None,
+    legend_title=None,
+    y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
+    yticklabsize=18,
+    xticklabsize=18,
+    xtickfontsize=15,
+    xticksrotation=0,
+):
     LW = LW
     # plt.style.use('tableau-colorblind10')
     colD = colordark  # 'lightslategray'
     colL = colorlight
     aalpha = alpha
     darkgreypatch = mpatches.Patch(color=colD, alpha=aalpha)
-    lightgreypatch = mpatches.Patch(
-        color=colL, alpha=aalpha, hatch=light_hatch)
+    lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
     # if cols==[]:
     #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
     cols = snscolors
@@ -273,14 +305,30 @@ def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels
         # edgecolor=colD, alpha=aalpha, linewidth=0.0)
     for ii, lbl in enumerate(mats_labels):
         if plotlight:
-            ax.scatter(x_arr, lighty_arr[ii, :], color=cols[ii], marker=marks[ii], s=(
-                LW * 8)**2, label=lbl, alpha=aalpha, zorder=3 + ii)
+            ax.scatter(
+                x_arr,
+                lighty_arr[ii, :],
+                color=cols[ii],
+                marker=marks[ii],
+                s=(LW * 8) ** 2,
+                label=lbl,
+                alpha=aalpha,
+                zorder=3 + ii,
+            )
         if plotdark:
             if not plotlight:
                 # ms=LW*12; lbl=lbl
                 # ax.scatter(x_arr, darky_arr[ii], color=cols[ii], marker=marks[ii], s=ms, label=lbl)
-                ax.scatter(x_arr, darky_arr[ii, :], color=cols[ii], marker=marks[ii], s=(
-                    LW * 8)**2, label=lbl, alpha=aalpha - 0.1, zorder=3 + ii)
+                ax.scatter(
+                    x_arr,
+                    darky_arr[ii, :],
+                    color=cols[ii],
+                    marker=marks[ii],
+                    s=(LW * 8) ** 2,
+                    label=lbl,
+                    alpha=aalpha - 0.1,
+                    zorder=3 + ii,
+                )
             else:
                 lbl = None
     patchlist = []
@@ -292,14 +340,19 @@ def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels
         patchlist.append(darkgreypatch)
         legpatch.append(lightdark_names[1])
     if plotlight or plotdark:
-        leg2 = ax.legend(patchlist, legpatch, loc=patches_legend_loc,
-                         ncol=2, fontsize=patches_legend_fontsize)
+        leg2 = ax.legend(
+            patchlist, legpatch, loc=patches_legend_loc, ncol=2, fontsize=patches_legend_fontsize
+        )
 
-    leg1 = ax.legend(loc=fish_leg_loc, ncol=nc,
-                     fontsize=dots_legend_fontsize,
-                     handlelength=2, numpoints=1,
-                     title=legend_title, title_fontsize=legend_title_fontsize
-                     )
+    leg1 = ax.legend(
+        loc=fish_leg_loc,
+        ncol=nc,
+        fontsize=dots_legend_fontsize,
+        handlelength=2,
+        numpoints=1,
+        title=legend_title,
+        title_fontsize=legend_title_fontsize,
+    )
     # bbox_to_anchor=(1.05, 1.05),
     ax.add_artist(leg2)
     leg1.set_zorder(10)
@@ -307,23 +360,20 @@ def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels
     # ax.axhline(y=0.0, ls=':', c='k', alpha=0.2) # we don't want the zero-line
     ax.set_ylabel(y_label, labelpad=1, fontsize=ylabelfontsize)
     ax.set_xlim([min(x_arr) - x_limpad, max(x_arr) + x_limpad])
-    ax.tick_params(axis='x', direction='in', pad=10, labelsize=xticklabsize)
-    ax.tick_params(axis='y', direction='in', pad=10, labelsize=yticklabsize)
+    ax.tick_params(axis="x", direction="in", pad=10, labelsize=xticklabsize)
+    ax.tick_params(axis="y", direction="in", pad=10, labelsize=yticklabsize)
     ax.set_xticks(x_arr)
-    ax.set_xticklabels(
-        x_names,
-        fontsize=xtickfontsize,
-        rotation=xticksrotation)
+    ax.set_xticklabels(x_names, fontsize=xtickfontsize, rotation=xticksrotation)
     ax.yaxis.tick_left()
-    ax.yaxis.set_ticks_position('both')
+    ax.yaxis.set_ticks_position("both")
     ax.xaxis.tick_bottom()
-    ax.xaxis.set_ticks_position('both')
+    ax.xaxis.set_ticks_position("both")
 
     ymin, ymax, locaty = calc_y_range(ax, yrang)
     ax.set_ylim([ymin, ymax])
     majorLocator = ticker.MultipleLocator(locaty)
     minorLocator = ticker.MultipleLocator(locaty)
-    majorFormatter = ticker.FormatStrFormatter('%.2f')
+    majorFormatter = ticker.FormatStrFormatter("%.2f")
     ax.yaxis.set_major_locator(majorLocator)
     ax.yaxis.set_major_formatter(majorFormatter)
     ax.yaxis.set_minor_locator(minorLocator)
@@ -332,13 +382,14 @@ def plot_shades(ax, x_arr, x_names, lighty_arr=None, darky_arr=None, mats_labels
 
 
 def process_fish_errs(
-        fishers_list,
-        fishers_name,
-        parstoplot=None,
-        parsnames_latex=None,
-        marginalize_pars=True,
-        print_errors=True,
-        transform_latex_dict=dict()):
+    fishers_list,
+    fishers_name,
+    parstoplot=None,
+    parsnames_latex=None,
+    marginalize_pars=True,
+    print_errors=True,
+    transform_latex_dict=dict(),
+):
     # Cycle through files and get the errors and the present parameters
     print(("Fishers names: ", fishers_name))
     for nn, ff in zip(fishers_name, fishers_list):
@@ -353,27 +404,19 @@ def process_fish_errs(
 
     # marginalize Fishers over parameters not plotted
     if marginalize_pars:
-        processed_fishers = [
-            fo.marginalise(
-                ff, parstoplot) for ff in fishers_list]
+        processed_fishers = [fo.marginalise(ff, parstoplot) for ff in fishers_list]
     else:
-        processed_fishers = [
-            fo.reshuffle(
-                ff, parstoplot) for ff in fishers_list]
+        processed_fishers = [fo.reshuffle(ff, parstoplot) for ff in fishers_list]
 
     if parsnames_latex is None:
         parsnames_latex = processed_fishers[0].get_param_names_latex()
         # print(parsnames_latex)
-        parsnames_latex_transf = [
-            transform_latex_dict.get(
-                pp, pp) for pp in parsnames_latex]
+        parsnames_latex_transf = [transform_latex_dict.get(pp, pp) for pp in parsnames_latex]
         print("X tick labels ---> :  ", parsnames_latex_transf)
         parsnames_latex = ["$" + pp + "$" for pp in parsnames_latex_transf]
 
-    errMargs = np.array([mm.get_confidence_bounds(marginal=True)
-                        for mm in processed_fishers])
-    errUnmargs = np.array([mm.get_confidence_bounds(
-        marginal=False) for mm in processed_fishers])
+    errMargs = np.array([mm.get_confidence_bounds(marginal=True) for mm in processed_fishers])
+    errUnmargs = np.array([mm.get_confidence_bounds(marginal=False) for mm in processed_fishers])
 
     if print_errors:
         for ii, fishy in enumerate(processed_fishers):
@@ -388,42 +431,52 @@ def process_fish_errs(
     return eurel, emrel, x_pars, parsnames_latex
 
 
-def ploterrs(fishers_list, fishers_name, parstoplot=None, parsnames_latex=None,
-             marginalize_pars=True,
-             plot_style='original',
-             outpathfile=os.getcwd(),
-             plot_marg=True, plot_unmarg=True,
-             yrang=None, figsize=(10, 6), fish_leg_loc='lower left',
-             dpi=400, savefig=True, y_label='Errors',
-             ncol_legend=None,
-             legend_title_fontsize=None, legend_title=None,
-             yticklabsize=20,
-             xticklabsize=15,
-             patches_legend_fontsize=20,
-             dots_legend_fontsize=20,
-             xtickfontsize=18,
-             ylabelfontsize=20,
-             xticksrotation=0,
-             save_error=False, transform_latex_dict=dict(), figure_title=''):
-
-    fig, ax1 = plt.subplots(1, 1, sharey=True, figsize=figsize,
-                            facecolor='white')
+def ploterrs(
+    fishers_list,
+    fishers_name,
+    parstoplot=None,
+    parsnames_latex=None,
+    marginalize_pars=True,
+    plot_style="original",
+    outpathfile=os.getcwd(),
+    plot_marg=True,
+    plot_unmarg=True,
+    yrang=None,
+    figsize=(10, 6),
+    fish_leg_loc="lower left",
+    dpi=400,
+    savefig=True,
+    y_label="Errors",
+    ncol_legend=None,
+    legend_title_fontsize=None,
+    legend_title=None,
+    yticklabsize=20,
+    xticklabsize=15,
+    patches_legend_fontsize=20,
+    dots_legend_fontsize=20,
+    xtickfontsize=18,
+    ylabelfontsize=20,
+    xticksrotation=0,
+    save_error=False,
+    transform_latex_dict=dict(),
+    figure_title="",
+):
+    fig, ax1 = plt.subplots(1, 1, sharey=True, figsize=figsize, facecolor="white")
     """ Plot the error comparison between different Fisher matrices"""
-    ax1.set_title(figure_title, loc='center')
-    eurel, emrel, x_pars, parsnames_latex = process_fish_errs(fishers_list, fishers_name,
-                                                              parstoplot=parstoplot,
-                                                              parsnames_latex=parsnames_latex,
-                                                              marginalize_pars=marginalize_pars,
-                                                              transform_latex_dict=transform_latex_dict
-                                                              )
+    ax1.set_title(figure_title, loc="center")
+    eurel, emrel, x_pars, parsnames_latex = process_fish_errs(
+        fishers_list,
+        fishers_name,
+        parstoplot=parstoplot,
+        parsnames_latex=parsnames_latex,
+        marginalize_pars=marginalize_pars,
+        transform_latex_dict=transform_latex_dict,
+    )
     # fishnamesjoined=("-").join(fishers_name)
 
     if save_error:
-        np.savetxt(
-            outpathfile.replace(
-                '.pdf', '.txt'), np.concatenate(
-                (eurel, emrel), axis=0))
-    if plot_style == 'original':
+        np.savetxt(outpathfile.replace(".pdf", ".txt"), np.concatenate((eurel, emrel), axis=0))
+    if plot_style == "original":
         og_plot_shades(
             ax1,
             x_pars,
@@ -431,9 +484,7 @@ def ploterrs(fishers_list, fishers_name, parstoplot=None, parsnames_latex=None,
             mats_labels=fishers_name,
             lighty_arr=emrel,
             darky_arr=eurel,
-            lightdark_names=[
-                'marg.',
-                'unmarg.'],
+            lightdark_names=["marg.", "unmarg."],
             plotlight=plot_marg,
             plotdark=plot_unmarg,
             fish_leg_loc=fish_leg_loc,
@@ -450,7 +501,7 @@ def ploterrs(fishers_list, fishers_name, parstoplot=None, parsnames_latex=None,
             patches_legend_fontsize=patches_legend_fontsize,
             dots_legend_fontsize=dots_legend_fontsize,
         )
-    elif plot_style == 'bars':
+    elif plot_style == "bars":
         plot_shades(
             ax1,
             x_pars,
@@ -458,9 +509,7 @@ def ploterrs(fishers_list, fishers_name, parstoplot=None, parsnames_latex=None,
             mats_labels=fishers_name,
             lighty_arr=emrel,
             darky_arr=eurel,
-            lightdark_names=[
-                'marg.',
-                'unmarg.'],
+            lightdark_names=["marg.", "unmarg."],
             plotlight=plot_marg,
             plotdark=plot_unmarg,
             fish_leg_loc=fish_leg_loc,
@@ -481,14 +530,14 @@ def ploterrs(fishers_list, fishers_name, parstoplot=None, parsnames_latex=None,
     # fig.tight_layout(pad=10.0, w_pad=10.0, h_pad=10.0)
     plotfile = outpathfile
     if savefig:
-        fig.savefig(plotfile, dpi=dpi, bbox_inches='tight')
+        fig.savefig(plotfile, dpi=dpi, bbox_inches="tight")
     # fig.show()
 
 
 def add_colorbar(im, aspect=30, pad_fraction=0.5, **kwargs):
     """Add a vertical color bar to an image plot."""
     divider = axes_grid1.make_axes_locatable(im.axes)
-    width = axes_grid1.axes_size.AxesY(im.axes, aspect=1. / aspect)
+    width = axes_grid1.axes_size.AxesY(im.axes, aspect=1.0 / aspect)
     pad = axes_grid1.axes_size.Fraction(pad_fraction, width)
     current_ax = plt.gca()
     cax = divider.append_axes("right", size=width, pad=pad)
@@ -497,47 +546,47 @@ def add_colorbar(im, aspect=30, pad_fraction=0.5, **kwargs):
 
 
 def matrix_plot(
-        matrix,
-        xlabel='Ratio',
-        ticklabels=None,
-        filename='matrixplot.png',
-        figsize=(
-            9,
-            9),
+    matrix,
+    xlabel="Ratio",
+    ticklabels=None,
+    filename="matrixplot.png",
+    figsize=(9, 9),
     colormap=plt.cm.viridis,
     savefig=True,
-        dpi=200):
-    fig, ax = plt.subplots(1, figsize=(9, 9), facecolor='white')
+    dpi=200,
+):
+    fig, ax = plt.subplots(1, figsize=(9, 9), facecolor="white")
     intermat = matrix
     lenmat = intermat.shape[0]
     if ticklabels is None:
-        ticklabels = ['{:d}'.format(ii) for ii in range(lenmat)]
+        ticklabels = ["{:d}".format(ii) for ii in range(lenmat)]
 
     for i in range(len(intermat)):
         for j in range(len(intermat)):
             c = intermat[j, i]
-            ax.text(
-                i,
-                j,
-                '{:.2f}'.format(c),
-                va='center',
-                ha='center',
-                fontsize=11)
+            ax.text(i, j, "{:.2f}".format(c), va="center", ha="center", fontsize=11)
 
     im = ax.matshow(intermat, cmap=plt.cm.viridis)
     # cax = fig.add_axes([ax.get_position().x1+0.06, ax.get_position().y0, 0.02, ax.get_position().height])
     # plt.colorbar(im, cax=cax)
     add_colorbar(im)
     ax.set_xlabel(xlabel)
-    ax.xaxis.set_label_position('top')
+    ax.xaxis.set_label_position("top")
 
-    matplotlib.rcParams['xtick.labelsize'] = 14
-    matplotlib.rcParams['ytick.labelsize'] = 14
-    ax.tick_params(axis='both', which='both',
-                   labelsize=14, labelbottom=True,
-                   bottom=True, top=True, labeltop=False, direction='in')
+    matplotlib.rcParams["xtick.labelsize"] = 14
+    matplotlib.rcParams["ytick.labelsize"] = 14
+    ax.tick_params(
+        axis="both",
+        which="both",
+        labelsize=14,
+        labelbottom=True,
+        bottom=True,
+        top=True,
+        labeltop=False,
+        direction="in",
+    )
 
     ax.set_xticks(np.arange(lenmat), ticklabels)
     ax.set_yticks(np.arange(lenmat), ticklabels)
     if savefig:
-        fig.savefig(filename, dpi=dpi, bbox_inches='tight')
+        fig.savefig(filename, dpi=dpi, bbox_inches="tight")

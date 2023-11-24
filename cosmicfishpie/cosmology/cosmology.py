@@ -899,7 +899,7 @@ class external_input:
     def get_param_string_from_value(self, cosmopars):
         rel_tol = 1e-5
         for parname in self.param_names:
-            if np.isclose(cosmopars[parname], self.fiducialpars[parname], rtol=rel_tol) is False:
+            if not np.isclose(cosmopars[parname], self.fiducialpars[parname], rtol=rel_tol):
                 if self.fiducialpars[parname] != 0:
                     delta_eps = (cosmopars[parname] / self.fiducialpars[parname]) - 1.0
                 elif self.fiducialpars[parname] == 0.0:

@@ -1,0 +1,23 @@
+﻿cosmicfishpie
+=============
+
+.. automodule:: cosmicfishpie
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

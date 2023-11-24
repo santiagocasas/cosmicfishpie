@@ -12,6 +12,8 @@ overview
 ```{toctree}
 :hidden:
 :caption: Development
+api
+usage
 
 CHANGELOG
 CONTRIBUTING

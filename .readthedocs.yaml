@@ -19,7 +19,6 @@ build:
   #    - python -m pip install sphinx_rtd_theme
 
 python:
-  version: "3.10"
   install:
     - method: pip
       path: .

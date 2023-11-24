@@ -407,7 +407,7 @@ class boltzmann_code:
         cambres = camb.get_results(self.cambclasspars)
         if self.settings["feedback"] > 2:
             tres = time()
-        print("Time for Results = ", tres - tini_camb)
+            print("Time for Results = ", tres - tini_camb)
         Pk_l, self.results.zgrid, self.results.kgrid = cambres.get_matter_power_interpolator(
             hubble_units=False,
             k_hunit=False,

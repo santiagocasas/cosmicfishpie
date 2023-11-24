@@ -338,7 +338,7 @@ def init(
                 "Other cosmological models not implemented yet.",
                 "Please pass your free parameters and their respective epsilons as a dictionary.",
             )
-    freeparams = freepars
+    freeparams = deepcopy(freepars)
 
     global fiducialparams
     if fiducialpars is None:
@@ -359,7 +359,7 @@ def init(
         }
     else:
         print("Custom fiducial parameters loaded")
-    fiducialparams = fiducialpars
+    fiducialparams = deepcopy(fiducialpars)
 
     global fiducialcosmo
     feed_lvl = settings["feedback"]
@@ -401,7 +401,7 @@ def init(
     else:
         biaspars = {}
 
-    biasparams = biaspars
+    biasparams = deepcopy(biaspars)
     if "GCph" in obs:
         if specs["vary_ph_bias"] is not None:
             for key in biaspars.keys():
@@ -420,7 +420,7 @@ def init(
             "zo": 0.1,
             "zb": 0.0,
         }
-    photoparams = photopars
+    photoparams = deepcopy(photopars)
 
     global IAparams
     if IApars is None:
@@ -465,15 +465,15 @@ def init(
     global IMbiasparams
     IMbiasparams = dict()
 
-    if spectrononlinearpars is not None:
-        Spectrononlinearparams = spectrononlinearpars
-        if "GCsp" in obs:
-            if "vary_GCsp_nonlinear_pars" in specs.keys():
+    if "GCsp" in obs:
+        if "vary_GCsp_nonlinear_pars" in specs.keys():
+            if spectrononlinearpars is not None:
+                Spectrononlinearparams = spectrononlinearpars
                 for key in Spectrononlinearparams.keys():
                     freeparams[key] = specs["vary_GCsp_nonlinear_pars"]
 
     if Spectrobiaspars is not None:
-        Spectrobiasparams = Spectrobiaspars
+        Spectrobiasparams = deepcopy(Spectrobiaspars)
     else:
         if "GCsp" in obs:
             bias_sample = "g"
@@ -485,7 +485,7 @@ def init(
                 PShotparams["Ps_" + str(ii)] = nuis.extra_Pshot_noise()
 
     if IMbiaspars is not None:
-        IMbiasparams = IMbiaspars
+        IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
             bias_sample = "I"
@@ -496,7 +496,7 @@ def init(
                 IMbiasparams[bstr_i] = b_i
 
     if PShotpars is not None:
-        PShotparams = PShotpars
+        PShotparams = deepcopy(PShotpars)
 
     if "GCsp" in obs:
         for key in Spectrobiasparams:

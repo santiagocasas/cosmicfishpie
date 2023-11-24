@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 # See https://setuptools.pypa.io/en/latest/userguide/quickstart.html for more project configuration options.
 name = "cosmicfishpie"
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 readme = "README.md"
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -18,9 +18,6 @@ authors = [
     {name = "Santiago Casas, Matteo Martinelli, Sefa Pamuk, Sabarish V.M.", email = "s.casas@protonmail.com"}
 ]
 requires-python = ">=3.8"
-dependencies = [
-  # Add your own dependencies here
-]
 license = {file = "LICENSE"}
 
 [project.urls]
@@ -70,6 +67,7 @@ cosmicfishpie = ["py.typed"]
 
 [tool.setuptools.dynamic]
 version = {attr = "cosmicfishpie.version.VERSION"}
+dependencies = {file = "requirements.txt"}
 
 [tool.black]
 line-length = 100

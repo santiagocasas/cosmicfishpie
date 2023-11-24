@@ -1,0 +1,24 @@
+specifications:
+    'z_bins': [0.001, 0.418, 0.560, 0.678, 0.789, 0.900, 1.019, 1.155, 1.324, 1.576, 2.50]
+    'zm': 1.1
+    'ngamma': 1.25
+    'ngal_sqarmin': 2.7
+    'ellipt_error': 0.3
+    'lmax_GCph': 750
+    'lmin_GCph': 10
+    'fsky_GCph': 0.1166
+    'lmax_WL': 3000
+    'lmin_WL': 10
+    'fsky_WL': 0.1166
+    'kmax': 30.
+    'bias_model': 'binned'
+    'vary_ph_bias': 0.06
+    'vary_IA_pars': 0.035
+    'spec_sigma_dz': 0.001
+    'area_survey': 5000
+    'kmax_GCsp': 0.25
+    'kmin_GCsp': 0.001
+    'D_dish': 15
+    'fsky_IM': 0.48 
+    'time_tot': 10000  ## in hr
+    'N_dish': 197

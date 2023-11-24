@@ -18,10 +18,10 @@ build:
   #  post_create_environment:
   #    - python -m pip install sphinx_rtd_theme
 
-#python:
-#  version: "3.10"
-#  install:
-#    - method: pip
-#      path: .
-#      extra_requirements:
-#        - dev
+python:
+  version: "3.10"
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - dev

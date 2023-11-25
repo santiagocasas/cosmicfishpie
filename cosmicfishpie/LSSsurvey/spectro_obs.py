@@ -234,17 +234,16 @@ class ComputeGalSpectro:
 
         Parameters
         ----------
-        z     : float (numpy array)
+        z     : numpy.ndarray, float
                 redshift
-        k     : float (numpy array)
+        k     : numpy.ndarray, float
                 wavevector
-        mu    : float (numpy array)
+        mu    : numpy.ndarray, float
                 cosine of angle between line of sight and the wavevektor
 
         Returns
         -------
-        array
-            [k,mu] rescaled array
+        numpy.ndarray, float
 
         Notes
         -----
@@ -254,6 +253,7 @@ class ComputeGalSpectro:
 
 
         """
+
         if not self.APbool:
             return k, mu
         elif self.APbool:

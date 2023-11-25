@@ -192,14 +192,15 @@ def significant_digits(num_err, mode=1, digits=1):
 def confidence_coefficient(confidence_level, dimensions=1):
     """
     This function returns the number of sigmas given a confidence level.
-     See page 815 of Numerical Recipes, Press et al., 2007
-     Uses the inverse CDF of the chi squared distribution
+    See page 815 of Numerical Recipes, Press et al., 2007
+    Uses the inverse CDF of the chi squared distribution
     :param confidence_level: desired confidence level. Between 0 and 1.
     :type confidence_level: :class:`float`
     :return: the coefficient (number of sigmas) for the desired confidence level.
     :rtype: :class:`float`
 
     """
+    
     return np.sqrt(chi2.ppf(confidence_level, df=dimensions))
 
 

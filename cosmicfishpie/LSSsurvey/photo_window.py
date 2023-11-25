@@ -30,13 +30,13 @@ class GalaxyPhotoDist:
 
         Parameters
         ----------
-        z : float
-            redshift at which to compute the function
+            z: float
+               redshift at which to compute the function
 
         Returns
         -------
         float
-            bla
+            theoretical dn/dz distribution function
 
         """
         pref = z / self.z0_p
@@ -57,7 +57,7 @@ class GalaxyPhotoDist:
         Returns
         -------
         float
-            binned distribution without photz errors
+            binned distribution without photo-z errors
 
         """
         z = np.atleast_1d(z)

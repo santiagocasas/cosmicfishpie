@@ -342,19 +342,23 @@ class ComputeCls:
 
     def lensing_kernel(self, z, i):
         """WL kernel function
-        Parameters:
-            z     : array
-                    redshift
-            i     : int
-                    bin index
+
+        Parameters
+        ----------
+            z : numpy.ndarray 
+                redshift
+            i : int 
+                bin index
+
         Returns:
             float:  Value of WL at redshift z for bin i
-        Notes:
-            Implements the following equation:
 
+        Note:
+            Implements the following equation:
+            
             .. math::
-                W_i^{WL} = W_i^{IA}+\\frac{3}{2}\left(\\frac{H_0}{c}\\right)^2\Omega_{m,0}(1+z)r(z)
-                \int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\left[1-\\frac{r(z)}{r(z')}\\right]}
+             W_i^{WL} = W_i^{IA}+\\frac{3}{2}\left(\\frac{H_0}{c}\\right)^2\Omega_{m,0}(1+z)r(z)
+             \int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\left[1-\\frac{r(z)}{r(z')}\\right]}
         """
 
         twlstart = time()
@@ -428,42 +432,27 @@ class ComputeCls:
     def genwindow(self, z, obs, i):
         """generic kernel function
 
-        Parameters
-        ----------
-        z     : array
-                redshift
-        obs   : str
-                observable (GC or WL)
-        i     : int
-                bin index
+        Parameters: 
+            z     : array redshift
+            obs   : str observable (GC or WL)
+            i     : int bin index
 
-        Returns
-        -------
-        float
-            Value of WL at redshift z for bin i
-
-        Notes
-        -----
-
+        Returns:
+            float
+                Value of WL at redshift z for bin i
         """
 
         win = []
-        # Sakr Fix June 2023
         win_IA = []
 
         if obs == "GCph":
             bz = self.nuisance.gcph_bias(self.biaspars, i)(z)
             win = self.GC[i](z) * bz
-            # Sakr Fix June 2023
-            # just filling it with zeros to keep the vectorisation possible
-            # later
             win_IA = self.GC[i](z) * 0.0
         elif obs == "WL":
             win = self.WL[i](z)
-            # Sakr Fix June 2023
             win_IA = self.WL_IA[i](z)
 
-        # Sakr Fix June 2023
         return win, win_IA
 
     def computecls(self):

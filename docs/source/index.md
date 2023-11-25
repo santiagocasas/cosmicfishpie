@@ -7,13 +7,13 @@
 
 installation
 overview
+cosmicfishpie
 ```
 
 ```{toctree}
 :hidden:
 :caption: Development
 api
-usage
 
 CHANGELOG
 CONTRIBUTING

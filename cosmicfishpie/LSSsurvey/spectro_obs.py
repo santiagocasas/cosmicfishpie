@@ -264,14 +264,20 @@ class ComputeGalSpectro:
 
     def spec_err_z(self, z, k, mu):
         """
-        Args:
-        z : The redshift of interest.
-        k : wavenumbers at which to compute the power
-            spectrum. Must be in units of Mpc^-1.
-        mu: cosine of the angel between the line of sight and the wavevector
+        Args
+        ----
+            z : float
+                The redshift of interest.
+            k : float, ndarray
+                wavenumbers at which to compute the power
+                spectrum. Must be in units of Mpc^-1.
+            mu: float, ndarray
+                cosine of the angel between the line of sight and the wavevector
 
-        Returns:
-            Calculates the supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
+        Returns
+        -------
+        float
+            Supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
         """
         err = self.dz_err * (1 + z) * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
         return np.exp(-(1 / 2) * err**2)  # Gaussian
@@ -537,16 +543,21 @@ class ComputeGalSpectro:
         """ "
         Calculates the normalized dewiggled powerspectrum
 
-        Args:
-        z : float
-            The redshift value.
-        k : float
-            The wavenumber in Mpc^-1.
-        mu : float
-            The cosine of angle between the wavevector and the line-of-sight direction.
+        Args
+        ----
+            z : float
+                The redshift value.
+            k : float
+                The wavenumber in Mpc^-1.
+            mu : float
+                 The cosine of angle between the wavevector and the line-of-sight direction.
 
-        Retruns:
-            The dewiggled powerspectrum calculated with the Zeldovic approximation.
+        Returns
+        -------
+        numpy.ndarray
+            The dewiggled powerspectrum.
+        Note
+        ----
             If the config asks for only linear spectrum this just returns the powerspectrum normalized with either 1 or 1/sigma8^2
         """
 

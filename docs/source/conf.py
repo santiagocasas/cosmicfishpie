@@ -44,7 +44,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx_copybutton",
     "sphinx_autodoc_typehints",
-    "sphinx_rtd_theme"
+    "sphinx_rtd_theme",
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.
@@ -64,7 +64,7 @@ source_suffix = [".rst", ".md"]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    'numpy': ('https://numpy.org/doc/stable/', None)
+    "numpy": ("https://numpy.org/doc/stable/", None)
     #'numba': ('https://numba.pydata.org/numba-doc/latest/', None)
     # Uncomment these if you use them in your codebase:
     #  "torch": ("https://pytorch.org/docs/stable", None),
@@ -112,20 +112,20 @@ html_favicon = "_static/favicon.ico"
 #     ],
 # }
 html_theme_options = {
-    'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
-    'analytics_anonymize_ip': False,
-    'logo_only': False,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
+    #"analytics_id": "G-XXXXXXXXXX",  #  Provided by Google in your dashboard
+    "analytics_anonymize_ip": False,
+    "logo_only": False,
+    "display_version": True,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    "vcs_pageview_mode": "",
     #'style_nav_header_background': 'white',
     # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
 }
 # -- Hack to get rid of stupid warnings from sphinx_autodoc_typehints --------
 

@@ -22,6 +22,43 @@ pd.set_option("display.float_format", "{:.9E}".format)
 
 class PhotoCov:
     def __init__(self, cosmopars, photopars, IApars, biaspars, fiducial_Cls=None):
+        """Main class to obtain the ingredients for the Fisher matrix of a photometric probe
+
+        Parameters
+        ----------
+        cosmopars    : dict
+                       a dictionary containing the fiducial cosmological parameters
+        photopars    : dict
+                       a dictionary containing specifications for the window function's galaxy distribution
+        IApars       : dict
+                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear 
+        biaspars     : dict
+                       a dictionary containing the fiducial specifications for the galaxy biases
+        fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs, optional
+                       an instance of `photo_obs` containing the ficuial angular power spectrum. Will recompute if not passed
+
+        Attributes
+        ----------
+        cosmopars    : dict
+                       a dictionary containing the fiducial cosmological parameters
+        photopars    : dict
+                       a dictionary containing specifications for the window function's galaxy distribution
+        IApars       : dict
+                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear 
+        biaspars     : dict
+                       a dictionary containing the fiducial specifications for the galaxy biases
+        fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs
+                       an instance of `photo_obs` containing the ficuial angular power spectrum
+        allparsfid   : dict
+                       a dictionary with all fiducial parameters needed to compute the angular power spectrum
+        observables  : list
+                       a list of the observables that the angular power spectrum is computed for
+        binrange     : range
+                       a range with all the bins asked for in the survey specifications
+        feed_lvl     : int
+                       number indicating the verbosity of the output. Higher numbers mean more output 
+        
+        """
         self.cosmopars = cosmopars
         self.photopars = photopars
         self.IApars = IApars
@@ -40,6 +77,18 @@ class PhotoCov:
         self.feed_lvl = cfg.settings["feedback"]
 
     def getcls(self, allpars):
+        """Function to calculate the angular power spectrum
+
+        Parameters
+        ----------
+        allpars : dict
+                  a dictionary with all parameters needed to compute the angular power spectrum
+        
+        Returns
+        -------
+        dict
+            a dictionarry with all the auto and cross correlaion angular power spectra
+        """
         # Here call to functions getting windows and then do cls
         # Splitting the dictionary of full parameters
         cosmopars = dict((k, allpars[k]) for k in self.cosmopars)
@@ -59,25 +108,26 @@ class PhotoCov:
         return LSScls
 
     def getclsnoise(self, cls):
-        """Noise value
+        """Obtain the angular power spectrum with noise
 
         Parameters
         ----------
-        cls   : dict
-                cls dictionary
+        cls : dict
+              a dictionarry with all the auto and cross correlaion angular power spectra
 
         Returns
         -------
-        array
-            Noise value[ell,bin]
+        dict
+              a dictionarry with all the auto and cross correlaion angular power spectra with noise added to it
 
-        Notes
-        -----
+        Note
+        ----
         Implements the following equation:
 
         .. math::
-            N_\\ell^X = ...
+            N_{ij}^{YX}(\\ell) = \\frac{\\sigma_X^2}{\\bar{n}_i}\\,\\delta_{XY}\\,\\delta_{ij}
 
+            \\sigma_L = \\sigma_\\epsilon \\quad , \\quad \\sigma_G = 1
         """
 
         # TBA: reading the number directly. This should be computed
@@ -101,17 +151,17 @@ class PhotoCov:
         return noisy_cls
 
     def get_covmat(self, noisy_cls):
-        """Data covariance
+        """Computes the covariance matrix from the noisy angular power spectrum
 
         Parameters
         ----------
-        noisy_cls   : dict
-                      dictionary containing cls with noise
+        noisy_cls : dict
+                    a dictionarry with all the auto and cross correlaion angular power spectra with noise added to it
 
         Returns
         -------
         list
-        data covariance matrix
+            A list of pandas.DataFrame objects that store the covariance matrix for each multipole
 
         """
 
@@ -142,6 +192,16 @@ class PhotoCov:
         return covvec
 
     def compute_covmat(self):
+        """
+        Computes the fiducial covariance martrix for the Fisher matrix.
+
+        Returns
+        -------
+        dict
+            a dictionarry with all the auto and cross correlaion fiducial angular power spectra with noise added to it
+        list
+            A list of pandas.DataFrame objects that store the covariance matrix for each multipole 
+        """
         tini = datetime.datetime.now().timestamp()
 
         obstring = ""
@@ -205,6 +265,14 @@ class PhotoCov:
         return self.noisy_cls, self.covmat
 
     def compute_derivs(self, print_info_specs=False):
+        """computes the derivatives of the angular power spectrum needed to compute the Fisher matrix
+
+        Returns
+        -------
+        dict
+            a dictionary containing the derivatives of the angular power spectrum at the fiducial for all free parameters
+ 
+        """
         # compute and save derivatives-----------------------------------------
 
         derivs = dict()

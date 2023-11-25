@@ -624,6 +624,24 @@ class ComputeGalSpectro:
         return pgg_obs
 
     def lnpobs_gg(self, z, k, mu, b_i=None):
+        """Calculate the natural logarithm of the observed galaxy-galaxy power spectrum.
+
+        Parameters
+        -----------
+            z : numpy.ndarray
+                Array of redshift values
+            k : numpy.ndarray
+                Array of wavenumber values
+            mu : float
+                 Cosine of the angle between the line of sight and the k vector
+            b_i : float, optional
+                  Galaxy bias factor for bin i. Default is None.
+
+        Returns
+        --------
+        numpy.ndarray, float
+            Natural logarithm of the observed galaxy-galaxy power spectrum.
+        """
         pobs = self.observed_Pgg(z, k, mu, b_i=b_i)
         return np.log(pobs)
 

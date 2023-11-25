@@ -351,12 +351,12 @@ class ComputeCls:
             float:  Value of WL at redshift z for bin i
         Notes:
             Implements the following equation:
-        
+
             .. math::
                 W_i^{WL} = W_i^{IA}+\\frac{3}{2}\left(\\frac{H_0}{c}\\right)^2\Omega_{m,0}(1+z)r(z)
                 \int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\left[1-\\frac{r(z)}{r(z')}\\right]}
         """
-   
+
         twlstart = time()
         # computing lensing kernel integral
         prefac = (3.0 / 2.0) * self.cosmo.Hubble(0.0) ** 2.0 * self.cosmo.Omegam_of_z(0.0)

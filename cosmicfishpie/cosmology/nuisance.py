@@ -105,7 +105,7 @@ class Nuisance:
 
         :param z: float
             redshift
-            
+
         :return:
             - float: Value of IA window at redshift z
 
@@ -140,25 +140,25 @@ class Nuisance:
 
     def luminosity_ratio(self):
         """Luminosity ratio
-        
+
         Parameters
         ----------
         z     : float
                 redshift
-        
+
         Returns
         -------
         float
             Value of the luminosity ratio
-        
+
         Notes
         -----
         Reads from file and interpolates the following quantity:
-        
+
         .. math::
             \\frac{<L(z)>}{L_*(z)}
         """
-   
+
         # Lumratio file for IA
         lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
         # ,fill_value='extrapolate')

@@ -200,7 +200,7 @@ def confidence_coefficient(confidence_level, dimensions=1):
     :rtype: :class:`float`
 
     """
-    
+
     return np.sqrt(chi2.ppf(confidence_level, df=dimensions))
 
 

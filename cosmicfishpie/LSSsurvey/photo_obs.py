@@ -345,9 +345,9 @@ class ComputeCls:
 
         Parameters
         ----------
-            z : numpy.ndarray 
+            z : numpy.ndarray
                 redshift
-            i : int 
+            i : int
                 bin index
 
         Returns:
@@ -355,7 +355,7 @@ class ComputeCls:
 
         Note:
             Implements the following equation:
-            
+
             .. math::
              W_i^{WL} = W_i^{IA}+\\frac{3}{2}\left(\\frac{H_0}{c}\\right)^2\Omega_{m,0}(1+z)r(z)
              \int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\left[1-\\frac{r(z)}{r(z')}\\right]}
@@ -432,7 +432,7 @@ class ComputeCls:
     def genwindow(self, z, obs, i):
         """generic kernel function
 
-        Parameters: 
+        Parameters:
             z     : array redshift
             obs   : str observable (GC or WL)
             i     : int bin index

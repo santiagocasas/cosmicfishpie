@@ -347,28 +347,20 @@ class ComputeCls:
 
     def lensing_kernel(self, z, i):
         """WL kernel function
+        Parameters: 
+            z     : array
+                    redshift
+            i     : int
+                    bin index
+        Returns:
+            float
+                Value of WL at redshift z for bin i
+        Notes:
+            Implements the following equation:
 
-        Parameters
-        ----------
-        z     : array
-                redshift
-        i     : int
-                bin index
-
-        Returns
-        -------
-        float
-            Value of WL at redshift z for bin i
-
-        Notes
-        -----
-        Implements the following equation:
-
-        .. math::
-            W_i^{WL} = W_i^{IA}+\frac{3}{2}\\left(\frac{H_0}{c}\right)^2\\Omega_{m,0}(1+z)r(z)
-            \\int_z^{z_{\rm max}}{dz' \frac{n_i(z')}{\bar{n}(z)}\\left[1-\frac{r(z)}{r(z')}\right]}
-
-
+            .. math::
+                W_i^{WL} = W_i^{IA}+\frac{3}{2}\\left(\frac{H_0}{c}\right)^2\\Omega_{m,0}(1+z)r(z)
+                \\int_z^{z_{\rm max}}{dz' \frac{n_i(z')}{\bar{n}(z)}\\left[1-\frac{r(z)}{r(z')}\right]}
         """
         twlstart = time()
         # computing lensing kernel integral
@@ -480,37 +472,27 @@ class ComputeCls:
         return win, win_IA
 
     def computecls(self):
-        """Cls computation
-
-        Parameters
-        ----------
-        ell   : float
-                multipole
-        X     : str
-                first observable
-        Y     : str
-                second observable
-        i     : int
-                first bin
-        j     : int
-                second bin
-
-        Returns
-        -------
-        float
-            Value of Cl
-
-        Notes
-        -----
-        Implements the following equation:
-
-        .. math::
-            C_{i,j}^{X,Y}(\\ell) = c \\int \\mathrm{d}z \frac{W_i^X (z)
-            W_j^Y (z)}{ H(z) r^2(z)} P_{\\delta \\delta} \big[
-            \frac{\\ell + 1/2}{r(z)} , z \big]
-
         """
-
+        .. function:: Cls computation
+        Parameters: 
+            ell   : float
+                    multipole
+            X     : str
+                    first observable
+            Y     : str
+                    second observable
+            i     : int
+                    first bin
+            j     : int
+                    second bin
+        Returns: 
+            float
+                Value of Cl
+        Notes:
+            .. math::
+                C_{i,j}^{X,Y}(\\ell) = c \\int \\mathrm{d}z \\frac{W_i^X (z)W_j^Y (z)}{ H(z) r^2(z)}
+                P_{\\delta \\delta} \\big[\\frac{\\ell + 1/2}{r(z)} , z \\big]
+        """
         if self.feed_lvl > 1:
             print("")
         if self.feed_lvl > 1:

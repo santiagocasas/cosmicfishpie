@@ -31,7 +31,8 @@ notebooks/results/*
 doc/_build/
 *.swp
 .DS_Store
-
+memory_cache/*
+cache/*
 
 # python
 

@@ -112,7 +112,7 @@ html_favicon = "_static/favicon.ico"
 #     ],
 # }
 html_theme_options = {
-    #"analytics_id": "G-XXXXXXXXXX",  #  Provided by Google in your dashboard
+    # "analytics_id": "G-XXXXXXXXXX",  #  Provided by Google in your dashboard
     "analytics_anonymize_ip": False,
     "logo_only": False,
     "display_version": True,

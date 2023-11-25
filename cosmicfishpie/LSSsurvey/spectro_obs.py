@@ -197,13 +197,13 @@ class ComputeGalSpectro:
         """
         Args:
         z : The redshift of interest.
-        k : wavenumbers at which to compute the power
-            spectrum. Must be in units of Mpc^-1/h.
+        k : wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
         mu: cosine of the angel between the line of sight and the wavevector
 
         Returns:
             Observed parrallel projection of wavevector onto the line of sight with AP-effect corrected for
         """
+
         k_par = k * mu * (1 / self.qparallel(z))
         return k_par
 
@@ -211,13 +211,12 @@ class ComputeGalSpectro:
         """
         Args:
         z : The redshift of interest.
-        k : wavenumbers at which to compute the power
-            spectrum. Must be in units of Mpc^-1/h.
+        k : wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
         mu: cosine of the angel between the line of sight and the wavevector
-
         Returns:
             Observed orthogonal projection of wavevector onto the line of sight with AP-effect corrected for.
         """
+
         k_per = k * np.sqrt(1 - mu**2) * (1 / self.qperpendicular(z))
         return k_per
 

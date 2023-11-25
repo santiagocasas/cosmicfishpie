@@ -58,9 +58,9 @@ class fisher_matrix:
     :ivar param_fiducial: numpy array with the values of the fiducial parameters. Passed to the constructor of by file.
     :ivar param_names_dict: a dictionary that maps parameter names to numbers and vice versa.
 
-    .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__add__
-    .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__eq__
-    .. automethod:: cosmicfish_pylib.fisher_matrix.fisher_matrix.__ne__
+    .. automethod:: cosmicfishpie.analysis.fisher_matrix.fisher_matrix.__add__
+    .. automethod:: cosmicfishpie.analysis.fisher_matrix.fisher_matrix.__eq__
+    .. automethod:: cosmicfishpie.analysis.fisher_matrix.fisher_matrix.__ne__
 
     """
 
@@ -403,12 +403,11 @@ class fisher_matrix:
     # -----------------------------------------------------------------------------------
 
     def save_to_file(self, file_name, simple_header=False, file_format=".txt"):
-        """
-        Saves the fisher matrix to a file. Notice that the file name has to be specified
+        """Saves the fisher matrix to a file. Notice that the file name has to be specified
         to avoid overwriting an existing fisher matrix.
 
         :param file_name: file name and path of the output fisher matrix.
-        The file extension gets automatically added as is not needed.
+                          The file extension gets automatically added as is not needed.
 
         """
         # save the param name file:

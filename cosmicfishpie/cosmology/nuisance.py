@@ -101,27 +101,22 @@ class Nuisance:
             print("Available models are: sqrt, binned and flagship")
 
     def IA(self, IApars, cosmo):
-        """Intrinsic Alignment
+        r"""Intrinsic Alignment
 
-        Parameters
-        ----------
-        z     : float
-                redshift
+        :param z: float
+            redshift
+            
+        :return:
+            - float: Value of IA window at redshift z
 
-        Returns
-        -------
-        float
-            Value of IA window at redshift z
+        :notes:
+            Implements the following equation:
 
-        Notes
-        -----
-        Implements the following equation:
-
-        .. math::
-            W_i^{IA} = -\frac{\\mathcal{A}_{\rm IA}C_{\rm IA}\\Omega_m\\mathcal{F}_{\rm IA}}{D(z)}
-            \frac{n_i(z)}{\bar{n}}\frac{H(z)}{c}
-
+            .. math::
+                W_i^{IA} = -\frac{\mathcal{A}_{\rm IA}C_{\rm IA}\Omega_m\mathcal{F}_{\rm IA}}{D(z)}
+                \frac{n_i(z)}{\bar{n}}\frac{H(z)}{c}
         """
+
         self.IApars = IApars
         self.cosmo = cosmo
         self.Omegam = self.cosmo.Omegam_of_z(0.0)
@@ -145,25 +140,25 @@ class Nuisance:
 
     def luminosity_ratio(self):
         """Luminosity ratio
-
+        
         Parameters
         ----------
         z     : float
                 redshift
-
+        
         Returns
         -------
         float
             Value of the luminosity ratio
-
+        
         Notes
         -----
         Reads from file and interpolates the following quantity:
-
+        
         .. math::
-            \frac{<L(z)>}{L_*(z)}
-
+            \\frac{<L(z)>}{L_*(z)}
         """
+   
         # Lumratio file for IA
         lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
         # ,fill_value='extrapolate')

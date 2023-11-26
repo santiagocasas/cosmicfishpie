@@ -234,17 +234,16 @@ class ComputeGalSpectro:
 
         Parameters
         ----------
-        z     : float (numpy array)
+        z     : numpy.ndarray, float
                 redshift
-        k     : float (numpy array)
+        k     : numpy.ndarray, float
                 wavevector
-        mu    : float (numpy array)
+        mu    : numpy.ndarray, float
                 cosine of angle between line of sight and the wavevektor
 
         Returns
         -------
-        array
-            [k,mu] rescaled array
+        numpy.ndarray, float
 
         Notes
         -----
@@ -254,6 +253,7 @@ class ComputeGalSpectro:
 
 
         """
+
         if not self.APbool:
             return k, mu
         elif self.APbool:
@@ -624,6 +624,24 @@ class ComputeGalSpectro:
         return pgg_obs
 
     def lnpobs_gg(self, z, k, mu, b_i=None):
+        """Calculate the natural logarithm of the observed galaxy-galaxy power spectrum.
+
+        Parameters
+        -----------
+            z : numpy.ndarray
+                Array of redshift values
+            k : numpy.ndarray
+                Array of wavenumber values
+            mu : float
+                 Cosine of the angle between the line of sight and the k vector
+            b_i : float, optional
+                  Galaxy bias factor for bin i. Default is None.
+
+        Returns
+        --------
+        numpy.ndarray, float
+            Natural logarithm of the observed galaxy-galaxy power spectrum.
+        """
         pobs = self.observed_Pgg(z, k, mu, b_i=b_i)
         return np.log(pobs)
 

@@ -13,11 +13,9 @@ cosmicfishpie
 ```{toctree}
 :hidden:
 :caption: Development
-api
-
 CHANGELOG
 CONTRIBUTING
-License <https://raw.githubusercontent.com/allenai/cosmicfishpie/main/LICENSE>
+License <https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE>
 GitHub Repository <https://github.com/santiagocasas/cosmicfishpie>
 ```
 

@@ -37,6 +37,8 @@ class GalaxyPhotoDist:
         -------
         float
             theoretical dn/dz distribution function
+        numpy.ndarray
+            theoretical dn/dz distribution function
 
         """
         pref = z / self.z0_p

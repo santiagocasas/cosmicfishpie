@@ -34,8 +34,8 @@ class PhotoCov:
                        a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear 
         biaspars     : dict
                        a dictionary containing the fiducial specifications for the galaxy biases
-        fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs, optional
-                       an instance of `photo_obs` containing the ficuial angular power spectrum. Will recompute if not passed
+        fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs.ComputeCls, optional
+                       an instance of `ComputeCLs` containing the ficuial angular power spectrum. Will recompute if not passed
 
         Attributes
         ----------

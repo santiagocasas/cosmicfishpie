@@ -14,6 +14,36 @@ import cosmicfishpie.fishermatrix.config as cfg
 
 class GalaxyPhotoDist:
     def __init__(self, photopars):
+        """Class to obtain the survey specific ingredients of the window function
+
+        Parameters
+        ----------
+        photopars : dict
+                    a dictionary containing specifications for the window function's galaxy distribution
+        
+        Atributes
+        ---------
+        z_bins  : list
+                  list of the surveys redshift bin edges
+        n_bins  : int
+                  number of redshift bins
+        z0      : float
+                  parameter for the width of the galaxy redshift distribution
+        z0_p    : float
+                  parameter for the center of the galaxy redshift distribution
+        ngamma  : float
+                  parameter for the power law cutoff of the galaxy redshift distribution
+        photo   : dict
+                  a dictionary containing specifications for the window function's galaxy distribution
+        z_min   : float
+                  minimum redshift of the probes
+        z_max   : float
+                  maximum redshift of the probes
+        norm    : callable
+                  callable function that when given the redshift bin and a redshift, returns the normalisation of the galaxy redshift distribution
+        n_i_vec : callable
+                  callable function that recieves the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
+        """
         self.z_bins = cfg.specs["z_bins"]
         self.n_bins = len(self.z_bins)
         self.z0 = cfg.specs["z0"]
@@ -26,20 +56,24 @@ class GalaxyPhotoDist:
         self.n_i_vec = np.vectorize(self.n_i)
 
     def dNdz(self, z):
-        """dN/dz(z)
+        """unnormalized dN/dz(z)
 
         Parameters
         ----------
-            z: float
-               redshift at which to compute the function
+        z : numpy.ndarray
+            array of redshifts at which to compute the galaxy distribution
 
         Returns
         -------
-        float
-            theoretical dn/dz distribution function
         numpy.ndarray
-            theoretical dn/dz distribution function
+            unnormalized theoretical galaxy redshift distribution 
 
+        Notes
+        -----
+        Implements the following parametrization:
+
+        .. math::
+            \\frac{{\\rm d} N}{{\\rm d} z} = \\left(\\frac{z}{z_b}\\right)^2 \\, \\exp \\left[-\\left(\\frac{z}{z_0}\\right)^{n_\\gamma} \\right]
         """
         pref = z / self.z0_p
         expo = z / self.z0
@@ -47,19 +81,19 @@ class GalaxyPhotoDist:
         return pref**2 * np.exp(-(expo**self.ngamma))
 
     def n_i(self, z, i):
-        """n_i(z)
+        """Function to compute the unnormalized dN/dz(z) with a window picking function applied to it
 
         Parameters
         ----------
         z : float
             Redshift
         i : int
-            bin index
+            index of the redshift bin
 
         Returns
         -------
         float
-            binned distribution without photo-z errors
+            binned distribution without photometric redshift errors
 
         """
         z = np.atleast_1d(z)
@@ -72,19 +106,26 @@ class GalaxyPhotoDist:
         return dNdz_at_z
 
     def ngal_photoz(self, z, i):
-        """n^{ph}_i(z)
+        """ Function to compute the binned galaxy redshift distribution convolved with photometric redshift errors n^{ph}_i(z)
 
         Parameters
         ----------
         z : float
-            redshift at which to compute the function
-        i : integer
-            redshift bin index
+            redshift at which to compute the distribution
+        i : int
+            index of the redshift bin
 
         Returns
         -------
         float
-            binned galaxy distribution convolved with photoz errors
+            binned galaxy distribution convolved with photometric redshift errors
+        
+        Notes
+        -----
+        Implements the following equation:
+
+        .. math::
+        p_{ph}(z_p|z) = \\frac{1-f_{out}}{\\sqrt{2\\pi}\\sigma_b(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_bz_p-z_b}{\\sigma_b(1+z)}\\right]^2\\right\\} \\ + \\frac{f_{out}}{\\sqrt{2\\pi}\\sigma_0(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_0z_p-z_0}{\\sigma_0(1+z)}\\right]^2\\right\\}
 
         """
 

@@ -106,7 +106,7 @@ class GalaxyPhotoDist:
         return dNdz_at_z
 
     def ngal_photoz(self, z, i):
-        """ Function to compute the binned galaxy redshift distribution convolved with photometric redshift errors n^{ph}_i(z)
+        """Function to compute the binned galaxy redshift distribution convolved with photometric redshift errors n^{ph}_i(z)
 
         Parameters
         ----------

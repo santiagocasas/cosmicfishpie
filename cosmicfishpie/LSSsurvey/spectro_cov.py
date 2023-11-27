@@ -180,7 +180,7 @@ class SpectroCov:
         return vol
 
     def n_density(self, ibin):
-        """ calculate the comoving number density of the probe
+        """calculate the comoving number density of the probe
 
         Parameters
         ----------
@@ -196,7 +196,7 @@ class SpectroCov:
         return ndens
 
     def veff(self, ibin, k, mu):
-        """ calculate the effective volume entering the covariance of the galaxy clustering probe
+        """calculate the effective volume entering the covariance of the galaxy clustering probe
 
         Parameters
         ----------
@@ -278,7 +278,7 @@ class SpectroCov:
         return noise
 
     def veff_21cm(self, ibin, k, mu):
-        """ calculate the effective volume entering the covariance of the line intensity mapping probe
+        """calculate the effective volume entering the covariance of the line intensity mapping probe
 
         Parameters
         ----------
@@ -301,7 +301,7 @@ class SpectroCov:
         return covterm
 
     def veff_XC(self, ibin, k, mu):
-        """ calculate the effective volume entering the covariance of the cross correlation of galaxy clustering and intensity mapping
+        """calculate the effective volume entering the covariance of the cross correlation of galaxy clustering and intensity mapping
 
         Parameters
         ----------
@@ -458,7 +458,7 @@ class SpectroDerivs:
         return result_array
 
     def exact_derivs(self, par):
-        """ Compute the exact log derivative of the Power spectrum with respect to the shotnoise using chain rule
+        """Compute the exact log derivative of the Power spectrum with respect to the shotnoise using chain rule
 
         Parameters
         ----------
@@ -510,7 +510,7 @@ class SpectroDerivs:
         return kron_delta
 
     def compute_derivs(self, freeparams=dict()):
-        """ Calls the common derivative engine to compute the derivatives of the observed power spectrum
+        """Calls the common derivative engine to compute the derivatives of the observed power spectrum
 
         Parameters
         ----------
@@ -549,7 +549,7 @@ class SpectroDerivs:
         return self.derivs
 
     def dlnpobs_dp(self, zi, k, mu, par):
-        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------
@@ -578,7 +578,7 @@ class SpectroDerivs:
             return np.zeros_like(k)
 
     def dlnpobs_dcosmop(self, zi, k, mu, par):
-        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to the cosmological parameters internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to the cosmological parameters internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------
@@ -616,7 +616,7 @@ class SpectroDerivs:
         return deriv
 
     def dlnpobs_dnuisp(self, zi, k, mu, par):
-        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to nuicance parameters in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to nuicance parameters in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------

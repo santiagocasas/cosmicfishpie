@@ -247,8 +247,7 @@ class ComputeGalSpectro:
         )
 
     def set_internal_kgrid(self):
-        """Updates the internal grid of wavenumbers used in the computaton
-        """
+        """Updates the internal grid of wavenumbers used in the computaton"""
         cfg.specs["kmax"] = cfg.specs["kmax_GCsp"]
         cfg.specs["kmin"] = cfg.specs["kmin_GCsp"]
         kmin_int = 0.001
@@ -257,16 +256,14 @@ class ComputeGalSpectro:
         self.dk_grid = np.diff(self.k_grid)[0]
 
     def activate_terms(self):
-        """Update which modelling effects should be taken into consideration
-        """
+        """Update which modelling effects should be taken into consideration"""
         self.linear_switch = cfg.settings["GCsp_linear"]
         self.FoG_switch = cfg.settings["FoG_switch"]
         self.APbool = cfg.settings["AP_effect"]
         self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
 
     def set_spectro_specs(self):
-        """Updates the spectrocopic redshift error
-        """
+        """Updates the spectrocopic redshift error"""
         self.dz_err = cfg.specs["spec_sigma_dz"]
 
     def qparallel(self, z):

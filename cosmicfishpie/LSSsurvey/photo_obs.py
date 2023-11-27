@@ -26,7 +26,7 @@ memory = Memory(cachedir, verbose=0)
 
 
 def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
-    """ function to do the integration over redshift that shows up in the lensing kernal
+    """function to do the integration over redshift that shows up in the lensing kernal
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
 
 
 def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
-    """ function to do the integration over redshift that shows up in the lensing kernal
+    """function to do the integration over redshift that shows up in the lensing kernal
 
     Parameters
     ----------
@@ -94,7 +94,9 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
 
 
 class ComputeCls:
-    def __init__(self, cosmopars, photopars, IApars, biaspars, print_info_specs=False, fiducial_cosmo=None):
+    def __init__(
+        self, cosmopars, photopars, IApars, biaspars, print_info_specs=False, fiducial_cosmo=None
+    ):
         """Main class to obtain the angular power spectrum of the photometric probe.
 
         Parameters
@@ -314,8 +316,7 @@ class ComputeCls:
         )
 
     def print_numerical_specs(self):
-        """prints the numerical specifications of the internal computations
-        """
+        """prints the numerical specifications of the internal computations"""
         print("***")
         print("Numerical specifications: ")
         print("WL ell max = ", str(cfg.specs["lmax_WL"]))

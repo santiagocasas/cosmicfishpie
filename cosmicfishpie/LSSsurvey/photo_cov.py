@@ -31,7 +31,7 @@ class PhotoCov:
         photopars    : dict
                        a dictionary containing specifications for the window function's galaxy distribution
         IApars       : dict
-                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear 
+                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear
         biaspars     : dict
                        a dictionary containing the fiducial specifications for the galaxy biases
         fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs.ComputeCls, optional
@@ -44,7 +44,7 @@ class PhotoCov:
         photopars    : dict
                        a dictionary containing specifications for the window function's galaxy distribution
         IApars       : dict
-                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear 
+                       a dictionary containing the fiducial specifications for the intrinsic alignment effect in cosmic shear
         biaspars     : dict
                        a dictionary containing the fiducial specifications for the galaxy biases
         fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs
@@ -56,8 +56,8 @@ class PhotoCov:
         binrange     : range
                        a range with all the bins asked for in the survey specifications
         feed_lvl     : int
-                       number indicating the verbosity of the output. Higher numbers mean more output 
-        
+                       number indicating the verbosity of the output. Higher numbers mean more output
+
         """
         self.cosmopars = cosmopars
         self.photopars = photopars
@@ -83,7 +83,7 @@ class PhotoCov:
         ----------
         allpars : dict
                   a dictionary with all parameters needed to compute the angular power spectrum
-        
+
         Returns
         -------
         dict
@@ -200,7 +200,7 @@ class PhotoCov:
         dict
             a dictionarry with all the auto and cross correlaion fiducial angular power spectra with noise added to it
         list
-            A list of pandas.DataFrame objects that store the covariance matrix for each multipole 
+            A list of pandas.DataFrame objects that store the covariance matrix for each multipole
         """
         tini = datetime.datetime.now().timestamp()
 
@@ -271,7 +271,7 @@ class PhotoCov:
         -------
         dict
             a dictionary containing the derivatives of the angular power spectrum at the fiducial for all free parameters
- 
+
         """
         # compute and save derivatives-----------------------------------------
 

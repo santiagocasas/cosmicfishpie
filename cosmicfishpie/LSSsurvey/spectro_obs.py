@@ -51,11 +51,11 @@ class ComputeGalSpectro:
                                A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
         use_bias_func        : bool
                                Should the bias function be computed constructed from the specification file or recomputed from spectro_biaspars?
-        
+
         Attributes
         ----------
         feed_lvl                      : int
-                                        Number indicating the verbosity of the output. Higher numbers mean more output 
+                                        Number indicating the verbosity of the output. Higher numbers mean more output
         observables                   : list
                                         A list of the observables that the observed power spectrum is computed for
         s8terms                       : bool
@@ -257,7 +257,7 @@ class ComputeGalSpectro:
         self.dk_grid = np.diff(self.k_grid)[0]
 
     def activate_terms(self):
-        """Update which modelling effects should be taken into consideration 
+        """Update which modelling effects should be taken into consideration
         """
         self.linear_switch = cfg.settings["GCsp_linear"]
         self.FoG_switch = cfg.settings["FoG_switch"]
@@ -265,7 +265,7 @@ class ComputeGalSpectro:
         self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
 
     def set_spectro_specs(self):
-        """Updates the spectrocopic redshift error 
+        """Updates the spectrocopic redshift error
         """
         self.dz_err = cfg.specs["spec_sigma_dz"]
 
@@ -276,7 +276,7 @@ class ComputeGalSpectro:
         ----------
         z : numpy.ndarray
             list of redshifts for which the q parallel should be computed
-        
+
         Returns
         -------
         numpy.ndarray
@@ -292,7 +292,7 @@ class ComputeGalSpectro:
         ----------
         z : numpy.ndarray
             list of redshifts for which the q perpendicular should be computed
-        
+
         Returns
         -------
         numpy.ndarray
@@ -350,7 +350,7 @@ class ComputeGalSpectro:
         ----------
         k : float, numpy.ndarray
             wavenumbers in units of h sample/Mpc to be rescaled
-        
+
         Returns
         -------
         float, numpy.ndarray
@@ -411,11 +411,11 @@ class ComputeGalSpectro:
         -------
         float, numpy.ndarray
             Supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
-        
+
         Notes
         -----
         Implements the following equation:
-        
+
         .. math::
             \\mathrm{Err} = \\exp\\left[-\\sigma^2_\\|\\, k^2\\, \\mu^2 -\\sigma_\\perp^2 \\,k^2\\,\\left(1- \\mu^2\\right)\\right].
 
@@ -471,7 +471,7 @@ class ComputeGalSpectro:
         -----------
         z           : float, numpy.ndarray
                       The redshifts value at which to evaluate the bias term.
-        bias_sample : str, optional 
+        bias_sample : str, optional
                       Specifies whether to compute the galaxy ('g') or intensity mapping ('I') bias term. (default='g')
 
         Returns:
@@ -517,8 +517,8 @@ class ComputeGalSpectro:
             z           : float, numpy.ndarray
                           Redshifts of interest
             k           : float, numpy.ndarray
-                          Wave numbers at which to calculate the linear RSD 
-            mu          : float, numpy.ndarray 
+                          Wave numbers at which to calculate the linear RSD
+            mu          : float, numpy.ndarray
                           cosine of angles between line of sight and the wavevector.
             b_i         : float, numpy.ndarray, optional
                           galaxy bias at Redshifts z
@@ -530,7 +530,7 @@ class ComputeGalSpectro:
         Returns
         -------
             The computed Kaiser term for redshift space distortions.
-        
+
         Notes
         -----
         Implements the following equation:
@@ -583,7 +583,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             The calculated FoG term, which is 1 if either FoG_switch is False or linear_switch is True.
             Otherwise, it depends on the specified mode.
-        
+
         Notes
         -----
         If mode is "Lorentz" this implements following equation
@@ -607,7 +607,7 @@ class ComputeGalSpectro:
 
         Parameters
         ----------
-            zz : float 
+            zz : float
                  The redshift value at which to calculate the variance.
         Returns
         -------
@@ -654,7 +654,7 @@ class ComputeGalSpectro:
 
         Parameters
         ----------
-        zz     : float 
+        zz     : float
                  The redshift value at which to calculate the power spectrum.
         moment : int
                  An integer indicating the order of the moment to calculate. Default is 0.
@@ -737,7 +737,7 @@ class ComputeGalSpectro:
 
     def dewiggled_pdd(self, z, k, mu):
         """
-        This function calculates the normalized dewiggled powerspectrum. 
+        This function calculates the normalized dewiggled powerspectrum.
 
         Parameters
         ----------
@@ -771,7 +771,7 @@ class ComputeGalSpectro:
 
     def observed_Pgg(self, z, k, mu, b_i=None):
         """
-        This function calculates the observed galaxy power spectrum. 
+        This function calculates the observed galaxy power spectrum.
 
         Parameters
         ----------
@@ -829,7 +829,7 @@ class ComputeGalSpectro:
         return pgg_obs
 
     def lnpobs_gg(self, z, k, mu, b_i=None):
-        """This function calculates the natural logarithm of the observed galaxy power spectrum. 
+        """This function calculates the natural logarithm of the observed galaxy power spectrum.
 
         Parameters
         ----------

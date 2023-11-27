@@ -20,7 +20,7 @@ class GalaxyPhotoDist:
         ----------
         photopars : dict
                     a dictionary containing specifications for the window function's galaxy distribution
-        
+
         Atributes
         ---------
         z_bins  : list
@@ -66,7 +66,7 @@ class GalaxyPhotoDist:
         Returns
         -------
         numpy.ndarray
-            unnormalized theoretical galaxy redshift distribution 
+            unnormalized theoretical galaxy redshift distribution
 
         Notes
         -----
@@ -119,7 +119,7 @@ class GalaxyPhotoDist:
         -------
         float
             binned galaxy distribution convolved with photometric redshift errors
-        
+
         Notes
         -----
         Implements the following equation:

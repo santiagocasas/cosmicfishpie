@@ -26,7 +26,7 @@ memory = Memory(cachedir, verbose=0)
 
 
 def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
-    """ function to do the integration over redshift that shows up in the lensing kernal 
+    """ function to do the integration over redshift that shows up in the lensing kernal
 
     Parameters
     ----------
@@ -42,7 +42,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
                     2d array of reshifts z that the integral should use as integration points. The first row must coinside with z.
     diffz         : numpy.ndarray
                     2d array of the seperation of integration points
-    
+
     Returns
     -------
     callable
@@ -67,7 +67,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
 
 
 def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
-    """ function to do the integration over redshift that shows up in the lensing kernal 
+    """ function to do the integration over redshift that shows up in the lensing kernal
 
     Parameters
     ----------
@@ -79,12 +79,12 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
                     callable function that returns the comoving distance. Should beb a function of the redshift z as a numpy.ndarray
     z_arr         : numpy.ndarray
                     1d array of all reshifts z that should be used as integration points.
-    
+
     Returns
     -------
     callable
         callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray
-    """   
+    """
     zprime = zarr[:, None]
     wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
     witri = np.tril(wintgd)
@@ -104,7 +104,7 @@ class ComputeCls:
         photopars        : dict
                            a dictionary containing specifications for the window function's galaxy distribution
         IApars           : dict
-                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear 
+                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear
         biaspars         : dict
                            a dictionary containing the specifications for the galaxy biases
         print_info_specs : bool
@@ -119,7 +119,7 @@ class ComputeCls:
         photopars        : dict
                            a dictionary containing specifications for the window function's galaxy distribution
         IApars           : dict
-                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear 
+                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear
         biaspars         : dict
                            a dictionary containing the specifications for the galaxy biases
         cosmo            : cosmicfishpie.cosmology.cosmo_functions
@@ -147,7 +147,7 @@ class ComputeCls:
         z                : numpy.ndarray
                            array containing the redshifts used in the internal calulations
         dz               : numpy.ndarray
-                           array containing the numerical distance of the redshifts in z 
+                           array containing the numerical distance of the redshifts in z
         """
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
@@ -432,12 +432,13 @@ class ComputeCls:
         -------
         numpy.ndarray
             Value of the galaxy clustering kernal at redshift z for bin i
-        
+
         Notes
         -----
         Implements the following equation:
 
         .. math::
+
             W_i^{GCph} = b(z) \\frac{n_i(z)}{\\bar{n}(z)} H(z)
 
         """
@@ -510,11 +511,11 @@ class ComputeCls:
         ----------
         i : int
             index of the redshift bin for which the lensing efficiency should be calculated
-        
+
         Returns
         -------
         callable
-            callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray  
+            callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray
         """
         # expensive calculation doesn't need to
         # be performed if cosmopars and photopars are the same
@@ -578,10 +579,10 @@ class ComputeCls:
         Parameters
         ----------
             z     : numpy.ndarray
-                    array of redshifts for which the window function should be computed 
-            obs   : str 
+                    array of redshifts for which the window function should be computed
+            obs   : str
                     name of the observable (GC or WL)
-            i     : int 
+            i     : int
                     integer of the redshift bin the window should be computed for
 
         Returns
@@ -684,7 +685,7 @@ class ComputeCls:
                index of the redshift bin at which the observable obs2 is measured
         hub  : callable
                function that should be passed a numpy.ndarray of redshifts returns the hubble expansion rate at these redshifts.
-        
+
         Returns
         -------
         callable

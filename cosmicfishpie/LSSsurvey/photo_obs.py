@@ -131,7 +131,7 @@ class ComputeCls:
         window           : cosmicfishpie.LSSsurvey.photo_window.GalaxyPhotoDist
                            An instance of `GalaxyPhotoDist` containing the galaxy distribution needed to compute the window functions
         tracer           : str
-                           What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering.
+                           What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering. Either "matter" or "clustering"
         binrange         : range
                            a range with all the bins asked for in the survey specifications
         zsamp            : int
@@ -439,6 +439,7 @@ class ComputeCls:
 
         .. math::
             W_i^{GCph} = b(z) \\frac{n_i(z)}{\\bar{n}(z)} H(z)
+
         """
         tgcstart = time()
         # Wgc = self.window.norm_ngal_photoz(z,i) * np.array([self.nuisance.bias(self.biaspars, i)(z) * \

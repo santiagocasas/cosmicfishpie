@@ -125,8 +125,7 @@ class GalaxyPhotoDist:
         Implements the following equation:
 
         .. math::
-        p_{ph}(z_p|z) = \\frac{1-f_{out}}{\\sqrt{2\\pi}\\sigma_b(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_bz_p-z_b}{\\sigma_b(1+z)}\\right]^2\\right\\} \\ + \\frac{f_{out}}{\\sqrt{2\\pi}\\sigma_0(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_0z_p-z_0}{\\sigma_0(1+z)}\\right]^2\\right\\}
-
+            p_{ph}(z_p|z) = \\frac{1-f_{out}}{\\sqrt{2\\pi}\\sigma_b(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_bz_p-z_b}{\\sigma_b(1+z)}\\right]^2\\right\\} \\ + \\frac{f_{out}}{\\sqrt{2\\pi}\\sigma_0(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_0z_p-z_0}{\\sigma_0(1+z)}\\right]^2\\right\\}
         """
 
         if i == 0 or i >= 11:

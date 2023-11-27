@@ -23,21 +23,39 @@ class SpectroCov:
         (IM, XC, and gg) using those parameters depending on which observables
         are present.
 
-        :param fiducialpars: The fiducial parameter values used to compute
-                             power spectra.
-        :type fiducialpars: list or array
+        Parameters
+        ----------
+        fiducialpars : dict
+                       A dictionary containing the cosmological parameters of the fiducial/reference cosmology
 
-        :param fiducial_specobs: An optional fiducial spectroscopic observation.
-                                 Defaults to None if not provided.
-        :type fiducial_specobs: object
+        fiducial_specobs : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM, optional
+                           An optional fiducial spectroscopic observation.
 
-        :param bias_samples: The bias samples to use when computing
-                             power spectra.
-                             Defaults to ['g', 'g'] if not otherwise specified.
-        :type bias_samples: list or array
+        bias_samples : list
+                       A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
 
-        :return: None
-
+        Attributes
+        ----------
+        pk_obs            : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                            Fiducial instance of the oberservable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
+        pk_obs_gg         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                            Fiducial instance of the galaxy clustering autocorrelation oberservable of the spectroscopic probe if corss correlation is asked for.
+        pk_obs_II         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                            Fiducial instance of the intensity mapping autocorrelation oberservable of the spectroscopic probe if corss correlation is asked for.
+        area_survey       : float
+                            Size of the survey sky coverage in square arc minutes
+        dnz               : float, list
+                            Galaxies per sqauare arc minute per redshift bin
+        z_bins            : list
+                            Redshift bin edges
+        z_bin_mids        : list
+                            Redshift bin centers
+        dz_bins           : list
+                            Redshift sizes
+        global_z_bin_mids : list
+                            Redshift bin centers
+        global_z_bins     : list
+                            Redshift bin edges
         """
         # initializing the class only with fiducial parameters
         # if fiducial_specobs is None:
@@ -92,11 +110,37 @@ class SpectroCov:
                 self.global_z_bins = self.IM_z_bins
 
     def Tsys_func(self, z):
+        """Calculates Tsys in mK
+
+        Parameters
+        ----------
+        z : float, numpy.ndarray
+            Redshift at which to compute Tsys
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Tsys at z in milli Kelvin
+        """
         units = 1000  # convert from K to mK
         Tsys_mK = units * self.Tsys_interp(z)
         return Tsys_mK
 
     def volume_bin(self, zi, zj):
+        """Calculates the comoving volume of a spherical shell
+
+        Parameters
+        ----------
+        zi : float, nunpy.ndarray
+             Redshift of the inner sphere
+        zj : float, numpy.ndarray
+             Redshift of the outer sphere
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Volume of the comoving spherical shell between zj and zi
+        """
         rad_to_area = 1 / (4 * np.pi * np.power(180 / np.pi, 2))
         d1 = self.pk_obs.cosmo.angdist(zi)
         d2 = self.pk_obs.cosmo.angdist(zj)
@@ -105,17 +149,68 @@ class SpectroCov:
         return vol
 
     def d_volume(self, ibin):
+        """Calculates the comoving volume of a redshift bin
+
+        Parameters
+        ----------
+        i : int
+            Index of the survey redshift bin
+
+        Returns
+        -------
+        float
+            Comoving volume of the redshift bin
+        """
         return self.volume_bin(self.global_z_bins[ibin], self.global_z_bins[ibin + 1])
 
     def volume_survey(self, ibin):
+        """Calculates the survey volume of a redshift bin
+
+        Parameters
+        ----------
+        i : int
+            Index of the survey redshift bin
+
+        Returns
+        -------
+        float
+            survey volume of the redshift bin
+        """
         vol = self.area_survey * self.d_volume(ibin)
         return vol
 
     def n_density(self, ibin):
+        """ calculate the comoving number density of the probe
+
+        Parameters
+        ----------
+        i : int
+            Index of the survey redshift bin
+
+        Returns
+        -------
+        float
+            comoving number density of the probe
+        """
         ndens = self.dnz[ibin] * self.dz_bins[ibin] / self.d_volume(ibin)
         return ndens
 
     def veff(self, ibin, k, mu):
+        """ calculate the effective volume entering the covariance of the galaxy clustering probe
+
+        Parameters
+        ----------
+        i  : int
+             Index of the survey redshift bin
+        k  : float, numpy.ndarray
+             wave number at which the effective volume should be calculated
+        mu : float, numpy.ndarray
+             The cosine of angle between the wavevector and the line-of-sight direction.
+
+        Returns
+        float, numpy.ndarray
+            The effective volume for a given wavenumber, angle and redshift
+        """
         zi = self.z_bin_mids[ibin]
         npobs = self.n_density(ibin) * self.pk_obs.observed_Pgg(zi, k, mu)
         prefactor = 1 / (8 * (np.pi**2))
@@ -123,6 +218,22 @@ class SpectroCov:
         return covterm
 
     def cov(self, ibin, k, mu):
+        """Function to calculate the covariance the galaxy clustering probe
+
+        Parameters
+        ----------
+        ibin : int
+               Index of the redshift bin for which the covarance is to be computed
+        k    : float, numpy.ndarray
+               Wavenumber
+        mu   : float, numpy.ndarray
+               The cosine of angle between the wavevector and the line-of-sight direction.
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Covariance of the Galaxy clustering probe
+        """
         zmid = self.z_bin_mids[ibin]
         veffS = self.veff(ibin, k, mu) * self.volume_survey(ibin)
         pobs = self.pk_obs.observed_Pgg(zmid, k, mu)
@@ -131,6 +242,26 @@ class SpectroCov:
         return cov
 
     def P_noise_21(self, z, k, mu, temp_dim=True, beam_term=False):
+        """Compute the shotnoise of the 21 centimeter intensity mapping probe
+
+        Parameters
+        ----------
+        z        : float, numpy.ndarray
+                   Redshift at which the noise is to be computed
+        k        : float, numpy.ndarray
+                   Wavenumber
+        mu       : float, numpy.ndarray
+                   The cosine of angle between the wavevector and the line-of-sight direction.
+        temp_dim : bool
+                   If true the Temperature terms is in units of Kelvin^2
+        beam_term: bool
+                   If true will add the beam term to the computation of the power spectrum
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Additional shotnoise of the 21 cm intensity mapping
+        """
         if not temp_dim:
             temp = self.pk_obs.Temperature(z)
         elif temp_dim:
@@ -147,6 +278,21 @@ class SpectroCov:
         return noise
 
     def veff_21cm(self, ibin, k, mu):
+        """ calculate the effective volume entering the covariance of the line intensity mapping probe
+
+        Parameters
+        ----------
+        i  : int
+             Index of the survey redshift bin
+        k  : float, numpy.ndarray
+             wave number at which the effective volume should be calculated
+        mu : float, numpy.ndarray
+             The cosine of angle between the wavevector and the line-of-sight direction.
+
+        Returns
+        float, numpy.ndarray
+            The effective volume for a given wavenumber, angle and redshift
+        """
         zi = self.IM_z_bin_mids[ibin]
         pobs = self.pk_obs.observed_P_HI(zi, k, mu)
         pnoisy = pobs + self.P_noise_21(zi, k, mu)
@@ -155,6 +301,21 @@ class SpectroCov:
         return covterm
 
     def veff_XC(self, ibin, k, mu):
+        """ calculate the effective volume entering the covariance of the cross correlation of galaxy clustering and intensity mapping
+
+        Parameters
+        ----------
+        i  : int
+             Index of the survey redshift bin
+        k  : float, numpy.ndarray
+             wave number at which the effective volume should be calculated
+        mu : float, numpy.ndarray
+             The cosine of angle between the wavevector and the line-of-sight direction.
+
+        Returns
+        float, numpy.ndarray
+            The effective volume for a given wavenumber, angle and redshift
+        """
         print("Entering veff_XC term")
         zi = self.IM_z_bin_mids[ibin]
         # when calling this function, this is the XC spectrum
@@ -172,6 +333,55 @@ class SpectroCov:
 
 class SpectroDerivs:
     def __init__(self, z_array, pk_kmesh, pk_mumesh, fiducial_spectro_obj, bias_samples=["g", "g"]):
+        """Main derivative Engine for the Spectroscopic probes.
+
+        Parameters
+        ----------
+        z_array              : numpy.ndarray
+                               List of the redshift bin centers at which the derivatives should be computed at
+        pk_kmesh             : numpy.ndarray
+                               List of wavenumbers at which the derivatives should be computed at
+        pk_mumesh            : numpy.ndarray
+                               List of the cosines of angle between the wavevector and the line-of-sight direction.
+        fiducial_spectro_obj : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                               Fiducial instance of the oberservable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
+        bias_samples         : list
+                               A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+
+        Attributes
+        ----------
+        observables                   : list
+                                        A list of the observables that the observed power spectrum is computed for
+        bias_samples                  : list
+                                        A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+        fiducial_cosmopars            : dict
+                                        A dictionary containing the cosmological parameters of the fiducial/reference cosmology
+        fiducial_spectrobiaspars      : dict
+                                        A dictionary containing the specifications for the galaxy biases
+        fiducial_IMbiaspars           : dict
+                                        A dictionary containing the specifications for the intensity mapping biases
+        fiducial_PShotpars            : dict
+                                        A dictionary containing the values of the additional shot noise per bin
+        fiducial_allpars              : dict
+                                        A dictionary containing all relevant fiducial parameters to compute the observed power spectrum
+        fiducial_spectrononlinearpars : dict
+                                        A dictionary containing the fiducial values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+        fiducial_cosmo                : cosmicfishpie.cosmology.cosmology.cosmo_functions
+                                        An instance of `cosmo_functions` of the fiducial cosmology.
+        z_array                       : numpy.ndarray
+                                        List of the redshift bin centers at which the derivatives should be computed at
+        cosmology_variations_dict     : dict
+                                        A dictionary containing the values for all relevant parameters to compute the observed power spectrum for each varied cosmology
+        pk_kmesh                      : numpy.ndarray
+                                        List of wavenumbers at which the derivatives should be computed at
+        pk_mumesh                     : numpy.ndarray
+                                        List of the cosines of angle between the wavevector and the line-of-sight direction.
+        freeparams                    : dict
+                                        A dictionary with all vaired parameters and their stepsizes
+        feed_lvl                      : int
+                                        number indicating the verbosity of the output. Higher numbers mean more output
+
+        """
         print("Computing derivatives of Galaxy Clustering Spectro")
         self.observables = fiducial_spectro_obj.observables
         self.bias_samples = bias_samples
@@ -199,7 +409,7 @@ class SpectroDerivs:
 
         if "I" in self.bias_samples:
             IMbiaspars = dict((k, allpars[k]) for k in self.fiducial_IMbiaspars)
-        if "I" in self.bias_samples:
+
             self.pobs = spec_obs.ComputeGalIM(
                 cosmopars=cosmopars,
                 fiducial_cosmopars=self.fiducial_cosmopars,
@@ -225,6 +435,18 @@ class SpectroDerivs:
         self.cosmology_variations_dict["hash_" + str(hh)] = strdic
 
     def get_obs(self, allpars):
+        """function to obtain the power spectrum of the observable
+
+        Parameters
+        ----------
+        allpars : dict
+                  A dictionary containing all relevant parameters to compute the observed power spectrum
+
+        Returns
+        -------
+        dict
+            A dictionary containing the observed power spectrum on the k and mu grid for all redshift bins
+        """
         self.initialize_obs(allpars)
         result_array = dict()
         result_array["z_bins"] = self.z_array
@@ -236,6 +458,18 @@ class SpectroDerivs:
         return result_array
 
     def exact_derivs(self, par):
+        """ Compute the exact log derivative of the Power spectrum with respect to the shotnoise using chain rule
+
+        Parameters
+        ----------
+        par : str
+              String name of the Shotnoise parameter for which the exact derivative should be computed from
+
+        Returns
+        -------
+        dict
+            A dictionary containing the exact log derivative with respect to the shotnoise parameter
+        """
         if "Ps" in par:
             deriv = dict()
             for ii, zzi in enumerate(self.z_array):
@@ -249,6 +483,22 @@ class SpectroDerivs:
             return None
 
     def kronecker_bins(self, par, zmids, zi):
+        """function to figure out what bin a parameter corresponds and compares to the redshift passed
+
+        Parameters
+        ----------
+        par  : str
+               String name of a parameter. The name should end with '_i' where i marks the bin it corresponds to
+        zmid : numpy.ndarray
+               List of the centers for the redshift bin
+        zi   : float
+               redshift for which we want to find the bin
+
+        Returns
+        -------
+        int
+            returns 1 if passed redshift is in the bin corresponding to the parameter. Returns 0 elsewise
+        """
         ii = np.where(np.isclose(zmids, zi))
         ii = ii[0][0] + 1
         pi = par.split("_")
@@ -260,6 +510,17 @@ class SpectroDerivs:
         return kron_delta
 
     def compute_derivs(self, freeparams=dict()):
+        """ Calls the common derivative engine to compute the derivatives of the observed power spectrum
+
+        Parameters
+        ----------
+        freeparam : dict, optional
+                    A dictionary containing the names and stepsizes for all parameters you want to vary. Will default to the global free params if not passed.
+
+        Returns
+        -------
+        dictionary containg lists of derivatives of the observed power spectrum for each redshift bin and parameter
+        """
         derivs = dict()
         if freeparams != dict():
             self.freeparams = freeparams
@@ -288,6 +549,24 @@ class SpectroDerivs:
         return self.derivs
 
     def dlnpobs_dp(self, zi, k, mu, par):
+        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+
+        Parameters
+        ----------
+        zi  : float, numpy.ndarray
+              The redshifts values of interest.
+        k   : float
+              The wavenumber for which the power spectrum should be computed
+        mu  : float, numpy.ndarray
+              The cosine of angle between the wavevector and the line-of-sight direction.
+        par : str
+              Name of the parameter with regards to which the derivative should be computed for
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Derivative of the observed power spectrum with regard to the passed parameter
+        """
         if par in self.freepars.keys():
             return self.dlnpobs_dcosmop(zi, k, mu, par)
         elif par in self.biaspars.keys():
@@ -299,6 +578,24 @@ class SpectroDerivs:
             return np.zeros_like(k)
 
     def dlnpobs_dcosmop(self, zi, k, mu, par):
+        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to the cosmological parameters internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+
+        Parameters
+        ----------
+        zi  : float, numpy.ndarray
+              The redshifts values of interest.
+        k   : float
+              The wavenumber for which the power spectrum should be computed
+        mu  : float, numpy.ndarray
+              The cosine of angle between the wavevector and the line-of-sight direction.
+        par : str
+              Name of the parameter with regards to which the derivative should be computed for
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Derivative of the observed power spectrum with regard to the passed parameter
+        """
         if self.fiducialpars[par] != 0.0:
             stepsize = self.fiducialpars[par] * self.freepars[par]
         else:
@@ -319,6 +616,24 @@ class SpectroDerivs:
         return deriv
 
     def dlnpobs_dnuisp(self, zi, k, mu, par):
+        """ This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to nuicance parameters in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+
+        Parameters
+        ----------
+        zi  : float, numpy.ndarray
+              The redshifts values of interest.
+        k   : float
+              The wavenumber for which the power spectrum should be computed
+        mu  : float, numpy.ndarray
+              The cosine of angle between the wavevector and the line-of-sight direction.
+        par : str
+              Name of the parameter with regards to which the derivative should be computed for
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Derivative of the observed power spectrum with regard to the passed parameter
+        """
         galspec = self.galspec_fiducial
         if "lnb" in par:
             bterm = galspec.bterm_fid(zi, bias_sample="g")

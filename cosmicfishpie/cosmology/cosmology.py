@@ -1241,7 +1241,7 @@ class cosmo_functions:
             An array of power spectrum values corresponding to the
             input wavenumbers. Units are (Mpc/h)^3.
 
-        Notes:
+        Note:
             This function computes the power spectrum of a given tracer quantity
             at a specific redshift, using the matter power spectrum function
             `matpow`. It then applies a Savitzky-Golay filter to smooth out the
@@ -1351,7 +1351,7 @@ class cosmo_functions:
             Omega matter (total) at the redshifts of the input redshift `z`
 
 
-        Notes
+        Note
         -----
         Assumes standard matter evolution
         Implements the following equation:
@@ -1382,7 +1382,7 @@ class cosmo_functions:
             using self.gamma as gamma value.
 
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -1421,7 +1421,7 @@ class cosmo_functions:
             using self.gamma as gamma value.
 
 
-        Notes
+        Note
         -----
         Implements the following equation:
 

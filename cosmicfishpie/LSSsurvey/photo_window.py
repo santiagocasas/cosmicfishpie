@@ -68,7 +68,7 @@ class GalaxyPhotoDist:
         numpy.ndarray
             unnormalized theoretical galaxy redshift distribution
 
-        Notes
+        Note
         -----
         Implements the following parametrization:
 
@@ -120,7 +120,7 @@ class GalaxyPhotoDist:
         float
             binned galaxy distribution convolved with photometric redshift errors
 
-        Notes
+        Note
         -----
         Implements the following equation:
 

@@ -58,7 +58,7 @@ class CMBCov:
         array
             Noise value[ell,bin]
 
-        Notes
+        Note
         -----
         Implements the following equation:
 

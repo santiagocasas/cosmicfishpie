@@ -31,11 +31,11 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
     Parameters
     ----------
     i             : int
-                    index of the redshift bin for which the lensing kernal should be computed
+                    index of the redshift bin for which the lensing kernel should be computed
     ngal_func     : callable
                     callable function that returns the number density distribution of galaxies. Should be a function of the redshift bin index i as an int and the redshift z as a numpy.ndarray
     comoving_func : callable
-                    callable function that returns the comoving distance. Should beb a function of the redshift z as a numpy.ndarray
+                    callable function that returns the comoving distance. Should be a function of the redshift z as a numpy.ndarray
     z             : numpy.ndarray
                     1d array of all reshifts z that the result of the integral should use as interpolated over.
     zint_mat      : numpy.ndarray
@@ -72,7 +72,7 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     Parameters
     ----------
     i             : int
-                    index of the redshift bin for which the lensing kernal should be computed
+                    index of the redshift bin for which the lensing kernel should be computed
     ngal_func     : callable
                     callable function that returns the number density distribution of galaxies. Should be a function of the redshift bin index i as an int and the redshift z as a numpy.ndarray
     comoving_func : callable
@@ -83,7 +83,7 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     Returns
     -------
     callable
-        callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray
+        callable function that recieves a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
     """
     zprime = zarr[:, None]
     wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
@@ -110,7 +110,7 @@ class ComputeCls:
         biaspars         : dict
                            a dictionary containing the specifications for the galaxy biases
         print_info_specs : bool
-                           should the numerical specifications of the computation be printed? Defaults to False
+                           If True will print the numerical specifications of the computation. Defaults to False
         fiducial_cosmo   : cosmicfishpie.cosmology.cosmology.cosmo_functions, optional
                            An instance of `cosmo_functions` of the fiducial cosmology.
 
@@ -250,7 +250,7 @@ class ComputeCls:
     def compute_all(self):
         """Main function to compute the angular power spectrum. Will first compute the limber appoximated angular power spectrum and the window functions for both probes. From that it will obtain the angular power spectrum.
 
-        Notes
+        Note
         -----
         This function does not return the calculated quantities. Rather they are found in new attributes of the object.
 
@@ -337,7 +337,7 @@ class ComputeCls:
         This is done for a range of redshift values and multipoles.
         Will add MG effects to WL and(!) GCph if asked for.
 
-        Notes
+        Note
         -----
         This does not return the power spectra. The results are stored in the attribute `Pell`
         """
@@ -367,7 +367,7 @@ class ComputeCls:
         Depending on the tracer asked for in 'GCph_Tracer' will use 'matter' or 'clustering' observable GCph.
         Will add MG effects to WL if asked for.
 
-        Notes
+        Note
         -----
         This does not return the power spectra. The results are stored in the attribute `sqrtPell`
         """
@@ -434,7 +434,7 @@ class ComputeCls:
         numpy.ndarray
             Value of the galaxy clustering kernal at redshift z for bin i
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -472,7 +472,7 @@ class ComputeCls:
         numpy.ndarray
             Value of the cosmic shearing kernal at redshift z for bin i
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -529,7 +529,7 @@ class ComputeCls:
         return intp
 
     def lensing_efficiency(self):
-        """computes the integral that enters the lensing kernal for all redshift bins
+        """computes the integral that enters the lensing kernel for all redshift bins
 
         Returns
         -------
@@ -547,7 +547,7 @@ class ComputeCls:
     def compute_kernels(self):
         """function to compute all the needed window functions.
 
-        Notes
+        Note
         -----
         This does not return the window functions. They are found in the new atributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for
         """
@@ -611,9 +611,9 @@ class ComputeCls:
         Returns
         -------
         dict
-            a dictionarry containing all auto and cross correlation angular power spectra. Its keys are formatted to have an array of the power spectra in 'X ixY j'. Also the multipoles for which the angular power spectra were computed for are found in 'ells'.
+            a dictionary containing all auto and cross correlation angular power spectra. Its keys are formatted to have an array of the power spectra in 'X ixY j'. Also the multipoles for which the angular power spectra were computed for are found in 'ells'.
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -690,7 +690,7 @@ class ComputeCls:
         Returns
         -------
         callable
-            Function that recieves an array multipole and returns the angular power spectrum for these multipoles.
+            Function that receives an array multipole and returns the angular power spectrum for these multipoles.
         """
         mask1 = (self.ell >= cfg.specs["lmin_" + obs1]) & (self.ell <= cfg.specs["lmax_" + obs1])
         mask2 = (self.ell >= cfg.specs["lmin_" + obs2]) & (self.ell <= cfg.specs["lmax_" + obs2])

@@ -151,7 +151,7 @@ class Nuisance:
         float
             Value of the luminosity ratio
 
-        Notes
+        Note
         -----
         Reads from file and interpolates the following quantity:
 
@@ -175,7 +175,7 @@ class Nuisance:
         object
         Interpolating function of bias for the redshift bins given
 
-        Notes
+        Note
         --------
         Reads from file and interpolates for a given survey
         """

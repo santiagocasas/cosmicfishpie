@@ -50,7 +50,7 @@ class ComputeGalSpectro:
         bias_samples         : list
                                A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
         use_bias_func        : bool
-                               Should the bias function be computed constructed from the specification file or recomputed from spectro_biaspars?
+                               If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
 
         Attributes
         ----------
@@ -59,7 +59,7 @@ class ComputeGalSpectro:
         observables                   : list
                                         A list of the observables that the observed power spectrum is computed for
         s8terms                       : bool
-                                        Should the observed power spectrum be expanded with :math:`\\sigma_8` to match the IST:F recipe?
+                                        If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
         tracer                        : str
                                         What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering. Either "matter" or "clustering"
         fiducial_cosmopars            : dict
@@ -81,7 +81,7 @@ class ComputeGalSpectro:
         fiducial_spectrobiaspars      : dict
                                         A dictionary containing the fiducial values for the galaxy biases
         use_bias_funcs                : bool
-                                        Should the bias function be computed constructed from the specification file or recomputed from spectro_biaspars?
+                                        If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
         spectrobiaspars               : dict
                                         A dictionary containing the specifications for the galaxy biases
         fiducial_PShotpars            : dict
@@ -105,13 +105,13 @@ class ComputeGalSpectro:
         dk_grid                       : numpy.ndarray
                                         Lists the numerical distance between all wavenumbers used in the internal calculations
         linear_switch                 : bool
-                                        Should nonlinear effects be modelled in the observed power spectrum?
+                                        If False all nonlinear effects will neglected in the computation of the observed power spectrum
         FoG_switch                    : bool
-                                        Should the finger of god effect be modelled in the observed power spectrum?
+                                        If True and `linear_switch` is True, then the finger of god effect will be modelled in the observed power spectrum.
         APbool                        : bool
-                                        Should the Alcock-Paczynsk effect be considerd?
+                                        If True and `linear_switch` is True, then the Alcock-Paczynsk effect be considerd
         fix_cosmo_nl_terms            : bool
-                                        Should the nonlinear modeling parameters be fixed to the values computed in the fiducial cosmology?
+                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology 
         dz_err                        : float
                                         Value of the spectroscopic redshift error
         """
@@ -373,7 +373,7 @@ class ComputeGalSpectro:
         -------
         numpy.ndarray, float
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -409,7 +409,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             Supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -433,7 +433,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             Value of BAO term at redshifts z
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -528,7 +528,7 @@ class ComputeGalSpectro:
         -------
             The computed Kaiser term for redshift space distortions.
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
@@ -581,7 +581,7 @@ class ComputeGalSpectro:
             The calculated FoG term, which is 1 if either FoG_switch is False or linear_switch is True.
             Otherwise, it depends on the specified mode.
 
-        Notes
+        Note
         -----
         If mode is "Lorentz" this implements following equation
 
@@ -692,7 +692,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             The Normalized Powerspectrum
 
-        Notes
+        Note
         -----
         This is not really a normalisation if there is no :math:`\\sigma_8` terms inside of the RSD (Kaiserterm). It is then canceld out automatically
 
@@ -720,7 +720,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             The Normalized 'no-wiggle' Powerspectrum
 
-        Notes
+        Note
         -----
         This is not really a normalisation if there is no :math:`\\sigma_8` terms inside of the RSD (Kaiserterm). It is then canceld out automatically
         """
@@ -786,7 +786,7 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             The observed galaxy power spectrum
 
-        Notes
+        Note
         -----
         In precence of all modeling terms, this function implements the following equation:
 

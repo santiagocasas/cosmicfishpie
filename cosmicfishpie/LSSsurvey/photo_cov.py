@@ -48,7 +48,7 @@ class PhotoCov:
         biaspars     : dict
                        a dictionary containing the fiducial specifications for the galaxy biases
         fiducial_Cls : cosmicfishpie.LSSsurvey.photo_obs
-                       an instance of `photo_obs` containing the ficuial angular power spectrum
+                       an instance of `photo_obs` containing the fiducial angular power spectrum
         allparsfid   : dict
                        a dictionary with all fiducial parameters needed to compute the angular power spectrum
         observables  : list
@@ -87,7 +87,7 @@ class PhotoCov:
         Returns
         -------
         dict
-            a dictionarry with all the auto and cross correlaion angular power spectra
+            a dictionary with all the auto and cross correlaion angular power spectra
         """
         # Here call to functions getting windows and then do cls
         # Splitting the dictionary of full parameters
@@ -113,12 +113,12 @@ class PhotoCov:
         Parameters
         ----------
         cls : dict
-              a dictionarry with all the auto and cross correlaion angular power spectra
+              a dictionary with all the auto and cross correlaion angular power spectra
 
         Returns
         -------
         dict
-              a dictionarry with all the auto and cross correlaion angular power spectra with noise added to it
+              a dictionary with all the auto and cross correlaion angular power spectra with noise added to it
 
         Note
         ----
@@ -156,7 +156,7 @@ class PhotoCov:
         Parameters
         ----------
         noisy_cls : dict
-                    a dictionarry with all the auto and cross correlaion angular power spectra with noise added to it
+                    a dictionary with all the auto and cross correlaion angular power spectra with noise added to it
 
         Returns
         -------
@@ -198,7 +198,7 @@ class PhotoCov:
         Returns
         -------
         dict
-            a dictionarry with all the auto and cross correlaion fiducial angular power spectra with noise added to it
+            a dictionary with all the auto and cross correlaion fiducial angular power spectra with noise added to it
         list
             A list of pandas.DataFrame objects that store the covariance matrix for each multipole
         """

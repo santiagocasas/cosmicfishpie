@@ -111,7 +111,7 @@ class ComputeGalSpectro:
         APbool                        : bool
                                         If True and `linear_switch` is True, then the Alcock-Paczynsk effect be considerd
         fix_cosmo_nl_terms            : bool
-                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology 
+                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology
         dz_err                        : float
                                         Value of the spectroscopic redshift error
         """

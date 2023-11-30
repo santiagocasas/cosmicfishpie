@@ -465,7 +465,7 @@ class boltzmann_code:
             ),
         )
 
-        # Calculate the Non linear cb powerspectrum using Gabrieles Approximation
+        # Calculate the Non linear cb power spectrum using Gabrieles Approximation
         f_cdm = cambres.get_Omega("cdm", z=0) / self.results.Om_m(0)
         f_b = cambres.get_Omega("baryon", z=0) / self.results.Om_m(0)
         f_cb = f_cdm + f_b
@@ -1303,7 +1303,7 @@ class cosmo_functions:
         z     : float
                 redshift
         tracer: String
-                either 'matter' if you want sigma_8 calculated from the total matter powerspectrum or 'clustering' if you want it from the Powerspectrum with massive neutrinos substracted
+                either 'matter' if you want sigma_8 calculated from the total matter power spectrum or 'clustering' if you want it from the Powerspectrum with massive neutrinos substracted
         Returns
         -------
         float

@@ -32,20 +32,20 @@ class SpectroCov:
                            An optional fiducial spectroscopic observation.
 
         bias_samples : list
-                       A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+                       A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
 
         Attributes
         ----------
         pk_obs            : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the oberservable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
+                            Fiducial instance of the observable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
         pk_obs_gg         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the galaxy clustering autocorrelation oberservable of the spectroscopic probe if corss correlation is asked for.
+                            Fiducial instance of the galaxy clustering autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
         pk_obs_II         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the intensity mapping autocorrelation oberservable of the spectroscopic probe if corss correlation is asked for.
+                            Fiducial instance of the intensity mapping autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
         area_survey       : float
                             Size of the survey sky coverage in square arc minutes
         dnz               : float, list
-                            Galaxies per sqauare arc minute per redshift bin
+                            Galaxies per square arc minute per redshift bin
         z_bins            : list
                             Redshift bin edges
         z_bin_mids        : list
@@ -131,7 +131,7 @@ class SpectroCov:
 
         Parameters
         ----------
-        zi : float, nunpy.ndarray
+        zi : float, numpy.ndarray
              Redshift of the inner sphere
         zj : float, numpy.ndarray
              Redshift of the outer sphere
@@ -223,7 +223,7 @@ class SpectroCov:
         Parameters
         ----------
         ibin : int
-               Index of the redshift bin for which the covarance is to be computed
+               Index of the redshift bin for which the covariance is to be computed
         k    : float, numpy.ndarray
                Wavenumber
         mu   : float, numpy.ndarray
@@ -344,16 +344,16 @@ class SpectroDerivs:
         pk_mumesh            : numpy.ndarray
                                List of the cosines of angle between the wavevector and the line-of-sight direction.
         fiducial_spectro_obj : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                               Fiducial instance of the oberservable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
+                               Fiducial instance of the observable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
         bias_samples         : list
-                               A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+                               A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
 
         Attributes
         ----------
         observables                   : list
                                         A list of the observables that the observed power spectrum is computed for
         bias_samples                  : list
-                                        A list of two strings specifying if galaxy clustering, intensity mapping or corss correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+                                        A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
         fiducial_cosmopars            : dict
                                         A dictionary containing the cosmological parameters of the fiducial/reference cosmology
         fiducial_spectrobiaspars      : dict
@@ -365,7 +365,7 @@ class SpectroDerivs:
         fiducial_allpars              : dict
                                         A dictionary containing all relevant fiducial parameters to compute the observed power spectrum
         fiducial_spectrononlinearpars : dict
-                                        A dictionary containing the fiducial values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+                                        A dictionary containing the fiducial values of the non linear modeling parameters entering FOG and the de-wiggling weight per bin
         fiducial_cosmo                : cosmicfishpie.cosmology.cosmology.cosmo_functions
                                         An instance of `cosmo_functions` of the fiducial cosmology.
         z_array                       : numpy.ndarray
@@ -377,7 +377,7 @@ class SpectroDerivs:
         pk_mumesh                     : numpy.ndarray
                                         List of the cosines of angle between the wavevector and the line-of-sight direction.
         freeparams                    : dict
-                                        A dictionary with all vaired parameters and their stepsizes
+                                        A dictionary with all varied parameters and their step sizes
         feed_lvl                      : int
                                         number indicating the verbosity of the output. Higher numbers mean more output
 
@@ -497,7 +497,7 @@ class SpectroDerivs:
         Returns
         -------
         int
-            returns 1 if passed redshift is in the bin corresponding to the parameter. Returns 0 elsewise
+            returns 1 if passed redshift is in the bin corresponding to the parameter. Returns 0 else wise
         """
         ii = np.where(np.isclose(zmids, zi))
         ii = ii[0][0] + 1
@@ -514,12 +514,12 @@ class SpectroDerivs:
 
         Parameters
         ----------
-        freeparam : dict, optional
-                    A dictionary containing the names and stepsizes for all parameters you want to vary. Will default to the global free params if not passed.
+        freeparams : dict, optional
+                     A dictionary containing the names and step sizes for all parameters you want to vary. Will default to the global free params if not passed.
 
         Returns
         -------
-        dictionary containg lists of derivatives of the observed power spectrum for each redshift bin and parameter
+        dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and parameter
         """
         derivs = dict()
         if freeparams != dict():
@@ -549,7 +549,7 @@ class SpectroDerivs:
         return self.derivs
 
     def dlnpobs_dp(self, zi, k, mu, par):
-        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum internally in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------
@@ -578,7 +578,7 @@ class SpectroDerivs:
             return np.zeros_like(k)
 
     def dlnpobs_dcosmop(self, zi, k, mu, par):
-        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to the cosmological parameters internaly in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to the cosmological parameters internally in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------
@@ -616,7 +616,7 @@ class SpectroDerivs:
         return deriv
 
     def dlnpobs_dnuisp(self, zi, k, mu, par):
-        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to nuicance parameters in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
+        """This is a deprecated function! It was used to compute the compute the derivatives of the power spectrum with respect to nuisance parameters in the cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs . Use now the common derivative engine at cosmicfishpie.fishermatrix.derivatives.derivatives
 
         Parameters
         ----------

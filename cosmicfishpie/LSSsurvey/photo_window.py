@@ -21,8 +21,8 @@ class GalaxyPhotoDist:
         photopars : dict
                     a dictionary containing specifications for the window function's galaxy distribution
 
-        Atributes
-        ---------
+        Attributes
+        ----------
         z_bins  : list
                   list of the surveys redshift bin edges
         n_bins  : int
@@ -40,9 +40,9 @@ class GalaxyPhotoDist:
         z_max   : float
                   maximum redshift of the probes
         norm    : callable
-                  callable function that when given the redshift bin and a redshift, returns the normalisation of the galaxy redshift distribution
+                  callable function that when given the redshift bin and a redshift, returns the normalization of the galaxy redshift distribution
         n_i_vec : callable
-                  callable function that recieves the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
+                  callable function that receives the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
         """
         self.z_bins = cfg.specs["z_bins"]
         self.n_bins = len(self.z_bins)

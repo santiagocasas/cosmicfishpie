@@ -26,7 +26,7 @@ memory = Memory(cachedir, verbose=0)
 
 
 def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
-    """function to do the integration over redshift that shows up in the lensing kernal
+    """function to do the integration over redshift that shows up in the lensing kernel
 
     Parameters
     ----------
@@ -37,16 +37,16 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
     comoving_func : callable
                     callable function that returns the comoving distance. Should be a function of the redshift z as a numpy.ndarray
     z             : numpy.ndarray
-                    1d array of all reshifts z that the result of the integral should use as interpolated over.
+                    1d array of all redshifts z that the result of the integral should use as interpolated over.
     zint_mat      : numpy.ndarray
-                    2d array of reshifts z that the integral should use as integration points. The first row must coinside with z.
+                    2d array of redshifts z that the integral should use as integration points. The first row must coincide with z.
     diffz         : numpy.ndarray
-                    2d array of the seperation of integration points
+                    2d array of the separation of integration points
 
     Returns
     -------
     callable
-        callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray
+        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
 
     Note
     ----
@@ -67,7 +67,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
 
 
 def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
-    """function to do the integration over redshift that shows up in the lensing kernal
+    """function to do the integration over redshift that shows up in the lensing kernel
 
     Parameters
     ----------
@@ -77,13 +77,13 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
                     callable function that returns the number density distribution of galaxies. Should be a function of the redshift bin index i as an int and the redshift z as a numpy.ndarray
     comoving_func : callable
                     callable function that returns the comoving distance. Should beb a function of the redshift z as a numpy.ndarray
-    z_arr         : numpy.ndarray
-                    1d array of all reshifts z that should be used as integration points.
+    zarr         : numpy.ndarray
+                    1d array of all redshifts z that should be used as integration points.
 
     Returns
     -------
     callable
-        callable function that recieves a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
+        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
     """
     zprime = zarr[:, None]
     wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
@@ -128,8 +128,8 @@ class ComputeCls:
                            An instance of `cosmo_functions`. Will either contain the fiducial cosmology if passed or compute from the cosmopars dict
         observables      : list
                            a list of the observables that the angular power spectrum is computed for
-        nuicance         : cosmicfishpie.cosmology.nuicance.Nuicance
-                           An instance of `Nuicance` that contains the relevant modeling of nuicance parameters
+        nuisance         : cosmicfishpie.cosmology.nuisance.Nuisance
+                           An instance of `Nuisance` that contains the relevant modeling of nuisance parameters
         window           : cosmicfishpie.LSSsurvey.photo_window.GalaxyPhotoDist
                            An instance of `GalaxyPhotoDist` containing the galaxy distribution needed to compute the window functions
         tracer           : str
@@ -147,7 +147,7 @@ class ComputeCls:
         z_max            : float
                            maximum redshift of the probes
         z                : numpy.ndarray
-                           array containing the redshifts used in the internal calulations
+                           array containing the redshifts used in the internal calculations
         dz               : numpy.ndarray
                            array containing the numerical distance of the redshifts in z
         """
@@ -248,17 +248,17 @@ class ComputeCls:
             self.print_numerical_specs()
 
     def compute_all(self):
-        """Main function to compute the angular power spectrum. Will first compute the limber appoximated angular power spectrum and the window functions for both probes. From that it will obtain the angular power spectrum.
+        """Main function to compute the angular power spectrum. Will first compute the limber approximated angular power spectrum and the window functions for both probes. From that it will obtain the angular power spectrum.
 
         Note
         -----
         This function does not return the calculated quantities. Rather they are found in new attributes of the object.
 
-        The result of the Limber approximated power specta are found in the new atributes `Pell` and `sqrtPell`
+        The result of the Limber approximated power spectra are found in the new attributes `Pell` and `sqrtPell`
 
-        The window functions are found in the new atributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for
+        The window functions are found in the new attributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for
 
-        The angular power spectrum is found in the new atribute `result`
+        The angular power spectrum is found in the new attribute `result`
         """
         tini = time()
         upt.time_print(
@@ -425,14 +425,14 @@ class ComputeCls:
         Parameters
         ----------
         z : numpy.ndarray
-            array containing the redshifts for which the kernal should be computed for
+            array containing the redshifts for which the kernel should be computed for
         i : int
             index of the redshift bin
 
         Returns
         -------
         numpy.ndarray
-            Value of the galaxy clustering kernal at redshift z for bin i
+            Value of the galaxy clustering kernel at redshift z for bin i
 
         Note
         -----
@@ -463,14 +463,14 @@ class ComputeCls:
         Parameters
         ----------
         z : numpy.ndarray
-            array containing the redshifts for which the kernal should be computed for
+            array containing the redshifts for which the kernel should be computed for
         i : int
             index of the redshift bin
 
         Returns
         -------
         numpy.ndarray
-            Value of the cosmic shearing kernal at redshift z for bin i
+            Value of the cosmic shearing kernel at redshift z for bin i
 
         Note
         -----
@@ -506,7 +506,7 @@ class ComputeCls:
         return Wwl, WIA
 
     def integral_efficiency(self, i):
-        """computes the integral that enters the lensing kernal for a given redshift bin
+        """computes the integral that enters the lensing kernel for a given redshift bin
 
         Parameters
         ----------
@@ -516,7 +516,7 @@ class ComputeCls:
         Returns
         -------
         callable
-            callable function that recieves a numpy.ndarray of requested reshifts and returns the lensing efficienty for the i-th bin as a numpy.ndarray
+            callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
         """
         # expensive calculation doesn't need to
         # be performed if cosmopars and photopars are the same
@@ -549,7 +549,7 @@ class ComputeCls:
 
         Note
         -----
-        This does not return the window functions. They are found in the new atributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for
+        This does not return the window functions. They are found in the new attributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for
         """
         if "GCph" in self.observables:
             self.GC = [

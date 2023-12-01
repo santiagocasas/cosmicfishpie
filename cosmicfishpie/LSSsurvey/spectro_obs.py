@@ -31,6 +31,90 @@ class ComputeGalSpectro:
         bias_samples=["g", "g"],
         use_bias_funcs=True,
     ):
+        """class to compute the observed power spectrum of a spectroscopic galaxy clustering experiment
+
+        Parameters
+        ----------
+        cosmopars            : dict
+                               A dictionary containing the cosmological parameters of the sample cosmology
+        fiducial_cosmopars   : dict, optional
+                               A dictionary containing the cosmological parameters of the fiducial/reference cosmology
+        spectro_biaspars     : dict, optional
+                               A dictionary containing the specifications for the galaxy biases
+        spectrononlinearpars : dict, optional
+                               A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+        PShotpar             : dict, optional
+                               A dictionary containing the values of the additional shot noise per bin
+        fiducial_cosmo       : cosmicfishpie.cosmology.cosmology.cosmo_functions, optional
+                               An instance of `cosmo_functions` of the fiducial cosmology.
+        bias_samples         : list
+                               A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
+        use_bias_func        : bool
+                               If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
+
+        Attributes
+        ----------
+        feed_lvl                      : int
+                                        Number indicating the verbosity of the output. Higher numbers mean more output
+        observables                   : list
+                                        A list of the observables that the observed power spectrum is computed for
+        s8terms                       : bool
+                                        If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
+        tracer                        : str
+                                        What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering. Either "matter" or "clustering"
+        fiducial_cosmopars            : dict
+                                        A dictionary containing the cosmological parameters of the fiducial/reference cosmology
+        fiducial_cosmo                : cosmicfishpie.cosmology.cosmology.cosmo_functions
+                                        An instance of `cosmo_functions` of the fiducial cosmology.
+        cosmo                         : cosmicfishpie.cosmology.cosmology.cosmo_functions
+                                        An instance of `cosmo_functions` of the sample cosmology.
+        nuisance                      : cosmicfishpie.cosmology.Nuisance.Nuisance
+                                        An instance of `nuisance` that contains the relevant modeling of nuisance parameters
+        gcsp_bias_of_z                : callable
+                                        Function that when passed a numpy.ndarray of redshifts will return the spectroscopic galaxy bias
+        extraPshot                    : dict
+                                        A dictionary containing the values of the additional shot noise per bin
+        bias_samples                  : list
+                                        A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping.
+        gcsp_z_bin_mids               : numpy.ndarray
+                                        Lists the redshift bin centers
+        fiducial_spectrobiaspars      : dict
+                                        A dictionary containing the fiducial values for the galaxy biases
+        use_bias_funcs                : bool
+                                        If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
+        spectrobiaspars               : dict
+                                        A dictionary containing the specifications for the galaxy biases
+        fiducial_PShotpars            : dict
+                                        A dictionary containing the fiducial values of the additional shot noise per bin
+        PShotpars                     : dict
+                                        A dictionary containing the values of the additional shot noise per bin
+        fiducial_spectrononlinearpars : dict
+                                        A dictionary containing the fiducial values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+        spectrononlinearpars          : dict
+                                        A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+        sigmap_inter                  : callable
+                                        A callable function that when given a numpy.ndarray of redshifts will give the interpolated value of the non linear modeling parameters entering FOG
+        sigmav_inter                  : callable
+                                        A callable function that when given a numpy.ndarray of redshifts will give the interpolated value of the non linear modeling parameters entering the dewiggling weight
+        allpars                       : dict
+                                        Dictionary containing all relevant parameters to compute the observed power spectrum
+        fiducial_allpars              : dict
+                                        Dictionary containing all relevant fiducial parameters to compute the observed power spectrum
+        k_grid                        : numpy.ndarray
+                                        Lists all wavenumbers used in the internal calculations
+        dk_grid                       : numpy.ndarray
+                                        Lists the numerical distance between all wavenumbers used in the internal calculations
+        linear_switch                 : bool
+                                        If False all nonlinear effects will neglected in the computation of the observed power spectrum
+        FoG_switch                    : bool
+                                        If True and `linear_switch` is True, then the finger of god effect will be modelled in the observed power spectrum.
+        APbool                        : bool
+                                        If True and `linear_switch` is True, then the Alcock-Paczynsk effect be considered
+        fix_cosmo_nl_terms            : bool
+                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology
+        dz_err                        : float
+                                        Value of the spectroscopic redshift error
+        """
         tini = time()
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
@@ -101,7 +185,7 @@ class ComputeGalSpectro:
         self.bias_samples = bias_samples
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
 
-        # Load the Nuiscance Parameters
+        # Load the Nuisance Parameters
         self.fiducial_spectrobiaspars = cfg.Spectrobiasparams
         self.use_bias_funcs = use_bias_funcs
         if spectrobiaspars is None:
@@ -143,11 +227,11 @@ class ComputeGalSpectro:
             **self.spectrononlinearpars,
         }
         self.fiducial_allpars = {
-            **self.cosmopars,
-            **self.spectrobiaspars,
-            **self.PShotpars,
-            **self.spectrononlinearpars,
-        }  # Seems wrong but is never used. should get it from cfg
+            **self.fiducial_cosmopars,
+            **self.fiducial_spectrobiaspars,
+            **self.fiducial_PShotpars,
+            **self.fiducial_spectrononlinearpars,
+        }
 
         self.set_internal_kgrid()
         self.activate_terms()
@@ -163,6 +247,7 @@ class ComputeGalSpectro:
         )
 
     def set_internal_kgrid(self):
+        """Updates the internal grid of wavenumbers used in the computation"""
         cfg.specs["kmax"] = cfg.specs["kmax_GCsp"]
         cfg.specs["kmin"] = cfg.specs["kmin_GCsp"]
         kmin_int = 0.001
@@ -171,50 +256,83 @@ class ComputeGalSpectro:
         self.dk_grid = np.diff(self.k_grid)[0]
 
     def activate_terms(self):
+        """Update which modelling effects should be taken into consideration"""
         self.linear_switch = cfg.settings["GCsp_linear"]
         self.FoG_switch = cfg.settings["FoG_switch"]
         self.APbool = cfg.settings["AP_effect"]
         self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
 
     def set_spectro_specs(self):
+        """Updates the spectroscopic redshift error"""
         self.dz_err = cfg.specs["spec_sigma_dz"]
 
     def qparallel(self, z):
-        """
-        Function implementing q parallel
+        """Function implementing q parallel of the Alcock-Paczynski effect
+
+        Parameters
+        ----------
+        z : numpy.ndarray
+            list of redshifts for which the q parallel should be computed
+
+        Returns
+        -------
+        numpy.ndarray
+            redshift dependant value of q parallel
         """
         qpar = self.fiducialcosmo.Hubble(z) / self.cosmo.Hubble(z)
         return qpar
 
     def qperpendicular(self, z):
-        """
-        Function implementing q parallel
+        """Function implementing q perpendicular of the Alcock-Paczynski effect
+
+        Parameters
+        ----------
+        z : numpy.ndarray
+            list of redshifts for which the q perpendicular should be computed
+
+        Returns
+        -------
+        numpy.ndarray
+            redshift dependant value of q perpendicular
         """
         qper = self.cosmo.angdist(z) / self.fiducialcosmo.angdist(z)
         return qper
 
     def kpar(self, z, k, mu):
-        """
-        Args:
-        z : The redshift of interest.
-        k : wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
-        mu: cosine of the angel between the line of sight and the wavevector
+        """Computes the parallel projection of a wavevector. Takes into acount AP-effect
 
-        Returns:
-            Observed parrallel projection of wavevector onto the line of sight with AP-effect corrected for
+        Parameters
+        ----------
+        z  : float, numpy.ndarray
+             The redshift of interest.
+        k  : float, numpy.ndarray
+             wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
+        mu : float, numpy.ndarray
+             cosine of the angel between the line of sight and the wavevector
+
+        Returns
+        -------
+            Observed parallel projection of wavevector onto the line of sight with AP-effect corrected for
         """
 
         k_par = k * mu * (1 / self.qparallel(z))
         return k_par
 
     def kper(self, z, k, mu):
-        """
-        Args:
-        z : The redshift of interest.
-        k : wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
-        mu: cosine of the angel between the line of sight and the wavevector
-        Returns:
-            Observed orthogonal projection of wavevector onto the line of sight with AP-effect corrected for.
+        """Computes the perpendicular projection of a wavevector. Takes into acount AP-effect
+
+        Parameters
+        ----------
+        z  : float, numpy.ndarray
+             The redshift of interest.
+        k  : float, numpy.ndarray
+             wavenumbers at which to compute the power spectrum. Must be in units of Mpc^-1/h.
+        mu : float, numpy.ndarray
+             cosine of the angel between the line of sight and the wavevector
+
+        Returns
+        -------
+            Observed perpendicular projection of wavevector onto the line of sight with AP-effect corrected for
         """
 
         k_per = k * np.sqrt(1 - mu**2) * (1 / self.qperpendicular(z))
@@ -224,6 +342,16 @@ class ComputeGalSpectro:
         """
         Function that rescales the k-array, when the kmax-kmin integration units are fixed in h/Mpc,
         while the rest of the code is defined in 1/Mpc.
+
+        Parameters
+        ----------
+        k : float, numpy.ndarray
+            wavenumbers in units of h sample/Mpc to be rescaled
+
+        Returns
+        -------
+        float, numpy.ndarray
+            wavenumbers in un units of h ref/Mpc
         """
         h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
         kh = k * h_change
@@ -239,18 +367,20 @@ class ComputeGalSpectro:
         k     : numpy.ndarray, float
                 wavevector
         mu    : numpy.ndarray, float
-                cosine of angle between line of sight and the wavevektor
+                cosine of angle between line of sight and the wavevector
 
         Returns
         -------
         numpy.ndarray, float
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
         .. math::
+            k^{obs} = k\\, \\sqrt{\\left(q_\\| \\mu \\right)^2 + \\left(1-\\mu^2\\right)q_\\perp^2}
 
+            \\mu^{obs} = \\mu\\,q_\\|\\, \\sqrt{\\left(q_\\| \\mu \\right)^2 + \\left(1-\\mu^2\\right)q_\\perp^2}^{-1}
 
         """
 
@@ -263,43 +393,53 @@ class ComputeGalSpectro:
             return kap, muap
 
     def spec_err_z(self, z, k, mu):
-        """
-        Args
-        ----
-            z : float
-                The redshift of interest.
-            k : float, ndarray
-                wavenumbers at which to compute the power
-                spectrum. Must be in units of Mpc^-1.
-            mu: float, ndarray
-                cosine of the angel between the line of sight and the wavevector
+        """Function to compute the scale dependant suppression of the observed power spectrum due to the spectroscopic redshift error
+
+        Parameters
+        ----------
+        z  : float, numpy.ndarray
+             The redshifts of interest.
+        k  : float, numpy.ndarray
+             wavenumbers at which to compute the power spectrum suppression.
+        mu : float, numpy.ndarray
+             cosine of the angel between the line of sight and the wavevector.
 
         Returns
         -------
-        float
-            Supression of the observed powerspectrum due to the error on spectroscopic redshift determination.
+        float, numpy.ndarray
+            Suppression of the observed power spectrum due to the error on spectroscopic redshift determination.
+
+        Note
+        -----
+        Implements the following equation:
+
+        .. math::
+            \\mathrm{Err} = \\exp\\left[-\\sigma^2_\\|\\, k^2\\, \\mu^2 -\\sigma_\\perp^2 \\,k^2\\,\\left(1- \\mu^2\\right)\\right].
+
         """
         err = self.dz_err * (1 + z) * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
         return np.exp(-(1 / 2) * err**2)  # Gaussian
 
     def BAO_term(self, z):
-        """BAO term
+        """Calculates the BAO term. This is the rescaling of the fourier volume by the  AP-effect
 
         Parameters
         ----------
-        z     : array
-                redshift
+        z     : float, numpy.ndarray
+                The redshifts of interest
 
         Returns
         -------
-        float
-            Value of BAO term at redshift z
+        float, numpy.ndarray
+            Value of BAO term at redshifts z
 
-        Notes
+        Note
         -----
         Implements the following equation:
 
         .. math::
+
+            \\mathrm{BAO} = q_\\perp^2\\,q_\\|
 
         """
         if not self.APbool:
@@ -322,14 +462,14 @@ class ComputeGalSpectro:
 
     def bterm_fid(self, z, bias_sample="g"):
         """
-        Calculates the fiducial bias term at a given redshift `z`, of either galaxies or intensity mapping.
+        Calculates the fiducial bias term at a given redshift z, of either galaxies or intensity mapping.
 
         Parameters:
         -----------
-        z: float
-            The redshift value at which to evaluate the bias term.
-        bias_sample: str, optional (default='g')
-            Specifies whether to compute the galaxy ('g') or intensity mapping ('I') bias term.
+        z           : float, numpy.ndarray
+                      The redshifts value at which to evaluate the bias term.
+        bias_sample : str, optional
+                      Specifies whether to compute the galaxy ('g') or intensity mapping ('I') bias term. (default='g')
 
         Returns:
         --------
@@ -369,16 +509,33 @@ class ComputeGalSpectro:
         """
         Computes the Kaiser redshift-space distortion term.
 
-        Parameters:
-            z: Redshift.
-            k: Wave number in Mpc^-1.
-            mu : cosine of angle between line of sight and the wavevector.
-            b_i: External bias term. Defaults to None.
-            just_rsd (bool, optional): If True, returns only the RSD term. Otherwise, computes the full Kaiser term. Defaults to False.
-            bias_sample (str, optional): Bias term to use from self.bterm_fid(). Possible values: 'g': galaxies, 'I': intensity mapping. Defaults to 'g'.
+        Parameters
+        ----------
+            z           : float, numpy.ndarray
+                          Redshifts of interest
+            k           : float, numpy.ndarray
+                          Wave numbers at which to calculate the linear RSD
+            mu          : float, numpy.ndarray
+                          cosine of angles between line of sight and the wavevector.
+            b_i         : float, numpy.ndarray, optional
+                          galaxy bias at Redshifts z
+            just_rsd    : bool, optional
+                          If True, returns only the RSD term. Otherwise, computes the full Kaiser term. Defaults to False.
+            bias_sample : str, optional
+                          Bias term to use from self.bterm_fid(). Possible values: 'g': galaxies, 'I': intensity mapping. Defaults to 'g'.
 
-        Returns:
-            The computed Kaiser term.
+        Returns
+        -------
+            The computed Kaiser term for redshift space distortions.
+
+        Note
+        -----
+        Implements the following equation:
+
+        .. math::
+
+            \\mathrm{RSD} = \\left(b_i+f\,\\mu^2\\right)
+
         """
         bterm = b_i  # get bs8 as an external parameter, unless it is none, then get it from cosmo
         if b_i is None:
@@ -409,20 +566,29 @@ class ComputeGalSpectro:
 
         Parameters
         ----------
-        z : float
-            The redshift value.
-        k : float
-            The wavenumber in Mpc^-1.
-        mu : float
-            The cosine of angle between the wavevector and the line-of-sight direction.
+        z    : float, numpy.ndarray
+               The redshifts values of interest.
+        k    : float
+               The wavenumber for which the suppression should be computed
+        mu   : float, numpy.ndarray
+               The cosine of angle between the wavevector and the line-of-sight direction.
         mode : str, optional
-            A string parameter indicating the model to use. Defaults to 'Lorentz'.
+               A string parameter indicating the model to use. Defaults to 'Lorentz'.
 
         Returns
         -------
-        float
+        float, numpy.ndarray
             The calculated FoG term, which is 1 if either FoG_switch is False or linear_switch is True.
             Otherwise, it depends on the specified mode.
+
+        Note
+        -----
+        If mode is "Lorentz" this implements following equation
+
+        ..math::
+
+            \\mathrm{FoG} = \\frac{1}{1+\\left[f\\,\\sigma_p\\,\\mu^2\\right]^2}
+
         """
         if (self.FoG_switch is False) or (self.linear_switch):
             fog = 1
@@ -434,10 +600,15 @@ class ComputeGalSpectro:
         return fog
 
     def sigmapNL(self, zz):
-        """
-        Args:
-            zz: The redshift value at which to calculate the power spectrum.
-        Returns:
+        """Function to calculate the variance of the velocity dispersion
+
+        Parameters
+        ----------
+            zz : float
+                 The redshift value at which to calculate the variance.
+        Returns
+        -------
+        float
             Calculates the variance of the pairwise velocity dispersion. Enters into the FOG effect.
 
         """
@@ -450,12 +621,17 @@ class ComputeGalSpectro:
         return sp
 
     def sigmavNL(self, zz, mu):
-        """
-        Args:
-            zz: The redshift value at which to calculate the power spectrum.
+        """Function to calculate the variance of the displacement field
 
-        Returns:
-            calculates the variance of the displacement field. Enters into the dewigling weight to obtain the (slightly) nonlinear Powerspectrum
+        Parameters
+        ----------
+            zz : float
+                 The redshift value at which to calculate the variance.
+
+        Returns
+        -------
+        float
+            Calculates the variance of the displacement field. Enters into the dewiggling weight to obtain the mildly nonlinear power spectrum
 
         """
         if self.linear_switch:
@@ -473,12 +649,17 @@ class ComputeGalSpectro:
         """
         Calculates the angular power spectrum moments of the velocity divergence field, also known as the Theta field.
 
-        Args:
-            zz: The redshift value at which to calculate the power spectrum.
-            moment: An integer indicating the order of the moment to calculate. Default is 0.
+        Parameters
+        ----------
+        zz     : float
+                 The redshift value at which to calculate the power spectrum.
+        moment : int
+                 An integer indicating the order of the moment to calculate. Default is 0.
 
-        Returns:
-            ptt (float): The power spectrum moment of the velocity divergence field.
+        Returns
+        -------
+        float
+            The power spectrum moment of the velocity divergence field.
         """
         # TODO: can be optimized by returning interpolating function in z and
         # doing it one time only
@@ -498,17 +679,23 @@ class ComputeGalSpectro:
         return ptt
 
     def normalized_pdd(self, z, k):
-        """
-        Args:
-            z: The redshift at which to compute the normalized Powerspectrum
-            k: Wavenumber at which to compute the normalized Powerspectrum
+        """This function normalizes the power spectrum to have a variance smoothed over 8 Mpc/h of 1. This is to cancel out possible terms with :math:`\\sigma_8` in the RSD.
+        Parameters
+        ----------
+        z : float, numpy.ndarray
+           The redshift at which to compute the normalized power spectrum
+        k : float, numpy.ndarray
+            Wavenumber at which to compute the normalized power spectrum
 
-        Returns:
-            The Normalized Powerspectrum
+        Returns
+        -------
+        float, numpy.ndarray
+            The Normalized power spectrum
 
-        Note:
-            This is not really a normalisation it is solely here to cancel possible sigma8 terms inside of the Kaiserterm (BAO). If the user passes for
-            example b times sigma8 as bias then here the sigma8 is canceled out.
+        Note
+        -----
+        This is not really a normalisation if there is no :math:`\\sigma_8` terms inside of the RSD (Kaiserterm). It is then canceled out automatically
+
         """
         s8_denominator = 1
         if self.s8terms:
@@ -520,16 +707,22 @@ class ComputeGalSpectro:
 
     def normalized_pnw(self, z, k):
         """
-        Args:
-            z: The redshift at which to compute the normalized Powerspectrum
-            k: Wavenumber at which to compute the normalized Powerspectrum
+        This function normalizes the power spectrum with the BAO wiggles subtracted from to have a variance smoothed over 8 Mpc/h of roughly 1. This is to cancel out possible terms with :math:`\\sigma_8` in the RSD.
+        Parameters
+        ----------
+        z : float, numpy.ndarray
+           The redshift at which to compute the normalized 'no-wiggle' power spectrum
+        k : float, numpy.ndarray
+            Wavenumber at which to compute the normalized 'no-wiggle' power spectrum
 
-        Returns:
-            The Normalized "no-wiggle" Powerspectrum
+        Returns
+        -------
+        float, numpy.ndarray
+            The Normalized 'no-wiggle' power spectrum
 
-        Note:
-            This is not really a normalisation it is solely here to cancel possible sigma8 terms inside of the Kaiserterm (BAO). If the user passes for
-            example b times sigma8 as bias then here the sigma8 is canceled out.
+        Note
+        -----
+        This is not really a normalisation if there is no :math:`\\sigma_8` terms inside of the RSD (Kaiserterm). It is then canceled out automatically
         """
         s8_denominator = 1
         if self.s8terms:
@@ -540,25 +733,25 @@ class ComputeGalSpectro:
         return self.p_nw
 
     def dewiggled_pdd(self, z, k, mu):
-        """ "
-        Calculates the normalized dewiggled powerspectrum
+        """
+        This function calculates the normalized dewiggled power spectrum.
 
-        Args
-        ----
-            z : float
-                The redshift value.
-            k : float
-                The wavenumber in Mpc^-1.
-            mu : float
-                 The cosine of angle between the wavevector and the line-of-sight direction.
+        Parameters
+        ----------
+        z  : float, numpy.ndarray
+             The redshifts values of interest.
+        k  : float
+             The wavenumber for which the power spectrum should be computed
+        mu : float, numpy.ndarray
+             The cosine of angle between the wavevector and the line-of-sight direction.
 
         Returns
         -------
-        numpy.ndarray
-            The dewiggled powerspectrum.
+        float, numpy.ndarray
+            The the mildly non-linear (dewiggled) power spectrum.
         Note
         ----
-            If the config asks for only linear spectrum this just returns the powerspectrum normalized with either 1 or 1/sigma8^2
+            If the config asks for only linear spectrum this just returns the power spectrum normalized with either 1 or 1/sigma8^2
         """
 
         if self.linear_switch:
@@ -574,23 +767,32 @@ class ComputeGalSpectro:
         return self.p_dd_DW
 
     def observed_Pgg(self, z, k, mu, b_i=None):
-        """galaxy-galaxy spectro power spectrum computation
+        """
+        This function calculates the observed galaxy power spectrum.
 
         Parameters
         ----------
-        z   : float
-                multipole
+        z   : float, numpy.ndarray
+              The redshifts values of interest.
+        k   : float
+              The wavenumber for which the power spectrum should be computed
+        mu  : float, numpy.ndarray
+              The cosine of angle between the wavevector and the line-of-sight direction.
+        b_i : float, numpy.ndarray, optional
+              Redshift dependant values of the galaxy bias
 
         Returns
         -------
-        float
-            Value of P_gg
+        float, numpy.ndarray
+            The observed galaxy power spectrum
 
-        Notes
+        Note
         -----
-        Implements the following equation:
+        In presence of all modeling terms, this function implements the following equation:
 
         .. math::
+
+            P^{obs}_{gg} = q_\\perp^2 \\, q_\\| \\, \\mathrm{RSD}^2 \\, \\mathrm{FoG}\\, \\frac{P_{dw}^{obs}}{\\sigma_8^2} \\, \\mathrm{Err} + P_{shot}
 
         """
         if self.feed_lvl > 1:
@@ -624,23 +826,23 @@ class ComputeGalSpectro:
         return pgg_obs
 
     def lnpobs_gg(self, z, k, mu, b_i=None):
-        """Calculate the natural logarithm of the observed galaxy-galaxy power spectrum.
+        """This function calculates the natural logarithm of the observed galaxy power spectrum.
 
         Parameters
-        -----------
-            z : numpy.ndarray
-                Array of redshift values
-            k : numpy.ndarray
-                Array of wavenumber values
-            mu : float
-                 Cosine of the angle between the line of sight and the k vector
-            b_i : float, optional
-                  Galaxy bias factor for bin i. Default is None.
+        ----------
+        z   : float, numpy.ndarray
+              The redshifts values of interest.
+        k   : float
+              The wavenumber for which the power spectrum should be computed
+        mu  : float, numpy.ndarray
+              The cosine of angle between the wavevector and the line-of-sight direction.
+        b_i : float, numpy.ndarray, optional
+              Redshift dependant values of the galaxy bias
 
         Returns
-        --------
-        numpy.ndarray, float
-            Natural logarithm of the observed galaxy-galaxy power spectrum.
+        -------
+        float, numpy.ndarray
+            The observed galaxy power spectrums natural logarithm
         """
         pobs = self.observed_Pgg(z, k, mu, b_i=b_i)
         return np.log(pobs)
@@ -694,10 +896,10 @@ class ComputeGalIM(ComputeGalSpectro):
             **self.PShotpars,
         }
         self.fiducial_allpars = {
-            **self.cosmopars,
-            **self.spectrobiaspars,
+            **self.fiducial_cosmopars,
+            **self.fiducial_spectrobiaspars,
             **self.fiducial_IMbiaspars,
-            **self.PShotpars,
+            **self.fiducial_PShotpars,
         }
 
         tend = time()

@@ -124,7 +124,7 @@ def init(
     camb_config_yaml            : str
                                   Path to the configurations for camb. Defaults to '\<boltzmann_yaml_path\>/camb/default.yaml'
     fishermatrix_file_extension : str
-                                  Specifies in what kind of file the result fisher matrix should be saved. Defaults to '.txt'
+                                  Specifies in what kind of file the result Fisher matrix should be saved. Defaults to '.txt'
     savgol_polyorder            : float
                                   Order of the Savitzky-Golay filter. Defaults to 3 matching the IST:F recipe
     savgol_width                : float
@@ -146,44 +146,44 @@ def init(
 
     Attributes
     ----------
-    settings            : dict, global
-                          A dictionary containing all the global options passed as well as the default values of the ones not passed
-    external            : dict, global
-                          A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be None if no external files are given
-    input_type          : str, global
-                          String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'
-    specs               : dict, global
-                          A dictionary containing the survey specifications
-    boltzmann_classpars : dict, global
-                          A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for class
-    boltzmann_cambpars  : dict, global
-                          A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for camb
-    survey_equivalence  : callable, global
-                          Part of the Parser, will correspond the passed survey to the name of a specifications file
-    obs                 : list, global
-                          A list of strings for the different observables
-    freeparams          : dictionary, global
-                          A dictionary containing all names and the corresponding rel. step size for all parameters 
-    fiducialparams      : dictionary, global
-                          A dictionary containing all fiducial values for the cosmological parameters
-    fiducialcosmo       : cosmicfishpie.cosmology.cosmology.cosmo_functions, global
-                          An instance of `cosmo_functions` of the fiducial cosmology, this contains all the cosmological functions and quantities computed from them
-    biasparams : dict, global
-                 a dictionary containing the specifications for the galaxy biases of the photometric probe
-    photoparams : dict, global
-                  a dictionary containing specifications for the window function's galaxy distribution of the photometric probe
-    IAparams : dict, global
-               a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear of the photometric probe
-    PShotparams : dict, global
-                  A dictionary containing the values of the additional shot noise per bin dictionary containing the values of the additional shot noise per bin for the spectroscopic probe
-    Spectrobiasparams : dict, global
-                        A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
+    settings               : dict, global
+                             A dictionary containing all the global options passed as well as the default values of the ones not passed
+    external               : dict, global
+                             A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be None if no external files are given
+    input_type             : str, global
+                             String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'
+    specs                  : dict, global
+                             A dictionary containing the survey specifications
+    boltzmann_classpars    : dict, global
+                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for class
+    boltzmann_cambpars     : dict, global
+                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for camb
+    survey_equivalence     : callable, global
+                             Part of the Parser, will correspond the passed survey to the name of a specifications file
+    obs                    : list, global
+                             A list of strings for the different observables
+    freeparams             : dict, global
+                             A dictionary containing all names and the corresponding rel. step size for all parameters 
+    fiducialparams         : dict, global
+                             A dictionary containing all fiducial values for the cosmological parameters
+    fiducialcosmo          : cosmicfishpie.cosmology.cosmology.cosmo_functions, global
+                             An instance of `cosmo_functions` of the fiducial cosmology, this contains all the cosmological functions and quantities computed from them
+    biasparams             : dict, global
+                             a dictionary containing the specifications for the galaxy biases of the photometric probe
+    photoparams            : dict, global
+                             A dictionary containing specifications for the window function's galaxy distribution of the photometric probe
+    IAparams               : dict, global
+                             A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear of the photometric probe
+    PShotparams            : dict, global
+                             A dictionary containing the values of the additional shot noise per bin dictionary containing the values of the additional shot noise per bin for the spectroscopic probe
+    Spectrobiasparams      : dict, global
+                             A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
     Spectrononlinearparams : dict, global
                              A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin for the spectroscopic probe
-    IMbiasparams : dict, global
-                   A dictionary containing the specifications for the line intensity biases of the spectroscopic probe
-    latex_names : dict, global
-                  A dictionary with all cosmological + nuisance parameters and their corresponding name for the LaTeX labels.
+    IMbiasparams           : dict, global
+                             A dictionary containing the specifications for the line intensity biases of the spectroscopic probe
+    latex_names            : dict, global
+                             A dictionary with all cosmological + nuisance parameters and their corresponding name for the LaTeX labels.
     """
     global settings
     settings = options

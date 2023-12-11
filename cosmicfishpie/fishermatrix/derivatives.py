@@ -193,7 +193,7 @@ class derivatives:
         return der
 
     def derivative_forward_4pt(self):
-        r"""One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
+        """One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
         Taken from:
         https://web.media.mit.edu/~crtaylor/calculator.html
         @misc{fdcc,

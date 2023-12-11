@@ -21,7 +21,7 @@ class derivatives:
         fiducial,
         special_deriv_function=None,
         freeparams=dict(),
-):
+    ):
         """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute.
 
         Arguments
@@ -193,7 +193,7 @@ class derivatives:
         return der
 
     def derivative_forward_4pt(self):
-        """One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
+        r"""One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
         Taken from:
         https://web.media.mit.edu/~crtaylor/calculator.html
         @misc{fdcc,

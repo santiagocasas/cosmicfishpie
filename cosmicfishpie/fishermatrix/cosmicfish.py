@@ -711,14 +711,14 @@ class FisherMatrix:
 
     def export_fisher(self, fishmat, totaltime=None):
         """Will print the fisher matrix as well as specifications and the parameter names to files. To change location and filenames for this check the settings dictionary of  cosmicfishpie.fishermatrix.config
-        
+
         Arguments
         ---------
         fishmat   : numpy.ndarray
-                    Computed Fisher matrix 
+                    Computed Fisher matrix
         totaltime : float, optional
                     Total time needed to compute the fisher. Will print time information if passed
-                    
+
         Returns
         -------
         cosmicfishpie.analysis.fisher_matrix

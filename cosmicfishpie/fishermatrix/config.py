@@ -163,7 +163,7 @@ def init(
     obs                    : list, global
                              A list of strings for the different observables
     freeparams             : dict, global
-                             A dictionary containing all names and the corresponding rel. step size for all parameters 
+                             A dictionary containing all names and the corresponding rel. step size for all parameters
     fiducialparams         : dict, global
                              A dictionary containing all fiducial values for the cosmological parameters
     fiducialcosmo          : cosmicfishpie.cosmology.cosmology.cosmo_functions, global

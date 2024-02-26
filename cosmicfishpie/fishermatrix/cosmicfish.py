@@ -66,6 +66,67 @@ class FisherMatrix:
         parallel="False",
         parallel_cpus=4,
     ):
+        """This is the main class of cosmicfishpie that is used to do a Fisher matrix forecast for current and upcoming experiments in cosmology. If you want to compute the Fisher matrix you can pass all specifications and options here.
+
+        Parameters
+        ----------
+        options              : dict, optional
+                               A dictionary that contains the global options for the calculation of the fishermatrix. A list of all possible keys are found in the documentation of cosmicfishpie.fishermatrix.config
+        specifications       : dict, optional
+                               A dictionary containing the survey specifications. Defaults to the specifications in the `.yaml` of the survey specifications
+        observables          : list, optional
+                               A list of strings for the different observables
+        freepars             : dict, optional
+                               A dictionary containing all cosmological parameters to be varied and their corresponding rel. step sizes
+        extfiles             : dict, optional
+                               A dictionary containing the path to the external files as well as how all the names of the files in the folder correspond to the cosmological quantities, units etc.
+        fiducialpars         : dict, optional
+                               A dictionary containing the fiducial cosmological parameters
+        biaspars             : dict, optional
+                               A dictionary containing the specifications for the galaxy biases of the photometric probe
+        photopars            : dict, optional
+                               A dictionary containing specifications for the window function's galaxy distribution
+        spectrononlinearpars : dict, optional
+                               A dictionary containing the values of the non linear modeling parameters of the spectroscopic probe
+        IApars               : dict, optional
+                               A dictionary containing the specifications for the galaxy biases of the spectroscopic intensity mapping probe
+        surveyName           : str, optional
+                               String of the name of the survey for which the forecast is done. Defaults to Euclid with optimistic specifications
+        cosmoModel           : str, optional
+                               A string of the name of the cosmological model used in the calculations. Defaults to flat "w0waCDM" cosmology
+        latexnames           : dict, optional
+                               A dictionary that contains the Latex names of the cosmological parameters
+        parallel             : bool, optional
+                               If True will compute the Fisher matrix using ray parallelization. Defaults to False
+        parallel_cpus        : int, optional
+                               Number of CPUs that should be used when computing the results using ray parallelization.
+
+        Attributes
+        ----------
+        fiducialcosmopars : dict
+                            A dictionary containing all fiducial values for the cosmological parameters
+        photopars         : dict
+                            A dictionary containing specifications for the window function's galaxy distribution of the photometric probe
+        IApars            : dict
+                             A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear of the photometric probe
+        biaspars          : dict
+                             a dictionary containing the specifications for the galaxy biases of the photometric probe
+        Spectrobiaspars   : dict
+                             A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
+        Spectrononlinpars : dict
+                             A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin for the spectroscopic probe
+        IMbiaspars        : dict
+                             A dictionary containing the specifications for the line intensity biases of the spectroscopic probe
+        PShotpars         : dict
+                             A dictionary containing the values of the additional shot noise per bin dictionary containing the values of the additional shot noise per bin for the spectroscopic probe
+        observables       : list
+                             A list of strings for the different observables
+        freeparams        : dict
+                             A dictionary containing all names and the corresponding rel. step size for all parameters
+        allparams_fidus   : dict
+                            A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
+        """
+
         print("**************************************************************")
         print("   _____               _     _____     __  ")
         print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
@@ -134,6 +195,18 @@ class FisherMatrix:
             ray_session(num_cpus=parallel_cpus, restart=True, shutdown=False)
 
     def compute(self, max_z_bins=None):
+        """This function will compute the Fisher information matrix and export using the specified settings.
+
+        Arguments
+        ---------
+        max_z_bins : int
+                     For the spectroscopic probe what the highest redshift bin that should be considered in the computation of the Fisher
+
+        Returns
+        -------
+        cosmicfishpie.analysis.fisher_matrix
+            A instance of fisher_matrix containing the calculated Fisher matrix as well as parameter names, settings, etc
+        """
         # This switches between the possible Fisher matrices
 
         tfishstart = time()
@@ -262,6 +335,12 @@ class FisherMatrix:
         return fishMat_object
 
     def set_pk_settings(self):
+        """Function to define grids of the internal wavenumber and observation angle
+
+        Note
+        ----
+        This is not a setter function. Rather the internal grids are constructed from the passed options and then they are stored in the attributes `Pk_kgrid` and `Pk_mugrid` as well as the combined meshes `Pk_kmesh` and `Pk_mumesh`.
+        """
         # kmin and kmax GCsp values are always indicated in h/Mpc
         k_units_factor = self.fiducialcosmopars["h"]
         self.kmin_fish = cfg.specs["kmin_GCsp"] * k_units_factor
@@ -273,6 +352,18 @@ class FisherMatrix:
         self.Pk_kmesh, self.Pk_mumesh = np.meshgrid(self.Pk_kgrid, self.Pk_mugrid)
 
     def compute_binned_derivs(self, z_arr):
+        """This computes the derivatives of the observed power spectrum for all redshift bins
+
+        Parameters
+        ----------
+        z_arr : list, numpy.ndarray
+                List of the redshift bin centers of the probe
+
+        Returns
+        -------
+        dict
+            A dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and varied parameter
+        """
         self.pk_deriv = spec_cov.SpectroDerivs(
             z_arr,
             self.Pk_kmesh,
@@ -284,6 +375,18 @@ class FisherMatrix:
         return allpars_deriv
 
     def pk_LSS_Fisher(self, nbins):
+        """This computes the Fisher matrix of a spectroscopic probe for all redshift bins
+
+        Parameters
+        ----------
+        nbins : int
+                    number of redshift bins the spectroscopic probe has
+
+        Returns
+        -------
+        numpy.ndarray
+            A list of Fisher matrices for each redshift bin
+        """
         self.parslist = list(self.freeparams.keys())
         fisherMatrix = np.zeros((nbins, len(self.parslist), len(self.parslist)))
         upt.time_print(
@@ -310,6 +413,17 @@ class FisherMatrix:
         return fisherMatrix
 
     def fisher_per_bin(self, ibin):
+        """This helper function contains the Fisher matrix of a spectroscopic probe for a single redshift bin
+
+        Arguments
+        ---------
+        ibin : int
+               index of the redshift bin
+
+        Returns
+        -------
+        numpy.ndarray
+            Fisher matrix of a spectroscopic probe for a single redshift bin"""
         fish_bi = np.zeros((len(self.parslist), len(self.parslist)))
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -326,6 +440,22 @@ class FisherMatrix:
         return fish_bi
 
     def fisher_calculation(self, zi, p_i, p_j):
+        """This helper function calculates a singular element of the fisher matrix
+
+        Parameters
+        ----------
+        zi  : int
+              index of the redshift bin
+        p_i : str
+              name of the first parameter
+        p_j : str
+              name of the second parameter
+
+        Returns
+        -------
+        float
+            The Fisher matrix element computed from the derivative with respect to two parameters and a given redshift bin for a spectroscopic probe
+        """
         k_mesh = self.Pk_kmesh
         mu_mesh = self.Pk_mumesh
         integrand = self.fish_integrand(zi, k_mesh, mu_mesh, p_i, p_j)
@@ -333,6 +463,18 @@ class FisherMatrix:
         return fish_element
 
     def fisher_integral(self, integrand):
+        """Function to calculate the integral that enters the computation of the Fisher elements. Uses a simpson integration on the mu and k grid
+
+        Arguments
+        ---------
+        integrand : numpy.ndarray
+                    Integrant that enters the Fisher matrix element computation. The shape needs to match ( shape of the kmesh ) x ( shape of mumesh)
+
+        Returns
+        -------
+        float
+            The Fisher matrix element computed from the derivative with respect to two parameters at a given redshift bin for a spectroscopic probe
+        """
         k_mesh = self.Pk_kmesh
         mu_mesh = self.Pk_mumesh
         mu_integral = simps(integrand, x=mu_mesh[:, 0], axis=0)
@@ -340,6 +482,26 @@ class FisherMatrix:
         return kmu_integral
 
     def fish_integrand(self, zi, k, mu, pi, pj):
+        """Helper function to calculate the integrand that enters the computation of the Fisher elements.
+
+        Arguments
+        ---------
+        zi : int
+             index of the redshift bin
+        k  : numpy.ndarray
+             grid of wavenumbers used in the calculation. Has to be the internal kmesh
+        mu : numpy.ndarray
+             grid of observation angles used in the calculation. Has to be the internal mumesh
+        pi : str
+             name of the first parameter
+        pj : str
+             name of the second parameter
+
+        Returns
+        -------
+        numpy.ndarray
+            Integrant that enters the Fisher matrix element computation. The shape matches ( shape of the kmesh ) x ( shape of mumesh)
+        """
         volsurv = self.pk_cov.volume_survey(zi)
         # pref = 2/(8*(np.pi**2))
         pref = 2  # prefactor due to \mu symmetry
@@ -350,10 +512,28 @@ class FisherMatrix:
         return intg
 
     def photo_LSS_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, lss_obj=None):
+        """Compute the Fisher matrix of a photometric probe.
+
+        Arguments
+        ---------
+        noisy_cls : dict, optional
+                    a dictionary with all the auto and cross correlation fiducial angular power spectra with noise added to it. Will recompute from lss_obj when not passed
+        covmat    : list, optional
+                    A list of pandas.DataFrame objects that store the covariance matrix for each multipole. Will recompute from lss_obj when not passed
+        derivs    : dict, optional
+                    A dictionary containing the derivatives of the angular power spectrum at the fiducial for all free parameters. Will recompute from lss_obj when not passed
+        lss_obj   : cosmicfishpie.LSSsurvey.photo_cov.PhotoCov, optional
+                    This object is used to compute the ingredients of the Fisher matrix if they were not passed
+
+        Returns
+        -------
+        numpy.ndarray
+            The full fisher matrix for the photometric probe
+        """
         if covmat is None and lss_obj is not None:
-            noisy_cls, covmat = self.photo_LSS.compute_covmat()
+            noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
-            derivs = self.photo_LSS.compute_derivs()
+            derivs = lss_obj.compute_derivs()
         tini = time()
         upt.time_print(
             feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
@@ -505,6 +685,13 @@ class FisherMatrix:
         return Fisher
 
     def eliminate_zbinned_freepars(self, nmax):
+        """This helper function is there to find any parameters passed that correspond to no zbin. It will then remove them from the varied parameters list
+
+        Arguments
+        ---------
+        nmax : int
+               Index of the highest redshift bin that should be considered
+        """
         freepars = deepcopy(self.freeparams)
         for key in freepars.keys():
             if "_" in key:
@@ -523,6 +710,20 @@ class FisherMatrix:
                     continue
 
     def export_fisher(self, fishmat, totaltime=None):
+        """Will print the fisher matrix as well as specifications and the parameter names to files. To change location and filenames for this check the settings dictionary of  cosmicfishpie.fishermatrix.config
+
+        Arguments
+        ---------
+        fishmat   : numpy.ndarray
+                    Computed Fisher matrix
+        totaltime : float, optional
+                    Total time needed to compute the fisher. Will print time information if passed
+
+        Returns
+        -------
+        cosmicfishpie.analysis.fisher_matrix
+            A instance of fisher_matrix containing the calculated Fisher matrix as well as parameter names, settings, etc
+        """
         # If an output root is provided, we write the Fisher matrix on file
         if cfg.settings["outroot"] != "":
             obstring = ""
@@ -606,6 +807,7 @@ class FisherMatrix:
             return fishMat_obj
 
     def recap_options(self):
+        """This will print all the selected options into the standard output"""
         if cfg.settings["feedback"] > 0:
             print("")
             print("----------RECAP OF SELECTED OPTIONS--------")
@@ -633,6 +835,9 @@ class FisherMatrix:
                 print("SpectroBias parameters:")
                 for key in self.Spectrobiaspars:
                     print("   " + key + ": {}".format(self.Spectrobiaspars[key]))
+                print("SpectroNonlinear parameters:")
+                for key in self.Spectrononlinpars:
+                    print("   " + key + ": {}".format(self.Spectrononlinpars[key]))
                 print("IMBias parameters:")
                 for key in self.IMbiaspars:
                     print("   " + key + ": {}".format(self.IMbiaspars[key]))

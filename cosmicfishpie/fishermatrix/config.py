@@ -32,6 +32,159 @@ def init(
     cosmoModel="w0waCDM",
     latexnames=None,
 ):
+    """This class is to handle the configuration for the fishermatrix computation as well as the fiducial parameters. It then gives access to all global variables
+
+    Parameters
+    ----------
+    options              : dict, optional
+                           A dictionary that contains the global options for the calculation of the fishermatrix. A list of all possible keys are found below
+    specifications       : dict, optional
+                           A dictionary containing the survey specifications. Defaults to the specifications in the `.yaml` of the survey specifications
+    observables          : list, optional
+                           A list of strings for the different observables
+    freepars             : dict, optional
+                           A dictionary containing all cosmological parameters to be varied and their corresponding rel. step sizes
+    extfiles             : dict, optional
+                           A dictionary containing the path to the external files as well as how all the names of the files in the folder correspond to the cosmological quantities, units etc.
+    fiducialpars         : dict, optional
+                           A dictionary containing the fiducial cosmological parameters
+    biaspars             : dict, optional
+                           A dictionary containing the specifications for the galaxy biases of the photometric probe
+    photopars            : dict, optional
+                           A dictionary containing specifications for the window function's galaxy distribution
+    IApars               : dict, optional
+                           A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear
+    PShotpars            : dict, optional
+                           A dictionary containing the values of additional shotnoise of the spectroscopic probes
+    Spectrobiaspars      : dict, optional
+                           A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
+    spectrononlinearpars : dict, optional
+                           A dictionary containing the values of the non linear modeling parameters of the spectroscopic probe
+    IMbiaspars           : dict, optional
+                           A dictionary containing the specifications for the galaxy biases of the spectroscopic intensity mapping probe
+    surveyName           : str, optional
+                           String of the name of the survey for which the forecast is done. Defaults to Euclid with optimistic specifications
+    cosmoModel           : str, optional
+                           A string of the name of the cosmological model used in the calculations. Defaults to flat "w0waCDM" cosmology
+    latexnames           : dict, optional
+                           A dictionary that contains the Latex names of the cosmological parameters
+
+    Options
+    -------
+    camb_path                   : str
+                                  Path to camb. Defaults to the camb in your current environment
+    specs_dir                   : str
+                                  Path to the survey specifications. Defaults to the `survey_specifications` folder in the home directory of cosmicfishpie
+    survey_names                : str
+                                  String of the names of the survey. Defaults to the name passed in the parameter `surveyName`
+    derivatives                 : str
+                                  String of the name of the derivative method. Either `3PT`, `4PT_FWD`, `STEM` or `POLY`. Defaults to `3PT`
+    nonlinear                   : bool
+                                  If True will do nonlinear corrections in the computation of the different observables. Defaults to True
+    nonlinear_photo             : bool
+                                  If True will use the nonlinear power spectrum when calculation the angular power spectrum of the photometric probe. Defaults to True
+    bfs8terms                   : bool
+                                  If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe. Defaults to True
+    vary_bias_str               : str
+                                  The root of the name of the bias parameters that should be varied in the spectroscopic probe. Defaults to 'lnb'
+    AP_effect                   : bool
+                                  If True the Alcock-Paczynsk effect will be considered in the spectroscopic probe. Defaults to True
+    FoG_switch                  : bool
+                                  If True the finger of god effect will be modelled in the observed power spectrum of the spectroscopic probe. Defaults to True
+    GCsp_linear                 : bool
+                                  If True there will be no nonlinear modelling used in the spectroscopic probe. Defaults to False
+    fix_cosmo_nl                : bool
+                                  If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology. Defaults to True
+    Pshot_nuisance_fiducial     : float
+                                  Value of the fiducial additional shotnoise of the spectroscopic probe. Defaults to 0.0
+    pivot_z_IA                  : float
+                                  Redshift on which the power law dependance in the eNLA model of intrinsic alignment should be normalized to. Defaults to 0.0
+    accuracy                    : int
+                                  Global rescaling of the amount of points that are used in internal calculations or interpolations for the probes. Defaults to 1
+    feedback                    : int
+                                  Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
+    activateMG                  : bool
+                                  If True will also consider modified gravity in the calculations of the observables. Defaults to False
+    external_activateMG         : bool
+                                  If True while reading the external Files will also look for files specific to modified gravity models
+    cosmo_model                 : str
+                                  A string of the name of the cosmological model used in the calculations. Defaults to what was passed in the parameter `cosmoModel`
+    outroot                     : str
+                                  The name of the output files are always starting with CosmicFish_v\<Version number\>_\<outroot\>. Defaults to 'default_run'
+    code                        : str
+                                  String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'. Defaults to 'camb'
+    memorize_cosmo              : bool
+                                  If True will save and load cosmologies that have already been computed in the cache. Defaults to False
+    results_dir                 : str
+                                  Name of the folder in which the results should be saved. If the folder does not exist will create a new one. Defaults to './results'
+    boltzmann_yaml_path         : str
+                                  Path to the configurations for the Einstein-Boltzmann solvers. Defaults to the `boltzmann_yaml_files` folder in the home directory of cosmicfishpie
+    class_config_yaml           : str
+                                  Path to the configurations for class. Defaults to '\<boltzmann_yaml_path\>/class/default.yaml'
+    camb_config_yaml            : str
+                                  Path to the configurations for camb. Defaults to '\<boltzmann_yaml_path\>/camb/default.yaml'
+    fishermatrix_file_extension : str
+                                  Specifies in what kind of file the result Fisher matrix should be saved. Defaults to '.txt'
+    savgol_polyorder            : float
+                                  Order of the Savitzky-Golay filter. Defaults to 3 matching the IST:F recipe
+    savgol_width                : float
+                                  Width of the Savitzky-Golay filter. Defaults to ~1.359
+    savgol_internalsamples      : float
+                                  How many points on a logarithmic k axis should be taken to apply the Savitzky-Golay filter to. Defaults to 800
+    savgol_internalkmin         : float
+                                  Lowest wavenumber that should be used when calculating when applying the Savitzky-Golay filter. Defaults to 1e-3. Together with the other defaults this is matching the IST:F recipe
+    eps_cosmopars               : float
+                                  The default rel. step size of the cosmological parameters if none have been passed. Defaults to 1e-2
+    eps_gal_nuispars            : float
+                                   The default rel. step size of the bias parameters if none have been passed. Defaults to 1e-4
+    GCsp_Tracer                 : str
+                                  What power spectrum should be used as the underlying power spectrum the spectroscopic probe's galaxy clustering traces. Either 'matter' for the total matter spectrum or 'clustering' for CDM+baryons. Defaults to 'matter'
+    GCph_Tracer                 : str
+                                  What power spectrum should be used as the underlying power spectrum the photometric probe's galaxy clustering traces. Either 'matter' for the total matter spectrum or 'clustering' for CDM+baryons. Defaults to 'matter'
+    ShareDeltaNeff              : bool
+                                  If True, the variation of the cosmological parameter Neff is understood as a rescaling of the decoupling temperature of neutrinos. If False any additional Neff is accounted for as additional massless relics.
+
+    Attributes
+    ----------
+    settings               : dict, global
+                             A dictionary containing all the global options passed as well as the default values of the ones not passed
+    external               : dict, global
+                             A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be None if no external files are given
+    input_type             : str, global
+                             String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'
+    specs                  : dict, global
+                             A dictionary containing the survey specifications
+    boltzmann_classpars    : dict, global
+                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for class
+    boltzmann_cambpars     : dict, global
+                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for camb
+    survey_equivalence     : callable, global
+                             Part of the Parser, will correspond the passed survey to the name of a specifications file
+    obs                    : list, global
+                             A list of strings for the different observables
+    freeparams             : dict, global
+                             A dictionary containing all names and the corresponding rel. step size for all parameters
+    fiducialparams         : dict, global
+                             A dictionary containing all fiducial values for the cosmological parameters
+    fiducialcosmo          : cosmicfishpie.cosmology.cosmology.cosmo_functions, global
+                             An instance of `cosmo_functions` of the fiducial cosmology, this contains all the cosmological functions and quantities computed from them
+    biasparams             : dict, global
+                             a dictionary containing the specifications for the galaxy biases of the photometric probe
+    photoparams            : dict, global
+                             A dictionary containing specifications for the window function's galaxy distribution of the photometric probe
+    IAparams               : dict, global
+                             A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear of the photometric probe
+    PShotparams            : dict, global
+                             A dictionary containing the values of the additional shot noise per bin dictionary containing the values of the additional shot noise per bin for the spectroscopic probe
+    Spectrobiasparams      : dict, global
+                             A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
+    Spectrononlinearparams : dict, global
+                             A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin for the spectroscopic probe
+    IMbiasparams           : dict, global
+                             A dictionary containing the specifications for the line intensity biases of the spectroscopic probe
+    latex_names            : dict, global
+                             A dictionary with all cosmological + nuisance parameters and their corresponding name for the LaTeX labels.
+    """
     global settings
     settings = options
     if "camb_path" not in settings:

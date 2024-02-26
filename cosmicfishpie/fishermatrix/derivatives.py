@@ -19,10 +19,39 @@ class derivatives:
         self,
         observable,
         fiducial,
-        special_param_transform=dict(),
         special_deriv_function=None,
         freeparams=dict(),
     ):
+        """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute.
+
+        Arguments
+        ---------
+        observable : callable
+                     A callable function that when passed a dictionary of all cosmological and nuisance parameters will return the observable of a probe
+        fiducial : dict
+                   A dictionary containing the fiducial values of all parameters
+        special_deriv_function : callable, optional
+                                 callable function that receives a parameter name and calculates the exact derivative of the observable for that parameter
+        freeparams : dict, optional
+                     A dictionary for the parameters that should be varied. Will vary all parameters if not passed
+
+        Attributes
+        ----------
+        observable        : callable
+                            A callable function that when passed a dictionary of all cosmological and nuisance parameters will return the observable of a probe
+        fiducial          : dict
+                            A dictionary containing the fiducial values of all parameters
+        special           : callable, None
+                            If it exists, it is a callable function that receives a parameter name and calculates the exact derivative of the observable for that parameter
+        feed_lvl          : int
+                            Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
+        observables       : callable
+                            A callable that is passed all cosmological and nuisance parameters in a dict that is returning the computed observable of a given probe
+        external_settings : dict
+                            A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be none if code runs in internal mode
+        result            : dict
+                            A dictionary with all derivatives of the observable with respect to the parameter corresponding to the key name
+        """
         if freeparams != dict():
             self.freeparams = freeparams
         else:
@@ -30,7 +59,6 @@ class derivatives:
         self.observable = observable
         self.fiducial = fiducial
         self.special = special_deriv_function
-        self.par_trans = special_param_transform
         self.feed_lvl = cfg.settings["feedback"]
         self.observables = cfg.obs
         self.external_settings = cfg.external
@@ -46,10 +74,41 @@ class derivatives:
             print("ERROR: I don't know this derivative type!!!")
 
     def der_3pt_stencil(self, fwd, bwd, step):
+        """Helper function to compute the 3PT symmetrical finite step size derivative
+
+        Arguments
+        ---------
+        fwd  : float, numpy.ndarray
+               Observable computed at the forward step
+        fwd  : float, numpy.ndarray
+               Observable computed at the backwards step
+        step : float
+               Absolute step size of the numerical derivative
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Numerical derivative using the a 3 point stencil
+        """
         der = (fwd - bwd) / (2 * step)
         return der
 
     def derivative_3pt(self):
+        """One of the possible derivative methods. Computes the numerical derivative using a finite differences 3 point symmetrical derivative
+
+        Returns
+        -------
+        dict
+            A dictionary containing the derivative of the observable for each varied parameter.
+
+        Note
+        -----
+        Implements the following equation:
+
+        .. math::
+
+            \\frac{\\mathrm{d} \\mathcal{O}}{\\mathrm{d} \\theta} = \\frac{\\mathcal{O}(\\theta+h)-\\mathcal{O}(\\theta-h)}{2\\,h}
+        """
         deriv_dict = {}
 
         for par in self.freeparams:
@@ -116,13 +175,25 @@ class derivatives:
         return deriv_dict
 
     def der_fwd_4pt(self, fwdi, step):
+        """Helper function to compute the 4PT forward finite step size derivative
+
+        Arguments
+        ---------
+        fwdi : list, numpy.ndarray
+               Observable computed at the fiducial and at equally spaced points in the forward direction
+        step : float
+               Absolute distance between the size of the numerical derivative
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Numerical derivative using the a 4 point forward stencil
+        """
         der = (-11 * fwdi[0] + 18 * fwdi[1] - 9 * fwdi[2] + 2 * fwdi[3]) / (6 * step**1)
         return der
 
     def derivative_forward_4pt(self):
-        r"""
-        One-sided forward derivative with 4 points located at
-        0*h, 1*h, 2*h, 3*h
+        r"""One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
         Taken from:
         https://web.media.mit.edu/~crtaylor/calculator.html
         @misc{fdcc,
@@ -131,6 +202,20 @@ class derivatives:
         year={2016},
         howpublished="\url{https://web.media.mit.edu/~crtaylor/calculator.html}"
         }
+
+        Returns
+        -------
+        dict
+            A dictionary containing the derivative of the observable for each varied parameter.
+
+        Note
+        -----
+        Implements the following equation:
+
+        .. math::
+
+            \\frac{\\mathrm{d} \\mathcal{O}}{\\mathrm{d} \\theta} = \\frac{-11\\,\\mathcal{O}(\\theta)+18\\,\\mathcal{O}(\\theta+h)-9\\,\\mathcal{O}(\\theta+2\\,)+2\\,\\mathcal{O}(\\theta+3\\,h)}{6\\,h}
+
         """
         deriv_dict = {}
 
@@ -226,6 +311,13 @@ class derivatives:
         return deriv_dict
 
     def derivative_stem(self):
+        """One of the possible derivative methods. Computes the numerical derivative using the SteM derivative method
+
+        Returns
+        -------
+        dict
+            A dictionary containing the derivative of the observable for each varied parameter.
+        """
         numstem = 11
         mult_eps_factor = 5
 
@@ -314,6 +406,12 @@ class derivatives:
         return deriv_dict
 
     def derivative_poly(self):
+        """One of the possible derivative methods. Computes the numerical derivative using a polynomial derivative method
+
+        Returns
+        -------
+        dict
+            A dictionary containing the derivative of the observable for each varied parameter."""
         numpoints = 10  # HARD CODED?
 
         deriv_dict = {}

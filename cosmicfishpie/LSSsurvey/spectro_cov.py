@@ -519,7 +519,8 @@ class SpectroDerivs:
 
         Returns
         -------
-        dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and parameter
+        dict
+            A dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and parameter
         """
         derivs = dict()
         if freeparams != dict():

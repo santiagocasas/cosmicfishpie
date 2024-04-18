@@ -145,7 +145,7 @@ class PhotoCov:
                     )
                 elif obs == "WL":
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
-                        ellipt_error ** 2.0
+                        ellipt_error**2.0
                     ) / ngalbin[ind - 1]
 
         return noisy_cls

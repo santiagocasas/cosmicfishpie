@@ -58,7 +58,7 @@ class numerics:
         elif number < 1e-1:
             decimals = 3
 
-        factor = 10 ** decimals
+        factor = 10**decimals
         return np.ceil(number * factor) / factor
 
     @staticmethod

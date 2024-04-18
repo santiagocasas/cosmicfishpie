@@ -508,7 +508,7 @@ class FisherMatrix:
         # zmid = self.pk_cov.global_z_bin_mids[zi]
         dPdpi = self.derivs_dict[pi][zi]
         dPdpj = self.derivs_dict[pj][zi]
-        intg = k ** 2 * pref * volsurv * self.veff_arr[zi] * dPdpi * dPdpj
+        intg = k**2 * pref * volsurv * self.veff_arr[zi] * dPdpi * dPdpj
         return intg
 
     def photo_LSS_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, lss_obj=None):

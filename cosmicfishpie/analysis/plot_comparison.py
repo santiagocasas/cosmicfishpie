@@ -430,7 +430,7 @@ def process_fish_errs(
         eurel = fu.rel_median_error(errUnmargs)
         emrel = fu.rel_median_error(errMargs)
     else:
-        if type(compare_to_index) == int and compare_to_index >= 0:
+        if isinstance(compare_to_index, int) and compare_to_index >= 0:
             eurel = fu.rel_error_to_index(compare_to_index, errUnmargs)
             emrel = fu.rel_error_to_index(compare_to_index, errMargs)
 

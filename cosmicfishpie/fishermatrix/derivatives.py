@@ -189,7 +189,7 @@ class derivatives:
         float, numpy.ndarray
             Numerical derivative using the a 4 point forward stencil
         """
-        der = (-11 * fwdi[0] + 18 * fwdi[1] - 9 * fwdi[2] + 2 * fwdi[3]) / (6 * step ** 1)
+        der = (-11 * fwdi[0] + 18 * fwdi[1] - 9 * fwdi[2] + 2 * fwdi[3]) / (6 * step**1)
         return der
 
     def derivative_forward_4pt(self):
@@ -458,7 +458,7 @@ class derivatives:
                             stepsize, [obs_mod[step][key][ind] for step in range(len(stepsize))], 4
                         )
                         temp.append(
-                            4 * fit[0] * fidpar ** 3 * +3 * fit[2] * fidpar ** 2
+                            4 * fit[0] * fidpar**3 * +3 * fit[2] * fidpar**2
                             + 2 * fit[3] * fidpar
                             + fit[4]
                         )

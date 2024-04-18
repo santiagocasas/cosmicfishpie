@@ -213,7 +213,7 @@ class SpectroCov:
         """
         zi = self.z_bin_mids[ibin]
         npobs = self.n_density(ibin) * self.pk_obs.observed_Pgg(zi, k, mu)
-        prefactor = 1 / (8 * (np.pi ** 2))
+        prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (npobs / (1 + npobs)) ** 2
         return covterm
 
@@ -274,7 +274,7 @@ class SpectroCov:
             beta = self.pk_obs.beta_SD(z, k, mu)
         else:
             beta = np.ones_like(k)
-        noise = pref * cosmo * T_term * (alpha / beta ** 2)
+        noise = pref * cosmo * T_term * (alpha / beta**2)
         return noise
 
     def veff_21cm(self, ibin, k, mu):
@@ -296,7 +296,7 @@ class SpectroCov:
         zi = self.IM_z_bin_mids[ibin]
         pobs = self.pk_obs.observed_P_HI(zi, k, mu)
         pnoisy = pobs + self.P_noise_21(zi, k, mu)
-        prefactor = 1 / (8 * (np.pi ** 2))
+        prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (pobs / pnoisy) ** 2
         return covterm
 
@@ -325,8 +325,8 @@ class SpectroCov:
         pnoisy_Ig = pobs_Ig
         pnoisy_II = pobs_II + self.P_noise_21(zi, k, mu)
         pnoisy_gg = pobs_gg + self.n_density(ibin)
-        covterm = pobs_Ig ** 2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
-        prefactor = 1 / (4 * (np.pi ** 2))
+        covterm = pobs_Ig**2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
+        prefactor = 1 / (4 * (np.pi**2))
         covterm = prefactor * covterm
         return covterm
 

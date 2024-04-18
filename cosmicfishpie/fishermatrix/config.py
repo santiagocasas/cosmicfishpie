@@ -327,6 +327,10 @@ def init(
     global specs
 
     specs_defaults = {}
+    specs_defaults.setdefault("spec_sigma_dz", 0.002)
+    specs_defaults.setdefault("spec_sigma_dz_type", "constant")
+    specs_defaults.setdefault("spec_khrescale_beforespecerr", False)
+    specs_defaults.setdefault("spec_khrescale", False)
     specs_defaults["specs_dir"] = settings["specs_dir"]
     specs = specs_defaults.copy()  # start with default dict
 

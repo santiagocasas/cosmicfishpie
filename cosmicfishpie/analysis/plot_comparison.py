@@ -388,6 +388,7 @@ def process_fish_errs(
     parsnames_latex=None,
     marginalize_pars=True,
     print_errors=True,
+    compare_to_index=False,
     transform_latex_dict=dict(),
 ):
     # Cycle through files and get the errors and the present parameters
@@ -425,8 +426,13 @@ def process_fish_errs(
             print(("Marginalized 1-sigma errors :", errMargs[ii]))
             print(("Unmarginalized 1-sigma errors :", errUnmargs[ii]))
     # Plot differences, not absolute values np.abs,   np.median default
-    eurel = fu.rel_median_error(errUnmargs)
-    emrel = fu.rel_median_error(errMargs)
+    if not compare_to_index:
+        eurel = fu.rel_median_error(errUnmargs)
+        emrel = fu.rel_median_error(errMargs)
+    else:
+        if type(compare_to_index) == int and compare_to_index >= 0:
+            eurel = fu.rel_error_to_index(compare_to_index, errUnmargs)
+            emrel = fu.rel_error_to_index(compare_to_index, errMargs)
 
     return eurel, emrel, x_pars, parsnames_latex
 
@@ -456,6 +462,7 @@ def ploterrs(
     dots_legend_fontsize=20,
     xtickfontsize=18,
     ylabelfontsize=20,
+    compare_to_index=False,
     xticksrotation=0,
     save_error=False,
     transform_latex_dict=dict(),
@@ -471,6 +478,7 @@ def ploterrs(
         parsnames_latex=parsnames_latex,
         marginalize_pars=marginalize_pars,
         transform_latex_dict=transform_latex_dict,
+        compare_to_index=compare_to_index,
     )
     # fishnamesjoined=("-").join(fishers_name)
 

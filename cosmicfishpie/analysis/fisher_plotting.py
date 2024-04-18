@@ -208,8 +208,11 @@ class fisher_plotting:
         dpi_ = kwargs.get("dpi", 300)
         format_ = kwargs.get("file_format", ".pdf")
         marker_color_ = kwargs.get("marker_color", "black")
-        axes_fontsize = kwargs.get("axes_fontsize", 20)
+        axes_fontsize = kwargs.get("axes_fontsize", 16)
         legend_fontsize = kwargs.get("legend_fontsize", 20)
+        tick_max_labels = kwargs.get("tick_max_labels", 3)
+        title_limit = kwargs.get("title_limit", 0)
+        title_limit_labels = kwargs.get("title_limit_labels", True)
         figure_legend_frame = kwargs.get("figure_legend_frame", 20)
         axes_labelsize = kwargs.get("axes_labelsize", 20)
         figure_facecolor = kwargs.get("figure_facecolor", "white")
@@ -217,6 +220,9 @@ class fisher_plotting:
         g.settings.figure_legend_frame = figure_legend_frame
         g.settings.axes_fontsize = axes_fontsize
         g.settings.axes_labelsize = axes_labelsize
+        g.settings.axis_tick_max_labels = tick_max_labels
+        g.settings.title_limit_labels = title_limit_labels
+        g.settings.title_limit = title_limit
         g.settings.legend_fontsize = legend_fontsize
         g.settings.axis_marker_color = marker_color_
         g.settings.axis_marker_ls = "--"
@@ -264,12 +270,16 @@ class fisher_plotting:
         yticklabsize = options.get("yticklabsize", 22)
         xtickfontsize = options.get("xtickfontsize", 22)
         ylabelfontsize = options.get("ylabelfontsize", 20)
+        ylabel = options.get("ylabel", r"% discrepancy on $\sigma_i$ w.r.t. median")
         patches_legend_fontsize = options.get("patches_legend_fontsize", 26)
         dots_legend_fontsize = options.get("dots_legend_fontsize", 26)
+        legend_loc = options.get("legend_loc", "lower right")
         yrang = options.get("yrang", [-1.0, 1.0])
         dpi = options.get("dpi", 400)
         figsize = options.get("figsize", (20, 10))
+        savefig = options.get("savefig", True)
         transform_latex_dict = options.get("transform_latex_dict", dict())
+        compare_to_index = options.get("compare_to_index", False)
         figure_title = options.get("figure_title", "")
         pc.ploterrs(
             self.fishers_group.get_fisher_list(),
@@ -283,8 +293,8 @@ class fisher_plotting:
             yrang=yrang,
             figsize=figsize,
             dpi=dpi,
-            savefig=True,
-            y_label=r"% discrepancy on $\sigma_i$ w.r.t. median",
+            savefig=savefig,
+            y_label=ylabel,
             yticklabsize=yticklabsize,
             xticklabsize=xticklabsize,
             xtickfontsize=xtickfontsize,
@@ -292,11 +302,12 @@ class fisher_plotting:
             xticksrotation=xticksrotation,
             patches_legend_fontsize=patches_legend_fontsize,
             dots_legend_fontsize=dots_legend_fontsize,
-            fish_leg_loc="lower right",
+            fish_leg_loc=legend_loc,
             legend_title=legend_title,
             legend_title_fontsize=legend_title_fontsize,
             ncol_legend=ncol_legend,
             transform_latex_dict=transform_latex_dict,
+            compare_to_index=compare_to_index,
             save_error=save_error,
             figure_title=figure_title,
         )

@@ -67,7 +67,6 @@ class bash_colors:
     """
     This class contains the necessary definitions to print to bash screen with colors.
     Sometimes it can be useful and nice!
-
     :ivar HEADER: ANSI color for light purple.
     :ivar OKBLUE: ANSI color for blue.
     :ivar OKGREEN: ANSI color for green.

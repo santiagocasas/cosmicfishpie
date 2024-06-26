@@ -1,8 +1,26 @@
 import os
 import subprocess
+from collections import abc
 from configparser import ConfigParser
 
 import numpy as np
+
+
+class misc:
+    @staticmethod
+    def deepupdate(original, update):
+        """Recursively update a dict.
+
+        Subdicts won't be overwritten but also updated.
+        """
+        if not isinstance(original, abc.Mapping):
+            return update
+        for key, value in update.items():
+            if isinstance(value, abc.Mapping):
+                original[key] = misc.deepupdate(original.get(key, {}), value)
+            else:
+                original[key] = value
+        return original
 
 
 class printing:
@@ -175,22 +193,29 @@ class inputiniparser:
         pars_cosmo_dict = dict(self.configmain.items("params_cosmo"))
         self.main_paramnames = list(pars_var_dict.keys())
         self.mirror_paramnames = dict(zip(self.main_paramnames, self.main_paramnames))
-        print("paramnames")
+        print("-- paramnames")
         print(self.main_paramnames)
         self.main_foldernames = [pars_var_dict[ii] for ii in self.main_paramnames]
-        print("foldernames")
+        print("-- foldernames")
         print(self.main_foldernames)
         self.main_fiducials = [
             fiducial_translator.get(ii, 1.0) * float(pars_cosmo_dict[ii])
             for ii in self.main_paramnames
         ]
-        print("fiducials")
+        print("-- fiducials")
         print(self.main_fiducials)
         self.main_paramnames = [
             translator.get(kk, self.mirror_paramnames[kk]) for kk in self.main_paramnames
         ]
         self.main_fidu_dict = dict(zip(self.main_paramnames, self.main_fiducials))
         print(self.main_fidu_dict)
+        files_quant_dict = dict(self.configmain.items("output_files"))
+        print("-- input files")
+        self.main_filesquant_dict = dict()
+        for kk in files_quant_dict:
+            self.main_filesquant_dict[kk] = files_quant_dict[kk].replace(".txt", "")
+        print(self.main_filesquant_dict)
+
         return None
 
     def free_epsilons(self, epsilon=0.01):

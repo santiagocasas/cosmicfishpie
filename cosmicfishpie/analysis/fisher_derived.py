@@ -42,7 +42,6 @@ class fisher_derived:
     contains the relevant information to reparametrize a Fisher matrix.
     Generally this is a rectangular matrix containing the Jacobian of the transformation
     from the original Fisher to the derived one.
-
     :ivar derived_matrix: Numpy array containing the Jacobian of the transformation between the Fisher matrix and the derived Fisher matrix. Passed to the constructor of by file.
     :ivar path: Absolute path of the input Jacobian matrix. Computed at initialization if passing a file.
     :ivar name: Name of the input Jacobian matrix. Computed at initialization if passing a file.

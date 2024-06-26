@@ -265,6 +265,10 @@ class ComputeGalSpectro:
     def set_spectro_specs(self):
         """Updates the spectroscopic redshift error"""
         self.dz_err = cfg.specs["spec_sigma_dz"]
+        self.dz_type = cfg.specs["spec_sigma_dz_type"]
+        self.kh_rescaling = cfg.specs["spec_khrescale"]
+        self.kh_rescaling_beforespecerr = cfg.specs["spec_khrescale_beforespecerr"]
+        ## constant, z-dependent
 
     def qparallel(self, z):
         """Function implementing q parallel of the Alcock-Paczynski effect
@@ -353,8 +357,11 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             wavenumbers in un units of h ref/Mpc
         """
-        h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
-        kh = k * h_change
+        if self.kh_rescaling:
+            h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
+            kh = k * h_change
+        else:
+            kh = k
         return kh
 
     def kmu_alc_pac(self, z, k, mu):
@@ -417,8 +424,12 @@ class ComputeGalSpectro:
             \\mathrm{Err} = \\exp\\left[-\\sigma^2_\\|\\, k^2\\, \\mu^2 -\\sigma_\\perp^2 \\,k^2\\,\\left(1- \\mu^2\\right)\\right].
 
         """
-        err = self.dz_err * (1 + z) * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
-        return np.exp(-(1 / 2) * err**2)  # Gaussian
+        if self.dz_type == "constant":
+            spec_dz_err = self.dz_err
+        elif self.dz_type == "z-dependent":
+            spec_dz_err = self.dz_err * (1 + z)
+        err = spec_dz_err * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
+        return np.exp(-(1 / 2) * err**2)
 
     def BAO_term(self, z):
         """Calculates the BAO term. This is the rescaling of the fourier volume by the  AP-effect
@@ -674,7 +685,7 @@ class ComputeGalSpectro:
         ff = f_mom(self.k_grid).flatten()
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
-        Int = np.trapz(integrand, x=self.k_grid)
+        Int = np.trapezoid(integrand, x=self.k_grid)
         ptt = (1 / (6 * np.pi**2)) * Int
         return ptt
 
@@ -801,8 +812,12 @@ class ComputeGalSpectro:
             print("    Computing Pgg for {}".format(self.observables))
         tstart = time()
 
-        k = self.k_units_change(k)  # has to be done before spec_err and AP
-        error_z = self.spec_err_z(z, k, mu)  # before rescaling of k,mu by AP
+        if self.kh_rescaling_beforespecerr:
+            k = self.k_units_change(k)  # has to be done before spec_err and AP
+            error_z = self.spec_err_z(z, k, mu)  ##before rescaling of k,mu by AP
+        else:
+            error_z = self.spec_err_z(z, k, mu)  ##before rescaling of k,mu by AP
+            k = self.k_units_change(k)  # has to be done before spec_err and AP
         k, mu = self.kmu_alc_pac(z, k, mu)
 
         baoterm = self.BAO_term(z)

@@ -11,6 +11,7 @@ import yaml
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.cosmology.nuisance import Nuisance
+from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import printing as upt
 
 
@@ -271,7 +272,7 @@ def init(
             "folder_paramnames": [],
         }
         external = extfiles_default.copy()
-        external.update(extfiles)
+        ums.deepupdate(external, extfiles)
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]
@@ -327,6 +328,10 @@ def init(
     global specs
 
     specs_defaults = {}
+    specs_defaults.setdefault("spec_sigma_dz", 0.002)
+    specs_defaults.setdefault("spec_sigma_dz_type", "constant")
+    specs_defaults.setdefault("spec_khrescale_beforespecerr", False)
+    specs_defaults.setdefault("spec_khrescale", False)
     specs_defaults["specs_dir"] = settings["specs_dir"]
     specs = specs_defaults.copy()  # start with default dict
 

@@ -64,7 +64,7 @@ source_suffix = [".rst", ".md"]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "numpy": ("https://numpy.org/doc/stable/", None)
+    "numpy": ("https://numpy.org/doc/stable/", None),
     #'numba': ('https://numba.pydata.org/numba-doc/latest/', None)
     # Uncomment these if you use them in your codebase:
     #  "torch": ("https://pytorch.org/docs/stable", None),

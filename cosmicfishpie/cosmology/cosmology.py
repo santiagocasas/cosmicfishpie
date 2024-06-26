@@ -35,7 +35,7 @@ memory = Memory(cachedir, verbose=0)
 def _dcom_func_trapz(zi, interpolfunc):
     zt = np.linspace(0.0, zi, 100)
     Hzt = interpolfunc(zt)
-    dcom = integrate.trapz(1 / Hzt, zt)
+    dcom = integrate.trapezoid(1 / Hzt, zt)
     return dcom
 
 
@@ -592,7 +592,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_z[i] = np.sqrt(np.trapz(integrand, k))
+                sigma_z[i] = np.sqrt(np.trapezoid(integrand, k))
             sigm8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
             return sigm8_z_interp
 
@@ -611,7 +611,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_cb_z[i] = np.sqrt(np.trapz(integrand, k))
+                sigma_cb_z[i] = np.sqrt(np.trapezoid(integrand, k))
             sigm8_cb_z_interp = UnivariateSpline(z_range, sigma_cb_z, s=0)
             return sigm8_cb_z_interp
 
@@ -803,6 +803,7 @@ class external_input:
         z_arr_file = self.external["file_names"]["z_arr"]
         k_arr_file = self.external["file_names"]["k_arr"]
         self.k_arr_special_file = self.external["file_names"].get("k_arr_special", None)
+        self.k_arr_nonlin_file = self.external["file_names"].get("k_arr_nonlin", None)
         H_z_file = self.external["file_names"]["H_z"]
         s8_z_file = self.external["file_names"]["s8_z"]
         D_zk_file = self.external["file_names"]["D_zk"]
@@ -838,6 +839,7 @@ class external_input:
                 os.path.join(self.directory, "fiducial_eps_0", k_arr_file + ".*")
             )[0]
             self.input_arrays[("k_grid", parameter_string)] = np.loadtxt(k_grid_filename)
+
         if self.k_arr_special_file is not None:
             k_grid_special_filename = glob(
                 os.path.join(self.directory, "fiducial_eps_0", self.k_arr_special_file + ".*")
@@ -845,6 +847,22 @@ class external_input:
             self.input_arrays[("k_grid_special", parameter_string)] = np.loadtxt(
                 k_grid_special_filename
             )
+
+        if self.k_arr_nonlin_file is not None:
+            k_grid_nonlin_filename = glob(
+                os.path.join(self.directory, parameter_string, self.k_arr_nonlin_file + ".*")
+            )[0]
+            if os.path.isfile(k_grid_nonlin_filename):
+                self.input_arrays[("k_grid_nonlin", parameter_string)] = np.loadtxt(
+                    k_grid_nonlin_filename
+                )
+            else:
+                k_grid_nonlin_filename = glob(
+                    os.path.join(self.directory, "fiducial_eps_0", self.k_arr_nonlin_file + ".*")
+                )[0]
+                self.input_arrays[("k_grid_nonlin", parameter_string)] = np.loadtxt(
+                    k_grid_nonlin_filename
+                )
         # check if background_Hz list exists, if not, take fiducial one
         # (to allow for easier import of parameters that do not affect background)
         Hz_filename = glob(os.path.join(self.directory, parameter_string, H_z_file + ".*"))[0]
@@ -953,6 +971,12 @@ class external_input:
             ].flatten()
         else:
             self.results.kgrid_special = self.results.kgrid
+        if self.k_arr_nonlin_file is not None:
+            self.results.kgrid_nonlin = (k_units_factor) * self.input_arrays[
+                ("k_grid_nonlin", parameter_string)
+            ].flatten()
+        else:
+            self.results.kgrid_nonlin = self.results.kgrid
         self.results.h_of_z = InterpolatedUnivariateSpline(
             self.results.zgrid,
             (1 / r_units_factor) * self.input_arrays[("H_z", parameter_string)].flatten(),
@@ -993,7 +1017,7 @@ class external_input:
         )
         self.results.Pk_nl = RectBivariateSpline(
             self.results.zgrid,
-            self.results.kgrid,
+            self.results.kgrid_nonlin,
             pk_units_factor * (self.input_arrays[("Pknl_zk", parameter_string)]),
             kx=kx_ord,
             ky=ky_ord,
@@ -1018,7 +1042,7 @@ class external_input:
             )
             self.results.Pk_cb_nl = RectBivariateSpline(
                 self.results.zgrid,
-                self.results.kgrid,
+                self.results.kgrid_nonlin,
                 pk_units_factor * (self.input_arrays[("Pknlcb_zk", parameter_string)]),
                 kx=kx_ord,
                 ky=ky_ord,
@@ -1314,7 +1338,6 @@ class cosmo_functions:
             return self.results.s8_cb_of_z(z)
         if tracer != "matter":
             warn("Did not recognize tracer: reverted to matter")
-
         return self.results.s8_of_z(z)
 
     def growth(self, z, k=None):

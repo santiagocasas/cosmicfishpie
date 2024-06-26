@@ -236,7 +236,6 @@ def customize_barh(
     outpath="./",
     dpi=100,
 ):
-
     n_measure = len(data)  # number of measure per people
     n_people = data[list(data.keys())[0]].size  # number of people
 

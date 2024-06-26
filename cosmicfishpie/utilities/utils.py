@@ -7,7 +7,6 @@ import numpy as np
 
 
 class misc:
-
     @staticmethod
     def deepupdate(original, update):
         """Recursively update a dict.

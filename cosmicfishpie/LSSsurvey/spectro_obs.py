@@ -685,7 +685,7 @@ class ComputeGalSpectro:
         ff = f_mom(self.k_grid).flatten()
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
-        Int = np.trapz(integrand, x=self.k_grid)
+        Int = np.trapezoid(integrand, x=self.k_grid)
         ptt = (1 / (6 * np.pi**2)) * Int
         return ptt
 

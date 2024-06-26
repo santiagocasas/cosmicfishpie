@@ -12,7 +12,7 @@ from time import time
 
 import numpy as np
 import pandas as pd
-from scipy.integrate import simps
+from scipy.integrate import simpson
 
 import cosmicfishpie.CMBsurvey.CMB_cov as CMB_cov
 import cosmicfishpie.fishermatrix.config as cfg
@@ -477,8 +477,8 @@ class FisherMatrix:
         """
         k_mesh = self.Pk_kmesh
         mu_mesh = self.Pk_mumesh
-        mu_integral = simps(integrand, x=mu_mesh[:, 0], axis=0)
-        kmu_integral = simps(mu_integral, x=k_mesh[0, :])
+        mu_integral = simpson(integrand, x=mu_mesh[:, 0], axis=0)
+        kmu_integral = simpson(mu_integral, x=k_mesh[0, :])
         return kmu_integral
 
     def fish_integrand(self, zi, k, mu, pi, pj):

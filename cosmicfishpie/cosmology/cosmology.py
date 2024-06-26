@@ -35,7 +35,7 @@ memory = Memory(cachedir, verbose=0)
 def _dcom_func_trapz(zi, interpolfunc):
     zt = np.linspace(0.0, zi, 100)
     Hzt = interpolfunc(zt)
-    dcom = integrate.trapz(1 / Hzt, zt)
+    dcom = integrate.trapezoid(1 / Hzt, zt)
     return dcom
 
 
@@ -592,7 +592,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_z[i] = np.sqrt(np.trapz(integrand, k))
+                sigma_z[i] = np.sqrt(np.trapezoid(integrand, k))
             sigm8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
             return sigm8_z_interp
 
@@ -611,7 +611,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_cb_z[i] = np.sqrt(np.trapz(integrand, k))
+                sigma_cb_z[i] = np.sqrt(np.trapezoid(integrand, k))
             sigm8_cb_z_interp = UnivariateSpline(z_range, sigma_cb_z, s=0)
             return sigm8_cb_z_interp
 

@@ -1,14 +1,16 @@
+import collections
+import copy
+import re
+
 import matplotlib
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import matplotlib.colors as mcolors
 import numpy as np
-import copy
-from numpy.random import multivariate_normal
-import re
-import collections
 import pandas as pd
 from chainconsumer import ChainConsumer
+from numpy.random import multivariate_normal
+
 import cosmicfishpie.analysis.colors as fc
 import cosmicfishpie.analysis.fisher_plot_analysis as fpa
 from cosmicfishpie.utilities.utils import printing as upr

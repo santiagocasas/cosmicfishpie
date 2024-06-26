@@ -1,11 +1,11 @@
-import os
 import copy
+import os
 
 import matplotlib
 import matplotlib.pyplot as plt
+import seaborn as sns
 from getdist import plots
 from getdist.gaussian_mixtures import GaussianND
-import seaborn as sns
 
 from cosmicfishpie.analysis import fisher_matrix as fm
 from cosmicfishpie.analysis import fisher_plot_analysis as fpa

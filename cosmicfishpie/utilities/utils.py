@@ -1,7 +1,7 @@
 import os
 import subprocess
-from configparser import ConfigParser
 from collections import abc
+from configparser import ConfigParser
 
 import numpy as np
 

@@ -1,22 +1,15 @@
-import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.colors as mcolors
 import numpy as np
 import copy
-from numpy.random import normal, multivariate_normal
-import itertools as it
-import glob
+from numpy.random import multivariate_normal
 import re
 import collections
-import fnmatch
 import pandas as pd
 from chainconsumer import ChainConsumer
-from cosmicfishpie.analysis import fisher_plotting as fpp
-import cosmicfishpie.analysis.utilities as fu
 import cosmicfishpie.analysis.colors as fc
-import cosmicfishpie.analysis.fisher_matrix as fm
 import cosmicfishpie.analysis.fisher_plot_analysis as fpa
 from cosmicfishpie.utilities.utils import printing as upr
 
@@ -88,9 +81,6 @@ def display_colors(colors, figsize=(6, 6)):
     # Create a pie chart
     fig, ax = plt.subplots(figsize=figsize)
     wedges, _ = ax.pie([1] * len(color_codes), colors=color_codes)
-
-    # Calculate the total value of the pie chart
-    total = sum([wedge.theta2 - wedge.theta1 for wedge in wedges])
 
     # Add labels for each color
     for i, color in enumerate(color_names):
@@ -290,7 +280,6 @@ def customize_barh(
 
     plt.setp(ax.get_yticklabels(), visible=True)
 
-    d = 0.025  # how big to make the diagonal lines in axes coordinates
     ax.set_yticks(pos)
     # you may want to use the list of name as argument of the function to be more
     # flexible (if you have to add a people)
@@ -519,9 +508,9 @@ def choose_fish_toplot(
             else:
                 cols_toplot.append(colors_toplot[ii])
                 colnames_toplot.append(str(colors_toplot[ii]))
-    if marginalise == True:
+    if marginalise:
         fishers_toplot_m = fishers_toplot.marginalise(pars_toplot, update_names=False)
-    elif reshuffle == True:
+    elif reshuffle:
         fishers_toplot_m = fishers_toplot.reshuffle(pars_toplot, update_names=False)
     else:
         fishers_toplot_m = fishers_toplot
@@ -664,8 +653,6 @@ def chainfishplot(
     fishers_toplot_list = return_dic["fishers_toplot_group"].get_fisher_list()
     Nfishes = len(fishers_toplot_list)
     fisher_labels = return_dic["fisher_labels"]
-    def_parnames_tex = return_dic["parnames_latex"]
-    def_parnames = return_dic["parnames"]
     colors = return_dic["cols_toplot"]
     extents = return_dic["extents"]
     def_plotname = return_dic["plot_filename"]

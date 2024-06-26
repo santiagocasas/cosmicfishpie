@@ -7,14 +7,13 @@ from getdist import plots
 from getdist.gaussian_mixtures import GaussianND
 import seaborn as sns
 
-snscolors = sns.color_palette("colorblind")
-
 from cosmicfishpie.analysis import fisher_matrix as fm
 from cosmicfishpie.analysis import fisher_plot_analysis as fpa
 from cosmicfishpie.analysis import plot_comparison as pc
 from cosmicfishpie.utilities.utils import filesystem as ffs
 from cosmicfishpie.utilities.utils import printing as upr
 
+snscolors = sns.color_palette("colorblind")
 dprint = upr.debug_print
 
 params = {
@@ -110,18 +109,18 @@ class fisher_plotting:
             # covariance = self.get_marginv([par for par in self.fidpars[ind]],ind).values
             invcov = fishm.fisher_matrix
             means = fishm.get_param_fiducial()
-            if pdf:
+            if pfd:
                 print("---> Fisher matrix name: ", fishm.name)
-            if pdf:
+            if pfd:
                 print("Fisher matrix fiducials: \n", means)
             bounds = fishm.get_confidence_bounds()
-            if pdf:
+            if pfd:
                 print("Fisher matrix 1-sigma bounds: \n", bounds)
             self.param_names = fishm.get_param_names()
-            if pdf:
+            if pfd:
                 print("Fisher matrix param names: \n", self.param_names)
             self.param_labels = fishm.get_param_names_latex()
-            if pdf:
+            if pfd:
                 print("Fisher matrix param names latex: \n", self.param_labels)
             # print(labels)
             self.gaussians.append(
@@ -321,7 +320,7 @@ class fisher_plotting:
             dots_legend_fontsize=dots_legend_fontsize,
             fish_leg_loc=legend_loc,
             legend_title=legend_title,
-            colors=coslors,
+            colors=colors,
             legend_title_fontsize=legend_title_fontsize,
             ncol_legend=ncol_legend,
             transform_latex_dict=transform_latex_dict,

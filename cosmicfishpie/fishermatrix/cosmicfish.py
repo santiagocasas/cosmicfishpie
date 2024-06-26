@@ -698,6 +698,10 @@ class FisherMatrix:
                 # convention for z-binned pars: par_ibin
                 keysplit = key.split("_")
                 ibin = int(keysplit[1])
+                try:
+                    ibin = int(keysplit[1])
+                except ValueError:
+                    continue
                 if ibin > nmax:
                     removedpar = self.freeparams.pop(key)
                     upt.time_print(

@@ -14,9 +14,11 @@ from mpl_toolkits import axes_grid1
 
 from cosmicfishpie.analysis import fisher_operations as fo
 from cosmicfishpie.analysis import utilities as fu
+from cosmicfishpie.utilities.utils import printing as upr
+
+dprint = upr.debug_print
 
 plt.style.use("tableau-colorblind10")
-
 
 snscolors = sns.color_palette("colorblind")
 marks = ["o", "s", "*", "X", "p", "^", "v", "8", "D", "P"]
@@ -92,6 +94,7 @@ def og_plot_shades(
     dots_legend_fontsize=20,
     ylabelfontsize=20,
     ncol_legend=None,
+    colors=snscolors,
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
@@ -109,7 +112,7 @@ def og_plot_shades(
     lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
     # if cols==[]:
     #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
-    cols = snscolors
+    cols = colors
     # ax.set_position([0.1,0.1,0.8,0.8])
     if lighty_arr is not None:
         max_l = np.max(lighty_arr, 0)
@@ -250,6 +253,7 @@ def plot_shades(
     dots_legend_fontsize=20,
     ylabelfontsize=20,
     ncol_legend=None,
+    colors=snscolors,
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
@@ -267,7 +271,7 @@ def plot_shades(
     lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
     # if cols==[]:
     #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
-    cols = snscolors
+    cols = colors
     # ax.set_position([0.1,0.1,0.8,0.8])
     if lighty_arr is not None:
         max_l = np.max(lighty_arr, 0)
@@ -292,13 +296,13 @@ def plot_shades(
             nc = numarrs // 2
 
     if plotlight:
-        print("plotting light")
+        dprint("plotting light")
         ax.bar(x_arr, max_l, color=colL, width=0.8, alpha=0.9, zorder=1)
         ax.bar(x_arr, min_l, color=colL, width=0.8, alpha=0.9, zorder=1)
         # ax.fill_between(x_arr, min_l, max_l, interpolate=True, facecolor=colL,
         # edgecolor=colL, alpha=aalpha, linewidth=0.0, hatch=light_hatch)
     if plotdark:
-        print("plotting dark")
+        dprint("plotting dark")
         ax.bar(x_arr, max_d, color=colD, width=0.5, alpha=0.95, zorder=2)
         ax.bar(x_arr, min_d, color=colD, width=0.5, alpha=0.95, zorder=2)
         # ax.fill_between(x_arr, min_d, max_d, interpolate=True, facecolor=colD,
@@ -421,10 +425,10 @@ def process_fish_errs(
 
     if print_errors:
         for ii, fishy in enumerate(processed_fishers):
-            print(("Fisher name: ", fishy.name))
-            print(("Parameter names latex: ", parsnames_latex))
-            print(("Marginalized 1-sigma errors :", errMargs[ii]))
-            print(("Unmarginalized 1-sigma errors :", errUnmargs[ii]))
+            dprint(("Fisher name: ", fishy.name))
+            dprint(("Parameter names latex: ", parsnames_latex))
+            dprint(("Marginalized 1-sigma errors :", errMargs[ii]))
+            dprint(("Unmarginalized 1-sigma errors :", errUnmargs[ii]))
     # Plot differences, not absolute values np.abs,   np.median default
     if not compare_to_index:
         eurel = fu.rel_median_error(errUnmargs)
@@ -454,6 +458,7 @@ def ploterrs(
     savefig=True,
     y_label="Errors",
     ncol_legend=None,
+    colors=snscolors,
     legend_title_fontsize=None,
     legend_title=None,
     yticklabsize=20,
@@ -506,6 +511,7 @@ def ploterrs(
             xtickfontsize=xtickfontsize,
             ylabelfontsize=ylabelfontsize,
             xticksrotation=xticksrotation,
+            colors=colors,
             patches_legend_fontsize=patches_legend_fontsize,
             dots_legend_fontsize=dots_legend_fontsize,
         )
@@ -531,6 +537,7 @@ def ploterrs(
             xtickfontsize=xtickfontsize,
             ylabelfontsize=ylabelfontsize,
             xticksrotation=xticksrotation,
+            colors=colors,
             patches_legend_fontsize=patches_legend_fontsize,
             dots_legend_fontsize=dots_legend_fontsize,
         )

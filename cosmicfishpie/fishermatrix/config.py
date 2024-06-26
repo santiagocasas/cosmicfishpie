@@ -12,6 +12,7 @@ import yaml
 import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.cosmology.nuisance import Nuisance
 from cosmicfishpie.utilities.utils import printing as upt
+from cosmicfishpie.utilities.utils import misc as ums
 
 
 def init(
@@ -271,7 +272,7 @@ def init(
             "folder_paramnames": [],
         }
         external = extfiles_default.copy()
-        external.update(extfiles)
+        ums.deepupdate(external, extfiles)
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]

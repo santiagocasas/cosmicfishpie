@@ -194,7 +194,8 @@ class GalaxyPhotoDist:
         dz = self.z_max / 1000
 
         norm = [
-            trapezoid([self.ngal_photoz(z, i) for z in zint], dx=dz) for i in range(1, len(self.z_bins))
+            trapezoid([self.ngal_photoz(z, i) for z in zint], dx=dz)
+            for i in range(1, len(self.z_bins))
         ]
         norm.insert(0, None)
 

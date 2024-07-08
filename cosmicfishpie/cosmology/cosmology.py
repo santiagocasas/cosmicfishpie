@@ -17,7 +17,11 @@ import numpy as np
 import scipy.constants as sconst
 from joblib import Memory
 from scipy import integrate
-from scipy.interpolate import InterpolatedUnivariateSpline, RectBivariateSpline, UnivariateSpline
+from scipy.interpolate import (
+    InterpolatedUnivariateSpline,
+    RectBivariateSpline,
+    UnivariateSpline,
+)
 from scipy.signal import savgol_filter
 
 import cosmicfishpie.fishermatrix.config as cfg

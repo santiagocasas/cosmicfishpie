@@ -592,7 +592,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_z[i] = np.sqrt(np.trapezoid(integrand, k))
+                sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
             sigm8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
             return sigm8_z_interp
 
@@ -611,7 +611,7 @@ class boltzmann_code:
                     / 2
                     / np.pi**2
                 )
-                sigma_cb_z[i] = np.sqrt(np.trapezoid(integrand, k))
+                sigma_cb_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
             sigm8_cb_z_interp = UnivariateSpline(z_range, sigma_cb_z, s=0)
             return sigm8_cb_z_interp
 

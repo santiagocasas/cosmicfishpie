@@ -4,6 +4,7 @@
 This module contains cls calculations (only LSS atm).
 
 """
+import warnings
 from copy import deepcopy
 from time import time
 
@@ -266,9 +267,12 @@ class ComputeGalSpectro:
         """Updates the spectroscopic redshift error"""
         self.dz_err = cfg.specs["spec_sigma_dz"]
         self.dz_type = cfg.specs["spec_sigma_dz_type"]
-        self.kh_rescaling = cfg.specs["spec_khrescale"]
-        self.kh_rescaling_beforespecerr = cfg.specs["spec_khrescale_beforespecerr"]
         ## constant, z-dependent
+
+        # These bugs are intentionally left in, in order to reproduce old results.
+        # The reallity is that they are not to be here.
+        self.kh_rescaling_bug = cfg.settings["kh_rescaling_bug"]
+        self.kh_rescaling_beforespecerr_bug = cfg.settings["kh_rescaling_beforespecerr_bug"]
 
     def qparallel(self, z):
         """Function implementing q parallel of the Alcock-Paczynski effect
@@ -344,8 +348,8 @@ class ComputeGalSpectro:
 
     def k_units_change(self, k):
         """
-        Function that rescales the k-array, when the kmax-kmin integration units are fixed in h/Mpc,
-        while the rest of the code is defined in 1/Mpc.
+        Function that rescales the k-array, when asked for.
+        The code is defined everzwhere in 1/Mpc so a rescaling would be wwrong.
 
         Parameters
         ----------
@@ -357,7 +361,12 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             wavenumbers in un units of h ref/Mpc
         """
-        if self.kh_rescaling:
+        if self.kh_rescaling_bug:
+            warnings.warn(
+                "You requested to do an additional unpysical rescaling of the wavenumbers (h-bug).",
+                category=RuntimeWarning,
+                stacklevel=2,
+            )
             h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
             kh = k * h_change
         else:
@@ -812,12 +821,17 @@ class ComputeGalSpectro:
             print("    Computing Pgg for {}".format(self.observables))
         tstart = time()
 
-        if self.kh_rescaling_beforespecerr:
-            k = self.k_units_change(k)  # has to be done before spec_err and AP
-            error_z = self.spec_err_z(z, k, mu)  ##before rescaling of k,mu by AP
+        if self.kh_rescaling_beforespecerr_bug:
+            # In this case the the h-bug is only applied before computing the resolution supressuion
+            # This changes the scale of supression aswell.
+            # Still the additional rescaling is unphysical
+            k = self.k_units_change(k)
+            error_z = self.spec_err_z(z, k, mu)
         else:
-            error_z = self.spec_err_z(z, k, mu)  ##before rescaling of k,mu by AP
-            k = self.k_units_change(k)  # has to be done before spec_err and AP
+            # In this case the the h-bug is only applied after computing the resolution supressuion
+            # This fixes the scale of supression but still the additional rescaling is unphysical
+            error_z = self.spec_err_z(z, k, mu)
+            k = self.k_units_change(k)
         k, mu = self.kmu_alc_pac(z, k, mu)
 
         baoterm = self.BAO_term(z)

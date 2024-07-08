@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         Mainly changes to the plotting routine
         Added new external file for nonlinear power spectra
         New options for spectroscopic error. Removed infamous h-bug
+
+1.0.5 : Removed a backwards compatibilty issue with older version of numpy.
+        Switched Integration to use scipy now

@@ -9,8 +9,8 @@ from copy import deepcopy
 from time import time
 
 import numpy as np
-from scipy.interpolate import CubicSpline
 from scipy.integrate import trapezoid
+from scipy.interpolate import CubicSpline
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance

@@ -88,7 +88,7 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     zprime = zarr[:, None]
     wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
     witri = np.tril(wintgd)
-    wint = np.trapezoid(witri, zarr, axis=0)
+    wint = integrate.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
     return intp
 

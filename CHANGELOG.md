@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 1.0.1 : Bugfix for external file reading for release notebooks.
-        change `is False` statements with a normal `not` to catch False-equivalents.
+        Change `is False` statements with a normal `not` to catch False-equivalents.
 
 1.0.2 : Added documentation for the cosmicfishpie.LSSsurvey submodule
 
@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         Mainly changes to the plotting routine
         Added new external file for nonlinear power spectra
         New options for spectroscopic error. Removed infamous h-bug
+
+1.0.5 : Removed a backwards compatibility issue with older version of numpy.
+        Switched Integration to use scipy now

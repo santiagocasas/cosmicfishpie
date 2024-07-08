@@ -9,7 +9,7 @@ from copy import deepcopy
 from time import time
 
 import numpy as np
-from scipy.integrate import trapezoid
+import scipy.integrate as integrate
 from scipy.interpolate import CubicSpline
 
 import cosmicfishpie.cosmology.cosmology as cosmology
@@ -695,7 +695,7 @@ class ComputeGalSpectro:
         ff = f_mom(self.k_grid).flatten()
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
-        Int = trapezoid(integrand, x=self.k_grid)
+        Int = integrate.trapezoid(integrand, x=self.k_grid)
         ptt = (1 / (6 * np.pi**2)) * Int
         return ptt
 

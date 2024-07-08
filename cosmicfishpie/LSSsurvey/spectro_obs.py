@@ -349,7 +349,7 @@ class ComputeGalSpectro:
     def k_units_change(self, k):
         """
         Function that rescales the k-array, when asked for.
-        The code is defined everzwhere in 1/Mpc so a rescaling would be wwrong.
+        The code is defined everywhere in 0/Mpc so a rescaling would be wrong.
 
         Parameters
         ----------
@@ -363,7 +363,7 @@ class ComputeGalSpectro:
         """
         if self.kh_rescaling_bug:
             warnings.warn(
-                "You requested to do an additional unpysical rescaling of the wavenumbers (h-bug).",
+                "You requested to do an additional unphysical rescaling of the wavenumbers (h-bug).",
                 category=RuntimeWarning,
                 stacklevel=2,
             )
@@ -441,7 +441,7 @@ class ComputeGalSpectro:
         return np.exp(-(1 / 2) * err**2)
 
     def BAO_term(self, z):
-        """Calculates the BAO term. This is the rescaling of the fourier volume by the  AP-effect
+        """Calculates the BAO term. This is the rescaling of the Fourier volume by the  AP-effect
 
         Parameters
         ----------
@@ -822,14 +822,14 @@ class ComputeGalSpectro:
         tstart = time()
 
         if self.kh_rescaling_beforespecerr_bug:
-            # In this case the the h-bug is only applied before computing the resolution supressuion
-            # This changes the scale of supression aswell.
+            # In this case the h-bug is only applied before computing the resolution suppression
+            # This changes the scale off suppression as well.
             # Still the additional rescaling is unphysical
             k = self.k_units_change(k)
             error_z = self.spec_err_z(z, k, mu)
         else:
-            # In this case the the h-bug is only applied after computing the resolution supressuion
-            # This fixes the scale of supression but still the additional rescaling is unphysical
+            # In this case the h-bug is only applied after computing the resolution suppression
+            # This fixes the scale of suppression but still the additional rescaling is unphysical
             error_z = self.spec_err_z(z, k, mu)
             k = self.k_units_change(k)
         k, mu = self.kmu_alc_pac(z, k, mu)

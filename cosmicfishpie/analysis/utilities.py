@@ -200,7 +200,6 @@ def confidence_coefficient(confidence_level, dimensions=1):
     :rtype: :class:`float`
 
     """
-
     return np.sqrt(chi2.ppf(confidence_level, df=dimensions))
 
 
@@ -309,11 +308,27 @@ def rel_median_error(array, percentage=True):
     :return: difference of each element compared to median of array
     :rtype: Numpy array
     """
-    perfact = 1
+    prefact = 1
     if percentage:
-        perfact = 100
+        prefact = 100
     median = np.median(np.array(array), 0)
-    relerr = perfact * (array - median) / median
+    relerr = prefact * (array - median) / median
+    return relerr
+
+
+def rel_error_to_index(index, array, percentage=True):
+    """
+    This function returns the percentage difference compared to median of an array for each element
+    :param array:  numpy array of numbers
+    :optional_param percentage: if set to True, returns percentage difference. Default: True
+    :return: difference of each element compared to median of array
+    :rtype: Numpy array
+    """
+    prefact = 1
+    if percentage:
+        prefact = 100
+    compare = np.array(array)[index]
+    relerr = prefact * (array - compare) / compare
     return relerr
 
 

@@ -4,6 +4,7 @@
 This module contains cls calculations (only LSS atm).
 
 """
+import warnings
 from copy import deepcopy
 from time import time
 
@@ -265,6 +266,13 @@ class ComputeGalSpectro:
     def set_spectro_specs(self):
         """Updates the spectroscopic redshift error"""
         self.dz_err = cfg.specs["spec_sigma_dz"]
+        self.dz_type = cfg.specs["spec_sigma_dz_type"]
+        ## constant, z-dependent
+
+        # These bugs are intentionally left in, in order to reproduce old results.
+        # The reallity is that they are not to be here.
+        self.kh_rescaling_bug = cfg.settings["kh_rescaling_bug"]
+        self.kh_rescaling_beforespecerr_bug = cfg.settings["kh_rescaling_beforespecerr_bug"]
 
     def qparallel(self, z):
         """Function implementing q parallel of the Alcock-Paczynski effect
@@ -340,8 +348,8 @@ class ComputeGalSpectro:
 
     def k_units_change(self, k):
         """
-        Function that rescales the k-array, when the kmax-kmin integration units are fixed in h/Mpc,
-        while the rest of the code is defined in 1/Mpc.
+        Function that rescales the k-array, when asked for.
+        The code is defined everywhere in 0/Mpc so a rescaling would be wrong.
 
         Parameters
         ----------
@@ -353,8 +361,16 @@ class ComputeGalSpectro:
         float, numpy.ndarray
             wavenumbers in un units of h ref/Mpc
         """
-        h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
-        kh = k * h_change
+        if self.kh_rescaling_bug:
+            warnings.warn(
+                "You requested to do an additional unphysical rescaling of the wavenumbers (h-bug).",
+                category=RuntimeWarning,
+                stacklevel=2,
+            )
+            h_change = self.cosmo.cosmopars["h"] / self.fiducialcosmo.cosmopars["h"]
+            kh = k * h_change
+        else:
+            kh = k
         return kh
 
     def kmu_alc_pac(self, z, k, mu):
@@ -417,11 +433,15 @@ class ComputeGalSpectro:
             \\mathrm{Err} = \\exp\\left[-\\sigma^2_\\|\\, k^2\\, \\mu^2 -\\sigma_\\perp^2 \\,k^2\\,\\left(1- \\mu^2\\right)\\right].
 
         """
-        err = self.dz_err * (1 + z) * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
-        return np.exp(-(1 / 2) * err**2)  # Gaussian
+        if self.dz_type == "constant":
+            spec_dz_err = self.dz_err
+        elif self.dz_type == "z-dependent":
+            spec_dz_err = self.dz_err * (1 + z)
+        err = spec_dz_err * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
+        return np.exp(-(1 / 2) * err**2)
 
     def BAO_term(self, z):
-        """Calculates the BAO term. This is the rescaling of the fourier volume by the  AP-effect
+        """Calculates the BAO term. This is the rescaling of the Fourier volume by the  AP-effect
 
         Parameters
         ----------
@@ -674,7 +694,7 @@ class ComputeGalSpectro:
         ff = f_mom(self.k_grid).flatten()
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
-        Int = np.trapz(integrand, x=self.k_grid)
+        Int = np.trapezoid(integrand, x=self.k_grid)
         ptt = (1 / (6 * np.pi**2)) * Int
         return ptt
 
@@ -801,8 +821,17 @@ class ComputeGalSpectro:
             print("    Computing Pgg for {}".format(self.observables))
         tstart = time()
 
-        k = self.k_units_change(k)  # has to be done before spec_err and AP
-        error_z = self.spec_err_z(z, k, mu)  # before rescaling of k,mu by AP
+        if self.kh_rescaling_beforespecerr_bug:
+            # In this case the h-bug is only applied before computing the resolution suppression
+            # This changes the scale off suppression as well.
+            # Still the additional rescaling is unphysical
+            k = self.k_units_change(k)
+            error_z = self.spec_err_z(z, k, mu)
+        else:
+            # In this case the h-bug is only applied after computing the resolution suppression
+            # This fixes the scale of suppression but still the additional rescaling is unphysical
+            error_z = self.spec_err_z(z, k, mu)
+            k = self.k_units_change(k)
         k, mu = self.kmu_alc_pac(z, k, mu)
 
         baoterm = self.BAO_term(z)

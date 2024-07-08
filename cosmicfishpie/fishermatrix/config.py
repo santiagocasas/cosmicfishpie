@@ -11,6 +11,7 @@ import yaml
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.cosmology.nuisance import Nuisance
+from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import printing as upt
 
 
@@ -143,6 +144,10 @@ def init(
                                   What power spectrum should be used as the underlying power spectrum the photometric probe's galaxy clustering traces. Either 'matter' for the total matter spectrum or 'clustering' for CDM+baryons. Defaults to 'matter'
     ShareDeltaNeff              : bool
                                   If True, the variation of the cosmological parameter Neff is understood as a rescaling of the decoupling temperature of neutrinos. If False any additional Neff is accounted for as additional massless relics.
+    kh_rescaling_bug            : bool
+                                  If true, the internal wavenumber in the computation of the spectroscopic probe's power spectrum computation will be rescaled by an adtional factor h/hfid. Default False
+    kh_rescaling_beforespecerr_bug : bool
+                                     If True, the internal scales in the computation of the spectroscopic probe's resolution error will be rescaled by an adtional factor h/hfid. Default False
 
     Attributes
     ----------
@@ -243,6 +248,8 @@ def init(
     settings.setdefault("GCsp_Tracer", "matter")
     settings.setdefault("GCph_Tracer", "matter")
     settings.setdefault("ShareDeltaNeff", False)
+    settings.setdefault("kh_rescaling_bug", False)
+    settings.setdefault("kh_rescaling_beforespecerr_bug", False)
 
     global external
     global input_type
@@ -271,7 +278,7 @@ def init(
             "folder_paramnames": [],
         }
         external = extfiles_default.copy()
-        external.update(extfiles)
+        ums.deepupdate(external, extfiles)
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]
@@ -327,6 +334,8 @@ def init(
     global specs
 
     specs_defaults = {}
+    specs_defaults.setdefault("spec_sigma_dz", 0.002)
+    specs_defaults.setdefault("spec_sigma_dz_type", "constant")
     specs_defaults["specs_dir"] = settings["specs_dir"]
     specs = specs_defaults.copy()  # start with default dict
 

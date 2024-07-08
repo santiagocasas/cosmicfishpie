@@ -61,7 +61,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
             for zii in range(len(zint_mat))
         ]
     )
-    integral_really = integrate.trapz(intg_mat, dx=diffz, axis=1)
+    integral_really = integrate.trapezoid(intg_mat, dx=diffz, axis=1)
     intp = interp1d(z, integral_really, kind="cubic")
     return intp
 
@@ -88,7 +88,7 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     zprime = zarr[:, None]
     wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
     witri = np.tril(wintgd)
-    wint = np.trapz(witri, zarr, axis=0)
+    wint = np.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
     return intp
 
@@ -714,7 +714,7 @@ class ComputeCls:
             / np.sqrt(hub)[:, np.newaxis]
         )
 
-        clint = integrate.trapz(intgn, dx=self.dz, axis=0)
+        clint = integrate.trapezoid(intgn, dx=self.dz, axis=0)
 
         clint[~mask1] = 0
         clint[~mask2] = 0

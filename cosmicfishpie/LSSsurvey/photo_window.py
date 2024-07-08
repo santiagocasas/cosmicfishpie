@@ -6,7 +6,7 @@ This module returns the window functions for LSS surveys.
 """
 
 import numpy as np
-from scipy.integrate import trapz
+from scipy.integrate import trapezoid
 from scipy.special import erf
 
 import cosmicfishpie.fishermatrix.config as cfg
@@ -194,7 +194,8 @@ class GalaxyPhotoDist:
         dz = self.z_max / 1000
 
         norm = [
-            trapz([self.ngal_photoz(z, i) for z in zint], dx=dz) for i in range(1, len(self.z_bins))
+            trapezoid([self.ngal_photoz(z, i) for z in zint], dx=dz)
+            for i in range(1, len(self.z_bins))
         ]
         norm.insert(0, None)
 

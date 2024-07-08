@@ -12,3 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.0.2 : Added documentation for the cosmicfishpie.LSSsurvey submodule
 
 1.0.3 : Added documentation for the cosmicfishpie.fishermatrix submodule
+
+1.0.4 : Merged changes from the old repo to the release repo.
+        Mainly changes to the plotting routine
+        Added new external file for nonlinear power spectra
+        New options for spectroscopic error. Removed infamous h-bug

@@ -1,7 +1,9 @@
+import copy
 import os
 
 import matplotlib
 import matplotlib.pyplot as plt
+import seaborn as sns
 from getdist import plots
 from getdist.gaussian_mixtures import GaussianND
 
@@ -9,6 +11,10 @@ from cosmicfishpie.analysis import fisher_matrix as fm
 from cosmicfishpie.analysis import fisher_plot_analysis as fpa
 from cosmicfishpie.analysis import plot_comparison as pc
 from cosmicfishpie.utilities.utils import filesystem as ffs
+from cosmicfishpie.utilities.utils import printing as upr
+
+snscolors = sns.color_palette("colorblind")
+dprint = upr.debug_print
 
 params = {
     "mathtext.fontset": "stix",
@@ -96,20 +102,26 @@ class fisher_plotting:
             print("w0 and wa not in parameter list")
             print("no FoM computed")
 
-    def load_gaussians(self):
+    def load_gaussians(self, print_fishdata=False):
         self.gaussians = []
+        pfd = print_fishdata
         for ii, fishm in enumerate(self.fishers_group.fisher_list):
             # covariance = self.get_marginv([par for par in self.fidpars[ind]],ind).values
             invcov = fishm.fisher_matrix
             means = fishm.get_param_fiducial()
-            print("---> Fisher matrix name: ", fishm.name)
-            print("Fisher matrix fiducials: \n", means)
+            if pfd:
+                print("---> Fisher matrix name: ", fishm.name)
+            if pfd:
+                print("Fisher matrix fiducials: \n", means)
             bounds = fishm.get_confidence_bounds()
-            print("Fisher matrix 1-sigma bounds: \n", bounds)
+            if pfd:
+                print("Fisher matrix 1-sigma bounds: \n", bounds)
             self.param_names = fishm.get_param_names()
-            print("Fisher matrix param names: \n", self.param_names)
+            if pfd:
+                print("Fisher matrix param names: \n", self.param_names)
             self.param_labels = fishm.get_param_names_latex()
-            print("Fisher matrix param names latex: \n", self.param_labels)
+            if pfd:
+                print("Fisher matrix param names latex: \n", self.param_labels)
             # print(labels)
             self.gaussians.append(
                 GaussianND(
@@ -208,8 +220,11 @@ class fisher_plotting:
         dpi_ = kwargs.get("dpi", 300)
         format_ = kwargs.get("file_format", ".pdf")
         marker_color_ = kwargs.get("marker_color", "black")
-        axes_fontsize = kwargs.get("axes_fontsize", 20)
+        axes_fontsize = kwargs.get("axes_fontsize", 16)
         legend_fontsize = kwargs.get("legend_fontsize", 20)
+        tick_max_labels = kwargs.get("tick_max_labels", 3)
+        title_limit = kwargs.get("title_limit", 0)
+        title_limit_labels = kwargs.get("title_limit_labels", True)
         figure_legend_frame = kwargs.get("figure_legend_frame", 20)
         axes_labelsize = kwargs.get("axes_labelsize", 20)
         figure_facecolor = kwargs.get("figure_facecolor", "white")
@@ -217,6 +232,9 @@ class fisher_plotting:
         g.settings.figure_legend_frame = figure_legend_frame
         g.settings.axes_fontsize = axes_fontsize
         g.settings.axes_labelsize = axes_labelsize
+        g.settings.axis_tick_max_labels = tick_max_labels
+        g.settings.title_limit_labels = title_limit_labels
+        g.settings.title_limit = title_limit
         g.settings.legend_fontsize = legend_fontsize
         g.settings.axis_marker_color = marker_color_
         g.settings.axis_marker_ls = "--"
@@ -246,6 +264,9 @@ class fisher_plotting:
         return None
 
     def compare_errors(self, options=dict()):
+        glob_opts = copy.deepcopy(self.options)
+        glob_opts.update(options)
+        options = copy.deepcopy(glob_opts)
         imgformat_ = options.get("file_format", ".pdf")
         plot_style = options.get("plot_style", "bars")
         save_error = options.get("save_error", False)
@@ -264,12 +285,17 @@ class fisher_plotting:
         yticklabsize = options.get("yticklabsize", 22)
         xtickfontsize = options.get("xtickfontsize", 22)
         ylabelfontsize = options.get("ylabelfontsize", 20)
+        ylabel = options.get("ylabel", r"% discrepancy on $\sigma_i$ w.r.t. median")
         patches_legend_fontsize = options.get("patches_legend_fontsize", 26)
         dots_legend_fontsize = options.get("dots_legend_fontsize", 26)
+        colors = options.get("colors", snscolors)
+        legend_loc = options.get("legend_loc", "lower right")
         yrang = options.get("yrang", [-1.0, 1.0])
         dpi = options.get("dpi", 400)
         figsize = options.get("figsize", (20, 10))
+        savefig = options.get("savefig", True)
         transform_latex_dict = options.get("transform_latex_dict", dict())
+        compare_to_index = options.get("compare_to_index", False)
         figure_title = options.get("figure_title", "")
         pc.ploterrs(
             self.fishers_group.get_fisher_list(),
@@ -283,8 +309,8 @@ class fisher_plotting:
             yrang=yrang,
             figsize=figsize,
             dpi=dpi,
-            savefig=True,
-            y_label=r"% discrepancy on $\sigma_i$ w.r.t. median",
+            savefig=savefig,
+            y_label=ylabel,
             yticklabsize=yticklabsize,
             xticklabsize=xticklabsize,
             xtickfontsize=xtickfontsize,
@@ -292,11 +318,13 @@ class fisher_plotting:
             xticksrotation=xticksrotation,
             patches_legend_fontsize=patches_legend_fontsize,
             dots_legend_fontsize=dots_legend_fontsize,
-            fish_leg_loc="lower right",
+            fish_leg_loc=legend_loc,
             legend_title=legend_title,
+            colors=colors,
             legend_title_fontsize=legend_title_fontsize,
             ncol_legend=ncol_legend,
             transform_latex_dict=transform_latex_dict,
+            compare_to_index=compare_to_index,
             save_error=save_error,
             figure_title=figure_title,
         )

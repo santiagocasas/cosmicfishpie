@@ -63,7 +63,7 @@ class FisherMatrix:
         surveyName="Euclid",
         cosmoModel="w0waCDM",
         latexnames=None,
-        parallel="False",
+        parallel=False,
         parallel_cpus=4,
     ):
         """This is the main class of cosmicfishpie that is used to do a Fisher matrix forecast for current and upcoming experiments in cosmology. If you want to compute the Fisher matrix you can pass all specifications and options here.
@@ -174,7 +174,6 @@ class FisherMatrix:
             **self.PShotpars,
         }
         self.parallel = parallel
-        # MMmod: avoids code to crush if specs don't have redshift bins
         if "z_bins" in cfg.specs:
             self.z_bins = cfg.specs["z_bins"]
             self.num_z_bins = len(cfg.specs["z_bins"]) - 1

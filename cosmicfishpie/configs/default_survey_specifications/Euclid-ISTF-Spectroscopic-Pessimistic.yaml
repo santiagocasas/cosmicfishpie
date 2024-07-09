@@ -1,4 +1,4 @@
-surveyspecifications:
+specifications:
   'spec_sigma_dz': 0.001
   'area_survey': 15000
   'kmax_GCsp': 0.25

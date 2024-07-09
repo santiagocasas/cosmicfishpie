@@ -10,7 +10,7 @@ from time import time
 
 import numpy as np
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import printing as upt
 
 

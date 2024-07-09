@@ -4,10 +4,10 @@ cosmicfishpie.fishermatrix package
 Submodules
 ----------
 
-cosmicfishpie.fishermatrix.config module
+cosmicfishpie.configs.config module
 ----------------------------------------
 
-.. automodule:: cosmicfishpie.fishermatrix.config
+.. automodule:: cosmicfishpie.configs.config
    :members:
    :undoc-members:
    :show-inheritance:

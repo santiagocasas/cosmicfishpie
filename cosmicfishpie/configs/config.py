@@ -201,7 +201,7 @@ def init(
     settings.setdefault(
         "specs_dir",
         os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "..", "..", "survey_specifications"
+            os.path.dirname(os.path.realpath(__file__)), "default_survey_specifications"
         ),
     )
     settings.setdefault("survey_name", surveyName)
@@ -228,7 +228,7 @@ def init(
     settings.setdefault(
         "boltzmann_yaml_path",
         os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "..", "..", "boltzmann_yaml_files"
+            os.path.dirname(os.path.realpath(__file__)), "default_boltzmann_yaml_files"
         ),
     )
     settings.setdefault(

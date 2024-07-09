@@ -14,7 +14,7 @@ from scipy.interpolate import CubicSpline
 
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 

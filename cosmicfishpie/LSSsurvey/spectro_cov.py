@@ -62,14 +62,14 @@ class SpectroCov:
         """
         # initializing the class only with fiducial parameters
         # if fiducial_specobs is None:
-        
+
         try:
-            self.fsky_spectro = cfg.specs['fsky_spectro']
+            self.fsky_spectro = cfg.specs["fsky_spectro"]
             self.area_survey = self.fsky_spectro * upm.areasky()
         except KeyError:
             self.area_survey = cfg.specs["area_survey_spectro"]
             self.fsky_spectro = self.area_survey / upm.areasky()
-        
+
         if "IM" in cfg.obs and "GCsp" in cfg.obs:
             bias_samples = ["I", "g"]
             print("Entering Cov cross XC IM,g term")

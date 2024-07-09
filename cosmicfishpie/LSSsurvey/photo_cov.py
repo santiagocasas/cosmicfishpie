@@ -75,6 +75,11 @@ class PhotoCov:
                 self.observables.append(key)
         self.binrange = cfg.specs["binrange"]
         self.feed_lvl = cfg.settings["feedback"]
+        self.fsky_WL = cfg.specs.get('fsky_WL')
+        self.fsky_GCph = cfg.specs.get('fsky_GCph')
+        self.ngalbin = np.array(cfg.specs["ngalbin"])
+        self.numbins = len(cfg.specs["z_bins"]) - 1
+        self.ellipt_error = cfg.specs["ellipt_error"]
 
     def getcls(self, allpars):
         """Function to calculate the angular power spectrum
@@ -89,8 +94,6 @@ class PhotoCov:
         dict
             a dictionary with all the auto and cross correlation angular power spectra
         """
-        # Here call to functions getting windows and then do cls
-        # Splitting the dictionary of full parameters
         cosmopars = dict((k, allpars[k]) for k in self.cosmopars)
         photopars = dict((k, allpars[k]) for k in self.photopars)
         IApars = dict((k, allpars[k]) for k in self.IApars)
@@ -129,24 +132,18 @@ class PhotoCov:
 
             \\sigma_L = \\sigma_\\epsilon \\quad , \\quad \\sigma_G = 1
         """
-
-        # TBA: reading the number directly. This should be computed
-        ngalbin = np.array(cfg.specs["ngalbin"])
-        ellipt_error = cfg.specs["ellipt_error"]
-
         noisy_cls = copy.deepcopy(cls)
 
         for ind in self.binrange:
             for obs in self.observables:
                 if obs == "GCph":
-                    # TBA: fix this
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
-                        1.0 / ngalbin[ind - 1]
+                        1.0 / self.ngalbin[ind - 1]
                     )
                 elif obs == "WL":
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
-                        ellipt_error**2.0
-                    ) / ngalbin[ind - 1]
+                        self.ellipt_error**2.0
+                    ) / self.ngalbin[ind - 1]
 
         return noisy_cls
 
@@ -167,13 +164,12 @@ class PhotoCov:
 
         pd.set_option("display.float_format", "{:.9E}".format)
 
-        numbins = len(cfg.specs["z_bins"]) - 1
         covvec = []
 
         # Create indexes for data frame
         cols = []
         for o in self.observables:
-            for ind in range(numbins):
+            for ind in range(self.numbins):
                 cols.append(o + " " + str(ind + 1))
 
         for ind, ell in enumerate(noisy_cls["ells"]):
@@ -185,7 +181,7 @@ class PhotoCov:
             ):
                 covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
                     obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
-                ][ind] / np.sqrt(np.sqrt(cfg.specs["fsky_" + obs1] * cfg.specs["fsky_" + obs2]))
+                ][ind] / np.sqrt(np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1)))
 
             covvec.append(covdf)
 

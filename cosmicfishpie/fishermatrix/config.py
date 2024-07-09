@@ -13,6 +13,7 @@ import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.cosmology.nuisance import Nuisance
 from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import printing as upt
+from cosmicfishpie.utilities.utils import physmath as upm
 
 
 def init(
@@ -327,7 +328,8 @@ def init(
         # compute num galaxies per bin for whole sky area
         nbins = len(zbins[:-1])
         ones = np.ones_like(zbins[:-1])
-        ngal_bin = (ngal_sqarmin / nbins) * 3600 * (180 / np.pi) ** 2
+        ngal_sqdeg = ngal_sqarmin * 3600 
+        ngal_bin = (ngal_sqdeg / nbins) * upm.sr
         numgal = ngal_bin * ones
         return numgal
 
@@ -466,9 +468,13 @@ def init(
             "Please pass your custom specifications as a dictionary.",
         )
 
+    
     specs.update(specificationsf)  # update keys if present in files
+    specs['fsky_GCph'] = specificationsf.get('fsky_GCph', upm.sqdegtofsky(specificationsf['area_survey_GCph']))
+    specs['fsky_WL'] = specificationsf.get('fsky_WL', upm.sqdegtofsky(specificationsf['area_survey_WL']))
+    specs['fsky_spectro'] = specificationsf.get('fsky_spectro', upm.sqdegtofsky(specificationsf['area_survey_spectro']))
     specs.update(specifications)  # update keys if passed by users
-
+     
     if observables is None:
         observables = ["GCph", "WL"]
     global obs

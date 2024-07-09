@@ -13,6 +13,7 @@ import cosmicfishpie.fishermatrix.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.fishermatrix.derivatives import derivatives
 from cosmicfishpie.utilities.utils import printing as upt
+from cosmicfishpie.utilities.utils import physmath as upm
 
 
 class SpectroCov:
@@ -36,29 +37,39 @@ class SpectroCov:
 
         Attributes
         ----------
-        pk_obs            : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the observable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
-        pk_obs_gg         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the galaxy clustering autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
-        pk_obs_II         : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                            Fiducial instance of the intensity mapping autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
-        area_survey       : float
-                            Size of the survey sky coverage in square arc minutes
-        dnz               : float, list
-                            Galaxies per square arc minute per redshift bin
-        z_bins            : list
-                            Redshift bin edges
-        z_bin_mids        : list
-                            Redshift bin centers
-        dz_bins           : list
-                            Redshift sizes
-        global_z_bin_mids : list
-                            Redshift bin centers
-        global_z_bins     : list
-                            Redshift bin edges
+        pk_obs                    : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                                    Fiducial instance of the observable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
+        pk_obs_gg                 : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                                    Fiducial instance of the galaxy clustering autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
+        pk_obs_II                 : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
+                                    Fiducial instance of the intensity mapping autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
+        area_survey_spectro       : float
+                                    Size of the survey sky coverage in square arc minutes
+        fsky_spectro              : float
+                                    Survey coverage fraction of the total sky
+        dnz                       : float, list
+                                    Galaxies per square arc minute per redshift bin
+        z_bins                    : list
+                                    Redshift bin edges
+        z_bin_mids                : list
+                                    Redshift bin centers
+        dz_bins                   : list
+                                    Redshift sizes
+        global_z_bin_mids         : list
+                                    Redshift bin centers
+        global_z_bins             : list
+                                    Redshift bin edges
         """
         # initializing the class only with fiducial parameters
         # if fiducial_specobs is None:
+        
+        try:
+            self.fsky_spectro = cfg.specs['fsky_spectro']
+            self.area_survey = self.fsky_spectro * upm.areasky()
+        except KeyError:
+            self.area_survey = cfg.specs["area_survey_spectro"]
+            self.fsky_spectro = self.area_survey / upm.areasky()
+        
         if "IM" in cfg.obs and "GCsp" in cfg.obs:
             bias_samples = ["I", "g"]
             print("Entering Cov cross XC IM,g term")
@@ -86,7 +97,6 @@ class SpectroCov:
         else:
             self.pk_obs = fiducial_specobs
 
-        self.area_survey = cfg.specs["area_survey"]
         if "GCsp" in self.pk_obs.observables:
             self.dnz = self.pk_obs.nuisance.gcsp_dndz()
             self.z_bins = self.pk_obs.nuisance.gcsp_zbins()
@@ -141,12 +151,10 @@ class SpectroCov:
         float, numpy.ndarray
             Volume of the comoving spherical shell between zj and zi
         """
-        rad_to_area = 1 / (4 * np.pi * np.power(180 / np.pi, 2))
         d1 = self.pk_obs.cosmo.angdist(zi)
         d2 = self.pk_obs.cosmo.angdist(zj)
         sphere_vol = (4 * np.pi / 3) * (pow((1 + zj) * d2, 3) - pow((1 + zi) * d1, 3))
-        vol = sphere_vol * rad_to_area
-        return vol
+        return sphere_vol
 
     def d_volume(self, ibin):
         """Calculates the comoving volume of a redshift bin
@@ -176,7 +184,7 @@ class SpectroCov:
         float
             survey volume of the redshift bin
         """
-        vol = self.area_survey * self.d_volume(ibin)
+        vol = self.fsky_spectro * self.d_volume(ibin)
         return vol
 
     def n_density(self, ibin):

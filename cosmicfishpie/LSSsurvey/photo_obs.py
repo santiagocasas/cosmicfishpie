@@ -12,9 +12,9 @@ from joblib import Memory
 from scipy import integrate
 from scipy.interpolate import interp1d
 
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
-import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.LSSsurvey.photo_window as photo_window
 from cosmicfishpie.utilities.utils import printing as upt
 

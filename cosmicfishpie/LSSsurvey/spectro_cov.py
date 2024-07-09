@@ -12,8 +12,8 @@ import numpy as np
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.fishermatrix.derivatives import derivatives
-from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.utilities.utils import physmath as upm
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 class SpectroCov:

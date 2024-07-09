@@ -12,8 +12,8 @@ import yaml
 import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.cosmology.nuisance import Nuisance
 from cosmicfishpie.utilities.utils import misc as ums
-from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.utilities.utils import physmath as upm
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 def init(

@@ -10,8 +10,8 @@ from time import time
 import numpy as np
 from joblib import Memory
 
-import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.configs.config as cfg
+import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.utilities.utils import printing as upt
 
 cachedir = "./cache"

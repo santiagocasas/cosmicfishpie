@@ -464,7 +464,6 @@ def init(
             "Please pass your custom specifications as a dictionary.",
         )
 
-    
     specs.update(specificationsf)  # update keys if present in files
     specs["fsky_GCph"] = specificationsf.get(
         "fsky_GCph", upm.sqdegtofsky(specificationsf["area_survey_GCph"])
@@ -476,7 +475,7 @@ def init(
         "fsky_spectro", upm.sqdegtofsky(specificationsf["area_survey_spectro"])
     )
     specs.update(specifications)  # update keys if passed by users
-     
+
     if observables is None:
         observables = ["GCph", "WL"]
     global obs

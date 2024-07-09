@@ -245,6 +245,7 @@ class physmath:
     def radtodeg(rads):
         degs = rads * physmath.sr
         return degs
+
     @staticmethod
     def degtorad(degs):
         rads = degs / physmath.sr

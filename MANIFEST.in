@@ -1,0 +1,5 @@
+include cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml
+include cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml
+include cosmicfishpie/configs/default_survey_specifications/Euclid-ISTF-Photometric-Pessimistic.yaml
+include cosmicfishpie/configs/default_survey_specifications/Euclid-ISTF-Spectroscopic-Pessimistic.yaml
+include cosmicfishpie/configs/default_survey_specifications/Euclid_GCsp_IST.dat

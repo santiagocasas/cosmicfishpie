@@ -64,7 +64,7 @@ exclude = [
 include-package-data = true
 
 [tool.setuptools.package-data]
-cosmicfishpie = ["py.typed"]
+cosmicfishpie = ["py.typed", "configs/*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "cosmicfishpie.version.VERSION"}

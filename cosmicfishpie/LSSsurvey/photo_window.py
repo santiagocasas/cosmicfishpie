@@ -9,7 +9,7 @@ import numpy as np
 from scipy.integrate import trapezoid
 from scipy.special import erf
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 
 
 class GalaxyPhotoDist:

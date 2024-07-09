@@ -12,7 +12,7 @@ from time import time
 import numpy as np
 import pandas as pd
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
 from cosmicfishpie.utilities.utils import printing as upt
@@ -75,8 +75,8 @@ class PhotoCov:
                 self.observables.append(key)
         self.binrange = cfg.specs["binrange"]
         self.feed_lvl = cfg.settings["feedback"]
-        self.fsky_WL = cfg.specs.get('fsky_WL')
-        self.fsky_GCph = cfg.specs.get('fsky_GCph')
+        self.fsky_WL = cfg.specs.get("fsky_WL")
+        self.fsky_GCph = cfg.specs.get("fsky_GCph")
         self.ngalbin = np.array(cfg.specs["ngalbin"])
         self.numbins = len(cfg.specs["z_bins"]) - 1
         self.ellipt_error = cfg.specs["ellipt_error"]
@@ -181,7 +181,9 @@ class PhotoCov:
             ):
                 covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
                     obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
-                ][ind] / np.sqrt(np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1)))
+                ][ind] / np.sqrt(
+                    np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1))
+                )
 
             covvec.append(covdf)
 

@@ -12,9 +12,9 @@ import numpy as np
 import scipy.integrate as integrate
 from scipy.interpolate import CubicSpline
 
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
-import cosmicfishpie.fishermatrix.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 

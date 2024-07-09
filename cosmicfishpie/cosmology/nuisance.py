@@ -10,7 +10,7 @@ import os
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline, UnivariateSpline, interp1d
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upr
 

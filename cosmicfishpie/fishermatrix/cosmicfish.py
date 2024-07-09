@@ -15,7 +15,7 @@ import pandas as pd
 from scipy.integrate import simpson
 
 import cosmicfishpie.CMBsurvey.CMB_cov as CMB_cov
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.LSSsurvey.photo_cov as photo_cov
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
 import cosmicfishpie.LSSsurvey.spectro_cov as spec_cov
@@ -71,7 +71,7 @@ class FisherMatrix:
         Parameters
         ----------
         options              : dict, optional
-                               A dictionary that contains the global options for the calculation of the fishermatrix. A list of all possible keys are found in the documentation of cosmicfishpie.fishermatrix.config
+                               A dictionary that contains the global options for the calculation of the fishermatrix. A list of all possible keys are found in the documentation of cosmicfishpie.configs.config
         specifications       : dict, optional
                                A dictionary containing the survey specifications. Defaults to the specifications in the `.yaml` of the survey specifications
         observables          : list, optional
@@ -713,7 +713,7 @@ class FisherMatrix:
                     continue
 
     def export_fisher(self, fishmat, totaltime=None):
-        """Will print the fisher matrix as well as specifications and the parameter names to files. To change location and filenames for this check the settings dictionary of  cosmicfishpie.fishermatrix.config
+        """Will print the fisher matrix as well as specifications and the parameter names to files. To change location and filenames for this check the settings dictionary of  cosmicfishpie.configs.config
 
         Arguments
         ---------

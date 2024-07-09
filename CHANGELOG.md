@@ -20,3 +20,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1.0.5 : Removed a backwards compatibility issue with older version of numpy.
         Switched Integration to use scipy now
+
+1.0.6 : Restructured default parameters for EBS and Survey Specifications

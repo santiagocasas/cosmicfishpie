@@ -9,11 +9,11 @@ from time import time
 
 import numpy as np
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.fishermatrix.derivatives import derivatives
-from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.utilities.utils import physmath as upm
+from cosmicfishpie.utilities.utils import printing as upt
 
 
 class SpectroCov:
@@ -62,14 +62,13 @@ class SpectroCov:
         """
         # initializing the class only with fiducial parameters
         # if fiducial_specobs is None:
-        
+
         try:
-            self.fsky_spectro = cfg.specs['fsky_spectro']
+            self.fsky_spectro = cfg.specs["fsky_spectro"]
             self.area_survey = self.fsky_spectro * upm.areasky()
         except KeyError:
             self.area_survey = cfg.specs["area_survey_spectro"]
             self.fsky_spectro = self.area_survey / upm.areasky()
-        
         if "IM" in cfg.obs and "GCsp" in cfg.obs:
             bias_samples = ["I", "g"]
             print("Entering Cov cross XC IM,g term")

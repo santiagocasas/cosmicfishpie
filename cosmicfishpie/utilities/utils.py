@@ -232,23 +232,29 @@ class inputiniparser:
         )
         return None
 
+
 class physmath:
     sr = np.power(180 / np.pi, 2)
+
     @staticmethod
     def areasky():
-        fullarea = (4 * np.pi * physmath.sr)
+        fullarea = 4 * np.pi * physmath.sr
         return fullarea
+
     @staticmethod
     def radtodeg(rads):
         degs = rads * physmath.sr
         return degs
+
     @staticmethod
     def degtorad(degs):
         rads = degs / physmath.sr
         return rads
+
     def sqdegtofsky(sqd):
         fsky = sqd / physmath.areasky()
         return fsky
+
     def fskytosqdeg(fsky):
         sqdeg = fsky * physmath.areasky()
         return sqdeg

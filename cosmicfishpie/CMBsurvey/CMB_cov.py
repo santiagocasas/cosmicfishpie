@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 import cosmicfishpie.CMBsurvey.CMB_obs as CMB_obs
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 from cosmicfishpie.utilities.utils import printing as upt
 

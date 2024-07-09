@@ -24,7 +24,7 @@ from scipy.interpolate import (
 )
 from scipy.signal import savgol_filter
 
-import cosmicfishpie.fishermatrix.config as cfg
+import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upr
 

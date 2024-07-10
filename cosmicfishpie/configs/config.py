@@ -204,6 +204,9 @@ def init(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_survey_specifications"),
     )
     settings.setdefault("survey_name", surveyName)
+    settings.setdefault("survey_specs", "ISTF-Optimistic")
+    settings.setdefault("survey_name_photo", "")
+    settings.setdefault("survey_name_spectro", "")
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -370,12 +373,21 @@ def init(
         "DESI_BGS": "DESI_BGS_GCsp.dat",
         "DESI_BGS_2bins": "DESI_2bins_BGS_GCsp.dat",
     }
+    surveyNamePhoto = settings.get('survey_name_photo')
+    surveyNameSpectro = settings.get('survey_name_spectro')
     if "Euclid" in surveyName:
-        if surveyName == "Euclid":
-            surveyName = "Euclid-ISTF-Optimistic"
-        yaml_file = open(os.path.join(settings["specs_dir"], surveyName + ".yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
+        if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
+            surveyNamePhoto = "Euclid-Photometric-ISTF-Optimistic"
+            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Optimistic"
+        if settings['survey_name_photo'] != "":
+            yaml_file_1 = open(os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml"))
+            parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
+            specificationsf = parsed_yaml_file_1["specifications"]
+        if settings['survey_name_spectro'] != "":
+            yaml_file_2 = open(os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml"))
+            parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
+            specificationsf2 = parsed_yaml_file_2["specifications"]
+            specificationsf.update(specificationsf2)
         z_bins = specificationsf["z_bins"]
         specificationsf["z_bins"] = np.array(z_bins)
         specificationsf["ngalbin"] = ngal_per_bin(
@@ -466,13 +478,16 @@ def init(
 
     specs.update(specificationsf)  # update keys if present in files
     specs["fsky_GCph"] = specificationsf.get(
-        "fsky_GCph", upm.sqdegtofsky(specificationsf["area_survey_GCph"])
+        "fsky_GCph", upm.sqdegtofsky(specificationsf.get("area_survey_GCph", 
+                                                         0.))
     )
     specs["fsky_WL"] = specificationsf.get(
-        "fsky_WL", upm.sqdegtofsky(specificationsf["area_survey_WL"])
+        "fsky_WL", upm.sqdegtofsky(specificationsf.get("area_survey_WL", 
+                                                       0.))
     )
     specs["fsky_spectro"] = specificationsf.get(
-        "fsky_spectro", upm.sqdegtofsky(specificationsf["area_survey_spectro"])
+        "fsky_spectro", upm.sqdegtofsky(specificationsf.get(
+                                        "area_survey_spectro", 0.))
     )
     specs.update(specifications)  # update keys if passed by users
 

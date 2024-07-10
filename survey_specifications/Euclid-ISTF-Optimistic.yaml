@@ -14,7 +14,3 @@ specifications:
     'bias_model': 'binned'
     'vary_ph_bias': 0.06
     'vary_IA_pars': 0.06
-    'spec_sigma_dz': 0.001
-    'area_survey': 15000
-    'kmax_GCsp': 0.30
-    'kmin_GCsp': 0.001

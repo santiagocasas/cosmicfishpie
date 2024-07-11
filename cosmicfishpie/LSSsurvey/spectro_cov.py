@@ -200,6 +200,7 @@ class SpectroCov:
             comoving number density of the probe
         """
         ndens = self.dnz[ibin] * self.dz_bins[ibin] / self.d_volume(ibin)
+        ndens = upm.areasky() * ndens  ## multiply with the full sky area in degrees
         return ndens
 
     def veff(self, ibin, k, mu):

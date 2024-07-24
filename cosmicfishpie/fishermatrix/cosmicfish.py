@@ -174,10 +174,14 @@ class FisherMatrix:
             **self.PShotpars,
         }
         self.parallel = parallel
-        if "z_bins" in cfg.specs:
-            self.z_bins = cfg.specs["z_bins"]
-            self.num_z_bins = len(cfg.specs["z_bins"]) - 1
-            self.binrange = cfg.specs["binrange"]
+        if "z_bins_WL" in cfg.specs:
+            self.z_bins_WL = cfg.specs["z_bins_WL"]
+            self.num_z_bins_WL = len(cfg.specs["z_bins_WL"]) - 1
+            self.binrange_WL = cfg.specs["binrange_WL"]
+        if "z_bins_GCph" in cfg.specs:
+            self.z_bins_GCph = cfg.specs["z_bins_GCph"]
+            self.num_z_bins_GCph = len(cfg.specs["z_bins_GCph"]) - 1
+            self.binrange_GCph = cfg.specs["binrange_GCph"]
         self.feed_lvl = cfg.settings["feedback"]
         allpars = {}
         allpars.update(self.fiducialcosmopars)
@@ -542,12 +546,17 @@ class FisherMatrix:
         lvec_ave = unu.moving_average(lvec, 2)  # computing center of bins
         delta_ell = np.diff(lvec)  # compute delta_ell between bin edges
         FisherV = np.zeros((len(lvec_ave), len(self.freeparams), len(self.freeparams)))
-        numbins = self.num_z_bins
+        numbins_WL = self.num_z_bins_WL
+        numbins_GCph = self.num_z_bins_GCph
 
         cols = []
         for o in self.observables:
-            for ind in range(numbins):
-                cols.append(o + " " + str(ind + 1))
+            if o == 'GCph':
+                for ind in range(numbins_GCph):
+                    cols.append(o + " " + str(ind + 1))
+            elif o == 'WL':
+                for ind in range(numbins_WL):
+                    cols.append(o + " " + str(ind + 1))
 
         covarr = np.zeros(((len(lvec_ave)), len(cols), len(cols)))
         der1 = np.zeros((len(cols), len(cols)))

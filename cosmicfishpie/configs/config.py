@@ -388,14 +388,22 @@ def init(
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
+        #MMmod: duplicating specs for WL and GCph
+        z_bins_WL = specificationsf["z_bins_WL"]
+        z_bins_GCph = specificationsf["z_bins_GCph"]
+        specificationsf["z_bins_WL"] = np.array(z_bins_WL)
+        specificationsf["z_bins_GCph"] = np.array(z_bins_GCph)
+        specificationsf["ngalbin_WL"] = ngal_per_bin(
+            specificationsf["ngal_sqarmin_WL"], specificationsf["z_bins_WL"]
         )
+        specificationsf["ngalbin_GCph"] = ngal_per_bin(
+            specificationsf["ngal_sqarmin_GCph"], specificationsf["z_bins_GCph"]
+        )
+        specificationsf["binrange_WL"] = range(1, len(specificationsf["z_bins_WL"]))
+        specificationsf["binrange_GCph"] = range(1, len(specificationsf["z_bins_GCph"]))
+        ##########################################
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = specificationsf["z0"]
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
     elif "SKA1" in surveyName:
         yaml_file = open(os.path.join(settings["specs_dir"], "SKA1-Redbook-Optimistic.yaml"))
@@ -576,7 +584,7 @@ def init(
                 biaspars = {"bias_model": "flagship", "A": 1.0, "B": 2.5, "C": 2.8, "D": 1.6}
             elif biasmodel == "binned" or biasmodel == "binned_constant":
                 biaspars = {"bias_model": biasmodel}
-                zbins = specs["z_bins"]
+                zbins = specs["z_bins_GCph"]
                 for ind in range(1, len(zbins)):
                     key = "b" + str(ind)
                     biaspars[key] = np.sqrt(1 + 0.5 * (zbins[ind] + zbins[ind - 1]))

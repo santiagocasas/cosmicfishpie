@@ -37,7 +37,7 @@ class Nuisance:
             self.im_table = np.loadtxt(os.path.join(self.specsdir, filename_IM))
 
         self.z = np.linspace(
-            self.specs["z_bins"][0], self.specs["z_bins"][-1] + 1, 50 * self.settings["accuracy"]
+            min(self.specs["z_bins_WL"][0],self.specs["z_bins_GCph"][0]), max(self.specs["z_bins_WL"][-1],self.specs["z_bins_GCph"][-1]) + 1, 50 * self.settings["accuracy"]
         )
 
     def gcph_bias(self, biaspars, ibin=1):
@@ -65,9 +65,9 @@ class Nuisance:
             return interp1d(z, b, kind="linear")
 
         elif self.biaspars["bias_model"] == "binned":
-            zb = self.specs["z_bins"]
+            zb = self.specs["z_bins_GCph"]
             zba = np.array(zb)
-            brang = self.specs["binrange"]
+            brang = self.specs["binrange_GCph"]
             last_bin_num = brang[-1]
 
             def binbis(zz):

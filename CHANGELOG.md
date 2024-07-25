@@ -23,4 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 1.0.6 : Restructured default parameters for EBS and Survey Specifications
 
-1.0.7 : Galaxy sample split for sources and lenses. Feedback prints more consistent.
+1.0.7 : Added a new installation script to download external data from the github
+
+1.0.8 : Galaxy sample split for sources and lenses. Feedback prints more consistent.

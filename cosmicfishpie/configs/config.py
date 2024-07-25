@@ -374,17 +374,17 @@ def init(
         "DESI_BGS": "DESI_BGS_GCsp.dat",
         "DESI_BGS_2bins": "DESI_2bins_BGS_GCsp.dat",
     }
-    surveyNamePhoto = settings.get('survey_name_photo')
-    surveyNameSpectro = settings.get('survey_name_spectro')
+    surveyNamePhoto = settings.get("survey_name_photo")
+    surveyNameSpectro = settings.get("survey_name_spectro")
     if "Euclid" in surveyName:
         if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
             surveyNamePhoto = "Euclid-Photometric-ISTF-Optimistic"
             surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Optimistic"
-        if settings['survey_name_photo'] != "":
+        if settings["survey_name_photo"] != "":
             yaml_file_1 = open(os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml"))
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
             specificationsf = parsed_yaml_file_1["specifications"]
-        if settings['survey_name_spectro'] != "":
+        if settings["survey_name_spectro"] != "":
             yaml_file_2 = open(os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml"))
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
@@ -487,16 +487,13 @@ def init(
 
     specs.update(specificationsf)  # update keys if present in files
     specs["fsky_GCph"] = specificationsf.get(
-        "fsky_GCph", upm.sqdegtofsky(specificationsf.get("area_survey_GCph", 
-                                                         0.))
+        "fsky_GCph", upm.sqdegtofsky(specificationsf.get("area_survey_GCph", 0.0))
     )
     specs["fsky_WL"] = specificationsf.get(
-        "fsky_WL", upm.sqdegtofsky(specificationsf.get("area_survey_WL", 
-                                                       0.))
+        "fsky_WL", upm.sqdegtofsky(specificationsf.get("area_survey_WL", 0.0))
     )
     specs["fsky_spectro"] = specificationsf.get(
-        "fsky_spectro", upm.sqdegtofsky(specificationsf.get(
-                                        "area_survey_spectro", 0.))
+        "fsky_spectro", upm.sqdegtofsky(specificationsf.get("area_survey_spectro", 0.0))
     )
     specs.update(specifications)  # update keys if passed by users
 

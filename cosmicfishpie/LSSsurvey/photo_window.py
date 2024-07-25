@@ -52,9 +52,9 @@ class GalaxyPhotoDist:
         self.z0_p = cfg.specs["z0_p"]
         self.ngamma = cfg.specs["ngamma"]
         self.photo = photopars
-        self.z_min = np.min([cfg.specs["z_bins_GCph"][0],cfg.specs["z_bins_WL"][0]])
-        self.z_max = np.max([cfg.specs["z_bins_GCph"][-1],cfg.specs["z_bins_WL"][-1]])
-        self.normalization = {'GCph': self.norm('GCph'),'WL': self.norm('WL')}
+        self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
+        self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
+        self.normalization = {"GCph": self.norm("GCph"), "WL": self.norm("WL")}
         self.n_i_vec = np.vectorize(self.n_i)
 
     def dNdz(self, z):
@@ -130,12 +130,12 @@ class GalaxyPhotoDist:
             p_{ph}(z_p|z) = \\frac{1-f_{out}}{\\sqrt{2\\pi}\\sigma_b(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_bz_p-z_b}{\\sigma_b(1+z)}\\right]^2\\right\\} \\ + \\frac{f_{out}}{\\sqrt{2\\pi}\\sigma_0(1+z)} \\exp\\left\\{-\\frac{1}{2}\\left[\\frac{z-c_0z_p-z_0}{\\sigma_0(1+z)}\\right]^2\\right\\}
         """
 
-        if obs == 'GCph':
+        if obs == "GCph":
             z_bins = self.z_bins_GCph
-        elif obs == 'WL':
+        elif obs == "WL":
             z_bins = self.z_bins_WL
 
-        #if i == 0 or i >= 11:
+        # if i == 0 or i >= 11:
         #    return None
 
         term1 = (
@@ -177,7 +177,7 @@ class GalaxyPhotoDist:
             / (2 * self.photo["co"] * self.photo["cb"])
         )
 
-    def norm(self,obs):
+    def norm(self, obs):
         """n^{ph}_i(z)
 
         Parameters
@@ -194,9 +194,9 @@ class GalaxyPhotoDist:
 
         """
 
-        if obs == 'GCph':
+        if obs == "GCph":
             z_bins = self.z_bins_GCph
-        elif obs == 'WL':
+        elif obs == "WL":
             z_bins = self.z_bins_WL
 
         # norm = romberg(self.ngal_photoz, self.z_min, self.z_max, args=(i,))

@@ -55,7 +55,7 @@ def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
     intg_mat = np.array(
         [
             (
-                ngal_func(zint_mat[zii], i, 'WL')
+                ngal_func(zint_mat[zii], i, "WL")
                 * (1 - comoving_func(zint_mat[zii, 0]) / comoving_func(zint_mat[zii]))
             )
             for zii in range(len(zint_mat))
@@ -86,7 +86,7 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
         callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
     """
     zprime = zarr[:, None]
-    wintgd = ngal_func(zprime, i, 'WL') * (1.0 - comoving_func(zarr) / comoving_func(zprime))
+    wintgd = ngal_func(zprime, i, "WL") * (1.0 - comoving_func(zarr) / comoving_func(zprime))
     witri = np.tril(wintgd)
     wint = integrate.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
@@ -175,13 +175,13 @@ class ComputeCls:
             time_fin=tcosmo2,
         )
         self.observables = []
-        self.binrange    = {}
+        self.binrange = {}
         for key in cfg.obs:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
-                if key == 'GCph':
+                if key == "GCph":
                     self.binrange[key] = cfg.specs["binrange_GCph"]
-                elif key == 'WL':
+                elif key == "WL":
                     self.binrange[key] = cfg.specs["binrange_WL"]
 
         self.binrange_WL = cfg.specs["binrange_WL"]
@@ -230,23 +230,35 @@ class ComputeCls:
             raise ValueError("Observables not specified correctly")
 
         self.tracer = cfg.settings["GCph_Tracer"]
-#        self.binrange = cfg.specs["binrange"]
+        #        self.binrange = cfg.specs["binrange"]
         self.zsamp = int(round(200 * cfg.settings["accuracy"]))
         self.ellsamp = int(round(100 * cfg.settings["accuracy"]))
         self.ell = np.logspace(
             np.log10(cfg.specs["ellmin"]), np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
         )
 
-        #MMmod: DR1
+        # MMmod: DR1
         if cfg.input_type == "camb":
-            self.z_min = np.min([cfg.specs["z_bins_GCph"][0],cfg.specs["z_bins_WL"][0]])
-            self.z_max = np.max([cfg.specs["z_bins_GCph"][-1],cfg.specs["z_bins_WL"][-1]])  # +0.5
+            self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
+            self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])  # +0.5
         if cfg.input_type == "class":
-            self.z_min = np.min([cfg.specs["z_bins_GCph"][0],cfg.specs["z_bins_WL"][0]])
-            self.z_max = np.max([cfg.specs["z_bins_GCph"][-1],cfg.specs["z_bins_WL"][-1]])
+            self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
+            self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
         elif cfg.input_type == "external":
-            self.z_min = np.max([cfg.specs["z_bins_GCph"][0],cfg.specs["z_bins_WL"][0], self.cosmo.results.zgrid[0]])
-            self.z_max = np.min([cfg.specs["z_bins_GCph"][-1],cfg.specs["z_bins_WL"][-1], self.cosmo.results.zgrid[-1]])
+            self.z_min = np.max(
+                [
+                    cfg.specs["z_bins_GCph"][0],
+                    cfg.specs["z_bins_WL"][0],
+                    self.cosmo.results.zgrid[0],
+                ]
+            )
+            self.z_max = np.min(
+                [
+                    cfg.specs["z_bins_GCph"][-1],
+                    cfg.specs["z_bins_WL"][-1],
+                    self.cosmo.results.zgrid[-1],
+                ]
+            )
         # +1 to go beyond the bin limit
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
         self.dz = np.mean(np.diff(self.z))
@@ -454,7 +466,7 @@ class ComputeCls:
         # Wgc = self.window.norm_ngal_photoz(z,i) * np.array([self.nuisance.bias(self.biaspars, i)(z) * \
         # Wgc = self.window.norm_ngal_photoz(z,i) *
         # np.array([self.biaspars['b{:d}'.format(i)] * \
-        Wgc = self.window.norm_ngal_photoz(z, i, 'GCph') * self.cosmo.Hubble(z)
+        Wgc = self.window.norm_ngal_photoz(z, i, "GCph") * self.cosmo.Hubble(z)
         # Wgc = self.window.norm_ngal_photoz(z,i) * self.nuisance.bias(self.biaspars, i)(z) * \
         #                                          self.cosmo.Hubble(z)
 
@@ -497,7 +509,7 @@ class ComputeCls:
         )
 
         # Adding Intrinsic alignment
-        WIA = self.window.norm_ngal_photoz(z, i, 'WL') * np.array(
+        WIA = self.window.norm_ngal_photoz(z, i, "WL") * np.array(
             [self.IAvalue(zi) * self.cosmo.Hubble(zi) for zi in z]
         )
         # Sakr Fix June 2023
@@ -645,19 +657,19 @@ class ComputeCls:
         tcell = time()
 
         # PYTHONIZE THIS HORRIBLE THING
-        #for obs1, obs2, bin1, bin2 in product(
+        # for obs1, obs2, bin1, bin2 in product(
         #        self.observables, self.observables, self.binrange[0], self.binrange[1] #MMmod: BEWARE! THIS IS UGLY!
-        #):
-        for obs1,obs2 in product(self.observables,self.observables):
-            for bin1,bin2 in product(self.binrange[obs1],self.binrange[obs2]):
+        # ):
+        for obs1, obs2 in product(self.observables, self.observables):
+            for bin1, bin2 in product(self.binrange[obs1], self.binrange[obs2]):
                 clinterp = self.clsintegral(obs1, obs2, bin1, bin2, hub)
 
                 finalcls = np.zeros((len(full_ell)))
                 for ind, lval in enumerate(full_ell):
                     if (cfg.specs["lmin_" + obs1] <= lval <= cfg.specs["lmax_" + obs1]) and (
                         cfg.specs["lmin_" + obs2] <= lval <= cfg.specs["lmax_" + obs2]
-                     ):
-                         finalcls[ind] = clinterp(lval)
+                    ):
+                        finalcls[ind] = clinterp(lval)
 
                 cls[obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)] = finalcls
 

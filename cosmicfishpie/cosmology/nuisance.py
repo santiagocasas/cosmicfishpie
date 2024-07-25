@@ -37,7 +37,9 @@ class Nuisance:
             self.im_table = np.loadtxt(os.path.join(self.specsdir, filename_IM))
 
         self.z = np.linspace(
-            min(self.specs["z_bins_WL"][0],self.specs["z_bins_GCph"][0]), max(self.specs["z_bins_WL"][-1],self.specs["z_bins_GCph"][-1]) + 1, 50 * self.settings["accuracy"]
+            min(self.specs["z_bins_WL"][0], self.specs["z_bins_GCph"][0]),
+            max(self.specs["z_bins_WL"][-1], self.specs["z_bins_GCph"][-1]) + 1,
+            50 * self.settings["accuracy"],
         )
 
     def gcph_bias(self, biaspars, ibin=1):

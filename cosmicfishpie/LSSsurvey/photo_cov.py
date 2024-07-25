@@ -70,13 +70,13 @@ class PhotoCov:
         self.allparsfid.update(self.photopars)
         self.fiducial_Cls = fiducial_Cls
         self.observables = []
-        self.binrange    = {}
+        self.binrange = {}
         for key in cfg.obs:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
-                if key == 'GCph':
+                if key == "GCph":
                     self.binrange[key] = cfg.specs["binrange_GCph"]
-                elif key == 'WL':
+                elif key == "WL":
                     self.binrange[key] = cfg.specs["binrange_WL"]
 
         self.binrange_WL = cfg.specs["binrange_WL"]
@@ -179,10 +179,10 @@ class PhotoCov:
         # Create indexes for data frame
         cols = []
         for o in self.observables:
-            if o == 'WL':
-               for ind in range(self.numbins_WL):
+            if o == "WL":
+                for ind in range(self.numbins_WL):
                     cols.append(o + " " + str(ind + 1))
-            elif o == 'GCph':
+            elif o == "GCph":
                 for ind in range(self.numbins_GCph):
                     cols.append(o + " " + str(ind + 1))
 
@@ -191,8 +191,9 @@ class PhotoCov:
             covdf = covdf.fillna(0.0)
 
             for obs1, obs2 in product(self.observables, self.observables):
-                for bin1,bin2 in product(self.binrange[obs1], self.binrange[obs2]): #MMmod: BEWARE!!! THIS IS VERY UGLY!
-            
+                for bin1, bin2 in product(
+                    self.binrange[obs1], self.binrange[obs2]
+                ):  # MMmod: BEWARE!!! THIS IS VERY UGLY!
                     covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
                         obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
                     ][ind] / np.sqrt(

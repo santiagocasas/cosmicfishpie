@@ -551,10 +551,10 @@ class FisherMatrix:
 
         cols = []
         for o in self.observables:
-            if o == 'GCph':
+            if o == "GCph":
                 for ind in range(numbins_GCph):
                     cols.append(o + " " + str(ind + 1))
-            elif o == 'WL':
+            elif o == "WL":
                 for ind in range(numbins_WL):
                     cols.append(o + " " + str(ind + 1))
 

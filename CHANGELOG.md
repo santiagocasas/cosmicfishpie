@@ -22,3 +22,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         Switched Integration to use scipy now
 
 1.0.6 : Restructured default parameters for EBS and Survey Specifications
+
+1.0.7 : Galaxy sample split for sources and lenses. Feedback prints more consistent.

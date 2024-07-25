@@ -193,11 +193,6 @@ def init(
     """
     global settings
     settings = options
-    if "camb_path" not in settings:
-        import camb
-
-        cambpath = os.path.dirname(camb.__file__)
-        settings["camb_path"] = cambpath
     # Set defaults if not contained previously in options
     settings.setdefault(
         "specs_dir",
@@ -250,6 +245,8 @@ def init(
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
+   
+    feed_lvl = settings['feedback']#MM: is this new? cfg not seen here cfg.settings["feedback"]
 
     global external
     global input_type
@@ -309,6 +306,10 @@ def init(
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
+        if "camb_path" not in settings:#MM: is this new? I had a wrong indent here
+            import camb
+        cambpath = os.path.dirname(camb.__file__)
+        settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
         boltzmann_yaml_file = open(settings["camb_config_yaml"])
@@ -554,7 +555,6 @@ def init(
     fiducialparams = deepcopy(fiducialpars)
 
     global fiducialcosmo
-    feed_lvl = settings["feedback"]
     upt.time_print(
         feedback_level=feed_lvl,
         min_level=1,
@@ -602,9 +602,13 @@ def init(
 
     global photoparams
     if photopars is None:
-        print("No photo-z parameters specified. Using default: Euclid-like")
+        upt.time_print(
+        feedback_level=feed_lvl,
+        min_level=2,
+        text="-> No photo-z parameters specified. Using default: Euclid-like",
+        )
         photopars = {
-            "fout": 0.1,  # does this need to be updated for SKA1??
+            "fout": 0.1,  
             "co": 1,
             "cb": 1,
             "sigma_o": 0.05,
@@ -616,7 +620,11 @@ def init(
 
     global IAparams
     if IApars is None:
-        print("No IA specified. Using default: eNLA")
+        upt.time_print(
+        feedback_level=feed_lvl,
+        min_level=2,
+        text="-> No Intrinsic alignment parameters specified. Using default: eNLA",
+        )
         IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
     IAparams = IApars
     if "WL" in obs:
@@ -699,9 +707,15 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    print(freeparams)
-    print("                                                            ***")
+    
+    str1 = "*** Dictionary of varied parameters in this Fisher Matrix run: "
+    str1 += "\n"
+    str1 += str(freeparams)
+    upt.time_print(
+        feedback_level=feed_lvl,
+        min_level=1,
+        text=str1,
+        )
 
     global latex_names
     latex_names_def = {

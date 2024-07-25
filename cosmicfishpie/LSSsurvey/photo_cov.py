@@ -70,14 +70,14 @@ class PhotoCov:
         self.allparsfid.update(self.photopars)
         self.fiducial_Cls = fiducial_Cls
         self.observables = []
-        self.binrange     = []
+        self.binrange    = {}
         for key in cfg.obs:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
                 if key == 'GCph':
-                    self.binrange.append(cfg.specs["binrange_GCph"])
+                    self.binrange[key] = cfg.specs["binrange_GCph"]
                 elif key == 'WL':
-                    self.binrange.append(cfg.specs["binrange_WL"])
+                    self.binrange[key] = cfg.specs["binrange_WL"]
 
         self.binrange_WL = cfg.specs["binrange_WL"]
         self.binrange_GCph = cfg.specs["binrange_GCph"]
@@ -190,14 +190,14 @@ class PhotoCov:
             covdf = pd.DataFrame(index=cols, columns=cols)
             covdf = covdf.fillna(0.0)
 
-            for obs1, obs2, bin1, bin2 in product(
-                    self.observables, self.observables, self.binrange[0], self.binrange[1] #MMmod: BEWARE!!! THIS IS VERY UGLY!
-            ):
-                covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
-                    obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
-                ][ind] / np.sqrt(
-                    np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1))
-                )
+            for obs1, obs2 in product(self.observables, self.observables):
+                for bin1,bin2 in product(self.binrange[obs1], self.binrange[obs2]): #MMmod: BEWARE!!! THIS IS VERY UGLY!
+            
+                    covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
+                        obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
+                    ][ind] / np.sqrt(
+                        np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1))
+                    )
 
             covvec.append(covdf)
 

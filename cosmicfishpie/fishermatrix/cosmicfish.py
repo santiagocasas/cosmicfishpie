@@ -589,7 +589,7 @@ class FisherMatrix:
                         tparend = time()
                         upt.time_print(
                             feedback_level=self.feed_lvl,
-                            min_level=1,
+                            min_level=2,
                             text="FisherV entry ({}, {}) for ell index {} done in ".format(
                                 par1, par2, i_ell
                             ),

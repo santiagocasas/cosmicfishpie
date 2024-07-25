@@ -847,7 +847,7 @@ class ComputeGalSpectro:
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="observed P_gg computation took: ",
             time_ini=tstart,
             time_fin=tend,

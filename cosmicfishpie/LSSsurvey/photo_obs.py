@@ -154,7 +154,7 @@ class ComputeCls:
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=1,
             text="-> Started Cls calculation",
             instance=self,
         )
@@ -168,21 +168,21 @@ class ComputeCls:
         tcosmo2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="---> Cosmological functions obtained in ",
             instance=self,
             time_ini=tcosmo1,
             time_fin=tcosmo2,
         )
         self.observables = []
-        self.binrange     = []
+        self.binrange    = {}
         for key in cfg.obs:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
                 if key == 'GCph':
-                    self.binrange.append(cfg.specs["binrange_GCph"])
+                    self.binrange[key] = cfg.specs["binrange_GCph"]
                 elif key == 'WL':
-                    self.binrange.append(cfg.specs["binrange_WL"])
+                    self.binrange[key] = cfg.specs["binrange_WL"]
 
         self.binrange_WL = cfg.specs["binrange_WL"]
         self.binrange_GCph = cfg.specs["binrange_GCph"]
@@ -197,7 +197,7 @@ class ComputeCls:
         tnuis2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Nuisance functions obtained in ",
             instance=self,
             time_ini=tnuis1,
@@ -210,7 +210,7 @@ class ComputeCls:
         tngal2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Galaxy Photometric distributions obtained in ",
             instance=self,
             time_ini=tngal1,
@@ -270,7 +270,7 @@ class ComputeCls:
         tini = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=1,
             text="-> Computing power spectra and kernels ",
             instance=self,
         )
@@ -645,30 +645,32 @@ class ComputeCls:
         tcell = time()
 
         # PYTHONIZE THIS HORRIBLE THING
-        for obs1, obs2, bin1, bin2 in product(
-                self.observables, self.observables, self.binrange[0], self.binrange[1] #MMmod: BEWARE! THIS IS UGLY!
-        ):
-            clinterp = self.clsintegral(obs1, obs2, bin1, bin2, hub)
+        #for obs1, obs2, bin1, bin2 in product(
+        #        self.observables, self.observables, self.binrange[0], self.binrange[1] #MMmod: BEWARE! THIS IS UGLY!
+        #):
+        for obs1,obs2 in product(self.observables,self.observables):
+            for bin1,bin2 in product(self.binrange[obs1],self.binrange[obs2]):
+                clinterp = self.clsintegral(obs1, obs2, bin1, bin2, hub)
 
-            finalcls = np.zeros((len(full_ell)))
-            for ind, lval in enumerate(full_ell):
-                if (cfg.specs["lmin_" + obs1] <= lval <= cfg.specs["lmax_" + obs1]) and (
-                    cfg.specs["lmin_" + obs2] <= lval <= cfg.specs["lmax_" + obs2]
-                ):
-                    finalcls[ind] = clinterp(lval)
+                finalcls = np.zeros((len(full_ell)))
+                for ind, lval in enumerate(full_ell):
+                    if (cfg.specs["lmin_" + obs1] <= lval <= cfg.specs["lmax_" + obs1]) and (
+                        cfg.specs["lmin_" + obs2] <= lval <= cfg.specs["lmax_" + obs2]
+                     ):
+                         finalcls[ind] = clinterp(lval)
 
-            cls[obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)] = finalcls
+                cls[obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)] = finalcls
 
-            tbin = time()
-            if self.feed_lvl > 2:
-                print("")
-            if self.feed_lvl > 2:
-                print(
-                    "    ...{} {} x {} {} done in {:.2f} s".format(
-                        obs1, bin1, obs2, bin2, tbin - tcell
+                tbin = time()
+                if self.feed_lvl > 2:
+                    print("")
+                if self.feed_lvl > 2:
+                    print(
+                        "    ...{} {} x {} {} done in {:.2f} s".format(
+                            obs1, bin1, obs2, bin2, tbin - tcell
+                        )
                     )
-                )
-            tcell = tbin
+                tcell = tbin
 
         tend = time()
         if self.feed_lvl > 1:

@@ -246,7 +246,7 @@ def init(
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
 
-    feed_lvl = settings["feedback"]  # MM: is this new? cfg not seen here cfg.settings["feedback"]
+    feed_lvl = settings["feedback"]  
 
     global external
     global input_type
@@ -306,10 +306,10 @@ def init(
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
-        if "camb_path" not in settings:  # MM: is this new? I had a wrong indent here
+        if "camb_path" not in settings:  
             import camb
-        cambpath = os.path.dirname(camb.__file__)
-        settings["camb_path"] = cambpath
+            cambpath = os.path.dirname(camb.__file__)
+            settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
         boltzmann_yaml_file = open(settings["camb_config_yaml"])
@@ -320,7 +320,7 @@ def init(
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
         print("Defaulting to EBS camb")
-        # settings['code'] = 'camb'
+        settings['code'] = 'camb'
         input_type = settings["code"]
         external = None
 
@@ -402,7 +402,6 @@ def init(
         )
         specificationsf["binrange_WL"] = range(1, len(specificationsf["z_bins_WL"]))
         specificationsf["binrange_GCph"] = range(1, len(specificationsf["z_bins_GCph"]))
-        ##########################################
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = specificationsf["z0"]
         specificationsf["survey_name"] = surveyName
@@ -415,7 +414,6 @@ def init(
         specificationsf["ngalbin"] = ngal_per_bin(
             specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
         )
-        # numgal =  specificationsf['ngal_per_bin']*np.ones_like(z_bins[:-1])
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = 1.0
         specificationsf["IM_bins_file"] = "SKA1_IM_MDB1_Redbook.dat"

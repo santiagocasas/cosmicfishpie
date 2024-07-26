@@ -193,11 +193,6 @@ def init(
     """
     global settings
     settings = options
-    if "camb_path" not in settings:
-        import camb
-
-        cambpath = os.path.dirname(camb.__file__)
-        settings["camb_path"] = cambpath
     # Set defaults if not contained previously in options
     settings.setdefault(
         "specs_dir",
@@ -251,10 +246,11 @@ def init(
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
 
+    feed_lvl = settings["feedback"]  
+
     global external
     global input_type
     if extfiles is not None and settings["code"] == "external":
-        print("Using input files for cosmology observables.")
         input_type = settings["code"]
         extfiles_default = {
             "file_names": {
@@ -282,6 +278,12 @@ def init(
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]
+            dii = external["directory"]
+            upt.time_print(
+                feedback_level=feed_lvl,
+                min_level=0,
+                text=f"-> Using input files for cosmology observables: {dii}"
+                )
             fidudir = glob.glob(os.path.join(external["directory"], ff + "*"))
             lendir = len(fidudir)
             if lendir < 1:
@@ -296,8 +298,13 @@ def init(
                         )
                     )
                 else:
-                    print("External directory: ", external["directory"])
-                    print("{:d} subfolders for parameter {:s}".format(lensub, dd))
+                    upt.time_print(
+                        feedback_level=feed_lvl,
+                        min_level=1,
+                        text=f"-> {lensub} folders for parameter {dd}"
+                        )
+                    #print("External directory: ", external["directory"])
+                    #print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:
             raise ValueError("External directory does not exist")
 
@@ -309,6 +316,10 @@ def init(
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
+        if "camb_path" not in settings:  
+            import camb
+            cambpath = os.path.dirname(camb.__file__)
+            settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
         boltzmann_yaml_file = open(settings["camb_config_yaml"])
@@ -319,7 +330,7 @@ def init(
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
         print("Defaulting to EBS camb")
-        # settings['code'] = 'camb'
+        settings['code'] = 'camb'
         input_type = settings["code"]
         external = None
 
@@ -388,14 +399,21 @@ def init(
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
+        # MMmod: duplicating specs for WL and GCph
+        z_bins_WL = specificationsf["z_bins_WL"]
+        z_bins_GCph = specificationsf["z_bins_GCph"]
+        specificationsf["z_bins_WL"] = np.array(z_bins_WL)
+        specificationsf["z_bins_GCph"] = np.array(z_bins_GCph)
+        specificationsf["ngalbin_WL"] = ngal_per_bin(
+            specificationsf["ngal_sqarmin_WL"], specificationsf["z_bins_WL"]
         )
+        specificationsf["ngalbin_GCph"] = ngal_per_bin(
+            specificationsf["ngal_sqarmin_GCph"], specificationsf["z_bins_GCph"]
+        )
+        specificationsf["binrange_WL"] = range(1, len(specificationsf["z_bins_WL"]))
+        specificationsf["binrange_GCph"] = range(1, len(specificationsf["z_bins_GCph"]))
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = specificationsf["z0"]
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
     elif "SKA1" in surveyName:
         yaml_file = open(os.path.join(settings["specs_dir"], "SKA1-Redbook-Optimistic.yaml"))
@@ -406,7 +424,6 @@ def init(
         specificationsf["ngalbin"] = ngal_per_bin(
             specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
         )
-        # numgal =  specificationsf['ngal_per_bin']*np.ones_like(z_bins[:-1])
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = 1.0
         specificationsf["IM_bins_file"] = "SKA1_IM_MDB1_Redbook.dat"
@@ -543,7 +560,6 @@ def init(
     fiducialparams = deepcopy(fiducialpars)
 
     global fiducialcosmo
-    feed_lvl = settings["feedback"]
     upt.time_print(
         feedback_level=feed_lvl,
         min_level=1,
@@ -573,7 +589,7 @@ def init(
                 biaspars = {"bias_model": "flagship", "A": 1.0, "B": 2.5, "C": 2.8, "D": 1.6}
             elif biasmodel == "binned" or biasmodel == "binned_constant":
                 biaspars = {"bias_model": biasmodel}
-                zbins = specs["z_bins"]
+                zbins = specs["z_bins_GCph"]
                 for ind in range(1, len(zbins)):
                     key = "b" + str(ind)
                     biaspars[key] = np.sqrt(1 + 0.5 * (zbins[ind] + zbins[ind - 1]))
@@ -591,9 +607,13 @@ def init(
 
     global photoparams
     if photopars is None:
-        print("No photo-z parameters specified. Using default: Euclid-like")
+        upt.time_print(
+            feedback_level=feed_lvl,
+            min_level=2,
+            text="-> No photo-z parameters specified. Using default: Euclid-like",
+        )
         photopars = {
-            "fout": 0.1,  # does this need to be updated for SKA1??
+            "fout": 0.1,
             "co": 1,
             "cb": 1,
             "sigma_o": 0.05,
@@ -605,7 +625,11 @@ def init(
 
     global IAparams
     if IApars is None:
-        print("No IA specified. Using default: eNLA")
+        upt.time_print(
+            feedback_level=feed_lvl,
+            min_level=2,
+            text="-> No Intrinsic alignment parameters specified. Using default: eNLA",
+        )
         IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
     IAparams = IApars
     if "WL" in obs:
@@ -688,9 +712,15 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    print(freeparams)
-    print("                                                            ***")
+
+    str1 = "*** Dictionary of varied parameters in this Fisher Matrix run: "
+    str1 += "\n"
+    str1 += str(freeparams)
+    upt.time_print(
+        feedback_level=feed_lvl,
+        min_level=1,
+        text=str1,
+    )
 
     global latex_names
     latex_names_def = {

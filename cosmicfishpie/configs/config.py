@@ -251,7 +251,6 @@ def init(
     global external
     global input_type
     if extfiles is not None and settings["code"] == "external":
-        print("Using input files for cosmology observables.")
         input_type = settings["code"]
         extfiles_default = {
             "file_names": {
@@ -279,6 +278,12 @@ def init(
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]
+            dii = external["directory"]
+            upt.time_print(
+                feedback_level=feed_lvl,
+                min_level=0,
+                text=f"-> Using input files for cosmology observables: {dii}"
+                )
             fidudir = glob.glob(os.path.join(external["directory"], ff + "*"))
             lendir = len(fidudir)
             if lendir < 1:
@@ -293,8 +298,8 @@ def init(
                         )
                     )
                 else:
-                    print("External directory: ", external["directory"])
-                    print("{:d} subfolders for parameter {:s}".format(lensub, dd))
+                    #print("External directory: ", external["directory"])
+                    #print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:
             raise ValueError("External directory does not exist")
 

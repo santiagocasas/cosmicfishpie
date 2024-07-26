@@ -298,6 +298,11 @@ def init(
                         )
                     )
                 else:
+                    upt.time_print(
+                        feedback_level=feed_lvl,
+                        min_level=1,
+                        text=f"-> {lensub} folders for parameter {dd}"
+                        )
                     #print("External directory: ", external["directory"])
                     #print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:

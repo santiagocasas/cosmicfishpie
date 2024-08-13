@@ -78,8 +78,16 @@ class boltzmann_code:
             self.boltzmann_classpars = cfg.boltzmann_classpars
             from classy import Class
 
-            self.class_setparams(self.cosmopars, Class)
+            self.class_setparams(self.cosmopars)
             self.class_results(Class)
+        elif code == "symbolic":
+            try:
+                import colossus.cosmology as colmo
+                import symbolic_pofk.linear as symblin
+                import symbolic_pofk.syrenhalofit as symbfit
+            except:
+                print("Module symbolic_pofk not properly installed. Aborting")
+                sys.exit() 
         else:
             print("other Boltzmann code not implemented yet")
             exit()
@@ -205,7 +213,202 @@ class boltzmann_code:
         self.cambclasspars.NonLinear = camb.model.NonLinear_both
         self.cambclasspars.set_for_lmax(4000, lens_potential_accuracy=1)
 
-    def class_setparams(self, cosmopars, Class):
+    def symbolic_setparams(self, cosmopars):
+        tini_basis = time()
+        upr.debug_print(cosmopars)
+        if cfg.settings['cosmo_model'] != "LCDM":
+            print("Symbolic_pofk only supports LCDM at the moment")
+            raise ValueError("Cosmo model not supported by cosmo code")
+        def changebasis_symb(cosmopars):
+            symbpars = deepcopy(cosmopars)
+            if "h" in symbpars:
+                symbpars["h"] = symbpars.pop("h")
+                h = symbpars["h"]
+            if "H0" in symbpars:
+                symbpars["H0"] = symbpars.pop("H0")
+                h = symbpars["H0"] / 100.0
+                symbpars["h"] = h
+            if "ombh2" in symbpars:
+                symbpars["Omegab"] = symbpars.pop("ombh2") / (symbpars["h"] ** 2)
+            if "omch2" in symbpars:
+                symbpars["Omegam"] = (symbpars.pop("omch2") / 
+                                      symbpars["h"] ** 2) + symbpars['Omegab']
+                # Omegam = Omegac + Omegab
+            # ["sigma8", "As", "logAs", "10^9As", "ln_A_s_1e10"]
+            if "As" in symbpars:
+                symbpars['10^9As'] = 10**9 * symbpars.pop('As')
+            if "logAs" in symbpars:
+                symbpars['10^9As'] = 10**9 * (np.exp(symbpars.pop("logAs")) 
+                                              * 1.0e-10)
+            if type(symbpars['10^9As']) == float:
+                try:
+                    symbpars['sigma8']  = symblin.As_to_sigma8(
+                                                            symbpars['10^9As'],
+                                                            symbpars['Omegam'],
+                                                            symbpars['Omegab'],
+                                                            symbpars['h'],
+                                                            symbpars['ns']
+                                                            )
+                except: 
+                    print("As to sigma8 conversion failed")
+                    raise ValueError
+            if  type(symbpars['sigma8']) == float:
+                try:
+                    As_n = symblin.sigma8_to_As(
+                                        symbpars['sigma8'],
+                                        symbpars['Omegam'],
+                                        symbpars['Omegab'],
+                                        symbpars['h'],
+                                        symbpars['ns']
+                            )
+                except: 
+                    print("sigma8 to As conversion failed")
+                    raise ValueError
+            return symbpars
+        self.symbcosmopars = dict()
+        self.symbcosmopars.update(changebasis_symb(self.cosmopars))
+        upr.debug_print(self.symbcosmopars)
+        self.kmax_pk = 9
+        self.kmin_pk = 9e-3
+        self.zmax_pk = 3.
+        tend_basis = time()
+        if self.settings["feedback"] > 2:
+            print("")
+        if self.settings["feedback"] > 2:
+            print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
+        self.print_cosmo_params(self.classcosmopars, 
+                                feedback=self.settings["feedback"],
+                                text="--- Symbolic Cosmo parameters ---"
+                                )
+    
+    def symbolic_results(self):  # Get your CLASS results from here
+        self.results = types.SimpleNamespace()
+        symb_colmo_pars = {
+            'flat' : True,
+            'sigma8': self.symbcosmopars['sigma8'],
+            'Om0': self.symbcosmopars['Omegam'],
+            'Ob0': self.symbcosmopars['Omegab'],
+            'H0': self.symbcosmopars['h']*100,
+            'ns': self.symbcosmopars['ns']
+        }
+        symbcosmo = colmo.cosmology.setCosmology('colmo', **symb_colmo_pars)
+        self.results.h_of_z = symbcosmo.Hz 
+        self.results.ang_dist = symbcosmo.angularDiameterDistance
+        self.results.com_dist = lambda zz: symbcosmo.comovingDistance(z_min=0., 
+                                                                      z_max=zz,
+                                                                      transverse=True)
+        h = classres.h()
+        self.results.s8_of_z = np.vectorize(lambda zz: classres.sigma(R=8 / h, z=zz))
+        self.results.s8_cb_of_z = np.vectorize(lambda zz: classres.sigma_cb(R=8 / h, z=zz))
+        self.results.Om_m = np.vectorize(classres.Om_m)
+
+        # Calculate the Matter fractions for CB Powerspectrum
+        f_cdm = classres.Omega0_cdm() / classres.Omega_m()
+        f_b = classres.Omega_b() / classres.Omega_m()
+        f_cb = f_cdm + f_b
+        f_nu = 1 - f_cb
+
+        ## rows are k, and columns are z
+        ## interpolating function Pk_l (k,z)
+        Pk_l, k, z = classres.get_pk_and_k_and_z(nonlinear=False)
+        Pk_cb_l, k, z = classres.get_pk_and_k_and_z(only_clustering_species=True, nonlinear=False)
+        self.results.Pk_l = RectBivariateSpline(z[::-1], k, (np.flip(Pk_l, axis=1)).transpose())
+        # self.results.Pk_l = lambda z,k: [np.array([classres.pk_lin(kval,z) for kval in k])]
+        self.results.Pk_cb_l = RectBivariateSpline(
+            z[::-1], k, (np.flip(Pk_cb_l, axis=1)).transpose()
+        )
+        # self.results.Pk_cb_l = lambda z,k: [np.array([classres.pk_cb_lin(kval,z) for kval in k])]
+
+        self.results.kgrid = k
+        self.results.zgrid = z[::-1]
+
+        ## interpolating function Pk_nl (k,z)
+        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=cfg.settings["nonlinear"])
+        self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
+
+        tk, k, z = classres.get_transfer_and_k_and_z()
+        T_cb = (f_b * tk["d_b"] + f_cdm * tk["d_cdm"]) / f_cb
+        T_nu = tk["d_ncdm[0]"]
+
+        pm = classres.get_primordial()
+        pk_prim = (
+            UnivariateSpline(pm["k [1/Mpc]"], pm["P_scalar(k)"])(k)
+            * (2.0 * np.pi**2)
+            / np.power(k, 3)
+        )
+
+        pk_cnu = T_nu * T_cb * pk_prim[:, None]
+        pk_nunu = T_nu * T_nu * pk_prim[:, None]
+        Pk_cb_nl = 1.0 / f_cb**2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
+
+        self.results.Pk_cb_nl = RectBivariateSpline(
+            z[::-1], k, (np.flip(Pk_cb_nl, axis=1)).transpose()
+        )
+
+        def create_growth():
+            z_ = self.results.zgrid
+            pk_flipped = np.flip(Pk_l, axis=1).T
+            D_growth_zk = RectBivariateSpline(z_, k, np.sqrt(pk_flipped / pk_flipped[0, :]))
+            return D_growth_zk
+
+        self.results.D_growth_zk = create_growth()
+
+        def f_deriv(k_array, k_fix=False, fixed_k=1e-3):
+            z_array = np.linspace(0, classres.pars["z_max_pk"], 100)
+            if k_fix:
+                k_array = np.full((len(k_array)), fixed_k)
+            ## Generates interpolaters D(z) for varying k values
+            D_z = np.array(
+                [
+                    UnivariateSpline(z_array, self.results.D_growth_zk(z_array, kk), s=0)
+                    for kk in k_array
+                ]
+            )
+
+            ## Generates arrays f(z) for varying k values
+            f_z = np.array(
+                [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
+            )
+            return f_z, z_array
+
+        f_z_k_array, z_array = f_deriv(self.results.kgrid)
+        f_g_kz = RectBivariateSpline(z_array, self.results.kgrid, f_z_k_array.T)
+        self.results.f_growthrate_zk = f_g_kz
+
+        def create_growth_cb():
+            z_ = self.results.zgrid
+            pk_flipped = np.flip(Pk_cb_l, axis=1).T
+            D_growth_zk = RectBivariateSpline(z_, k, np.sqrt(pk_flipped / pk_flipped[0, :]))
+            return D_growth_zk
+
+        self.results.D_growth_cb_zk = create_growth_cb()
+
+        def f_cb_deriv(k_array, k_fix=False, fixed_k=1e-3):
+            z_array = np.linspace(0, classres.pars["z_max_pk"], 100)
+            if k_fix:
+                k_array = np.full((len(k_array)), fixed_k)
+            ## Generates interpolaters D(z) for varying k values
+            D_cb_z = np.array(
+                [
+                    UnivariateSpline(z_array, self.results.D_growth_cb_zk(z_array, kk), s=0)
+                    for kk in k_array
+                ]
+            )
+
+            ## Generates arrays f(z) for varying k values
+            f_cb_z = np.array(
+                [
+                    -(1 + z_array) / D_cb_zk(z_array) * (D_cb_zk.derivative())(z_array)
+                    for D_cb_zk in D_cb_z
+                ]
+            )
+            return f_cb_z, z_array
+
+        f_cb_z_k_array, z_array = f_cb_deriv(self.results.kgrid)
+        f_g_cb_kz = RectBivariateSpline(z_array, self.results.kgrid, f_cb_z_k_array.T)
+        self.results.f_growthrate_cb_zk = f_g_cb_kz
+    
+    def class_setparams(self, cosmopars):
         tini_basis = time()
         self.classcosmopars = {
             **self.boltzmann_classpars["ACCURACY"],
@@ -214,7 +417,7 @@ class boltzmann_code:
         }.copy()
         upr.debug_print(self.classcosmopars)
         upr.debug_print(cosmopars)
-        self.classcosmopars.update(self.changebasis_class(self.cosmopars, Class))
+        self.classcosmopars.update(self.changebasis_class(self.cosmopars))
         upr.debug_print(self.classcosmopars)
         self.kmax_pk = self.classcosmopars["P_k_max_1/Mpc"]
         self.kmin_pk = 1e-4
@@ -327,7 +530,7 @@ class boltzmann_code:
                 print("Rescaled sig8 = ", final_sig8)
         return final_As
 
-    def changebasis_class(self, cosmopars, Class):
+    def changebasis_class(self, cosmopars):
         classpars = deepcopy(cosmopars)
         if "h" in classpars:
             classpars["h"] = classpars.pop("h")
@@ -400,6 +603,14 @@ class boltzmann_code:
             print("----CLASS parameters----")
             for key in classpars:
                 print(key + "=" + str(classpars[key]))
+    
+    @staticmethod
+    def print_cosmo_params(cosmopars, feedback=1, text="---Cosmo pars---"):
+        if feedback > 2:
+            print("")
+            print(text)
+            for key in cosmopars:
+                print(key + "=" + str(cosmopars[key]))
 
     def camb_results(self, camb):
         tini_camb = time()

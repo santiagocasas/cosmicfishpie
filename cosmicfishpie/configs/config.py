@@ -315,13 +315,16 @@ def init(
         parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
         boltzmann_cambpars = parsed_boltzmann
         external = None
+    elif settings["code"] == "symbolic":
+        input_type = settings["code"]
+        external = None
     else:
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
-        print("Defaulting to EBS camb")
+        print("No symbolic_pofk specified.")
         # settings['code'] = 'camb'
-        input_type = settings["code"]
         external = None
+        raise ValueError("No cosmology calculator specified")
 
     def ngal_per_bin(ngal_sqarmin, zbins):
         # compute num galaxies per bin for whole sky area
@@ -377,14 +380,22 @@ def init(
     surveyNameSpectro = settings.get("survey_name_spectro")
     if "Euclid" in surveyName:
         if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
-            surveyNamePhoto = "Euclid-Photometric-ISTF-Optimistic"
-            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Optimistic"
+            surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
+            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
         if settings["survey_name_photo"] != "":
-            yaml_file_1 = open(os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml"))
+            file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
+            if not os.path.isfile(file_1_path):
+                print(f'specifications file : {file_1_path} not found!')
+                raise ValueError
+            yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
             specificationsf = parsed_yaml_file_1["specifications"]
         if settings["survey_name_spectro"] != "":
-            yaml_file_2 = open(os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml"))
+            file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
+            if not os.path.isfile(file_2_path):
+                print(f'specifications file : {file_2_path} not found!')
+                raise ValueError
+            yaml_file_2 = open(file_2_path)
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)

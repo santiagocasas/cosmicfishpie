@@ -11,7 +11,8 @@ COSMO_SETTINGS:
 # Massive neutrino baseline model
   'kmax' : 50
   'share_delta_neff' : True
-  'halofit_version' : 'takahashi'
+  #'halofit_version' : 'takahashi'
+  'halofit_version' : 'mead2020'
   'dark_energy_model' : 'ppf'
   'num_nu_massive' : 1
   'TCMB': 2.7255

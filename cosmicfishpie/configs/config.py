@@ -382,7 +382,7 @@ def init(
         if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
             surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
             surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
-        if settings["survey_name_photo"] != "":
+        if surveyNamePhoto != "":
             file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
             if not os.path.isfile(file_1_path):
                 print(f'specifications file : {file_1_path} not found!')
@@ -390,7 +390,7 @@ def init(
             yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
             specificationsf = parsed_yaml_file_1["specifications"]
-        if settings["survey_name_spectro"] != "":
+        if surveyNameSpectro != "":
             file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
             if not os.path.isfile(file_2_path):
                 print(f'specifications file : {file_2_path} not found!')
@@ -602,7 +602,7 @@ def init(
 
     global photoparams
     if photopars is None:
-        print("No photo-z parameters specified. Using default: Euclid-like")
+        #print("No photo-z parameters specified. Using default: Euclid-like")
         photopars = {
             "fout": 0.1,  # does this need to be updated for SKA1??
             "co": 1,
@@ -616,7 +616,7 @@ def init(
 
     global IAparams
     if IApars is None:
-        print("No IA specified. Using default: eNLA")
+        #print("No IA specified. Using default: eNLA")
         IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
     IAparams = IApars
     if "WL" in obs:
@@ -699,9 +699,9 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    print(freeparams)
-    print("                                                            ***")
+    #print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
+    #print(freeparams)
+    #print("                                                            ***")
 
     global latex_names
     latex_names_def = {

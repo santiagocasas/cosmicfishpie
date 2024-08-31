@@ -182,7 +182,8 @@ class Nuisance:
         # this dict can be read from a file
         # InterpolatedUnivariateSpline allows for extrapolation outside
         # bounds of the input files. Uses order=1 linear splines.
-        bofz_spec = InterpolatedUnivariateSpline(self.gc_table[:, 1], self.gc_table[:, 4], k=1)
+        bofz_spec = InterpolatedUnivariateSpline(self.gc_table[:, 1], 
+                                                 self.gc_table[:, 4], k=1)
         return bofz_spec
 
     def gcsp_dndz(self):

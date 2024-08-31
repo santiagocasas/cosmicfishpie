@@ -143,7 +143,7 @@ class boltzmann_code:
             )
 
         # Set default value for Neff if it is not found in cosmopars
-        self.cosmopars["Neff"] = self.cosmopars.get("Neff", self.cosmopars.get("N_eff", 3.046))
+        #self.cosmopars["Neff"] = self.cosmopars.get("Neff", self.cosmopars.get("N_eff", 3.046))
 
         # Set default value for gamma, if it is not found in cosmopars
         # gamma is not used in many places, therefore not needed to add back in cosmopars
@@ -190,14 +190,13 @@ class boltzmann_code:
         upr.debug_print(self.cambcosmopars)
         self.cambcosmopars.update(self.cosmopars)
         self.cambcosmopars = self.changebasis_camb(self.cambcosmopars, camb)
+        self.extrap_kmax = self.cambcosmopars.pop('extrap_kmax', 100)
         upr.debug_print(self.cambcosmopars)
         tend_basis = time()
-        if self.settings["feedback"] > 2:
-            print("")
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_camb_params(self.cambcosmopars, feedback=self.settings["feedback"])
-
+        self.print_camb_params(self.cambcosmopars, 
+                               feedback=self.feed_lvl)
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
@@ -261,6 +260,7 @@ class boltzmann_code:
                                         symbpars['h'],
                                         symbpars['ns']
                             )
+                    symbpars['10^9As'] = As_n
                 except: 
                     print("sigma8 to As conversion failed")
                     raise ValueError
@@ -272,12 +272,10 @@ class boltzmann_code:
         self.kmin_pk = 9e-3
         self.zmax_pk = 3.
         tend_basis = time()
-        if self.settings["feedback"] > 2:
-            print("")
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_cosmo_params(self.classcosmopars, 
-                                feedback=self.settings["feedback"],
+        self.print_cosmo_params(self.symbcosmopars, 
+                                feedback=self.feed_lvl,
                                 text="--- Symbolic Cosmo parameters ---"
                                 )
     
@@ -423,11 +421,10 @@ class boltzmann_code:
         self.kmin_pk = 1e-4
         self.zmax_pk = self.classcosmopars["z_max_pk"]
         tend_basis = time()
-        if self.settings["feedback"] > 2:
-            print("")
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_class_params(self.classcosmopars, feedback=self.settings["feedback"])
+        self.print_class_params(self.classcosmopars, 
+                                feedback=self.feed_lvl)
 
     def changebasis_camb(self, cosmopars, camb):
         cambpars = deepcopy(cosmopars)
@@ -463,7 +460,6 @@ class boltzmann_code:
         else:
             g_factor = fidNeff / 3
 
-        neutrino_mass_fac = 94.07
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
         h2 = (cambpars["H0"] / 100) ** 2
 
@@ -519,7 +515,7 @@ class boltzmann_code:
             pars2 = camb.set_params(redshifts=[0.0], **cambpars_rs)
             results2 = camb.get_results(pars2)
             final_sig8 = np.array(results2.get_sigma8())[-1]
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             print("AccuracyBoost input = ", cambpars["AccuracyBoost"])
             print("AccuracyBoost rescaling = ", cambpars_LP["lAccuracyBoost"])
             print("Goal sig8 = ", insigma8)
@@ -540,9 +536,8 @@ class boltzmann_code:
             h = classpars["H0"] / 100.0
 
         shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
-        Neff = classpars.pop("Neff")
-        # fidNeff = cfg.fiducialparams['Neff']
         fidNeff = boltzmann_code.hardcoded_Neff
+        Neff = classpars.pop("Neff", fidNeff)
 
         if shareDeltaNeff:
             classpars["N_ur"] = (
@@ -553,7 +548,7 @@ class boltzmann_code:
             classpars["N_ur"] = Neff - fidNeff / 3.0
             g_factor = fidNeff / 3.0
 
-        neutrino_mass_fac = 94.07
+        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
 
         if "mnu" in classpars:
             classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
@@ -616,7 +611,7 @@ class boltzmann_code:
         tini_camb = time()
         self.results = types.SimpleNamespace()
         cambres = camb.get_results(self.cambclasspars)
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             tres = time()
             print("Time for Results = ", tres - tini_camb)
         Pk_l, self.results.zgrid, self.results.kgrid = cambres.get_matter_power_interpolator(
@@ -625,7 +620,7 @@ class boltzmann_code:
             var1="delta_tot",
             var2="delta_tot",
             nonlinear=False,
-            extrap_kmax=100,
+            extrap_kmax=self.extrap_kmax,
             return_z_k=True,
         )
         Pk_nl, zgrid, kgrid = cambres.get_matter_power_interpolator(
@@ -634,7 +629,7 @@ class boltzmann_code:
             var1="delta_tot",
             var2="delta_tot",
             nonlinear=True,
-            extrap_kmax=100,
+            extrap_kmax=self.extrap_kmax,
             return_z_k=True,
         )
         Pk_cb_l, zgrid, kgrid = cambres.get_matter_power_interpolator(
@@ -643,7 +638,7 @@ class boltzmann_code:
             var1="delta_nonu",
             var2="delta_nonu",
             nonlinear=False,
-            extrap_kmax=100,
+            extrap_kmax=self.extrap_kmax,
             return_z_k=True,
         )
 
@@ -687,7 +682,7 @@ class boltzmann_code:
             var1="delta_nonu",
             var2="delta_nu",
             nonlinear=False,
-            extrap_kmax=100,
+            extrap_kmax=self.extrap_kmax,
             return_z_k=False,
         )
         Pk_nunu_l = cambres.get_matter_power_interpolator(
@@ -696,7 +691,7 @@ class boltzmann_code:
             var1="delta_nu",
             var2="delta_nu",
             nonlinear=False,
-            extrap_kmax=100,
+            extrap_kmax=self.extrap_kmax,
             return_z_k=False,
         )
         Pk_cb_nl = (
@@ -712,7 +707,7 @@ class boltzmann_code:
             self.results.zgrid, self.results.kgrid, Pk_cb_nl
         )
 
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             tPk = time()
             print("Time for lin+nonlin Pk = ", tPk - tres)
 
@@ -731,7 +726,7 @@ class boltzmann_code:
             self.results.zgrid, self.results.kgrid, (D_g_cb_norm_kz), kx=3, ky=3
         )
 
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             tDzk = time()
             print("Time for Growth factor = ", tDzk - tPk)
 
@@ -784,7 +779,7 @@ class boltzmann_code:
             z_array, self.results.kgrid, f_cb_z_k_array.T
         )
 
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             tfzk = time()
             print("Time for Growth factor = ", tfzk - tDzk)
 
@@ -808,6 +803,14 @@ class boltzmann_code:
             return sigm8_z_interp
 
         def get_sigma8_cb(z_range):
+            """get sigma8 value for cb tracer
+
+            Args:
+                z_range (numpy.ndarray): z range at which to generate sigma8_cb
+
+            Returns:
+                UnivariateSpline: 1-d interpolation function sigma8_cb(z)
+            """
             R = 8.0 / (cambres.Params.H0 / 100.0)
             k = np.linspace(self.kmin_pk, self.kmax_pk, 10000)
             sigma_cb_z = np.empty_like(z_range)
@@ -829,7 +832,7 @@ class boltzmann_code:
         self.results.s8_cb_of_z = get_sigma8_cb(self.results.zgrid)
         self.results.s8_of_z = get_sigma8(self.results.zgrid)
 
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             ts8 = time()
             print("Time for Growth factor = ", ts8 - tfzk)
 
@@ -837,11 +840,9 @@ class boltzmann_code:
             powers = cambres.get_cmb_power_spectra(CMB_unit="muK")
             self.results.camb_cmb = powers["total"]
         tend_camb = time()
-        if self.settings["feedback"] > 2:
+        if self.feed_lvl > 2:
             print("Time for CMB = ", tend_camb - ts8)
-        if self.settings["feedback"] > 1:
-            print("")
-        if self.settings["feedback"] > 1:
+        if self.feed_lvl > 1:
             print("Cosmology computation took {:.2f} s".format(tend_camb - tini_camb))
 
     def class_results(self, Class):  # Get your CLASS results from here
@@ -967,6 +968,17 @@ class boltzmann_code:
 
 class external_input:
     def __init__(self, cosmopars, fiducialcosmopars=dict(), external=dict(), extra_settings=dict()):
+        """class for initializing external input
+
+        Args:
+            cosmopars (dict): cosmological parameter dict to evaluate at.
+            fiducialcosmopars (dict, optional): Fiducial cosmological parameter dict. Defaults to dict().
+            external (dict, optional): Dictionary of attributes for external files. Defaults to dict().
+            extra_settings (dict, optional): Dictionary of settings relevant for external input. Defaults to dict().
+
+        Raises:
+            ValueError: _description_
+        """
         self.cosmopars = cosmopars
         self.fiducialpars = fiducialcosmopars
         self.feed_lvl = cfg.settings["feedback"]
@@ -1547,9 +1559,11 @@ class cosmo_functions:
         """
         if tracer == "clustering":
             return self.results.s8_cb_of_z(z)
-        if tracer != "matter":
+        elif tracer == "matter":
+            return self.results.s8_of_z(z)
+        else:
             warn("Did not recognize tracer: reverted to matter")
-        return self.results.s8_of_z(z)
+            return self.results.s8_of_z(z)
 
     def growth(self, z, k=None):
         """Growth factor

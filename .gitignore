@@ -51,3 +51,7 @@ __pycache__
 
 docs/build
 site/
+
+# User Output
+plots/
+results/

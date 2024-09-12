@@ -50,6 +50,9 @@ dev = [
     "packaging"
 ]
 
+[project.scripts]
+run-tests = "cosmicfishpie.tests.installation_test:main"  # Expose the test script as a CLI command
+
 [tool.setuptools.packages.find]
 exclude = [
     "*.tests",

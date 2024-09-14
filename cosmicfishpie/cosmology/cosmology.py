@@ -279,7 +279,31 @@ class boltzmann_code:
                                 text="--- Symbolic Cosmo parameters ---"
                                 )
     
-    def symbolic_results(self):  # Get your CLASS results from here
+    def symbolic_results(self):
+        """
+        Compute and store symbolic results for various cosmological quantities.
+
+        This method calculates several cosmological functions and parameters using
+        symbolic cosmology parameters, utilizing the colossus (colmo) and CLASS libraries.
+
+        Computed quantities (stored in self.results):
+        - h_of_z: Hubble parameter as a function of redshift
+        - ang_dist: Angular diameter distance
+        - com_dist: Comoving distance
+        - s8_of_z: σ8 (matter fluctuations on 8 h^-1 Mpc scales) as a function of redshift
+        - s8_cb_of_z: σ8 for cold dark matter and baryons as a function of redshift
+        - Om_m: Matter density parameter as a function of redshift
+        - Pk_l: Linear matter power spectrum
+        - Pk_cb_l: Linear cold dark matter and baryon power spectrum
+        - Pk_nl: Non-linear matter power spectrum (if enabled in settings)
+        - kgrid: Wavenumber grid for power spectra
+        - zgrid: Redshift grid for power spectra
+
+        Additionally, matter fractions for CDM, baryons, and neutrinos are computed.
+
+        Returns:
+            None
+        """
         self.results = types.SimpleNamespace()
         symb_colmo_pars = {
             'flat' : True,
@@ -373,38 +397,6 @@ class boltzmann_code:
         f_g_kz = RectBivariateSpline(z_array, self.results.kgrid, f_z_k_array.T)
         self.results.f_growthrate_zk = f_g_kz
 
-        def create_growth_cb():
-            z_ = self.results.zgrid
-            pk_flipped = np.flip(Pk_cb_l, axis=1).T
-            D_growth_zk = RectBivariateSpline(z_, k, np.sqrt(pk_flipped / pk_flipped[0, :]))
-            return D_growth_zk
-
-        self.results.D_growth_cb_zk = create_growth_cb()
-
-        def f_cb_deriv(k_array, k_fix=False, fixed_k=1e-3):
-            z_array = np.linspace(0, classres.pars["z_max_pk"], 100)
-            if k_fix:
-                k_array = np.full((len(k_array)), fixed_k)
-            ## Generates interpolaters D(z) for varying k values
-            D_cb_z = np.array(
-                [
-                    UnivariateSpline(z_array, self.results.D_growth_cb_zk(z_array, kk), s=0)
-                    for kk in k_array
-                ]
-            )
-
-            ## Generates arrays f(z) for varying k values
-            f_cb_z = np.array(
-                [
-                    -(1 + z_array) / D_cb_zk(z_array) * (D_cb_zk.derivative())(z_array)
-                    for D_cb_zk in D_cb_z
-                ]
-            )
-            return f_cb_z, z_array
-
-        f_cb_z_k_array, z_array = f_cb_deriv(self.results.kgrid)
-        f_g_cb_kz = RectBivariateSpline(z_array, self.results.kgrid, f_cb_z_k_array.T)
-        self.results.f_growthrate_cb_zk = f_g_cb_kz
     
     def class_setparams(self, cosmopars):
         tini_basis = time()
@@ -783,54 +775,45 @@ class boltzmann_code:
             tfzk = time()
             print("Time for Growth factor = ", tfzk - tDzk)
 
-        def get_sigma8(z_range):
+        def get_sigma8(z_range, tracer='matter'):
+            """
+            Calculate sigma8 for a given tracer (matter or cb) over a range of redshifts.
+
+            Args:
+                z_range (numpy.ndarray): Redshift range at which to generate sigma8
+                tracer (str): Type of tracer, either 'matter' or 'cb' (cold dark matter + baryons)
+
+            Returns:
+                UnivariateSpline: 1-d interpolation function sigma8(z) for the specified tracer
+            """
             R = 8.0 / (cambres.Params.H0 / 100.0)
             k = np.linspace(self.kmin_pk, self.kmax_pk, 10000)
             sigma_z = np.empty_like(z_range)
-            pkz = self.results.Pk_l(z_range, k)
+            
+            if tracer == 'matter':
+                pk_z = self.results.Pk_l(z_range, k)
+            elif tracer == 'cb':
+                pk_z = self.results.Pk_cb_l(z_range, k)
+            else:
+                raise ValueError("Invalid tracer. Choose either 'matter' or 'cb'.")
+
             for i in range(len(sigma_z)):
                 integrand = (
                     9
                     * (k * R * np.cos(k * R) - np.sin(k * R)) ** 2
-                    * pkz[i]
+                    * pk_z[i]
                     / k**4
                     / R**6
                     / 2
                     / np.pi**2
                 )
                 sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
-            sigm8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
-            return sigm8_z_interp
+            
+            sigma8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
+            return sigma8_z_interp
 
-        def get_sigma8_cb(z_range):
-            """get sigma8 value for cb tracer
-
-            Args:
-                z_range (numpy.ndarray): z range at which to generate sigma8_cb
-
-            Returns:
-                UnivariateSpline: 1-d interpolation function sigma8_cb(z)
-            """
-            R = 8.0 / (cambres.Params.H0 / 100.0)
-            k = np.linspace(self.kmin_pk, self.kmax_pk, 10000)
-            sigma_cb_z = np.empty_like(z_range)
-            pk_cb_z = self.results.Pk_cb_l(z_range, k)
-            for i in range(len(sigma_cb_z)):
-                integrand = (
-                    9
-                    * (k * R * np.cos(k * R) - np.sin(k * R)) ** 2
-                    * pk_cb_z[i]
-                    / k**4
-                    / R**6
-                    / 2
-                    / np.pi**2
-                )
-                sigma_cb_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
-            sigm8_cb_z_interp = UnivariateSpline(z_range, sigma_cb_z, s=0)
-            return sigm8_cb_z_interp
-
-        self.results.s8_cb_of_z = get_sigma8_cb(self.results.zgrid)
-        self.results.s8_of_z = get_sigma8(self.results.zgrid)
+        self.results.s8_cb_of_z = get_sigma8(self.results.zgrid, tracer='cb')
+        self.results.s8_of_z = get_sigma8(self.results.zgrid, tracer='matter')
 
         if self.feed_lvl > 2:
             ts8 = time()
@@ -1449,7 +1432,7 @@ class cosmo_functions:
             power = self.results.Pk_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_l(z, k, grid=False)
-        return power
+        return power # type: ignore
 
     def Pcb(self, z, k, nonlinear=False):
         """Compute the power spectrum of the clustering matter species  (CB) at a given redshift and wavenumber.
@@ -1705,7 +1688,7 @@ class cosmo_functions:
                 print("CMB Spectrum not computed")
                 return
         elif self.code == "class":
-            if "tCl" in self.classcosmopars["output"]:
+            if "tCl" not in self.classcosmopars["output"]:
                 print("CMB Spectrum not computed")
                 return
         else:
@@ -1725,3 +1708,19 @@ class cosmo_functions:
                 cls = np.array([0.0] * len(ells))
 
             return cls
+
+    @staticmethod
+    def scale_factor(z):
+        """Compute the scale factor a from redshift z.
+
+        Parameters
+        ----------
+        z : float or array-like
+            Redshift
+
+        Returns
+        -------
+        float or array-like
+            Scale factor a
+        """
+        return 1.0 / (1.0 + z)

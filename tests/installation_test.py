@@ -1,6 +1,7 @@
 from cosmicfishpie.fishermatrix import cosmicfish as cff
 from cosmicfishpie.utilities.utils import printing as cpr
 
+
 def test_installation():
     # These are typical options that you can pass to Cosmicfishpie
     options = {

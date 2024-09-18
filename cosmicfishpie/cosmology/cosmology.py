@@ -56,11 +56,19 @@ class boltzmann_code:
 
     def __init__(self, cosmopars, code="camb"):
         """
-        Constructor method for the class.
+        Initialize the boltzmann_code class.
 
         Parameters:
-        - cosmopars: The cosmological parameters object to be copied.
-        - code: The code to be used (default value is 'camb').
+        -----------
+        cosmopars : dict
+            The cosmological parameters object to be copied.
+        code : str, optional
+            The Boltzmann code to be used (default is 'camb').
+
+        Raises:
+        -------
+        ValueError
+            If an unsupported Boltzmann code is specified.
         """
         self.cosmopars = deepcopy(cosmopars)
         self.feed_lvl = cfg.settings["feedback"]
@@ -85,25 +93,38 @@ class boltzmann_code:
                 import colossus.cosmology as colmo
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
+                self.colmo = colmo
+                self.symblin = symblin
+                self.symbfit = symbfit
             except:
                 print("Module symbolic_pofk not properly installed. Aborting")
-                sys.exit() 
+                sys.exit()
+            self.boltzmann_symbolicpars = cfg.boltzmann_symbolicpars
+            self.halofit_version = self.boltzmann_symbolicpars['COSMO_SETTINGS']['halofit_version'] # 'syren' or 'halofit+' or 'takahashi'
+            if self.halofit_version == 'takahashi':
+                self.which_params = 'Takahashi'
+                self.add_correction = False
+            elif self.halofit_version == 'halofit+':
+                self.which_params = 'Bartlett'
+                self.add_correction = False
+            elif self.halofit_version == 'syren':
+                self.which_params = 'Bartlett'
+                self.add_correction = True
+            self.extrapolate = self.boltzmann_symbolicpars['NUMERICS']['extrapolate']
+            self.emulator_precision = self.boltzmann_symbolicpars['ACCURACY']['emulator_precision'] # 'max_precision' or 'fiducial'
+            self.symbolic_setparams()
+            self.symbolic_results()
         else:
             print("other Boltzmann code not implemented yet")
             exit()
 
     def set_cosmicfish_defaults(self):
         """
-        Fills up default values in the cosmopars dictionary if the values are not found.
+        Fill up default values in the cosmopars dictionary if the values are not found.
 
-        Parameters:
-            self (object): The instance of the class.
-
-        Returns:
-            None
+        This method sets default values for various cosmological parameters if they
+        are not already present in the cosmopars dictionary.
         """
-
-        # filling up default values, if value not found in dictionary, then fill it with default value
 
         # Set default value for Omegam if neither Omegam or omch2 (camb) or omega_cdm (class) are passed
         if not any(par in self.cosmopars for par in ["Omegam", "omch2", "omega_cdm", "Omega_cdm"]):
@@ -148,28 +169,123 @@ class boltzmann_code:
         # Set default value for gamma, if it is not found in cosmopars
         # gamma is not used in many places, therefore not needed to add back in cosmopars
         self.gamma = self.cosmopars.get("gamma", 0.545)
+    
+    @staticmethod
+    def print_cosmo_params(cosmopars, feedback=1, text="---Cosmo pars---"):
+        """
+        Print cosmological parameters.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary of cosmological parameters to print.
+        feedback : int, optional
+            Feedback level determining whether to print (default is 1).
+        text : str, optional
+            Header text for the parameter list (default is "---Cosmo pars---").
+        """
+        if feedback > 2:
+            print("")
+            print(text)
+            for key in cosmopars:
+                print(key + "=" + str(cosmopars[key]))
+
+    @staticmethod
+    def f_deriv(D_growth_zk, z_array, k_array, k_fix=False, fixed_k=1e-3):
+        """
+        Calculate the growth rate f(z,k).
+
+        Parameters:
+        -----------
+        D_growth_zk : callable
+            Function that returns the growth factor D(z,k).
+        z_array : array_like
+            Array of redshift values.
+        k_array : array_like
+            Array of wavenumbers.
+        k_fix : bool, optional
+            If True, use a fixed k value (default is False).
+        fixed_k : float, optional
+            Fixed k value to use if k_fix is True (default is 1e-3).
+
+        Returns:
+        --------
+        tuple
+            Growth rate f(z,k) and the corresponding z array.
+        """
+        if k_fix:
+            k_array = np.full((len(k_array)), fixed_k)
+        ## Generates interpolators D(z) for varying k values
+        D_z = np.array(
+            [
+                UnivariateSpline(z_array, D_growth_zk(z_array, kk), s=0)
+                for kk in k_array
+            ]
+        )
+        ## Generates arrays f(z) for varying k values
+        f_z = np.array(
+            [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
+        )
+        return f_z, z_array
+    
+    @staticmethod
+    def compute_sigma8(z_range, pk_interpolator, h_value,
+                   k_range):
+        """
+        Calculate sigma8 over a range of redshifts using a given power spectrum interpolator.
+
+        This function computes sigma8, which is the RMS matter fluctuation in spheres of 8 h^-1 Mpc radius,
+        for a range of redshifts. It uses a provided power spectrum interpolator to perform the calculation.
+
+        Args:
+            z_range (numpy.ndarray): Array of redshift values at which to calculate sigma8.
+        pk_interpolator (callable): A function that takes (z, k) as arguments and returns
+                                the power spectrum P(k,z). It should be able to handle
+                                array inputs for both z and k.
+
+        Returns:
+        scipy.interpolate.UnivariateSpline: A 1-D interpolation function sigma8(z) that can be 
+                                            used to obtain sigma8 values for any redshift within 
+                                            the input range.
+
+        """
+        R = 8.0 / (h_value)
+        kmin = np.min(k_range)
+        kmax = np.max(k_range)
+        #resampling the k range to 10000 points
+        k = np.linspace(kmin, kmax, 10000)
+        sigma_z = np.empty_like(z_range)        
+        pk_z = pk_interpolator(z_range, k)
+
+        for i in range(len(sigma_z)):
+            integrand = (
+                9
+                * (k * R * np.cos(k * R) - np.sin(k * R)) ** 2
+                * pk_z[i]
+                / k**4
+                / R**6
+                / 2
+                / np.pi**2
+            )
+            sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
+        
+        sigma8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
+        return sigma8_z_interp
 
     def camb_setparams(self, cosmopars, camb):
         """
-        Sets the parameters for the CAMB (Code for Anisotropies in the Microwave Background) computation.
+        Set the parameters for CAMB computation.
 
         Parameters:
-            cosmopars (dict): A dictionary containing the cosmological parameters.
-            camb: The CAMB object.
+        -----------
+        cosmopars : dict
+            Dictionary containing the cosmological parameters.
+        camb : module
+            The CAMB module.
 
-        Returns:
-            None
-
-        The function sets the CAMB parameters based on the provided input and performs a basis change if necessary.
-        It then sets the matter power spectrum and additional options for the CAMB computation.
-
-        Note:
-            This function assumes that the boltzmann_cambpars and settings dictionaries are available.
-
-        Example usage:
-            cosmopars = {'gamma': 0.545, 'k_per_logint': 0.1, 'kmax': 10, 'accurate_massive_neutrino_transfers': True}
-            camb = CAMB()
-            camb_set_params(cosmopars, camb)
+        Notes:
+        ------
+        This method sets up CAMB parameters and prepares for power spectrum computation.
         """
         # Adding hard coded CAMB options
         self.cosmopars = deepcopy(cosmopars)
@@ -190,7 +306,6 @@ class boltzmann_code:
         upr.debug_print(self.cambcosmopars)
         self.cambcosmopars.update(self.cosmopars)
         self.cambcosmopars = self.changebasis_camb(self.cambcosmopars, camb)
-        self.extrap_kmax = self.cambcosmopars.pop('extrap_kmax', 100)
         upr.debug_print(self.cambcosmopars)
         tend_basis = time()
         if self.feed_lvl > 2:
@@ -212,217 +327,30 @@ class boltzmann_code:
         self.cambclasspars.NonLinear = camb.model.NonLinear_both
         self.cambclasspars.set_for_lmax(4000, lens_potential_accuracy=1)
 
-    def symbolic_setparams(self, cosmopars):
-        tini_basis = time()
-        upr.debug_print(cosmopars)
-        if cfg.settings['cosmo_model'] != "LCDM":
-            print("Symbolic_pofk only supports LCDM at the moment")
-            raise ValueError("Cosmo model not supported by cosmo code")
-        def changebasis_symb(cosmopars):
-            symbpars = deepcopy(cosmopars)
-            if "h" in symbpars:
-                symbpars["h"] = symbpars.pop("h")
-                h = symbpars["h"]
-            if "H0" in symbpars:
-                symbpars["H0"] = symbpars.pop("H0")
-                h = symbpars["H0"] / 100.0
-                symbpars["h"] = h
-            if "ombh2" in symbpars:
-                symbpars["Omegab"] = symbpars.pop("ombh2") / (symbpars["h"] ** 2)
-            if "omch2" in symbpars:
-                symbpars["Omegam"] = (symbpars.pop("omch2") / 
-                                      symbpars["h"] ** 2) + symbpars['Omegab']
-                # Omegam = Omegac + Omegab
-            # ["sigma8", "As", "logAs", "10^9As", "ln_A_s_1e10"]
-            if "As" in symbpars:
-                symbpars['10^9As'] = 10**9 * symbpars.pop('As')
-            if "logAs" in symbpars:
-                symbpars['10^9As'] = 10**9 * (np.exp(symbpars.pop("logAs")) 
-                                              * 1.0e-10)
-            if type(symbpars['10^9As']) == float:
-                try:
-                    symbpars['sigma8']  = symblin.As_to_sigma8(
-                                                            symbpars['10^9As'],
-                                                            symbpars['Omegam'],
-                                                            symbpars['Omegab'],
-                                                            symbpars['h'],
-                                                            symbpars['ns']
-                                                            )
-                except: 
-                    print("As to sigma8 conversion failed")
-                    raise ValueError
-            if  type(symbpars['sigma8']) == float:
-                try:
-                    As_n = symblin.sigma8_to_As(
-                                        symbpars['sigma8'],
-                                        symbpars['Omegam'],
-                                        symbpars['Omegab'],
-                                        symbpars['h'],
-                                        symbpars['ns']
-                            )
-                    symbpars['10^9As'] = As_n
-                except: 
-                    print("sigma8 to As conversion failed")
-                    raise ValueError
-            return symbpars
-        self.symbcosmopars = dict()
-        self.symbcosmopars.update(changebasis_symb(self.cosmopars))
-        upr.debug_print(self.symbcosmopars)
-        self.kmax_pk = 9
-        self.kmin_pk = 9e-3
-        self.zmax_pk = 3.
-        tend_basis = time()
-        if self.feed_lvl > 2:
-            print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_cosmo_params(self.symbcosmopars, 
-                                feedback=self.feed_lvl,
-                                text="--- Symbolic Cosmo parameters ---"
-                                )
     
-    def symbolic_results(self):
-        """
-        Compute and store symbolic results for various cosmological quantities.
-
-        This method calculates several cosmological functions and parameters using
-        symbolic cosmology parameters, utilizing the colossus (colmo) and CLASS libraries.
-
-        Computed quantities (stored in self.results):
-        - h_of_z: Hubble parameter as a function of redshift
-        - ang_dist: Angular diameter distance
-        - com_dist: Comoving distance
-        - s8_of_z: σ8 (matter fluctuations on 8 h^-1 Mpc scales) as a function of redshift
-        - s8_cb_of_z: σ8 for cold dark matter and baryons as a function of redshift
-        - Om_m: Matter density parameter as a function of redshift
-        - Pk_l: Linear matter power spectrum
-        - Pk_cb_l: Linear cold dark matter and baryon power spectrum
-        - Pk_nl: Non-linear matter power spectrum (if enabled in settings)
-        - kgrid: Wavenumber grid for power spectra
-        - zgrid: Redshift grid for power spectra
-
-        Additionally, matter fractions for CDM, baryons, and neutrinos are computed.
-
-        Returns:
-            None
-        """
-        self.results = types.SimpleNamespace()
-        symb_colmo_pars = {
-            'flat' : True,
-            'sigma8': self.symbcosmopars['sigma8'],
-            'Om0': self.symbcosmopars['Omegam'],
-            'Ob0': self.symbcosmopars['Omegab'],
-            'H0': self.symbcosmopars['h']*100,
-            'ns': self.symbcosmopars['ns']
-        }
-        symbcosmo = colmo.cosmology.setCosmology('colmo', **symb_colmo_pars)
-        self.results.h_of_z = symbcosmo.Hz 
-        self.results.ang_dist = symbcosmo.angularDiameterDistance
-        self.results.com_dist = lambda zz: symbcosmo.comovingDistance(z_min=0., 
-                                                                      z_max=zz,
-                                                                      transverse=True)
-        h = classres.h()
-        self.results.s8_of_z = np.vectorize(lambda zz: classres.sigma(R=8 / h, z=zz))
-        self.results.s8_cb_of_z = np.vectorize(lambda zz: classres.sigma_cb(R=8 / h, z=zz))
-        self.results.Om_m = np.vectorize(classres.Om_m)
-
-        # Calculate the Matter fractions for CB Powerspectrum
-        f_cdm = classres.Omega0_cdm() / classres.Omega_m()
-        f_b = classres.Omega_b() / classres.Omega_m()
-        f_cb = f_cdm + f_b
-        f_nu = 1 - f_cb
-
-        ## rows are k, and columns are z
-        ## interpolating function Pk_l (k,z)
-        Pk_l, k, z = classres.get_pk_and_k_and_z(nonlinear=False)
-        Pk_cb_l, k, z = classres.get_pk_and_k_and_z(only_clustering_species=True, nonlinear=False)
-        self.results.Pk_l = RectBivariateSpline(z[::-1], k, (np.flip(Pk_l, axis=1)).transpose())
-        # self.results.Pk_l = lambda z,k: [np.array([classres.pk_lin(kval,z) for kval in k])]
-        self.results.Pk_cb_l = RectBivariateSpline(
-            z[::-1], k, (np.flip(Pk_cb_l, axis=1)).transpose()
-        )
-        # self.results.Pk_cb_l = lambda z,k: [np.array([classres.pk_cb_lin(kval,z) for kval in k])]
-
-        self.results.kgrid = k
-        self.results.zgrid = z[::-1]
-
-        ## interpolating function Pk_nl (k,z)
-        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=cfg.settings["nonlinear"])
-        self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
-
-        tk, k, z = classres.get_transfer_and_k_and_z()
-        T_cb = (f_b * tk["d_b"] + f_cdm * tk["d_cdm"]) / f_cb
-        T_nu = tk["d_ncdm[0]"]
-
-        pm = classres.get_primordial()
-        pk_prim = (
-            UnivariateSpline(pm["k [1/Mpc]"], pm["P_scalar(k)"])(k)
-            * (2.0 * np.pi**2)
-            / np.power(k, 3)
-        )
-
-        pk_cnu = T_nu * T_cb * pk_prim[:, None]
-        pk_nunu = T_nu * T_nu * pk_prim[:, None]
-        Pk_cb_nl = 1.0 / f_cb**2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
-
-        self.results.Pk_cb_nl = RectBivariateSpline(
-            z[::-1], k, (np.flip(Pk_cb_nl, axis=1)).transpose()
-        )
-
-        def create_growth():
-            z_ = self.results.zgrid
-            pk_flipped = np.flip(Pk_l, axis=1).T
-            D_growth_zk = RectBivariateSpline(z_, k, np.sqrt(pk_flipped / pk_flipped[0, :]))
-            return D_growth_zk
-
-        self.results.D_growth_zk = create_growth()
-
-        def f_deriv(k_array, k_fix=False, fixed_k=1e-3):
-            z_array = np.linspace(0, classres.pars["z_max_pk"], 100)
-            if k_fix:
-                k_array = np.full((len(k_array)), fixed_k)
-            ## Generates interpolaters D(z) for varying k values
-            D_z = np.array(
-                [
-                    UnivariateSpline(z_array, self.results.D_growth_zk(z_array, kk), s=0)
-                    for kk in k_array
-                ]
-            )
-
-            ## Generates arrays f(z) for varying k values
-            f_z = np.array(
-                [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
-            )
-            return f_z, z_array
-
-        f_z_k_array, z_array = f_deriv(self.results.kgrid)
-        f_g_kz = RectBivariateSpline(z_array, self.results.kgrid, f_z_k_array.T)
-        self.results.f_growthrate_zk = f_g_kz
-
-    
-    def class_setparams(self, cosmopars):
-        tini_basis = time()
-        self.classcosmopars = {
-            **self.boltzmann_classpars["ACCURACY"],
-            **self.boltzmann_classpars["COSMO_SETTINGS"],
-            **self.boltzmann_classpars[self.settings["cosmo_model"]],
-        }.copy()
-        upr.debug_print(self.classcosmopars)
-        upr.debug_print(cosmopars)
-        self.classcosmopars.update(self.changebasis_class(self.cosmopars))
-        upr.debug_print(self.classcosmopars)
-        self.kmax_pk = self.classcosmopars["P_k_max_1/Mpc"]
-        self.kmin_pk = 1e-4
-        self.zmax_pk = self.classcosmopars["z_max_pk"]
-        tend_basis = time()
-        if self.feed_lvl > 2:
-            print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_class_params(self.classcosmopars, 
-                                feedback=self.feed_lvl)
 
     def changebasis_camb(self, cosmopars, camb):
+        """
+        Convert cosmological parameters to CAMB format.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary of cosmological parameters.
+        camb : module
+            The CAMB module.
+
+        Returns:
+        --------
+        dict
+            Dictionary of CAMB-formatted cosmological parameters.
+        """
         cambpars = deepcopy(cosmopars)
 
         if "h" in cambpars:
             cambpars["H0"] = cambpars.pop("h") * 100
+        if "H0" in cambpars:
+            self.h_now = cambpars["H0"] / 100
         if "Omegab" in cambpars:
             cambpars["ombh2"] = cambpars.pop("Omegab") * (cambpars["H0"] / 100) ** 2
         if "Omegak" in cambpars:
@@ -453,7 +381,7 @@ class boltzmann_code:
             g_factor = fidNeff / 3
 
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-        h2 = (cambpars["H0"] / 100) ** 2
+        h2 = self.h_now ** 2
 
         if "mnu" in cambpars:
             Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
@@ -478,17 +406,35 @@ class boltzmann_code:
         try:
             camb.set_params(**cambpars)  # to see which methods are being called: verbose=True
         except camb.CAMBUnknownArgumentError as argument:
-            print("Remove parameter from cambparams: ", str(argument))
+            upr.debug_print("Remove parameter from cambparams: ", str(argument))
 
             # pars= camb.set_params(redshifts=[0.], kmax=50.0,accurate_massive_neutrino_transfers=True,lmax=1000, lens_potential_accuracy=1,**cambpars)
 
+        self.extrap_kmax = cambpars.pop('extrap_kmax', 100)
+        
         if rescaleAs is True:
             cambpars["As"] = self.rescale_LP(cambpars, camb, insigma8)
 
-        cambpars["MassiveNuMethod"] = 0
         return cambpars
 
     def rescale_LP(self, cambpars, camb, insigma8):
+        """
+        Rescale As to match a target sigma8 value.
+
+        Parameters:
+        -----------
+        cambpars : dict
+            CAMB parameters.
+        camb : module
+            The CAMB module.
+        insigma8 : float
+            Target sigma8 value.
+
+        Returns:
+        --------
+        float
+            Rescaled As value.
+        """
         cambpars_LP = cambpars.copy()
         ini_As = self.settings.get("rescale_ini_As", 2.1e-9)
         boost = self.settings.get("rescale_boost", 1)
@@ -518,65 +464,19 @@ class boltzmann_code:
                 print("Rescaled sig8 = ", final_sig8)
         return final_As
 
-    def changebasis_class(self, cosmopars):
-        classpars = deepcopy(cosmopars)
-        if "h" in classpars:
-            classpars["h"] = classpars.pop("h")
-            h = classpars["h"]
-        if "H0" in classpars:
-            classpars["H0"] = classpars.pop("H0")
-            h = classpars["H0"] / 100.0
-
-        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
-        fidNeff = boltzmann_code.hardcoded_Neff
-        Neff = classpars.pop("Neff", fidNeff)
-
-        if shareDeltaNeff:
-            classpars["N_ur"] = (
-                2.0 / 3.0 * Neff
-            )  # This version does not have the discontinuity at Nur = 1.99
-            g_factor = Neff / 3.0
-        else:
-            classpars["N_ur"] = Neff - fidNeff / 3.0
-            g_factor = fidNeff / 3.0
-
-        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-
-        if "mnu" in classpars:
-            classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
-            classpars["Omega_ncdm"] = (
-                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
-            )
-            classpars.pop("mnu")
-            # classpars['m_ncdm'] = classpars.pop('mnu')
-            # Om_ncdm = classpars['m_ncdm'] / 93.13858 /h/h
-        elif "Omeganu" in classpars:
-            classpars["Omega_ncdm"] = classpars.pop("Omeganu")
-
-        if "100omega_b" in classpars:
-            classpars["omega_b"] = (1 / 100) * classpars.pop("100omega_b")
-        if "Omegab" in classpars:
-            classpars["Omega_b"] = classpars.pop("Omegab")
-        if "Omegam" in classpars:
-            classpars["Omega_cdm"] = (
-                classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
-            )
-
-        if "w0" in classpars:
-            classpars["w0_fld"] = classpars.pop("w0")
-        if "wa" in classpars:
-            classpars["wa_fld"] = classpars.pop("wa")
-        if "logAs" in classpars:
-            classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
-        if "10^9As" in classpars:
-            classpars["A_s"] = classpars.pop("10^9As") * 1.0e-9
-        if "ns" in classpars:
-            classpars["n_s"] = classpars.pop("ns")
-
-        return classpars
 
     @staticmethod
     def print_camb_params(cambpars, feedback=1):
+        """
+        Print CAMB parameters.
+
+        Parameters:
+        -----------
+        cambpars : dict
+            Dictionary of CAMB parameters to print.
+        feedback : int, optional
+            Feedback level determining whether to print (default is 1).
+        """
         if feedback > 2:
             print("")
             print("----CAMB parameters----")
@@ -585,21 +485,36 @@ class boltzmann_code:
 
     @staticmethod
     def print_class_params(classpars, feedback=1):
+        """
+        Print CLASS parameters.
+
+        Parameters:
+        -----------
+        classpars : dict
+            Dictionary of CLASS parameters to print.
+        feedback : int, optional
+            Feedback level determining whether to print (default is 1).
+        """
         if feedback > 2:
             print("")
             print("----CLASS parameters----")
             for key in classpars:
                 print(key + "=" + str(classpars[key]))
     
-    @staticmethod
-    def print_cosmo_params(cosmopars, feedback=1, text="---Cosmo pars---"):
-        if feedback > 2:
-            print("")
-            print(text)
-            for key in cosmopars:
-                print(key + "=" + str(cosmopars[key]))
-
     def camb_results(self, camb):
+        """
+        Compute and store CAMB results.
+
+        Parameters:
+        -----------
+        camb : module
+            The CAMB module.
+
+        Notes:
+        ------
+        This method computes various cosmological quantities using CAMB and stores
+        them in the results attribute.
+        """
         tini_camb = time()
         self.results = types.SimpleNamespace()
         cambres = camb.get_results(self.cambclasspars)
@@ -722,51 +637,14 @@ class boltzmann_code:
             tDzk = time()
             print("Time for Growth factor = ", tDzk - tPk)
 
-        def f_deriv(k_array, k_fix=False, fixed_k=1e-3):
-            z_array = self.results.zgrid
-            if k_fix:
-                k_array = np.full((len(k_array)), fixed_k)
-            ## Generates interpolaters D(z) for varying k values
-            D_z = np.array(
-                [
-                    UnivariateSpline(z_array, self.results.D_growth_zk(z_array, kk), s=0)
-                    for kk in k_array
-                ]
-            )
 
-            ## Generates arrays f(z) for varying k values
-            f_z = np.array(
-                [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
-            )
-            return f_z, z_array
-
-        f_z_k_array, z_array = f_deriv(self.results.kgrid)
+        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, self.results.kgrid)
         self.results.f_growthrate_zk = RectBivariateSpline(
             z_array, self.results.kgrid, f_z_k_array.T
         )
 
-        def f_cb_deriv(k_array, k_fix=False, fixed_k=1e-3):
-            z_array = self.results.zgrid
-            if k_fix:
-                k_array = np.full((len(k_array)), fixed_k)
-            ## Generates interpolaters D(z) for varying k values
-            D_cb_z = np.array(
-                [
-                    UnivariateSpline(z_array, self.results.D_growth_cb_zk(z_array, kk), s=0)
-                    for kk in k_array
-                ]
-            )
-
-            ## Generates arrays f(z) for varying k values
-            f_cb_z = np.array(
-                [
-                    -(1 + z_array) / D_cb_zk(z_array) * (D_cb_zk.derivative())(z_array)
-                    for D_cb_zk in D_cb_z
-                ]
-            )
-            return f_cb_z, z_array
-
-        f_cb_z_k_array, z_array = f_cb_deriv(self.results.kgrid)
+        f_cb_z_k_array, z_array = self.f_deriv(self.results.D_growth_cb_zk, self.results.zgrid, 
+                                                self.results.kgrid)
         self.results.f_growthrate_cb_zk = RectBivariateSpline(
             z_array, self.results.kgrid, f_cb_z_k_array.T
         )
@@ -775,45 +653,11 @@ class boltzmann_code:
             tfzk = time()
             print("Time for Growth factor = ", tfzk - tDzk)
 
-        def get_sigma8(z_range, tracer='matter'):
-            """
-            Calculate sigma8 for a given tracer (matter or cb) over a range of redshifts.
 
-            Args:
-                z_range (numpy.ndarray): Redshift range at which to generate sigma8
-                tracer (str): Type of tracer, either 'matter' or 'cb' (cold dark matter + baryons)
-
-            Returns:
-                UnivariateSpline: 1-d interpolation function sigma8(z) for the specified tracer
-            """
-            R = 8.0 / (cambres.Params.H0 / 100.0)
-            k = np.linspace(self.kmin_pk, self.kmax_pk, 10000)
-            sigma_z = np.empty_like(z_range)
-            
-            if tracer == 'matter':
-                pk_z = self.results.Pk_l(z_range, k)
-            elif tracer == 'cb':
-                pk_z = self.results.Pk_cb_l(z_range, k)
-            else:
-                raise ValueError("Invalid tracer. Choose either 'matter' or 'cb'.")
-
-            for i in range(len(sigma_z)):
-                integrand = (
-                    9
-                    * (k * R * np.cos(k * R) - np.sin(k * R)) ** 2
-                    * pk_z[i]
-                    / k**4
-                    / R**6
-                    / 2
-                    / np.pi**2
-                )
-                sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
-            
-            sigma8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
-            return sigma8_z_interp
-
-        self.results.s8_cb_of_z = get_sigma8(self.results.zgrid, tracer='cb')
-        self.results.s8_of_z = get_sigma8(self.results.zgrid, tracer='matter')
+        self.results.s8_cb_of_z = self.compute_sigma8(self.results.zgrid, self.results.Pk_cb_l, 
+                                                      self.h_now, self.results.kgrid)
+        self.results.s8_of_z = self.compute_sigma8(self.results.zgrid, self.results.Pk_l, 
+                                                   self.h_now, self.results.kgrid)
 
         if self.feed_lvl > 2:
             ts8 = time()
@@ -828,7 +672,122 @@ class boltzmann_code:
         if self.feed_lvl > 1:
             print("Cosmology computation took {:.2f} s".format(tend_camb - tini_camb))
 
-    def class_results(self, Class):  # Get your CLASS results from here
+    def class_setparams(self, cosmopars):
+        """
+        Set the parameters for CLASS computation.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary containing the cosmological parameters.
+
+        Notes:
+        ------
+        This method sets up CLASS parameters and prepares for power spectrum computation.
+        """
+        tini_basis = time()
+        self.classcosmopars = {
+            **self.boltzmann_classpars["ACCURACY"],
+            **self.boltzmann_classpars["COSMO_SETTINGS"],
+            **self.boltzmann_classpars[self.settings["cosmo_model"]],
+        }.copy()
+        upr.debug_print(self.classcosmopars)
+        upr.debug_print(cosmopars)
+        self.classcosmopars.update(self.changebasis_class(self.cosmopars))
+        upr.debug_print(self.classcosmopars)
+        self.kmax_pk = self.classcosmopars["P_k_max_1/Mpc"]
+        self.kmin_pk = 1e-4
+        self.zmax_pk = self.classcosmopars["z_max_pk"]
+        tend_basis = time()
+        if self.feed_lvl > 2:
+            print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
+        self.print_class_params(self.classcosmopars, 
+                                feedback=self.feed_lvl)
+    
+    def changebasis_class(self, cosmopars):
+        """
+        Convert cosmological parameters to CLASS format.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary of cosmological parameters.
+
+        Returns:
+        --------
+        dict
+            Dictionary of CLASS-formatted cosmological parameters.
+        """
+        classpars = deepcopy(cosmopars)
+        if "h" in classpars:
+            classpars["h"] = classpars.pop("h")
+            h = classpars["h"]
+        if "H0" in classpars:
+            classpars["H0"] = classpars.pop("H0")
+            h = classpars["H0"] / 100.0
+
+        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        fidNeff = boltzmann_code.hardcoded_Neff
+        Neff = classpars.pop("Neff", fidNeff)
+
+        if shareDeltaNeff:
+            classpars["N_ur"] = (
+                2.0 / 3.0 * Neff
+            )  # This version does not have the discontinuity at Nur = 1.99
+            g_factor = Neff / 3.0
+        else:
+            classpars["N_ur"] = Neff - fidNeff / 3.0
+            g_factor = fidNeff / 3.0
+
+        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
+
+        if "mnu" in classpars:
+            classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
+            classpars["Omega_ncdm"] = (
+                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
+            )
+            classpars.pop("mnu")
+            # classpars['m_ncdm'] = classpars.pop('mnu')
+            # Om_ncdm = classpars['m_ncdm'] / 93.13858 /h/h
+        elif "Omeganu" in classpars:
+            classpars["Omega_ncdm"] = classpars.pop("Omeganu")
+
+        if "100omega_b" in classpars:
+            classpars["omega_b"] = (1 / 100) * classpars.pop("100omega_b")
+        if "Omegab" in classpars:
+            classpars["Omega_b"] = classpars.pop("Omegab")
+        if "Omegam" in classpars:
+            classpars["Omega_cdm"] = (
+                classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
+            )
+
+        if "w0" in classpars:
+            classpars["w0_fld"] = classpars.pop("w0")
+        if "wa" in classpars:
+            classpars["wa_fld"] = classpars.pop("wa")
+        if "logAs" in classpars:
+            classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
+        if "10^9As" in classpars:
+            classpars["A_s"] = classpars.pop("10^9As") * 1.0e-9
+        if "ns" in classpars:
+            classpars["n_s"] = classpars.pop("ns")
+
+        return classpars
+    
+    def class_results(self, Class):
+        """
+        Compute and store CLASS results.
+
+        Parameters:
+        -----------
+        Class : class
+            The CLASS class.
+
+        Notes:
+        ------
+        This method computes various cosmological quantities using CLASS and stores
+        them in the results attribute.
+        """
         self.results = types.SimpleNamespace()
         classres = Class()
         classres.set(self.classcosmopars)
@@ -893,25 +852,8 @@ class boltzmann_code:
 
         self.results.D_growth_zk = create_growth()
 
-        def f_deriv(k_array, k_fix=False, fixed_k=1e-3):
-            z_array = np.linspace(0, classres.pars["z_max_pk"], 100)
-            if k_fix:
-                k_array = np.full((len(k_array)), fixed_k)
-            ## Generates interpolaters D(z) for varying k values
-            D_z = np.array(
-                [
-                    UnivariateSpline(z_array, self.results.D_growth_zk(z_array, kk), s=0)
-                    for kk in k_array
-                ]
-            )
-
-            ## Generates arrays f(z) for varying k values
-            f_z = np.array(
-                [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
-            )
-            return f_z, z_array
-
-        f_z_k_array, z_array = f_deriv(self.results.kgrid)
+        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, 
+                                            self.results.kgrid)
         f_g_kz = RectBivariateSpline(z_array, self.results.kgrid, f_z_k_array.T)
         self.results.f_growthrate_zk = f_g_kz
 
@@ -947,20 +889,244 @@ class boltzmann_code:
         f_cb_z_k_array, z_array = f_cb_deriv(self.results.kgrid)
         f_g_cb_kz = RectBivariateSpline(z_array, self.results.kgrid, f_cb_z_k_array.T)
         self.results.f_growthrate_cb_zk = f_g_cb_kz
+    
+    def changebasis_symb(self, cosmopars):
+        """
+        Convert and adjust cosmological parameters for symbolic computation.
+
+        This method takes the input cosmological parameters and converts them
+        to the format required for symbolic computation. It handles unit
+        conversions, derives some parameters, and ensures consistency between
+        different parameterizations (e.g., sigma8 and As).
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary containing the input cosmological parameters.
+
+        Returns:
+        --------
+        dict
+            A new dictionary with the converted and adjusted parameters suitable
+            for symbolic computation.
+
+        Raises:
+        -------
+        ValueError
+            If there's an issue with the sigma8 to As conversion or vice versa.
+        KeyError
+            If required parameters are missing from the input.
+
+        Notes:
+        ------
+        - The method performs conversions between h and H0, ombh2 and Omegab,
+          and handles various representations of the primordial power spectrum
+          amplitude (As, sigma8).
+        - Debug information is printed if the upr.debug flag is set.
+        """
+        upr.debug_print("DEBUG: cosmopars = ", cosmopars)
+        symbpars = deepcopy(cosmopars)
+        if "h" in symbpars:
+            symbpars["h"] = symbpars.pop("h")
+        if "H0" in symbpars:
+            H0 = symbpars.pop("H0")
+            symbpars["h"] = H0 / 100.0
+        if "ombh2" in symbpars:
+            symbpars["Omegab"] = symbpars.pop("ombh2") / (symbpars["h"] ** 2)
+        if "omch2" in symbpars:
+            symbpars["Omegam"] = (symbpars.pop("omch2") / 
+                                    symbpars["h"] ** 2) + symbpars['Omegab']
+            # Omegam = Omegac + Omegab
+        # ["sigma8", "As", "logAs", "10^9As", "ln_A_s_1e10"]
+        try:
+            if "As" in symbpars:
+                symbpars['10^9As'] = 10**9 * symbpars.pop('As')
+            if "logAs" in symbpars:
+                symbpars['10^9As'] = 10**9 * (np.exp(symbpars.pop("logAs")) 
+                                                * 1.0e-10)
+            try:
+                As_value = symbpars.get('10^9As')
+                upr.debug_print("DEBUG: symbpars['10^9As'] = ", As_value)
+                if np.isscalar(As_value):
+                    try:
+                        symbpars['sigma8']  = self.symblin.As_to_sigma8(
+                                                            symbpars['10^9As'],
+                                                            symbpars['Omegam'],
+                                                            symbpars['Omegab'],
+                                                            symbpars['h'],
+                                                            symbpars['ns']
+                                                            )
+                        upr.debug_print("DEBUG: symbpars['sigma8'] = ", symbpars['sigma8'])
+                    except: 
+                        print("As to sigma8 conversion failed")
+                        raise ValueError
+            except KeyError:
+                pass
+            try:
+                sigma8_value = symbpars.get('sigma8')
+                if np.isscalar(sigma8_value):
+                    try:
+                        As_n = self.symblin.sigma8_to_As(
+                                            symbpars['sigma8'],
+                                            symbpars['Omegam'],
+                                            symbpars['Omegab'],
+                                            symbpars['h'],
+                                            symbpars['ns']
+                                    )
+                        upr.debug_print("DEBUG: As_n = ", As_n)
+                        symbpars['10^9As'] = As_n
+                    except:
+                        print("sigma8 to As conversion failed")
+                        raise ValueError
+                else: 
+                    print("sigma8 value not scalar")
+                    upr.debug_print("DEBUG: symbpars = ", symbpars)
+            except KeyError:
+                print("sigma8 or 10^9As not in symbpars")
+                raise KeyError
+        except:
+            print("sigma8<->As conversion failed for other reasons")
+            upr.debug_print("DEBUG: symbpars = ", symbpars)
+            raise ValueError
+        return symbpars
+    
+    def symbolic_setparams(self):
+        """
+        Set up parameters for symbolic computation.
+
+        Notes:
+        ------
+        This method prepares the cosmological parameters and numerical settings
+        for symbolic power spectrum computation.
+
+        Raises:
+        -------
+        ValueError
+            If the cosmological model is not supported by the symbolic code.
+        """
+        tini_basis = time()
+        if cfg.settings['cosmo_model'] != "LCDM":
+            print("Symbolic_pofk only supports LCDM at the moment")
+            raise ValueError("Cosmo model not supported by cosmo code")
+        self.symbcosmopars = dict()
+        self.symbcosmopars.update(self.changebasis_symb(self.cosmopars))
+        self.kmax_pk = self.boltzmann_symbolicpars['NUMERICS']['kmax_pk']
+        self.kmin_pk = self.boltzmann_symbolicpars['NUMERICS']['kmin_pk']
+        self.zmax_pk = self.boltzmann_symbolicpars['NUMERICS']['zmax_pk']
+        self.zmin_pk = self.boltzmann_symbolicpars['NUMERICS']['zmin_pk']
+        self.z_samples = self.boltzmann_symbolicpars['NUMERICS']['z_samples']
+        self.zgrid = np.linspace(self.zmin_pk, self.zmax_pk, self.z_samples)
+        self.k_samples = self.boltzmann_symbolicpars['NUMERICS']['k_samples']
+        self.kgrid_1Mpc = np.logspace(np.log10(self.kmin_pk), 
+                                      np.log10(self.kmax_pk), self.k_samples)
+        tend_basis = time()
+        if self.feed_lvl > 2:
+            print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
+        self.print_cosmo_params(self.symbcosmopars, 
+                                feedback=self.feed_lvl,
+                                text="--- Symbolic Cosmo parameters ---"
+                                )
+
+    def symbolic_results(self):
+        """
+        Compute and store results using symbolic computation.
+
+        Returns:
+        --------
+        types.SimpleNamespace
+            Namespace containing the computed cosmological quantities.
+
+        Notes:
+        ------
+        This method computes various cosmological quantities using symbolic
+        computation and stores them in the results attribute.
+        """
+        tini_results = time()
+        self.results = types.SimpleNamespace()
+        symb_colmo_pars = {
+            'flat' : True,
+            'sigma8': self.symbcosmopars['sigma8'],
+            'Om0': self.symbcosmopars['Omegam'],
+            'Ob0': self.symbcosmopars['Omegab'],
+            'H0': self.symbcosmopars['h']*100,
+            'ns': self.symbcosmopars['ns']
+        }
+        self.results.zgrid = self.zgrid
+        self.h_now = self.symbcosmopars['h']
+        self.kgrid_hMpc = self.kgrid_1Mpc/self.h_now
+        self.results.kgrid = self.kgrid_1Mpc  #results kgrid is in units of 1/Mpc
+        self.symbcosmo = self.colmo.cosmology.setCosmology('colmo', **symb_colmo_pars)
+        self.results.h_of_z = np.vectorize(lambda zz: self.symbcosmo.Hz(zz)/cosmo_functions.c)  #H(z) in 1/Mpc
+        self.results.ang_dist = np.vectorize(lambda zz: self.symbcosmo.angularDiameterDistance(zz)/self.h_now)
+        self.results.com_dist = np.vectorize(lambda zz: self.symbcosmo.comovingDistance(z_min=0., 
+                                                                      z_max=zz,
+                                                                      transverse=True)/self.h_now)
+        self.results.s8_of_z = np.vectorize(lambda zz: self.symbcosmo.sigma(8, z=zz))
+        self.results.Om_m = self.symbcosmo.Om
+        D_kz = np.array([self.symbcosmo.growthFactor(self.zgrid) for kk in self.kgrid_1Mpc]).T
+        self.results.D_growth_zk = RectBivariateSpline(self.zgrid, self.kgrid_1Mpc, D_kz)
+
+        self.results.Pk_l_0 = ((1/self.h_now)**3)*self.symblin.plin_emulated(self.kgrid_hMpc, 
+                                          self.symbcosmopars['sigma8'], 
+                                          self.symbcosmopars['Omegam'], 
+                                          self.symbcosmopars['Omegab'], 
+                                          self.h_now, 
+                                          self.symbcosmopars['ns'], 
+                                          emulator=self.emulator_precision, 
+                                          extrapolate=self.extrapolate)
+        #symbfit plin_emulated returns P_l(k,z=0) in 1/Mpc^3, requests kgrid in h/Mpc
+        Pk_at_z = (D_kz**2) * self.results.Pk_l_0
+        self.results.Pk_l = RectBivariateSpline(
+            self.zgrid, self.kgrid_1Mpc, Pk_at_z
+        ) #P_l(k,z) in 1/Mpc^3
+
+        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, 
+                                            self.results.kgrid)
+        self.results.f_growthrate_zk = RectBivariateSpline(
+            z_array, self.kgrid_1Mpc, f_z_k_array.T
+        )
+        def vectorized_halofit(z):
+            return ((1/self.h_now)**3)*self.symbfit.run_halofit(self.kgrid_hMpc, 
+                                          self.symbcosmopars['sigma8'], 
+                                          self.symbcosmopars['Omegam'], 
+                                          self.symbcosmopars['Omegab'], 
+                                          self.h_now, 
+                                          self.symbcosmopars['ns'], 
+                                          a = cosmo_functions.scale_factor(z),
+                                          emulator=self.emulator_precision, 
+                                          extrapolate=self.extrapolate,
+                                          which_params=self.which_params, 
+                                          add_correction=self.add_correction) 
+        #symbfit run_halofit returns P_nl(k,z) in Mpc^3/h^3, requests kgrid in h/Mpc
+        vectorized_run_halofit = np.vectorize(vectorized_halofit, signature='()->(n)')
+        Pk_nl = vectorized_run_halofit(self.zgrid)
+        self.results.Pk_nl = RectBivariateSpline(self.zgrid, self.kgrid_1Mpc, Pk_nl)
+        #Pk_nl in 1/Mpc^3
+        if self.feed_lvl > 2:
+            print("Symbolic results took {:.2f} s".format(time() - tini_results))
+        return self.results
 
 
 class external_input:
     def __init__(self, cosmopars, fiducialcosmopars=dict(), external=dict(), extra_settings=dict()):
-        """class for initializing external input
+        """
+        Initialize the external_input class.
 
-        Args:
-            cosmopars (dict): cosmological parameter dict to evaluate at.
-            fiducialcosmopars (dict, optional): Fiducial cosmological parameter dict. Defaults to dict().
-            external (dict, optional): Dictionary of attributes for external files. Defaults to dict().
-            extra_settings (dict, optional): Dictionary of settings relevant for external input. Defaults to dict().
+        Parameters:
+        -----------
+        cosmopars : dict
+            The cosmological parameters object to be copied.
+        fiducialcosmopars : dict, optional
+            Fiducial cosmological parameter dict (default is an empty dict).
+        external : dict, optional
+            Dictionary of attributes for external files (default is an empty dict).
+        extra_settings : dict, optional
+            Dictionary of settings relevant for external input (default is an empty dict).
 
         Raises:
-            ValueError: _description_
+        -------
+        ValueError
+            If the external_input class has been initialized wrongly.
         """
         self.cosmopars = cosmopars
         self.fiducialpars = fiducialcosmopars
@@ -1003,6 +1169,14 @@ class external_input:
         self.calculate_interpol_results(parameter_string=param_folder_string)
 
     def load_txt_files(self, parameter_string="fiducial_eps_0"):
+        """
+        Load text files containing cosmological data.
+
+        Parameters:
+        -----------
+        parameter_string : str, optional
+            String representing the parameter set to load (default is "fiducial_eps_0").
+        """
         self.input_arrays = dict()
         z_grid_filename = "z_values_list.txt"  # just as a safeguard value here
         # check if z_list exists
@@ -1121,6 +1295,19 @@ class external_input:
                 )
 
     def get_param_string_from_value(self, cosmopars):
+        """
+        Get the parameter string from the cosmological parameters.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary of cosmological parameters.
+
+        Returns:
+        --------
+        str
+            Parameter string representing the input cosmological parameters.
+        """
         rel_tol = 1e-5
         for parname in self.param_names:
             if not np.isclose(cosmopars[parname], self.fiducialpars[parname], rtol=rel_tol):
@@ -1151,10 +1338,17 @@ class external_input:
         return param_folder_string
 
     def calculate_interpol_results(self, parameter_string="fiducial_eps_0"):
+        """
+        Calculate interpolated results from the input data.
+
+        Parameters:
+        -----------
+        parameter_string : str, optional
+            String representing the parameter set to use (default is "fiducial_eps_0").
+        """
         pk_units_factor = 1  ## units in all the code are in Mpc or Mpc^-1
         r_units_factor = 1
         k_units_factor = 1
-        c = sconst.speed_of_light / 1000
         if self.external is not None:
             k_units = self.external["k-units"]
             r_units = self.external["r-units"]
@@ -1164,7 +1358,7 @@ class external_input:
             if r_units == "Mpc/h":
                 r_units_factor = 1 / self.cosmopars["h"]
             elif r_units == "km/s/Mpc":
-                r_units_factor = c
+                r_units_factor = cosmo_functions.c
 
         self.results = types.SimpleNamespace()
         self.results.zgrid = self.input_arrays[("z_grid", parameter_string)].flatten()
@@ -1270,6 +1464,21 @@ class cosmo_functions:
     c = sconst.speed_of_light / 1000  ##speed of light in km/s
 
     def __init__(self, cosmopars, input=None):
+        """
+        Initialize the cosmo_functions class.
+
+        Parameters:
+        -----------
+        cosmopars : dict
+            Dictionary containing the cosmological parameters.
+        input : str, optional
+            Input type for the cosmological code (default is None).
+
+        Raises:
+        -------
+        ValueError
+            If an unsupported input type is specified.
+        """
         self.settings = cfg.settings
         self.fiducialcosmopars = cfg.fiducialparams
         self.input = input
@@ -1311,11 +1520,19 @@ class cosmo_functions:
             self.kgrid = classresults.results.kgrid
             self.cosmopars = classresults.cosmopars
             self.classcosmopars = classresults.classcosmopars
+        elif input == "symbolic":
+            symbresults = boltzmann_code(cosmopars, code="symbolic")
+            self.code = "symbolic"
+            self.results = symbresults.results
+            self.kgrid = symbresults.results.kgrid
+            self.cosmopars = symbresults.cosmopars
+            self.symbcosmopars = symbresults.symbcosmopars
         else:
             print(input, ":  This input type is not implemented yet")
 
     def Hubble(self, z, physical=False):
-        """Hubble function
+        """
+        Hubble function
 
         Parameters
         ----------
@@ -1339,7 +1556,8 @@ class cosmo_functions:
         return hubble
 
     def E_hubble(self, z):
-        """E(z) dimensionless Hubble function
+        """
+        E(z) dimensionless Hubble function
 
         Parameters
         ----------
@@ -1359,7 +1577,8 @@ class cosmo_functions:
         return Eofz
 
     def angdist(self, z):
-        """Angular diameter distance
+        """
+        Angular diameter distance
 
         Parameters
         ----------
@@ -1378,7 +1597,8 @@ class cosmo_functions:
         return dA
 
     def matpow(self, z, k, nonlinear=False, tracer="matter"):
-        """Calculates the power spectrum of a given tracer quantity at a specific redshift and wavenumber.
+        """
+        Calculates the power spectrum of a given tracer quantity at a specific redshift and wavenumber.
 
         Parameters
         ----------
@@ -1417,7 +1637,8 @@ class cosmo_functions:
         return self.Pmm(z, k, nonlinear=nonlinear)
 
     def Pmm(self, z, k, nonlinear=False):
-        """Compute the power spectrum of the total matter species  (MM) at a given redshift and wavenumber.
+        """
+        Compute the power spectrum of the total matter species  (MM) at a given redshift and wavenumber.
 
         Args:
             self: An instance of the current class.
@@ -1435,7 +1656,8 @@ class cosmo_functions:
         return power # type: ignore
 
     def Pcb(self, z, k, nonlinear=False):
-        """Compute the power spectrum of the clustering matter species  (CB) at a given redshift and wavenumber.
+        """
+        Compute the power spectrum of the clustering matter species  (CB) at a given redshift and wavenumber.
 
         Args:
             self: An instance of the current class.
@@ -1453,7 +1675,8 @@ class cosmo_functions:
         return power
 
     def nonwiggle_pow(self, z, k, nonlinear=False, tracer="matter"):
-        """Calculate the power spectrum at a specific redshift and wavenumber,
+        """
+        Calculate the power spectrum at a specific redshift and wavenumber,
         after smoothing to remove baryonic acoustic oscillations (BAO).
 
         Args:
@@ -1507,7 +1730,8 @@ class cosmo_functions:
         return intp_pnw(k)
 
     def comoving(self, z):
-        """Comoving distance
+        """
+        Comoving distance
 
         Parameters
         ----------
@@ -1526,7 +1750,8 @@ class cosmo_functions:
         return chi
 
     def sigma8_of_z(self, z, tracer="matter"):
-        """sigma_8
+        """
+        sigma_8
 
         Parameters
         ----------
@@ -1549,7 +1774,8 @@ class cosmo_functions:
             return self.results.s8_of_z(z)
 
     def growth(self, z, k=None):
-        """Growth factor
+        """
+        Growth factor
 
         Parameters
         ----------
@@ -1569,7 +1795,8 @@ class cosmo_functions:
         return Dg
 
     def Omegam_of_z(self, z):
-        """Omega matter fraction as a function of redshift
+        """
+        Omega matter fraction as a function of redshift
 
         Parameters
         ----------
@@ -1599,7 +1826,8 @@ class cosmo_functions:
         return omz
 
     def f_growthrate(self, z, k=None, gamma=False, tracer="matter"):
-        """Growth rate in LCDM gamma approximation
+        """
+        Growth rate in LCDM gamma approximation
 
         Parameters
         ----------
@@ -1638,7 +1866,8 @@ class cosmo_functions:
         return fg
 
     def fsigma8_of_z(self, z, k=None, gamma=False, tracer="matter"):
-        """Growth rate in LCDM gamma approximation
+        """
+        Growth rate in LCDM gamma approximation
 
         Parameters
         ----------
@@ -1665,6 +1894,21 @@ class cosmo_functions:
         return fs8
 
     def SigmaMG(self, z, k):
+        """
+        Compute the modified growth rate Sigma for modified gravity models.
+
+        Parameters
+        ----------
+        z : float
+            Redshift
+        k : float
+            Wavenumber
+
+        Returns
+        -------
+        float
+            Modified growth rate Sigma
+        """
         Sigma = np.array(1)
         if self.settings["activateMG"] == "late-time":
             E11 = self.cosmopars["E11"]
@@ -1683,6 +1927,25 @@ class cosmo_functions:
         return Sigma
 
     def cmb_power(self, lmin, lmax, obs1, obs2):
+        """
+        Compute the CMB power spectrum.
+
+        Parameters
+        ----------
+        lmin : int
+            Minimum multipole moment
+        lmax : int
+            Maximum multipole moment
+        obs1 : str
+            First observable (e.g., 'CMB_TCMB_T')
+        obs2 : str
+            Second observable (e.g., 'CMB_ECMB_E')
+
+        Returns
+        -------
+        np.ndarray
+            Array of CMB power spectrum values
+        """
         if self.code == "camb":
             if self.cambcosmopars.Want_CMB:
                 print("CMB Spectrum not computed")
@@ -1711,7 +1974,8 @@ class cosmo_functions:
 
     @staticmethod
     def scale_factor(z):
-        """Compute the scale factor a from redshift z.
+        """
+        Compute the scale factor a from redshift z.
 
         Parameters
         ----------

@@ -237,6 +237,9 @@ def init(
     settings.setdefault(
         "camb_config_yaml", os.path.join(settings["boltzmann_yaml_path"], "camb", "default.yaml")
     )
+    settings.setdefault(
+        "symbolic_config_yaml", os.path.join(settings["boltzmann_yaml_path"], "symbolic", "default.yaml")
+    )
     settings.setdefault("fishermatrix_file_extension", ".txt")
     settings.setdefault("savgol_window", 101)
     settings.setdefault("savgol_polyorder", 3)
@@ -317,6 +320,10 @@ def init(
         external = None
     elif settings["code"] == "symbolic":
         input_type = settings["code"]
+        global boltzmann_symbolicpars
+        boltzmann_yaml_file = open(settings["symbolic_config_yaml"])
+        parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
+        boltzmann_symbolicpars = parsed_boltzmann
         external = None
     else:
         print("No external input files used in this calculation.")

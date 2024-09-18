@@ -238,7 +238,8 @@ def init(
         "camb_config_yaml", os.path.join(settings["boltzmann_yaml_path"], "camb", "default.yaml")
     )
     settings.setdefault(
-        "symbolic_config_yaml", os.path.join(settings["boltzmann_yaml_path"], "symbolic", "default.yaml")
+        "symbolic_config_yaml",
+        os.path.join(settings["boltzmann_yaml_path"], "symbolic", "default.yaml"),
     )
     settings.setdefault("fishermatrix_file_extension", ".txt")
     settings.setdefault("savgol_window", 101)
@@ -392,7 +393,7 @@ def init(
         if surveyNamePhoto != "":
             file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
             if not os.path.isfile(file_1_path):
-                print(f'specifications file : {file_1_path} not found!')
+                print(f"specifications file : {file_1_path} not found!")
                 raise ValueError
             yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
@@ -400,7 +401,7 @@ def init(
         if surveyNameSpectro != "":
             file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
             if not os.path.isfile(file_2_path):
-                print(f'specifications file : {file_2_path} not found!')
+                print(f"specifications file : {file_2_path} not found!")
                 raise ValueError
             yaml_file_2 = open(file_2_path)
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
@@ -609,7 +610,7 @@ def init(
 
     global photoparams
     if photopars is None:
-        #print("No photo-z parameters specified. Using default: Euclid-like")
+        # print("No photo-z parameters specified. Using default: Euclid-like")
         photopars = {
             "fout": 0.1,  # does this need to be updated for SKA1??
             "co": 1,
@@ -623,7 +624,7 @@ def init(
 
     global IAparams
     if IApars is None:
-        #print("No IA specified. Using default: eNLA")
+        # print("No IA specified. Using default: eNLA")
         IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
     IAparams = IApars
     if "WL" in obs:
@@ -706,9 +707,9 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    #print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    #print(freeparams)
-    #print("                                                            ***")
+    # print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
+    # print(freeparams)
+    # print("                                                            ***")
 
     global latex_names
     latex_names_def = {

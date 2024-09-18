@@ -478,19 +478,22 @@ class CosmicFish_FisherAnalysis:
                 parstomarg = fish.get_param_names()[:2]
             fiww = fo.marginalise(fish, parstomarg)
             deFoM = np.sqrt(fiww.determinant())
-            parstomarg_str = ','.join(parstomarg)
+            parstomarg_str = ",".join(parstomarg)
             print(f"Fisher FoM in {parstomarg_str}: {deFoM:.3f}")
             sigmas = fish.get_confidence_bounds()
             fidus = fish.get_param_fiducial()
             parnames = fish.get_param_names()
             for ii, par in enumerate(parnames):
-                fidu = fidus[ii] 
+                fidu = fidus[ii]
                 abs_sig = abs(sigmas[ii])
-                perc_err = 100*abs(sigmas[ii]/fidus[ii])
-                print(f"Parameter {par:<10s}, "
-                      f"fiducial: {fidu:>8.3f}, "
-                      f"1-sigma error: {abs_sig:>8.4f}, "
-                      f"percent error: {perc_err:>8.1f}%")
+                perc_err = 100 * abs(sigmas[ii] / fidus[ii])
+                print(
+                    f"Parameter {par:<10s}, "
+                    f"fiducial: {fidu:>8.3f}, "
+                    f"1-sigma error: {abs_sig:>8.4f}, "
+                    f"percent error: {perc_err:>8.1f}%"
+                )
+
     # -----------------------------------------------------------------------------------
 
     def compute_plot_range(

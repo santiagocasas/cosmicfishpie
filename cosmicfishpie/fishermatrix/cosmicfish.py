@@ -215,7 +215,7 @@ class FisherMatrix:
                 feedback_level=self.feed_lvl,
                 min_level=1,
                 text="----> Computing photo Fisher matrix",
-                instance=self
+                instance=self,
             )
             self.photo_obs_fid = photo_obs.ComputeCls(
                 self.fiducialcosmopars,
@@ -233,7 +233,9 @@ class FisherMatrix:
             )
             noisy_cls, covmat = self.photo_LSS.compute_covmat()
             self.photo_derivs = self.photo_LSS.compute_derivs()
-            photoFM = self.photo_LSS_fishermatrix(noisy_cls=noisy_cls, covmat=covmat, derivs=self.photo_derivs)
+            photoFM = self.photo_LSS_fishermatrix(
+                noisy_cls=noisy_cls, covmat=covmat, derivs=self.photo_derivs
+            )
             finalFisher = deepcopy(photoFM)
 
         elif "GCsp" in self.observables or "IM" in self.observables:
@@ -241,7 +243,7 @@ class FisherMatrix:
                 feedback_level=self.feed_lvl,
                 min_level=1,
                 text="----> Computing Pk-spectro Fisher matrix",
-                instance=self
+                instance=self,
             )
             self.set_pk_settings()
             if "IM" in self.observables and "GCsp" in self.observables:
@@ -269,8 +271,7 @@ class FisherMatrix:
                 )
 
             self.pk_cov = spec_cov.SpectroCov(
-                self.fiducialcosmopars, 
-                fiducial_specobs=self.pk_obs, bias_samples=self.obs_spectrum
+                self.fiducialcosmopars, fiducial_specobs=self.pk_obs, bias_samples=self.obs_spectrum
             )
             self.zmids = self.pk_cov.global_z_bin_mids
             nbins = len(self.zmids)
@@ -327,7 +328,7 @@ class FisherMatrix:
                 feedback_level=self.feed_lvl,
                 min_level=1,
                 text="----> Computing CMB Fisher matrix",
-                instance=self
+                instance=self,
             )
             CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True)
             noisy_cls, covmat = CMB.compute_covmat()

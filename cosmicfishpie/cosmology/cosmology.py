@@ -93,6 +93,7 @@ class boltzmann_code:
                 import colossus.cosmology as colmo
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
+
                 self.colmo = colmo
                 self.symblin = symblin
                 self.symbfit = symbfit
@@ -100,18 +101,22 @@ class boltzmann_code:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
             self.boltzmann_symbolicpars = cfg.boltzmann_symbolicpars
-            self.halofit_version = self.boltzmann_symbolicpars['COSMO_SETTINGS']['halofit_version'] # 'syren' or 'halofit+' or 'takahashi'
-            if self.halofit_version == 'takahashi':
-                self.which_params = 'Takahashi'
+            self.halofit_version = self.boltzmann_symbolicpars["COSMO_SETTINGS"][
+                "halofit_version"
+            ]  # 'syren' or 'halofit+' or 'takahashi'
+            if self.halofit_version == "takahashi":
+                self.which_params = "Takahashi"
                 self.add_correction = False
-            elif self.halofit_version == 'halofit+':
-                self.which_params = 'Bartlett'
+            elif self.halofit_version == "halofit+":
+                self.which_params = "Bartlett"
                 self.add_correction = False
-            elif self.halofit_version == 'syren':
-                self.which_params = 'Bartlett'
+            elif self.halofit_version == "syren":
+                self.which_params = "Bartlett"
                 self.add_correction = True
-            self.extrapolate = self.boltzmann_symbolicpars['NUMERICS']['extrapolate']
-            self.emulator_precision = self.boltzmann_symbolicpars['ACCURACY']['emulator_precision'] # 'max_precision' or 'fiducial'
+            self.extrapolate = self.boltzmann_symbolicpars["NUMERICS"]["extrapolate"]
+            self.emulator_precision = self.boltzmann_symbolicpars["ACCURACY"][
+                "emulator_precision"
+            ]  # 'max_precision' or 'fiducial'
             self.symbolic_setparams()
             self.symbolic_results()
         else:
@@ -164,12 +169,12 @@ class boltzmann_code:
             )
 
         # Set default value for Neff if it is not found in cosmopars
-        #self.cosmopars["Neff"] = self.cosmopars.get("Neff", self.cosmopars.get("N_eff", 3.046))
+        # self.cosmopars["Neff"] = self.cosmopars.get("Neff", self.cosmopars.get("N_eff", 3.046))
 
         # Set default value for gamma, if it is not found in cosmopars
         # gamma is not used in many places, therefore not needed to add back in cosmopars
         self.gamma = self.cosmopars.get("gamma", 0.545)
-    
+
     @staticmethod
     def print_cosmo_params(cosmopars, feedback=1, text="---Cosmo pars---"):
         """
@@ -216,21 +221,15 @@ class boltzmann_code:
         if k_fix:
             k_array = np.full((len(k_array)), fixed_k)
         ## Generates interpolators D(z) for varying k values
-        D_z = np.array(
-            [
-                UnivariateSpline(z_array, D_growth_zk(z_array, kk), s=0)
-                for kk in k_array
-            ]
-        )
+        D_z = np.array([UnivariateSpline(z_array, D_growth_zk(z_array, kk), s=0) for kk in k_array])
         ## Generates arrays f(z) for varying k values
         f_z = np.array(
             [-(1 + z_array) / D_zk(z_array) * (D_zk.derivative())(z_array) for D_zk in D_z]
         )
         return f_z, z_array
-    
+
     @staticmethod
-    def compute_sigma8(z_range, pk_interpolator, h_value,
-                   k_range):
+    def compute_sigma8(z_range, pk_interpolator, h_value, k_range):
         """
         Calculate sigma8 over a range of redshifts using a given power spectrum interpolator.
 
@@ -244,17 +243,17 @@ class boltzmann_code:
                                 array inputs for both z and k.
 
         Returns:
-        scipy.interpolate.UnivariateSpline: A 1-D interpolation function sigma8(z) that can be 
-                                            used to obtain sigma8 values for any redshift within 
+        scipy.interpolate.UnivariateSpline: A 1-D interpolation function sigma8(z) that can be
+                                            used to obtain sigma8 values for any redshift within
                                             the input range.
 
         """
         R = 8.0 / (h_value)
         kmin = np.min(k_range)
         kmax = np.max(k_range)
-        #resampling the k range to 10000 points
+        # resampling the k range to 10000 points
         k = np.linspace(kmin, kmax, 10000)
-        sigma_z = np.empty_like(z_range)        
+        sigma_z = np.empty_like(z_range)
         pk_z = pk_interpolator(z_range, k)
 
         for i in range(len(sigma_z)):
@@ -268,7 +267,7 @@ class boltzmann_code:
                 / np.pi**2
             )
             sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
-        
+
         sigma8_z_interp = UnivariateSpline(z_range, sigma_z, s=0)
         return sigma8_z_interp
 
@@ -310,8 +309,7 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_camb_params(self.cambcosmopars, 
-                               feedback=self.feed_lvl)
+        self.print_camb_params(self.cambcosmopars, feedback=self.feed_lvl)
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
@@ -326,8 +324,6 @@ class boltzmann_code:
         # TODO: nonlinear options to be selectable
         self.cambclasspars.NonLinear = camb.model.NonLinear_both
         self.cambclasspars.set_for_lmax(4000, lens_potential_accuracy=1)
-
-    
 
     def changebasis_camb(self, cosmopars, camb):
         """
@@ -381,7 +377,7 @@ class boltzmann_code:
             g_factor = fidNeff / 3
 
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-        h2 = self.h_now ** 2
+        h2 = self.h_now**2
 
         if "mnu" in cambpars:
             Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
@@ -410,8 +406,8 @@ class boltzmann_code:
 
             # pars= camb.set_params(redshifts=[0.], kmax=50.0,accurate_massive_neutrino_transfers=True,lmax=1000, lens_potential_accuracy=1,**cambpars)
 
-        self.extrap_kmax = cambpars.pop('extrap_kmax', 100)
-        
+        self.extrap_kmax = cambpars.pop("extrap_kmax", 100)
+
         if rescaleAs is True:
             cambpars["As"] = self.rescale_LP(cambpars, camb, insigma8)
 
@@ -464,7 +460,6 @@ class boltzmann_code:
                 print("Rescaled sig8 = ", final_sig8)
         return final_As
 
-
     @staticmethod
     def print_camb_params(cambpars, feedback=1):
         """
@@ -500,7 +495,7 @@ class boltzmann_code:
             print("----CLASS parameters----")
             for key in classpars:
                 print(key + "=" + str(classpars[key]))
-    
+
     def camb_results(self, camb):
         """
         Compute and store CAMB results.
@@ -637,14 +632,16 @@ class boltzmann_code:
             tDzk = time()
             print("Time for Growth factor = ", tDzk - tPk)
 
-
-        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, self.results.kgrid)
+        f_z_k_array, z_array = self.f_deriv(
+            self.results.D_growth_zk, self.results.zgrid, self.results.kgrid
+        )
         self.results.f_growthrate_zk = RectBivariateSpline(
             z_array, self.results.kgrid, f_z_k_array.T
         )
 
-        f_cb_z_k_array, z_array = self.f_deriv(self.results.D_growth_cb_zk, self.results.zgrid, 
-                                                self.results.kgrid)
+        f_cb_z_k_array, z_array = self.f_deriv(
+            self.results.D_growth_cb_zk, self.results.zgrid, self.results.kgrid
+        )
         self.results.f_growthrate_cb_zk = RectBivariateSpline(
             z_array, self.results.kgrid, f_cb_z_k_array.T
         )
@@ -653,11 +650,12 @@ class boltzmann_code:
             tfzk = time()
             print("Time for Growth factor = ", tfzk - tDzk)
 
-
-        self.results.s8_cb_of_z = self.compute_sigma8(self.results.zgrid, self.results.Pk_cb_l, 
-                                                      self.h_now, self.results.kgrid)
-        self.results.s8_of_z = self.compute_sigma8(self.results.zgrid, self.results.Pk_l, 
-                                                   self.h_now, self.results.kgrid)
+        self.results.s8_cb_of_z = self.compute_sigma8(
+            self.results.zgrid, self.results.Pk_cb_l, self.h_now, self.results.kgrid
+        )
+        self.results.s8_of_z = self.compute_sigma8(
+            self.results.zgrid, self.results.Pk_l, self.h_now, self.results.kgrid
+        )
 
         if self.feed_lvl > 2:
             ts8 = time()
@@ -701,9 +699,8 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_class_params(self.classcosmopars, 
-                                feedback=self.feed_lvl)
-    
+        self.print_class_params(self.classcosmopars, feedback=self.feed_lvl)
+
     def changebasis_class(self, cosmopars):
         """
         Convert cosmological parameters to CLASS format.
@@ -773,7 +770,7 @@ class boltzmann_code:
             classpars["n_s"] = classpars.pop("ns")
 
         return classpars
-    
+
     def class_results(self, Class):
         """
         Compute and store CLASS results.
@@ -852,8 +849,9 @@ class boltzmann_code:
 
         self.results.D_growth_zk = create_growth()
 
-        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, 
-                                            self.results.kgrid)
+        f_z_k_array, z_array = self.f_deriv(
+            self.results.D_growth_zk, self.results.zgrid, self.results.kgrid
+        )
         f_g_kz = RectBivariateSpline(z_array, self.results.kgrid, f_z_k_array.T)
         self.results.f_growthrate_zk = f_g_kz
 
@@ -889,7 +887,7 @@ class boltzmann_code:
         f_cb_z_k_array, z_array = f_cb_deriv(self.results.kgrid)
         f_g_cb_kz = RectBivariateSpline(z_array, self.results.kgrid, f_cb_z_k_array.T)
         self.results.f_growthrate_cb_zk = f_g_cb_kz
-    
+
     def changebasis_symb(self, cosmopars):
         """
         Convert and adjust cosmological parameters for symbolic computation.
@@ -934,51 +932,49 @@ class boltzmann_code:
         if "ombh2" in symbpars:
             symbpars["Omegab"] = symbpars.pop("ombh2") / (symbpars["h"] ** 2)
         if "omch2" in symbpars:
-            symbpars["Omegam"] = (symbpars.pop("omch2") / 
-                                    symbpars["h"] ** 2) + symbpars['Omegab']
+            symbpars["Omegam"] = (symbpars.pop("omch2") / symbpars["h"] ** 2) + symbpars["Omegab"]
             # Omegam = Omegac + Omegab
         # ["sigma8", "As", "logAs", "10^9As", "ln_A_s_1e10"]
         try:
             if "As" in symbpars:
-                symbpars['10^9As'] = 10**9 * symbpars.pop('As')
+                symbpars["10^9As"] = 10**9 * symbpars.pop("As")
             if "logAs" in symbpars:
-                symbpars['10^9As'] = 10**9 * (np.exp(symbpars.pop("logAs")) 
-                                                * 1.0e-10)
+                symbpars["10^9As"] = 10**9 * (np.exp(symbpars.pop("logAs")) * 1.0e-10)
             try:
-                As_value = symbpars.get('10^9As')
+                As_value = symbpars.get("10^9As")
                 upr.debug_print("DEBUG: symbpars['10^9As'] = ", As_value)
                 if np.isscalar(As_value):
                     try:
-                        symbpars['sigma8']  = self.symblin.As_to_sigma8(
-                                                            symbpars['10^9As'],
-                                                            symbpars['Omegam'],
-                                                            symbpars['Omegab'],
-                                                            symbpars['h'],
-                                                            symbpars['ns']
-                                                            )
-                        upr.debug_print("DEBUG: symbpars['sigma8'] = ", symbpars['sigma8'])
-                    except: 
+                        symbpars["sigma8"] = self.symblin.As_to_sigma8(
+                            symbpars["10^9As"],
+                            symbpars["Omegam"],
+                            symbpars["Omegab"],
+                            symbpars["h"],
+                            symbpars["ns"],
+                        )
+                        upr.debug_print("DEBUG: symbpars['sigma8'] = ", symbpars["sigma8"])
+                    except:
                         print("As to sigma8 conversion failed")
                         raise ValueError
             except KeyError:
                 pass
             try:
-                sigma8_value = symbpars.get('sigma8')
+                sigma8_value = symbpars.get("sigma8")
                 if np.isscalar(sigma8_value):
                     try:
                         As_n = self.symblin.sigma8_to_As(
-                                            symbpars['sigma8'],
-                                            symbpars['Omegam'],
-                                            symbpars['Omegab'],
-                                            symbpars['h'],
-                                            symbpars['ns']
-                                    )
+                            symbpars["sigma8"],
+                            symbpars["Omegam"],
+                            symbpars["Omegab"],
+                            symbpars["h"],
+                            symbpars["ns"],
+                        )
                         upr.debug_print("DEBUG: As_n = ", As_n)
-                        symbpars['10^9As'] = As_n
+                        symbpars["10^9As"] = As_n
                     except:
                         print("sigma8 to As conversion failed")
                         raise ValueError
-                else: 
+                else:
                     print("sigma8 value not scalar")
                     upr.debug_print("DEBUG: symbpars = ", symbpars)
             except KeyError:
@@ -989,7 +985,7 @@ class boltzmann_code:
             upr.debug_print("DEBUG: symbpars = ", symbpars)
             raise ValueError
         return symbpars
-    
+
     def symbolic_setparams(self):
         """
         Set up parameters for symbolic computation.
@@ -1005,27 +1001,27 @@ class boltzmann_code:
             If the cosmological model is not supported by the symbolic code.
         """
         tini_basis = time()
-        if cfg.settings['cosmo_model'] != "LCDM":
+        if cfg.settings["cosmo_model"] != "LCDM":
             print("Symbolic_pofk only supports LCDM at the moment")
             raise ValueError("Cosmo model not supported by cosmo code")
         self.symbcosmopars = dict()
         self.symbcosmopars.update(self.changebasis_symb(self.cosmopars))
-        self.kmax_pk = self.boltzmann_symbolicpars['NUMERICS']['kmax_pk']
-        self.kmin_pk = self.boltzmann_symbolicpars['NUMERICS']['kmin_pk']
-        self.zmax_pk = self.boltzmann_symbolicpars['NUMERICS']['zmax_pk']
-        self.zmin_pk = self.boltzmann_symbolicpars['NUMERICS']['zmin_pk']
-        self.z_samples = self.boltzmann_symbolicpars['NUMERICS']['z_samples']
+        self.kmax_pk = self.boltzmann_symbolicpars["NUMERICS"]["kmax_pk"]
+        self.kmin_pk = self.boltzmann_symbolicpars["NUMERICS"]["kmin_pk"]
+        self.zmax_pk = self.boltzmann_symbolicpars["NUMERICS"]["zmax_pk"]
+        self.zmin_pk = self.boltzmann_symbolicpars["NUMERICS"]["zmin_pk"]
+        self.z_samples = self.boltzmann_symbolicpars["NUMERICS"]["z_samples"]
         self.zgrid = np.linspace(self.zmin_pk, self.zmax_pk, self.z_samples)
-        self.k_samples = self.boltzmann_symbolicpars['NUMERICS']['k_samples']
-        self.kgrid_1Mpc = np.logspace(np.log10(self.kmin_pk), 
-                                      np.log10(self.kmax_pk), self.k_samples)
+        self.k_samples = self.boltzmann_symbolicpars["NUMERICS"]["k_samples"]
+        self.kgrid_1Mpc = np.logspace(
+            np.log10(self.kmin_pk), np.log10(self.kmax_pk), self.k_samples
+        )
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_cosmo_params(self.symbcosmopars, 
-                                feedback=self.feed_lvl,
-                                text="--- Symbolic Cosmo parameters ---"
-                                )
+        self.print_cosmo_params(
+            self.symbcosmopars, feedback=self.feed_lvl, text="--- Symbolic Cosmo parameters ---"
+        )
 
     def symbolic_results(self):
         """
@@ -1044,64 +1040,74 @@ class boltzmann_code:
         tini_results = time()
         self.results = types.SimpleNamespace()
         symb_colmo_pars = {
-            'flat' : True,
-            'sigma8': self.symbcosmopars['sigma8'],
-            'Om0': self.symbcosmopars['Omegam'],
-            'Ob0': self.symbcosmopars['Omegab'],
-            'H0': self.symbcosmopars['h']*100,
-            'ns': self.symbcosmopars['ns']
+            "flat": True,
+            "sigma8": self.symbcosmopars["sigma8"],
+            "Om0": self.symbcosmopars["Omegam"],
+            "Ob0": self.symbcosmopars["Omegab"],
+            "H0": self.symbcosmopars["h"] * 100,
+            "ns": self.symbcosmopars["ns"],
         }
         self.results.zgrid = self.zgrid
-        self.h_now = self.symbcosmopars['h']
-        self.kgrid_hMpc = self.kgrid_1Mpc/self.h_now
-        self.results.kgrid = self.kgrid_1Mpc  #results kgrid is in units of 1/Mpc
-        self.symbcosmo = self.colmo.cosmology.setCosmology('colmo', **symb_colmo_pars)
-        self.results.h_of_z = np.vectorize(lambda zz: self.symbcosmo.Hz(zz)/cosmo_functions.c)  #H(z) in 1/Mpc
-        self.results.ang_dist = np.vectorize(lambda zz: self.symbcosmo.angularDiameterDistance(zz)/self.h_now)
-        self.results.com_dist = np.vectorize(lambda zz: self.symbcosmo.comovingDistance(z_min=0., 
-                                                                      z_max=zz,
-                                                                      transverse=True)/self.h_now)
+        self.h_now = self.symbcosmopars["h"]
+        self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now
+        self.results.kgrid = self.kgrid_1Mpc  # results kgrid is in units of 1/Mpc
+        self.symbcosmo = self.colmo.cosmology.setCosmology("colmo", **symb_colmo_pars)
+        self.results.h_of_z = np.vectorize(
+            lambda zz: self.symbcosmo.Hz(zz) / cosmo_functions.c
+        )  # H(z) in 1/Mpc
+        self.results.ang_dist = np.vectorize(
+            lambda zz: self.symbcosmo.angularDiameterDistance(zz) / self.h_now
+        )
+        self.results.com_dist = np.vectorize(
+            lambda zz: self.symbcosmo.comovingDistance(z_min=0.0, z_max=zz, transverse=True)
+            / self.h_now
+        )
         self.results.s8_of_z = np.vectorize(lambda zz: self.symbcosmo.sigma(8, z=zz))
         self.results.Om_m = self.symbcosmo.Om
         D_kz = np.array([self.symbcosmo.growthFactor(self.zgrid) for kk in self.kgrid_1Mpc]).T
         self.results.D_growth_zk = RectBivariateSpline(self.zgrid, self.kgrid_1Mpc, D_kz)
 
-        self.results.Pk_l_0 = ((1/self.h_now)**3)*self.symblin.plin_emulated(self.kgrid_hMpc, 
-                                          self.symbcosmopars['sigma8'], 
-                                          self.symbcosmopars['Omegam'], 
-                                          self.symbcosmopars['Omegab'], 
-                                          self.h_now, 
-                                          self.symbcosmopars['ns'], 
-                                          emulator=self.emulator_precision, 
-                                          extrapolate=self.extrapolate)
-        #symbfit plin_emulated returns P_l(k,z=0) in 1/Mpc^3, requests kgrid in h/Mpc
+        self.results.Pk_l_0 = ((1 / self.h_now) ** 3) * self.symblin.plin_emulated(
+            self.kgrid_hMpc,
+            self.symbcosmopars["sigma8"],
+            self.symbcosmopars["Omegam"],
+            self.symbcosmopars["Omegab"],
+            self.h_now,
+            self.symbcosmopars["ns"],
+            emulator=self.emulator_precision,
+            extrapolate=self.extrapolate,
+        )
+        # symbfit plin_emulated returns P_l(k,z=0) in 1/Mpc^3, requests kgrid in h/Mpc
         Pk_at_z = (D_kz**2) * self.results.Pk_l_0
         self.results.Pk_l = RectBivariateSpline(
             self.zgrid, self.kgrid_1Mpc, Pk_at_z
-        ) #P_l(k,z) in 1/Mpc^3
+        )  # P_l(k,z) in 1/Mpc^3
 
-        f_z_k_array, z_array = self.f_deriv(self.results.D_growth_zk, self.results.zgrid, 
-                                            self.results.kgrid)
-        self.results.f_growthrate_zk = RectBivariateSpline(
-            z_array, self.kgrid_1Mpc, f_z_k_array.T
+        f_z_k_array, z_array = self.f_deriv(
+            self.results.D_growth_zk, self.results.zgrid, self.results.kgrid
         )
+        self.results.f_growthrate_zk = RectBivariateSpline(z_array, self.kgrid_1Mpc, f_z_k_array.T)
+
         def vectorized_halofit(z):
-            return ((1/self.h_now)**3)*self.symbfit.run_halofit(self.kgrid_hMpc, 
-                                          self.symbcosmopars['sigma8'], 
-                                          self.symbcosmopars['Omegam'], 
-                                          self.symbcosmopars['Omegab'], 
-                                          self.h_now, 
-                                          self.symbcosmopars['ns'], 
-                                          a = cosmo_functions.scale_factor(z),
-                                          emulator=self.emulator_precision, 
-                                          extrapolate=self.extrapolate,
-                                          which_params=self.which_params, 
-                                          add_correction=self.add_correction) 
-        #symbfit run_halofit returns P_nl(k,z) in Mpc^3/h^3, requests kgrid in h/Mpc
-        vectorized_run_halofit = np.vectorize(vectorized_halofit, signature='()->(n)')
+            return ((1 / self.h_now) ** 3) * self.symbfit.run_halofit(
+                self.kgrid_hMpc,
+                self.symbcosmopars["sigma8"],
+                self.symbcosmopars["Omegam"],
+                self.symbcosmopars["Omegab"],
+                self.h_now,
+                self.symbcosmopars["ns"],
+                a=cosmo_functions.scale_factor(z),
+                emulator=self.emulator_precision,
+                extrapolate=self.extrapolate,
+                which_params=self.which_params,
+                add_correction=self.add_correction,
+            )
+
+        # symbfit run_halofit returns P_nl(k,z) in Mpc^3/h^3, requests kgrid in h/Mpc
+        vectorized_run_halofit = np.vectorize(vectorized_halofit, signature="()->(n)")
         Pk_nl = vectorized_run_halofit(self.zgrid)
         self.results.Pk_nl = RectBivariateSpline(self.zgrid, self.kgrid_1Mpc, Pk_nl)
-        #Pk_nl in 1/Mpc^3
+        # Pk_nl in 1/Mpc^3
         if self.feed_lvl > 2:
             print("Symbolic results took {:.2f} s".format(time() - tini_results))
         return self.results
@@ -1653,7 +1659,7 @@ class cosmo_functions:
             power = self.results.Pk_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_l(z, k, grid=False)
-        return power # type: ignore
+        return power  # type: ignore
 
     def Pcb(self, z, k, nonlinear=False):
         """

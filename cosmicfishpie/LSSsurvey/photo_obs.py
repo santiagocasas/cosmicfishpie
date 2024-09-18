@@ -85,8 +85,9 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     callable
         callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
     """
-    wintgd = ngal_func(zarr, i)[:,None] * (1.0 - comoving_func(zarr)[None,:] / 
-                                             comoving_func(zarr)[:, None])
+    wintgd = ngal_func(zarr, i)[:, None] * (
+        1.0 - comoving_func(zarr)[None, :] / comoving_func(zarr)[:, None]
+    )
     witri = np.tril(wintgd)
     wint = integrate.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
@@ -443,13 +444,13 @@ class ComputeCls:
 
         tgcend = time()
         upt.time_print(
-                feedback_level=self.feed_lvl,
-                min_level=3,
-                text="    ...done bin {} for GCph in: ",
-                instance=self,
-                time_ini=tgcstart,
-                time_fin=tgcend,
-            )
+            feedback_level=self.feed_lvl,
+            min_level=3,
+            text="    ...done bin {} for GCph in: ",
+            instance=self,
+            time_ini=tgcstart,
+            time_fin=tgcend,
+        )
 
         return Wgc
 
@@ -634,7 +635,7 @@ class ComputeCls:
             feedback_level=self.feed_lvl,
             min_level=2,
             text="Computing Cls integral for {}".format(self.observables),
-            instance=self
+            instance=self,
         )
         # full_ell = np.linspace(cfg.specs['ellmin'],cfg.specs['ellmax'],cfg.specs['ellmax']-cfg.specs['ellmin'])
         # full_ell = np.round(full_ell, 0)
@@ -669,7 +670,7 @@ class ComputeCls:
                 text="    ...{} {} x {} {} done in: ".format(obs1, bin1, obs2, bin2),
                 instance=self,
                 time_ini=tcell,
-                time_fin=tbin
+                time_fin=tbin,
             )
             tcell = tbin
 

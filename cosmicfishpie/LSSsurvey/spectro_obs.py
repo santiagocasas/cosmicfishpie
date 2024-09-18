@@ -902,10 +902,9 @@ class ComputeGalIM(ComputeGalSpectro):
 
         tini = time()
         self.feed_lvl = cfg.settings["feedback"]
-        upt.time_print(feedback_level=self.feed_lvl, 
-                       min_level=2, 
-                       text="Entered ComputeGalIM", 
-                       instance=self)
+        upt.time_print(
+            feedback_level=self.feed_lvl, min_level=2, text="Entered ComputeGalIM", instance=self
+        )
 
         if "IM" not in self.observables:
             raise AttributeError("Observables list not defined properly")

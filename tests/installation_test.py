@@ -1,6 +1,6 @@
-import cosmicfishpie.analysis.fisher_plotting as cfp
-import cosmicfishpie.fishermatrix.cosmicfish as cff
-from  cosmicfishpie.utilities.utils import printing as cpr
+from cosmicfishpie.analysis import fisher_plotting as cfp
+from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicfishpie.utilities.utils import printing as cpr
 
 def test_installation():
     # These are typical options that you can pass to Cosmicfishpie

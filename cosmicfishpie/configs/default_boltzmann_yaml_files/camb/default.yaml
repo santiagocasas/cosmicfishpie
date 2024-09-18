@@ -4,6 +4,7 @@ ACCURACY:
   'lAccuracyBoost' : 1
   'lSampleBoost' : 1
   'accurate_massive_neutrino_transfers' : False
+  'MassiveNuMethod' : 0
 NUMERICS:
   'zmax' : 5
   'zsamples': 100

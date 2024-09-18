@@ -440,6 +440,57 @@ class CosmicFish_FisherAnalysis:
 
         return latex_names
 
+    def compare_fisher_results(self, parstomarg=None, fisher_list=None):
+        """
+        Compare and print results from Fisher matrices.
+
+        This method analyzes each Fisher matrix in the list, calculating and printing
+        various statistics including the Figure of Merit (FoM) and parameter constraints.
+
+        Parameters:
+        -----------
+        parstomarg : list of str, optional
+            List of parameter names to marginalize over. If None, the first two
+            parameters of each Fisher matrix are used.
+        fisher_list : list of FisherMatrix objects, optional
+            List of Fisher matrices to analyze. If None, uses the instance's fisher_list.
+
+        Prints:
+        -------
+        For each Fisher matrix:
+        - Fisher matrix name
+        - Figure of Merit (FoM) for marginalized parameters
+        - For each parameter:
+            - Fiducial value
+            - 1-sigma error
+            - Percent error
+
+        Note:
+        -----
+        This method modifies the instance's fisher_list if a new list is provided.
+        """
+        if fisher_list is not None:
+            self.fisher_list = fisher_list
+        for ii, fish in enumerate(self.fisher_list):
+            print("----")
+            print("Fisher Name: ", fish.name)
+            if parstomarg is None:
+                parstomarg = fish.get_param_names()[:2]
+            fiww = fo.marginalise(fish, parstomarg)
+            deFoM = np.sqrt(fiww.determinant())
+            parstomarg_str = ','.join(parstomarg)
+            print(f"Fisher FoM in {parstomarg_str}: {deFoM:.3f}")
+            sigmas = fish.get_confidence_bounds()
+            fidus = fish.get_param_fiducial()
+            parnames = fish.get_param_names()
+            for ii, par in enumerate(parnames):
+                fidu = fidus[ii] 
+                abs_sig = abs(sigmas[ii])
+                perc_err = 100*abs(sigmas[ii]/fidus[ii])
+                print(f"Parameter {par:<10s}, "
+                      f"fiducial: {fidu:>8.3f}, "
+                      f"1-sigma error: {abs_sig:>8.4f}, "
+                      f"percent error: {perc_err:>8.1f}%")
     # -----------------------------------------------------------------------------------
 
     def compute_plot_range(

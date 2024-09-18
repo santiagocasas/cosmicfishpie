@@ -85,8 +85,8 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     callable
         callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
     """
-    zprime = zarr[:, None]
-    wintgd = ngal_func(zprime, i) * (1.0 - comoving_func(zarr) / comoving_func(zprime))
+    wintgd = ngal_func(zarr, i)[:,None] * (1.0 - comoving_func(zarr)[None,:] / 
+                                             comoving_func(zarr)[:, None])
     witri = np.tril(wintgd)
     wint = integrate.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
@@ -154,7 +154,7 @@ class ComputeCls:
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=2,
             text="-> Started Cls calculation",
             instance=self,
         )
@@ -168,7 +168,7 @@ class ComputeCls:
         tcosmo2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="---> Cosmological functions obtained in ",
             instance=self,
             time_ini=tcosmo1,
@@ -189,7 +189,7 @@ class ComputeCls:
         tnuis2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Nuisance functions obtained in ",
             instance=self,
             time_ini=tnuis1,
@@ -228,19 +228,8 @@ class ComputeCls:
         self.ell = np.logspace(
             np.log10(cfg.specs["ellmin"]), np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
         )
-        # self.ell      = np.linspace(cfg.specs['ellmin'],cfg.specs['ellmax']+10,num=self.ellsamp)
-
-        if cfg.input_type == "camb":
-            self.z_min = cfg.specs["z_bins"][0]
-            self.z_max = cfg.specs["z_bins"][-1]  # +0.5
-        if cfg.input_type == "class":
-            self.z_min = cfg.specs["z_bins"][0]
-            self.z_max = cfg.specs["z_bins"][-1]  # +0.5
-        elif cfg.input_type == "external":
-            self.z_min = np.max([cfg.specs["z_bins"][0], self.cosmo.results.zgrid[0]])
-            # self.z_max = np.min([cfg.specs['z_bins'][-1]+0.5, self.cosmo.results.zgrid[-1]])
-            self.z_max = np.min([cfg.specs["z_bins"][-1], self.cosmo.results.zgrid[-1]])
-        # +1 to go beyond the bin limit
+        self.z_min = cfg.specs["z_bins"][0]
+        self.z_max = cfg.specs["z_bins"][-1]
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
         self.dz = np.mean(np.diff(self.z))
 
@@ -263,7 +252,7 @@ class ComputeCls:
         tini = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=2,
             text="-> Computing power spectra and kernels ",
             instance=self,
         )
@@ -274,7 +263,7 @@ class ComputeCls:
         tplim2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Computed P_limber in ",
             time_ini=tplim1,
             time_fin=tplim2,
@@ -286,7 +275,7 @@ class ComputeCls:
         tkern2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Computed Kernels in: ",
             time_ini=tkern1,
             time_fin=tkern2,
@@ -298,7 +287,7 @@ class ComputeCls:
         tcls2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=2,
+            min_level=3,
             text="---> Computed Cls in: ",
             time_ini=tcls1,
             time_fin=tcls2,
@@ -308,7 +297,7 @@ class ComputeCls:
 
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="--> Total Cls computation performed in : ",
             time_ini=tini,
             time_fin=tend,
@@ -317,19 +306,20 @@ class ComputeCls:
 
     def print_numerical_specs(self):
         """prints the numerical specifications of the internal computations"""
-        print("***")
-        print("Numerical specifications: ")
-        print("WL ell max = ", str(cfg.specs["lmax_WL"]))
-        print("GCph ell max = ", str(cfg.specs["lmax_GCph"]))
-        print("ell min = ", str(cfg.specs["ellmin"]))
-        print("ell max = ", str(cfg.specs["ellmax"]))
-        print("ell sampling: ", str(self.ellsamp))
-        print("z sampling: ", str(self.zsamp))
-        print("z_min : ", str(self.z_min))
-        print("z_max : ", str(self.z_max))
-        print("z_max : ", str(self.z_max))
-        print("delta_z : ", str(self.dz))
-        print("***")
+        if self.feed_lvl >= 2:
+            print("***")
+            print("Numerical specifications: ")
+            print("WL ell max = ", str(cfg.specs["lmax_WL"]))
+            print("GCph ell max = ", str(cfg.specs["lmax_GCph"]))
+            print("ell min = ", str(cfg.specs["ellmin"]))
+            print("ell max = ", str(cfg.specs["ellmax"]))
+            print("ell sampling: ", str(self.ellsamp))
+            print("z sampling: ", str(self.zsamp))
+            print("z_min : ", str(self.z_min))
+            print("z_max : ", str(self.z_max))
+            print("z_max : ", str(self.z_max))
+            print("delta_z : ", str(self.dz))
+            print("***")
 
     def P_limber(self):
         """
@@ -452,8 +442,14 @@ class ComputeCls:
         #                                          self.cosmo.Hubble(z)
 
         tgcend = time()
-        if self.feed_lvl >= 3:
-            print("    ...done bin {} for GCph in {:.2f} s".format(i, tgcend - tgcstart))
+        upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=3,
+                text="    ...done bin {} for GCph in: ",
+                instance=self,
+                time_ini=tgcstart,
+                time_fin=tgcend,
+            )
 
         return Wgc
 
@@ -498,8 +494,14 @@ class ComputeCls:
 
         twlend = time()
 
-        if self.feed_lvl >= 3:
-            print("    ...done bin {} for WL in {:.2f} s".format(i, twlend - twlstart))
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=3,
+            text="    ...done bin {} for WL in:",
+            instance=self,
+            time_ini=twlstart,
+            time_fin=twlend,
+        )
 
         # Sakr Fix June 2023
         # return Wwl
@@ -540,8 +542,14 @@ class ComputeCls:
         efficiency = [self.integral_efficiency(i) for i in self.binrange]
         efficiency.insert(0, None)
         teffend = time()
-        if self.feed_lvl >= 3:
-            print("    ...lensing efficiency computation took {:.2f} s".format(teffend - teffstart))
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=3,
+            text="    ...lensing efficiency computation done in:",
+            instance=self,
+            time_ini=teffstart,
+            time_fin=teffend,
+        )
         return efficiency
 
     def compute_kernels(self):
@@ -622,10 +630,12 @@ class ComputeCls:
                 P_{\\delta \\delta} \\big[\\frac{\\ell + 1/2}{r(z)} , z \\big]
         """
 
-        if self.feed_lvl > 1:
-            print("")
-        if self.feed_lvl > 1:
-            print("    Computing Cls integral for {}".format(self.observables))
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=2,
+            text="Computing Cls integral for {}".format(self.observables),
+            instance=self
+        )
         # full_ell = np.linspace(cfg.specs['ellmin'],cfg.specs['ellmax'],cfg.specs['ellmax']-cfg.specs['ellmin'])
         # full_ell = np.round(full_ell, 0)
         full_ell = self.ell
@@ -653,21 +663,25 @@ class ComputeCls:
             cls[obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)] = finalcls
 
             tbin = time()
-            if self.feed_lvl > 2:
-                print("")
-            if self.feed_lvl > 2:
-                print(
-                    "    ...{} {} x {} {} done in {:.2f} s".format(
-                        obs1, bin1, obs2, bin2, tbin - tcell
-                    )
-                )
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=3,
+                text="    ...{} {} x {} {} done in: ".format(obs1, bin1, obs2, bin2),
+                instance=self,
+                time_ini=tcell,
+                time_fin=tbin
+            )
             tcell = tbin
 
         tend = time()
-        if self.feed_lvl > 1:
-            print("")
-        if self.feed_lvl > 1:
-            print("    Cls integral computation took {:.2f} s".format(tend - tstart))
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=3,
+            text="Cls integral computation done in: ",
+            instance=self,
+            time_ini=tstart,
+            time_fin=tend,
+        )
 
         return cls
 

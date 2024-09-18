@@ -243,7 +243,7 @@ class FisherMatrix:
             self.set_pk_settings()
             if "IM" in self.observables and "GCsp" in self.observables:
                 self.obs_spectrum = ["I", "g"]
-                self.pk_obs = spec_obs.ComputeGalIM(
+                self.pk_obs = spectro_obs.ComputeGalIM(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
@@ -251,21 +251,21 @@ class FisherMatrix:
 
             elif "IM" in self.observables:
                 self.obs_spectrum = ["I", "I"]
-                self.pk_obs = spec_obs.ComputeGalIM(
+                self.pk_obs = spectro_obs.ComputeGalIM(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
                 )
             elif "GCsp" in self.observables:
                 self.obs_spectrum = ["g", "g"]
-                self.pk_obs = spec_obs.ComputeGalSpectro(
+                self.pk_obs = spectro_obs.ComputeGalSpectro(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
                     spectrononlinearpars=self.Spectrononlinpars,
                 )
 
-            self.pk_cov = spec_cov.SpectroCov(
+            self.pk_cov = spectro_cov.SpectroCov(
                 self.fiducialcosmopars, fiducial_specobs=self.pk_obs, bias_samples=self.obs_spectrum
             )
             self.zmids = self.pk_cov.global_z_bin_mids
@@ -378,7 +378,7 @@ class FisherMatrix:
         dict
             A dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and varied parameter
         """
-        self.pk_deriv = spec_cov.SpectroDerivs(
+        self.pk_deriv = spectro_cov.SpectroDerivs(
             z_arr,
             self.Pk_kmesh,
             self.Pk_mumesh,

@@ -1808,7 +1808,7 @@ class cosmo_functions:
         return omz
 
     def f_growthrate(self, z, k=None, gamma=False, tracer="matter"):
-        """
+        r"""
         Growth rate in LCDM gamma approximation
 
         Parameters
@@ -1848,7 +1848,7 @@ class cosmo_functions:
         return fg
 
     def fsigma8_of_z(self, z, k=None, gamma=False, tracer="matter"):
-        """
+        r"""
         Growth rate in LCDM gamma approximation
 
         Parameters

@@ -112,7 +112,7 @@ def init(
     cosmo_model                 : str
                                   A string of the name of the cosmological model used in the calculations. Defaults to what was passed in the parameter `cosmoModel`
     outroot                     : str
-                                  The name of the output files are always starting with CosmicFish_v\<Version number\>_\<outroot\>. Defaults to 'default_run'
+                                  The name of the output files are always starting with CosmicFish_Version number_outroot. Defaults to 'default_run'
     code                        : str
                                   String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'. Defaults to 'camb'
     memorize_cosmo              : bool
@@ -122,9 +122,9 @@ def init(
     boltzmann_yaml_path         : str
                                   Path to the configurations for the Einstein-Boltzmann solvers. Defaults to the `boltzmann_yaml_files` folder in the home directory of cosmicfishpie
     class_config_yaml           : str
-                                  Path to the configurations for class. Defaults to '\<boltzmann_yaml_path\>/class/default.yaml'
+                                  Path to the configurations for class. Defaults to 'boltzmann_yaml_path/class/default.yaml'
     camb_config_yaml            : str
-                                  Path to the configurations for camb. Defaults to '\<boltzmann_yaml_path\>/camb/default.yaml'
+                                  Path to the configurations for camb. Defaults to 'boltzmann_yaml_path/camb/default.yaml'
     fishermatrix_file_extension : str
                                   Specifies in what kind of file the result Fisher matrix should be saved. Defaults to '.txt'
     savgol_polyorder            : float

@@ -309,8 +309,9 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_cosmo_params(self.cambcosmopars, feedback=self.feed_lvl, 
-                               text="---CAMB parameters---")
+        self.print_cosmo_params(
+            self.cambcosmopars, feedback=self.feed_lvl, text="---CAMB parameters---"
+        )
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
@@ -664,8 +665,9 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_cosmo_params(self.classcosmopars, feedback=self.feed_lvl,
-                                text="---CLASS parameters---")
+        self.print_cosmo_params(
+            self.classcosmopars, feedback=self.feed_lvl, text="---CLASS parameters---"
+        )
 
     def changebasis_class(self, cosmopars):
         """

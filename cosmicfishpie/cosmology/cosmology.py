@@ -309,7 +309,8 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_camb_params(self.cambcosmopars, feedback=self.feed_lvl)
+        self.print_cosmo_params(self.cambcosmopars, feedback=self.feed_lvl, 
+                               text="---CAMB parameters---")
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
@@ -459,42 +460,6 @@ class boltzmann_code:
             if get_rescaled_s8:
                 print("Rescaled sig8 = ", final_sig8)
         return final_As
-
-    @staticmethod
-    def print_camb_params(cambpars, feedback=1):
-        """
-        Print CAMB parameters.
-
-        Parameters:
-        -----------
-        cambpars : dict
-            Dictionary of CAMB parameters to print.
-        feedback : int, optional
-            Feedback level determining whether to print (default is 1).
-        """
-        if feedback > 2:
-            print("")
-            print("----CAMB parameters----")
-            for key in cambpars:
-                print(key + "=" + str(cambpars[key]))
-
-    @staticmethod
-    def print_class_params(classpars, feedback=1):
-        """
-        Print CLASS parameters.
-
-        Parameters:
-        -----------
-        classpars : dict
-            Dictionary of CLASS parameters to print.
-        feedback : int, optional
-            Feedback level determining whether to print (default is 1).
-        """
-        if feedback > 2:
-            print("")
-            print("----CLASS parameters----")
-            for key in classpars:
-                print(key + "=" + str(classpars[key]))
 
     def camb_results(self, camb):
         """
@@ -699,7 +664,8 @@ class boltzmann_code:
         tend_basis = time()
         if self.feed_lvl > 2:
             print("Basis change took {:.2f} s".format(tend_basis - tini_basis))
-        self.print_class_params(self.classcosmopars, feedback=self.feed_lvl)
+        self.print_cosmo_params(self.classcosmopars, feedback=self.feed_lvl,
+                                text="---CLASS parameters---")
 
     def changebasis_class(self, cosmopars):
         """

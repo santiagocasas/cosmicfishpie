@@ -89,7 +89,7 @@ class SpectroCov:
             )
         elif "GCsp" in cfg.obs and "g" in bias_samples:
             bias_samples = ["g", "g"]
-            #print("Entering Cov gg term")
+            # print("Entering Cov gg term")
             self.pk_obs = spec_obs.ComputeGalSpectro(
                 fiducialpars, fiducialpars, bias_samples=bias_samples
             )

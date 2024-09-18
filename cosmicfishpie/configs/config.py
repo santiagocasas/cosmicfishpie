@@ -246,7 +246,7 @@ def init(
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
 
-    feed_lvl = settings["feedback"]  
+    feed_lvl = settings["feedback"]
 
     global external
     global input_type
@@ -282,8 +282,8 @@ def init(
             upt.time_print(
                 feedback_level=feed_lvl,
                 min_level=0,
-                text=f"-> Using input files for cosmology observables: {dii}"
-                )
+                text=f"-> Using input files for cosmology observables: {dii}",
+            )
             fidudir = glob.glob(os.path.join(external["directory"], ff + "*"))
             lendir = len(fidudir)
             if lendir < 1:
@@ -301,10 +301,10 @@ def init(
                     upt.time_print(
                         feedback_level=feed_lvl,
                         min_level=1,
-                        text=f"-> {lensub} folders for parameter {dd}"
-                        )
-                    #print("External directory: ", external["directory"])
-                    #print("{:d} subfolders for parameter {:s}".format(lensub, dd))
+                        text=f"-> {lensub} folders for parameter {dd}",
+                    )
+                    # print("External directory: ", external["directory"])
+                    # print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:
             raise ValueError("External directory does not exist")
 
@@ -316,8 +316,9 @@ def init(
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
-        if "camb_path" not in settings:  
+        if "camb_path" not in settings:
             import camb
+
             cambpath = os.path.dirname(camb.__file__)
             settings["camb_path"] = cambpath
         input_type = settings["code"]
@@ -330,7 +331,7 @@ def init(
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
         print("Defaulting to EBS camb")
-        settings['code'] = 'camb'
+        settings["code"] = "camb"
         input_type = settings["code"]
         external = None
 

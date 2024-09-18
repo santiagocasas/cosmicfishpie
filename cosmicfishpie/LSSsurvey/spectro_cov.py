@@ -63,6 +63,7 @@ class SpectroCov:
         # initializing the class only with fiducial parameters
         # if fiducial_specobs is None:
 
+        self.feed_lvl = cfg.settings['feedback']
         try:
             self.fsky_spectro = cfg.specs["fsky_spectro"]
             self.area_survey = self.fsky_spectro * upm.areasky()
@@ -71,7 +72,10 @@ class SpectroCov:
             self.fsky_spectro = self.area_survey / upm.areasky()
         if "IM" in cfg.obs and "GCsp" in cfg.obs:
             bias_samples = ["I", "g"]
-            print("Entering Cov cross XC IM,g term")
+            upt.time_print(feedback_level=self.feed_lvl, 
+                       min_level=2, 
+                       text="Entering Cov cross XC IM,g term", 
+                       instance=self)
             self.pk_obs = spec_obs.ComputeGalIM(
                 fiducialpars, fiducialpars, bias_samples=bias_samples
             )
@@ -83,13 +87,19 @@ class SpectroCov:
             )
         elif "IM" in cfg.obs and "I" in bias_samples:
             bias_samples = ["I", "I"]
-            print("Entering Cov IM term")
+            upt.time_print(feedback_level=self.feed_lvl, 
+                       min_level=2, 
+                       text="Entering Cov IM term", 
+                       instance=self)
             self.pk_obs = spec_obs.ComputeGalIM(
                 fiducialpars, fiducialpars, bias_samples=bias_samples
             )
         elif "GCsp" in cfg.obs and "g" in bias_samples:
             bias_samples = ["g", "g"]
-            print("Entering Cov gg term")
+            upt.time_print(feedback_level=self.feed_lvl, 
+                       min_level=2, 
+                       text="Entering Cov gg term", 
+                       instance=self)
             self.pk_obs = spec_obs.ComputeGalSpectro(
                 fiducialpars, fiducialpars, bias_samples=bias_samples
             )
@@ -406,7 +416,7 @@ class SpectroDerivs:
         self.pk_kmesh = pk_kmesh
         self.pk_mumesh = pk_mumesh
         self.freeparams = None  # cfg.freeparams
-        self.feed_lvl = 1  # cfg.settings['feedback']
+        self.feed_lvl = cfg.settings['feedback']
         # self.get_obs = memory.cache(self.getobs)
 
     def initialize_obs(self, allpars):
@@ -547,7 +557,7 @@ class SpectroDerivs:
             tder2 = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,
-                min_level=1,
+                min_level=3,
                 text="-->> Derivatives computed in ",
                 time_ini=tder1,
                 time_fin=tder2,

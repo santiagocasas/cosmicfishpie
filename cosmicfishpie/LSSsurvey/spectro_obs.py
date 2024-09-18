@@ -121,7 +121,7 @@ class ComputeGalSpectro:
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="Entered ComputeGalSpectro",
             instance=self,
         )
@@ -241,7 +241,7 @@ class ComputeGalSpectro:
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="GalSpec initialization done in: ",
             time_ini=tini,
             time_fin=tend,
@@ -847,7 +847,7 @@ class ComputeGalSpectro:
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="observed P_gg computation took: ",
             time_ini=tstart,
             time_fin=tend,
@@ -902,7 +902,10 @@ class ComputeGalIM(ComputeGalSpectro):
 
         tini = time()
         self.feed_lvl = cfg.settings["feedback"]
-        print("Entered ComputeGalIM")
+        upt.time_print(feedback_level=self.feed_lvl, 
+                       min_level=2, 
+                       text="Entered ComputeGalIM", 
+                       instance=self)
 
         if "IM" not in self.observables:
             raise AttributeError("Observables list not defined properly")
@@ -935,7 +938,7 @@ class ComputeGalIM(ComputeGalSpectro):
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="GalIM initialization done in: ",
             time_ini=tini,
             time_fin=tend,

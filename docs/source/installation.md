@@ -3,6 +3,10 @@ Installation
 
 **cosmicfishpie** supports Python >= 3.8.
 
+## Requirements
+
+**cosmicfishpie** uses preexisting Einstein-Boltzmann solvers to obtain cosmological functions. To use the code you need to install either `CAMB` or `Class` within your python environment.  
+
 ## Installing with `pip`
 
 **cosmicfishpie** is available [on PyPI](https://pypi.org/project/cosmicfishpie/). Just run

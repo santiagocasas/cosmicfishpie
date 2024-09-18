@@ -48,8 +48,7 @@ dev = [
     "sphinx-autodoc-typehints==1.23.3",
     "sphinx_rtd_theme>=1.0",
     "packaging",
-    "colossus",
-    "symbolic_pofk==0.1.0"
+    "camb"
 ]
 
 [project.scripts]

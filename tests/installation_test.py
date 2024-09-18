@@ -15,7 +15,7 @@ def test_installation():
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
-        "code": "symbolic",
+        "code": "camb",
     }
 
     # Internally CosmicFish converts these parameters to the corresponding parameters in CAMB or CLASS

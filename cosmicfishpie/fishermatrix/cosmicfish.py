@@ -721,7 +721,7 @@ class FisherMatrix:
                     upt.time_print(
                         feedback_level=self.feed_lvl,
                         min_level=1,
-                        text="Removed free param: {:s} = {:s}".format(key, removedpar),
+                        text="Removed free param: {:s} = {:f}".format(key, removedpar),
                         instance=self,
                     )
                 else:

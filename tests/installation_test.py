@@ -1,4 +1,3 @@
-from cosmicfishpie.analysis import fisher_plotting as cfp
 from cosmicfishpie.fishermatrix import cosmicfish as cff
 from cosmicfishpie.utilities.utils import printing as cpr
 
@@ -16,8 +15,7 @@ def test_installation():
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
-        "code": "camb",
-        "class_config_yaml": "../cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml",
+        "code": "symbolic",
     }
 
     # Internally CosmicFish converts these parameters to the corresponding parameters in CAMB or CLASS
@@ -44,21 +42,9 @@ def test_installation():
     )
 
     cpr.debug = False
-    fish = cosmoFM.compute()
-
-    plot_options = {
-        "fishers_list": [fish],
-        "fish_labels": ["Euclid Spectroscopic pessimistic"],
-        "plot_pars": list(freepars.keys()),
-        "axis_custom_factors": {
-            "all": 7
-        },  ## Axis limits cover 3-sigma bounds of first Fisher matrix
-        "plot_method": "Gaussian",
-        "file_format": ".pdf",  ##file format for all the plots
-        "outpath": "./plots/",  ## directory where to store the files, if non-existent, it will be created
-        "outroot": "test_installation_test_plot",  ## file name root for all the plots, extra names can be added individually
-        "colors": ["#000000"],
-    }
-
-    fish_plotter = cfp.fisher_plotting(**plot_options)
-    #fish_plotter.plot_fisher(filled=[False])
+    fish = cosmoFM.compute(max_z_bins=1)
+    print("Fisher name: ", fish.name)
+    print("Fisher parameters: ", fish.get_param_names())
+    print("Fisher fiducial values: ", fish.get_param_fiducial())
+    print("Fisher confidence bounds: ", fish.get_confidence_bounds())
+    print("Fisher covariance matrix: ", fish.fisher_matrix_inv)

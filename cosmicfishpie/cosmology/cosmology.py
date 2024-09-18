@@ -98,7 +98,7 @@ class boltzmann_code:
                 self.colmo = colmo
                 self.symblin = symblin
                 self.symbfit = symbfit
-            except:
+            except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
             self.boltzmann_symbolicpars = cfg.boltzmann_symbolicpars
@@ -929,7 +929,8 @@ class boltzmann_code:
                             symbpars["ns"],
                         )
                         upr.debug_print("DEBUG: symbpars['sigma8'] = ", symbpars["sigma8"])
-                    except:
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
                         print("As to sigma8 conversion failed")
                         raise ValueError
             except KeyError:
@@ -947,7 +948,8 @@ class boltzmann_code:
                         )
                         upr.debug_print("DEBUG: As_n = ", As_n)
                         symbpars["10^9As"] = As_n
-                    except:
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
                         print("sigma8 to As conversion failed")
                         raise ValueError
                 else:
@@ -956,10 +958,11 @@ class boltzmann_code:
             except KeyError:
                 print("sigma8 or 10^9As not in symbpars")
                 raise KeyError
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
             print("sigma8<->As conversion failed for other reasons")
             upr.debug_print("DEBUG: symbpars = ", symbpars)
-            raise ValueError
+            raise
         return symbpars
 
     def symbolic_setparams(self):

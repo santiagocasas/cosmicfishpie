@@ -44,10 +44,10 @@ def test_installation():
     )
 
     cpr.debug = False
-    FA = cosmoFM.compute()
+    fish = cosmoFM.compute()
 
     plot_options = {
-        "fishers_list": [FA],
+        "fishers_list": [fish],
         "fish_labels": ["Euclid Spectroscopic pessimistic"],
         "plot_pars": list(freepars.keys()),
         "axis_custom_factors": {
@@ -61,4 +61,4 @@ def test_installation():
     }
 
     fish_plotter = cfp.fisher_plotting(**plot_options)
-    fish_plotter.plot_fisher(filled=[False])
+    #fish_plotter.plot_fisher(filled=[False])

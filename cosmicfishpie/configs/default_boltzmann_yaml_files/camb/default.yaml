@@ -16,6 +16,7 @@ COSMO_SETTINGS:
   'halofit_version' : 'takahashi'
   'dark_energy_model' : 'ppf'
   'num_nu_massive' : 1
+  'num_nu_massless' : 2.044
   'TCMB': 2.7255
   'WantTensors' : False
   'WantVectors' : False
@@ -28,7 +29,9 @@ COSMO_SETTINGS:
   'DoLensing': False
 LCDM:   
   'Omegak' : 0.
+  'mnu' : 0.06  
   'YHe': 0.2454006
 w0waCDM:
   'Omegak' : 0.
+  'mnu' : 0.06  
   'YHe': 0.2454006

@@ -1,6 +1,6 @@
 import cosmicfishpie.analysis.fisher_plotting as cfp
 import cosmicfishpie.fishermatrix.cosmicfish as cff
-
+from  cosmicfishpie.utilities.utils import printing as cpr
 
 def test_installation():
     # These are typical options that you can pass to Cosmicfishpie
@@ -17,7 +17,7 @@ def test_installation():
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
         "code": "camb",
-        "class_config_yaml": "../boltzmann_yaml_files/camb/default.yaml",
+        "class_config_yaml": "../cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml",
     }
 
     # Internally CosmicFish converts these parameters to the corresponding parameters in CAMB or CLASS
@@ -33,7 +33,7 @@ def test_installation():
     }
 
     observables = ["GCsp"]
-
+    cpr.debug = True
     cosmoFM = cff.FisherMatrix(
         fiducialpars=fiducial,
         freepars=freepars,
@@ -43,6 +43,7 @@ def test_installation():
         surveyName=options["survey_name"],
     )
 
+    cpr.debug = False
     FA = cosmoFM.compute()
 
     plot_options = {

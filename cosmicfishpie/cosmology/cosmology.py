@@ -53,7 +53,7 @@ def memorize_external_input(cosmopars, fiducialcosmopars, external, extra_settin
 class boltzmann_code:
     hardcoded_Neff = 3.044
     hardcoded_neutrino_mass_fac = 94.07
-
+    hardcoded_mnu_massive_min = 0.001
     def __init__(self, cosmopars, code="camb"):
         """
         Initialize the boltzmann_code class.
@@ -362,7 +362,12 @@ class boltzmann_code:
         shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
         cambpars["share_delta_neff"] = shareDeltaNeff
         fidNeff = boltzmann_code.hardcoded_Neff
-
+        minmassmnu = boltzmann_code.hardcoded_mnu_massive_min
+        if "mnu" in cambpars:
+            if cambpars["mnu"] < minmassmnu and cambpars['num_nu_massive'] > 0:
+                raise ValueError(f"mnu is less than {minmassmnu} and "
+                                 f"num_nu_massive is greater than 0. "
+                                 f"Check your yaml file.")
         if "Neff" in cambpars:
             Neff = cambpars.pop("Neff")
             if shareDeltaNeff:

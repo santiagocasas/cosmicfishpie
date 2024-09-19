@@ -98,7 +98,7 @@ def og_plot_shades(
     ylabelfontsize=20,
     ncol_legend=None,
     colors=None,
-    color_palette='colorblind',
+    color_palette="colorblind",
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
@@ -140,7 +140,13 @@ def og_plot_shades(
     for ii, lbl in enumerate(mats_labels):
         if plotlight:
             ax.plot(
-                x_arr, lighty_arr[ii, :], marks[ii], c=colors[ii], ms=LW * 8, alpha=aalpha, label=lbl
+                x_arr,
+                lighty_arr[ii, :],
+                marks[ii],
+                c=colors[ii],
+                ms=LW * 8,
+                alpha=aalpha,
+                label=lbl,
             )
         if plotdark:
             if not plotlight:
@@ -254,7 +260,7 @@ def plot_shades(
     ylabelfontsize=20,
     ncol_legend=None,
     colors=None,
-    color_palette='colorblind',
+    color_palette="colorblind",
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'

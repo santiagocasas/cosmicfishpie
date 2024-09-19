@@ -19,11 +19,3 @@ cosmicfishpie.CMBsurvey.CMB\_obs module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cosmicfishpie.CMBsurvey
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,0 +1,22 @@
+ACCURACY:
+  'emulator_precision' : 'max_precision' # 'max_precision' or 'fiducial'
+NUMERICS:
+  'kmax_pk' : 9
+  'kmin_pk' : 1.0e-3
+  'zmax_pk' : 3.
+  'zmin_pk' : 0.
+  'z_samples' : 100
+  'k_samples' : 400
+  'extrapolate' : True
+COSMO_SETTINGS: 
+  'halofit_version' : 'syren' # 'syren' or 'halofit+' or 'takahashi'
+  'dark_energy_model' : 'fluid'
+  'num_nu_massive' : 0
+LCDM:   
+  'Omegak' : 0.
+  'YHe': 0.2454006
+  'mnu': 0.
+  'num_massive_neutrinos': 0
+  'num_nu_massive': 0
+  'num_nu_massless': 3.044
+  'tau' : 0.0561

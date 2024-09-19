@@ -13,19 +13,6 @@
 #
 # ----------------------------------------------------------------------------------------
 
-"""
-.. module:: fisher_derived
-   :platform: Unix
-   :synopsis: Module that contains the fisher_derived class and the operations defined on it.
-              This is meant to handle efficiently and safely Jacobian matrices transforming a
-              Fisher matrix for some parameters to a Fisher matrix for some other parameters.
-
-.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
-
-"""
-
-# ***************************************************************************************
-
 import copy
 import os
 

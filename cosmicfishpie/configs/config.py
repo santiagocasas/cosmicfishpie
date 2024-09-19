@@ -112,7 +112,7 @@ def init(
     cosmo_model                 : str
                                   A string of the name of the cosmological model used in the calculations. Defaults to what was passed in the parameter `cosmoModel`
     outroot                     : str
-                                  The name of the output files are always starting with CosmicFish_v\<Version number\>_\<outroot\>. Defaults to 'default_run'
+                                  The name of the output files are always starting with CosmicFish_Version number_outroot. Defaults to 'default_run'
     code                        : str
                                   String of the method to obtain the cosmological functions such as the power spectrum. Either 'camb', 'class' or 'external'. Defaults to 'camb'
     memorize_cosmo              : bool
@@ -122,9 +122,9 @@ def init(
     boltzmann_yaml_path         : str
                                   Path to the configurations for the Einstein-Boltzmann solvers. Defaults to the `boltzmann_yaml_files` folder in the home directory of cosmicfishpie
     class_config_yaml           : str
-                                  Path to the configurations for class. Defaults to '\<boltzmann_yaml_path\>/class/default.yaml'
+                                  Path to the configurations for class. Defaults to 'boltzmann_yaml_path/class/default.yaml'
     camb_config_yaml            : str
-                                  Path to the configurations for camb. Defaults to '\<boltzmann_yaml_path\>/camb/default.yaml'
+                                  Path to the configurations for camb. Defaults to 'boltzmann_yaml_path/camb/default.yaml'
     fishermatrix_file_extension : str
                                   Specifies in what kind of file the result Fisher matrix should be saved. Defaults to '.txt'
     savgol_polyorder            : float
@@ -205,8 +205,8 @@ def init(
     )
     settings.setdefault("survey_name", surveyName)
     settings.setdefault("survey_specs", "ISTF-Optimistic")
-    settings.setdefault("survey_name_photo", "")
-    settings.setdefault("survey_name_spectro", "")
+    settings.setdefault("survey_name_photo", "Euclid-Photometric-ISTF-Pessimistic")
+    settings.setdefault("survey_name_spectro", "Euclid-Spectroscopic-ISTF-Pessimistic")
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -236,6 +236,10 @@ def init(
     )
     settings.setdefault(
         "camb_config_yaml", os.path.join(settings["boltzmann_yaml_path"], "camb", "default.yaml")
+    )
+    settings.setdefault(
+        "symbolic_config_yaml",
+        os.path.join(settings["boltzmann_yaml_path"], "symbolic", "default.yaml"),
     )
     settings.setdefault("fishermatrix_file_extension", ".txt")
     settings.setdefault("savgol_window", 101)
@@ -315,13 +319,20 @@ def init(
         parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
         boltzmann_cambpars = parsed_boltzmann
         external = None
+    elif settings["code"] == "symbolic":
+        input_type = settings["code"]
+        global boltzmann_symbolicpars
+        boltzmann_yaml_file = open(settings["symbolic_config_yaml"])
+        parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
+        boltzmann_symbolicpars = parsed_boltzmann
+        external = None
     else:
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
-        print("Defaulting to EBS camb")
+        print("No symbolic_pofk specified.")
         # settings['code'] = 'camb'
-        input_type = settings["code"]
         external = None
+        raise ValueError("No cosmology calculator specified")
 
     def ngal_per_bin(ngal_sqarmin, zbins):
         # compute num galaxies per bin for whole sky area
@@ -377,14 +388,22 @@ def init(
     surveyNameSpectro = settings.get("survey_name_spectro")
     if "Euclid" in surveyName:
         if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
-            surveyNamePhoto = "Euclid-Photometric-ISTF-Optimistic"
-            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Optimistic"
-        if settings["survey_name_photo"] != "":
-            yaml_file_1 = open(os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml"))
+            surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
+            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
+        if surveyNamePhoto != "":
+            file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
+            if not os.path.isfile(file_1_path):
+                print(f"specifications file : {file_1_path} not found!")
+                raise ValueError
+            yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
             specificationsf = parsed_yaml_file_1["specifications"]
-        if settings["survey_name_spectro"] != "":
-            yaml_file_2 = open(os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml"))
+        if surveyNameSpectro != "":
+            file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
+            if not os.path.isfile(file_2_path):
+                print(f"specifications file : {file_2_path} not found!")
+                raise ValueError
+            yaml_file_2 = open(file_2_path)
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)
@@ -591,7 +610,7 @@ def init(
 
     global photoparams
     if photopars is None:
-        print("No photo-z parameters specified. Using default: Euclid-like")
+        # print("No photo-z parameters specified. Using default: Euclid-like")
         photopars = {
             "fout": 0.1,  # does this need to be updated for SKA1??
             "co": 1,
@@ -605,7 +624,7 @@ def init(
 
     global IAparams
     if IApars is None:
-        print("No IA specified. Using default: eNLA")
+        # print("No IA specified. Using default: eNLA")
         IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
     IAparams = IApars
     if "WL" in obs:
@@ -688,9 +707,9 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    print(freeparams)
-    print("                                                            ***")
+    # print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
+    # print(freeparams)
+    # print("                                                            ***")
 
     global latex_names
     latex_names_def = {

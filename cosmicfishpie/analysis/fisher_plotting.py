@@ -1,3 +1,8 @@
+"""
+   :synopsis: Module that contains the fisher_plotting class and related functions for
+              generating contour plots and visualizing Fisher matrix results using getdist.
+"""
+
 import copy
 import os
 

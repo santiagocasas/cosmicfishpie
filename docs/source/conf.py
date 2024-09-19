@@ -62,6 +62,8 @@ exclude_patterns = ["_build"]
 
 source_suffix = [".rst", ".md"]
 
+modindex_common_prefix = ["cosmicfishpie."]
+
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),

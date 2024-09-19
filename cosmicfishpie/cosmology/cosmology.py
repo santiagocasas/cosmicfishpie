@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""COSMOLOGY
+"""
+COSMOLOGY.
 
 This module contains useful cosmological functions.
 
@@ -33,6 +34,21 @@ memory = Memory(cachedir, verbose=0)
 
 
 def _dcom_func_trapz(zi, interpolfunc):
+    """
+    Calculate the comoving distance using the trapezoidal rule.
+
+    Parameters
+    ----------
+    zi : float
+        Redshift value
+    interpolfunc : callable
+        Interpolation function for H(z)
+
+    Returns
+    -------
+    float
+        Comoving distance
+    """
     zt = np.linspace(0.0, zi, 100)
     Hzt = interpolfunc(zt)
     dcom = integrate.trapezoid(1 / Hzt, zt)
@@ -41,6 +57,25 @@ def _dcom_func_trapz(zi, interpolfunc):
 
 @memory.cache
 def memorize_external_input(cosmopars, fiducialcosmopars, external, extra_settings):
+    """
+    Memorize external input for caching purposes.
+
+    Parameters
+    ----------
+    cosmopars : dict
+        Cosmological parameters
+    fiducialcosmopars : dict
+        Fiducial cosmological parameters
+    external : dict
+        External input settings
+    extra_settings : dict
+        Additional settings
+
+    Returns
+    -------
+    external_input
+        Memorized external input
+    """
     externalinput = external_input(
         cosmopars,
         fiducialcosmopars=fiducialcosmopars,
@@ -59,15 +94,15 @@ class boltzmann_code:
         """
         Initialize the boltzmann_code class.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             The cosmological parameters object to be copied.
         code : str, optional
             The Boltzmann code to be used (default is 'camb').
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError
             If an unsupported Boltzmann code is specified.
         """
@@ -181,8 +216,8 @@ class boltzmann_code:
         """
         Print cosmological parameters.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary of cosmological parameters to print.
         feedback : int, optional
@@ -201,8 +236,8 @@ class boltzmann_code:
         """
         Calculate the growth rate f(z,k).
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         D_growth_zk : callable
             Function that returns the growth factor D(z,k).
         z_array : array_like
@@ -214,8 +249,8 @@ class boltzmann_code:
         fixed_k : float, optional
             Fixed k value to use if k_fix is True (default is 1e-3).
 
-        Returns:
-        --------
+        Returns
+        -------
         tuple
             Growth rate f(z,k) and the corresponding z array.
         """
@@ -237,17 +272,21 @@ class boltzmann_code:
         This function computes sigma8, which is the RMS matter fluctuation in spheres of 8 h^-1 Mpc radius,
         for a range of redshifts. It uses a provided power spectrum interpolator to perform the calculation.
 
-        Args:
-            z_range (numpy.ndarray): Array of redshift values at which to calculate sigma8.
-        pk_interpolator (callable): A function that takes (z, k) as arguments and returns
-                                the power spectrum P(k,z). It should be able to handle
-                                array inputs for both z and k.
+        Parameters
+        ----------
+        z_range : numpy.ndarray
+            Array of redshift values at which to calculate sigma8.
+        pk_interpolator : callable
+            A function that takes (z, k) as arguments and returns
+            the power spectrum P(k,z). It should be able to handle
+            array inputs for both z and k.
 
-        Returns:
-        scipy.interpolate.UnivariateSpline: A 1-D interpolation function sigma8(z) that can be
-                                            used to obtain sigma8 values for any redshift within
-                                            the input range.
-
+        Returns
+        -------
+        scipy.interpolate.UnivariateSpline
+            A 1-D interpolation function sigma8(z) that can be
+            used to obtain sigma8 values for any redshift within
+            the input range.
         """
         R = 8.0 / (h_value)
         kmin = np.min(k_range)
@@ -276,15 +315,15 @@ class boltzmann_code:
         """
         Set the parameters for CAMB computation.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary containing the cosmological parameters.
         camb : module
             The CAMB module.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method sets up CAMB parameters and prepares for power spectrum computation.
         """
         # Adding hard coded CAMB options
@@ -332,15 +371,15 @@ class boltzmann_code:
         """
         Convert cosmological parameters to CAMB format.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary of cosmological parameters.
         camb : module
             The CAMB module.
 
-        Returns:
-        --------
+        Returns
+        -------
         dict
             Dictionary of CAMB-formatted cosmological parameters.
         """
@@ -427,8 +466,8 @@ class boltzmann_code:
         """
         Rescale As to match a target sigma8 value.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cambpars : dict
             CAMB parameters.
         camb : module
@@ -436,8 +475,8 @@ class boltzmann_code:
         insigma8 : float
             Target sigma8 value.
 
-        Returns:
-        --------
+        Returns
+        -------
         float
             Rescaled As value.
         """
@@ -474,13 +513,13 @@ class boltzmann_code:
         """
         Compute and store CAMB results.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         camb : module
             The CAMB module.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method computes various cosmological quantities using CAMB and stores
         them in the results attribute.
         """
@@ -648,13 +687,13 @@ class boltzmann_code:
         """
         Set the parameters for CLASS computation.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary containing the cosmological parameters.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method sets up CLASS parameters and prepares for power spectrum computation.
         """
         tini_basis = time()
@@ -681,13 +720,13 @@ class boltzmann_code:
         """
         Convert cosmological parameters to CLASS format.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary of cosmological parameters.
 
-        Returns:
-        --------
+        Returns
+        -------
         dict
             Dictionary of CLASS-formatted cosmological parameters.
         """
@@ -751,13 +790,13 @@ class boltzmann_code:
         """
         Compute and store CLASS results.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         Class : class
             The CLASS class.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method computes various cosmological quantities using CLASS and stores
         them in the results attribute.
         """
@@ -873,26 +912,26 @@ class boltzmann_code:
         conversions, derives some parameters, and ensures consistency between
         different parameterizations (e.g., sigma8 and As).
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary containing the input cosmological parameters.
 
-        Returns:
-        --------
+        Returns
+        -------
         dict
             A new dictionary with the converted and adjusted parameters suitable
             for symbolic computation.
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError
             If there's an issue with the sigma8 to As conversion or vice versa.
         KeyError
             If required parameters are missing from the input.
 
-        Notes:
-        ------
+        Notes
+        -----
         - The method performs conversions between h and H0, ombh2 and Omegab,
           and handles various representations of the primordial power spectrum
           amplitude (As, sigma8).
@@ -969,13 +1008,13 @@ class boltzmann_code:
         """
         Set up parameters for symbolic computation.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method prepares the cosmological parameters and numerical settings
         for symbolic power spectrum computation.
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError
             If the cosmological model is not supported by the symbolic code.
         """
@@ -1006,13 +1045,13 @@ class boltzmann_code:
         """
         Compute and store results using symbolic computation.
 
-        Returns:
-        --------
+        Returns
+        -------
         types.SimpleNamespace
             Namespace containing the computed cosmological quantities.
 
-        Notes:
-        ------
+        Notes
+        -----
         This method computes various cosmological quantities using symbolic
         computation and stores them in the results attribute.
         """
@@ -1097,8 +1136,8 @@ class external_input:
         """
         Initialize the external_input class.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             The cosmological parameters object to be copied.
         fiducialcosmopars : dict, optional
@@ -1108,8 +1147,8 @@ class external_input:
         extra_settings : dict, optional
             Dictionary of settings relevant for external input (default is an empty dict).
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError
             If the external_input class has been initialized wrongly.
         """
@@ -1157,8 +1196,8 @@ class external_input:
         """
         Load text files containing cosmological data.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         parameter_string : str, optional
             String representing the parameter set to load (default is "fiducial_eps_0").
         """
@@ -1283,12 +1322,12 @@ class external_input:
         """
         Get the parameter string from the cosmological parameters.
 
-        Parameters:
+        Parameters
         -----------
         cosmopars : dict
             Dictionary of cosmological parameters.
 
-        Returns:
+        Returns
         --------
         str
             Parameter string representing the input cosmological parameters.
@@ -1326,7 +1365,7 @@ class external_input:
         """
         Calculate interpolated results from the input data.
 
-        Parameters:
+        Parameters
         -----------
         parameter_string : str, optional
             String representing the parameter set to use (default is "fiducial_eps_0").
@@ -1452,15 +1491,15 @@ class cosmo_functions:
         """
         Initialize the cosmo_functions class.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         cosmopars : dict
             Dictionary containing the cosmological parameters.
         input : str, optional
             Input type for the cosmological code (default is None).
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError
             If an unsupported input type is specified.
         """

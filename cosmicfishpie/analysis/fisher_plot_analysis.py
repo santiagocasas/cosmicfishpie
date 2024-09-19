@@ -14,12 +14,7 @@
 # ----------------------------------------------------------------------------------------
 
 """
-.. module:: fisher_plot_analysis
-   :platform: Unix
    :synopsis: Module that contains a set of tools to perform the analysis of a set of Fisher matrices.
-
-.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
-
 """
 
 import copy
@@ -447,26 +442,26 @@ class CosmicFish_FisherAnalysis:
         This method analyzes each Fisher matrix in the list, calculating and printing
         various statistics including the Figure of Merit (FoM) and parameter constraints.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         parstomarg : list of str, optional
             List of parameter names to marginalize over. If None, the first two
             parameters of each Fisher matrix are used.
         fisher_list : list of FisherMatrix objects, optional
             List of Fisher matrices to analyze. If None, uses the instance's fisher_list.
 
-        Prints:
-        -------
+        Prints
+        ------
         For each Fisher matrix:
-        - Fisher matrix name
-        - Figure of Merit (FoM) for marginalized parameters
-        - For each parameter:
-            - Fiducial value
-            - 1-sigma error
-            - Percent error
+            - Fisher matrix name
+            - Figure of Merit (FoM) for marginalized parameters
+            - For each parameter:
+                - Fiducial value
+                - 1-sigma error
+                - Percent error
 
-        Note:
-        -----
+        Note
+        ----
         This method modifies the instance's fisher_list if a new list is provided.
         """
         if fisher_list is not None:

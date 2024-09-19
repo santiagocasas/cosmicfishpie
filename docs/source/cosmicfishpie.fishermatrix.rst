@@ -27,11 +27,3 @@ cosmicfishpie.fishermatrix.derivatives module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cosmicfishpie.fishermatrix
-   :members:
-   :undoc-members:
-   :show-inheritance:

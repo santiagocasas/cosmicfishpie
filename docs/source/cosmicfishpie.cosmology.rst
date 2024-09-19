@@ -19,11 +19,3 @@ cosmicfishpie.cosmology.nuisance module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cosmicfishpie.cosmology
-   :members:
-   :undoc-members:
-   :show-inheritance:

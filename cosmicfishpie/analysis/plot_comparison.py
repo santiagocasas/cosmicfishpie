@@ -1,5 +1,8 @@
-# Code for comparison of Fisher Matrix entries
-# Taken from original plfmat.py code by Dida Markovic and Santiago Casas
+"""
+   :synopsis: Module for creating comparison plots of Fisher Matrix entries and related visualizations.
+   :module author: Dida Markovic, Santiago Casas, and other contributors to the CosmicFishPie project.
+"""
+
 import os
 
 import matplotlib
@@ -94,7 +97,8 @@ def og_plot_shades(
     dots_legend_fontsize=20,
     ylabelfontsize=20,
     ncol_legend=None,
-    colors=snscolors,
+    colors=None,
+    color_palette='colorblind',
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
@@ -104,16 +108,13 @@ def og_plot_shades(
     xticksrotation=0,
 ):
     LW = LW
-    # plt.style.use('tableau-colorblind10')
     colD = colordark  # 'lightslategray'
     colL = colorlight
     aalpha = alpha
     darkgreypatch = mpatches.Patch(color=colD, alpha=aalpha)
     lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
-    # if cols==[]:
-    #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
-    cols = colors
-    # ax.set_position([0.1,0.1,0.8,0.8])
+    if colors is None:
+        colors = sns.color_palette(color_palette)
     if lighty_arr is not None:
         max_l = np.max(lighty_arr, 0)
         min_l = np.min(lighty_arr, 0)
@@ -139,7 +140,7 @@ def og_plot_shades(
     for ii, lbl in enumerate(mats_labels):
         if plotlight:
             ax.plot(
-                x_arr, lighty_arr[ii, :], marks[ii], c=cols[ii], ms=LW * 8, alpha=aalpha, label=lbl
+                x_arr, lighty_arr[ii, :], marks[ii], c=colors[ii], ms=LW * 8, alpha=aalpha, label=lbl
             )
         if plotdark:
             if not plotlight:
@@ -152,7 +153,7 @@ def og_plot_shades(
                 x_arr,
                 darky_arr[ii, :],
                 marks[ii],
-                c=cols[ii],
+                c=colors[ii],
                 ms=ms,
                 mew=2,
                 alpha=aalpha,
@@ -237,7 +238,6 @@ def plot_shades(
     darky_arr=None,
     mats_labels=None,
     lightdark_names=["marg.", "unmarg."],
-    cols=[],
     plotdark=True,
     plotlight=True,
     yrang=None,
@@ -253,7 +253,8 @@ def plot_shades(
     dots_legend_fontsize=20,
     ylabelfontsize=20,
     ncol_legend=None,
-    colors=snscolors,
+    colors=None,
+    color_palette='colorblind',
     legend_title_fontsize=None,
     legend_title=None,
     y_label="Differences",  # r'% differences on ' +r'$\sigma_i$'
@@ -269,10 +270,8 @@ def plot_shades(
     aalpha = alpha
     darkgreypatch = mpatches.Patch(color=colD, alpha=aalpha)
     lightgreypatch = mpatches.Patch(color=colL, alpha=aalpha, hatch=light_hatch)
-    # if cols==[]:
-    #    cols = [cc['color'] for cc in list(matplotlib.rcParams['axes.prop_cycle'])]
-    cols = colors
-    # ax.set_position([0.1,0.1,0.8,0.8])
+    if colors is None:
+        colors = sns.color_palette(color_palette)
     if lighty_arr is not None:
         max_l = np.max(lighty_arr, 0)
         min_l = np.min(lighty_arr, 0)
@@ -312,7 +311,7 @@ def plot_shades(
             ax.scatter(
                 x_arr,
                 lighty_arr[ii, :],
-                color=cols[ii],
+                color=colors[ii],
                 marker=marks[ii],
                 s=(LW * 8) ** 2,
                 label=lbl,
@@ -321,12 +320,10 @@ def plot_shades(
             )
         if plotdark:
             if not plotlight:
-                # ms=LW*12; lbl=lbl
-                # ax.scatter(x_arr, darky_arr[ii], color=cols[ii], marker=marks[ii], s=ms, label=lbl)
                 ax.scatter(
                     x_arr,
                     darky_arr[ii, :],
-                    color=cols[ii],
+                    color=colors[ii],
                     marker=marks[ii],
                     s=(LW * 8) ** 2,
                     label=lbl,
@@ -458,7 +455,7 @@ def ploterrs(
     savefig=True,
     y_label="Errors",
     ncol_legend=None,
-    colors=snscolors,
+    colors=None,
     legend_title_fontsize=None,
     legend_title=None,
     yticklabsize=20,

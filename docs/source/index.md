@@ -1,5 +1,3 @@
-# **cosmicfishpie**
-
 ```{toctree}
 :maxdepth: 2
 :hidden:
@@ -19,9 +17,11 @@ License <https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICE
 GitHub Repository <https://github.com/santiagocasas/cosmicfishpie>
 ```
 
+```{include} overview.md
+```
+
 ## Indices and tables
 
 ```{eval-rst}
-* :ref:`genindex`
 * :ref:`modindex`
 ```

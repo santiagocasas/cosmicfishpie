@@ -1,10 +1,10 @@
 # Cosmicfishpie
 
-## A Comprehensive Tool for Fisher Forecasts in Cosmology
+A Comprehensive Tool for Fisher Forecasts in Cosmology
 
 ### Introduction
 
-`Cosmcfishpie` is a cosmological code to help researchers prepare for upcoming missions like Euclid, DESI, or SKAO. It contains a vast tool set to  produce Fisher forecasts for different applications. This code offers you easy access to cosmological quantities from leading Einstein-Boltzmann solvers `Class` and `CAMB` or the ability to directly read precomputed cosmologies from files.
+`Cosmicfishpie` is a cosmological code to help researchers prepare for upcoming missions like Euclid, DESI, or SKAO. It contains a vast tool set to  produce Fisher forecasts for different applications. This code offers you easy access to cosmological quantities from leading Einstein-Boltzmann solvers `Class` and `CAMB` or the ability to directly read precomputed cosmologies from files.
 
 `Cosmicfishpie` allows the user to compute different cosmological observables like 3D power spectra of galaxies, angular power spectra of the cosmic microwave background, galaxy clustering or cosmic shear measurements. The code provides flexibility with different finite distance differentiation schemes for calculating the Fisher information matrix.
 

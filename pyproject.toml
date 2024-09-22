@@ -48,7 +48,9 @@ dev = [
     "sphinx-autodoc-typehints==1.23.3",
     "sphinx_rtd_theme>=1.0",
     "packaging",
-    "camb"
+    "camb",
+    "colossus",
+    "symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git"
 ]
 
 [project.scripts]

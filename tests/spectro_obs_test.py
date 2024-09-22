@@ -1,8 +1,8 @@
-from cosmicfishpie.LSSsurvey.spectro_obs import ComputeGalSpectro
-from cosmicfishpie.cosmology.nuisance import Nuisance
-import cosmicfishpie.configs.config as cfg
-import pytest
 import numpy as np
+import pytest
+
+from cosmicfishpie.cosmology.nuisance import Nuisance
+from cosmicfishpie.LSSsurvey.spectro_obs import ComputeGalSpectro
 
 
 @pytest.fixture

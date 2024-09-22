@@ -1,4 +1,5 @@
 import pytest
+
 from cosmicfishpie.fishermatrix import cosmicfish as cff
 
 code_to_use = "camb"

@@ -2,7 +2,7 @@ import pytest
 
 from cosmicfishpie.fishermatrix import cosmicfish as cff
 
-code_to_use = "camb"
+code_to_use = "symbolic"
 
 
 @pytest.fixture(scope="module")

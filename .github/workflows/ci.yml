@@ -14,10 +14,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install .[dev]
-      - name: Run coverage
+      - name: Run tests
         run: |
-          coverage report -m
-          coverage xml
+          pytest
       - name: coverage.py badge
         uses: tj-actions/coverage-badge-py@v2.0.3
       - name: Verify Changed files
@@ -25,7 +24,6 @@ jobs:
         id: verify-changed-files
         with:
           files: coverage.svg
-
       - name: Commit files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
@@ -33,13 +31,9 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add coverage.svg
           git commit -m "Updated coverage.svg"
-
       - name: Push changes
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.github_token }}
           branch: ${{ github.ref }}      
-      - name: Run tests
-        run: |
-          pytest

@@ -29,7 +29,7 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 [project.optional-dependencies]
 dev = [
     "ruff",
-    "mypy>=1.0,<1.9",
+    "mypy>=1.0,<1.12",
     "black>=24.4.2,<25.0",
     "isort>=5.12,<5.14",
     "pytest",
@@ -39,9 +39,9 @@ dev = [
     "build",
     "setuptools",
     "wheel",
-    "Sphinx>=4.3.0,<7.1.0",
+    "Sphinx>=4.3.0,<8.1.0",
     "furo==2024.1.29",
-    "myst-parser>=1.0,<2.1",
+    "myst-parser>=1.0,<4.1",
     "myst_parser",
     "sphinx-copybutton==0.5.2",
     "sphinx-autobuild==2021.3.14",

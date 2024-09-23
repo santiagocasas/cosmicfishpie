@@ -28,3 +28,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.1.0 : Implemented symbolic as a new boltzmann solver class. Fixes of feedback prints. More docstrings.
 1.1.1 : Resolved gcsp bias bug, new test suite. 
 1.1.2 : Coverage badge
+1.1.3 : Coverage reports with Codecov

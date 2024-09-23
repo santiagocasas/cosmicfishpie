@@ -1,8 +1,6 @@
 from cosmicfishpie.LSSsurvey.photo_cov import PhotoCov
-from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
 
 # You might need to add more imports depending on what you're testing
-
 
 
 def test_photo_cov_initialization(photo_fisher_matrix):
@@ -25,6 +23,7 @@ def test_get_cls(photo_fisher_matrix):
     cls = photo_cov.getcls(allparsfid)
     assert isinstance(cls, dict)
     # Add more specific assertions based on what you expect in the result
+
 
 def test_get_cls_noise(photo_fisher_matrix):
     cosmoFM = photo_fisher_matrix

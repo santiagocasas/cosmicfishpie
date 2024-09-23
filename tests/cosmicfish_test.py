@@ -1,3 +1,4 @@
+from cosmicfishpie.analysis.fisher_operations import marginalise_over
 from cosmicfishpie.utilities.utils import printing as cpr
 
 
@@ -13,3 +14,13 @@ def test_FisherMatrix(spectro_fisher_matrix):
     assert hasattr(fish, "fisher_matrix")
     assert hasattr(fish, "fisher_matrix_inv")
     assert hasattr(fish, "get_confidence_bounds")
+
+
+def test_marginalise_over(spectro_fisher_matrix):
+    fish = spectro_fisher_matrix.compute(max_z_bins=1)
+    marginalized_fish = marginalise_over(fish, ["h"])
+    assert hasattr(marginalized_fish, "fisher_matrix")
+    assert hasattr(marginalized_fish, "fisher_matrix_inv")
+    assert hasattr(marginalized_fish, "get_confidence_bounds")
+    assert hasattr(marginalized_fish, "get_param_names")
+    assert len(marginalized_fish.get_param_names()) == (1 + 2)

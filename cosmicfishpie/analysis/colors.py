@@ -14,11 +14,7 @@
 # ----------------------------------------------------------------------------------------
 
 """
-.. module:: colors
-   :platform: Unix
    :synopsis: A collection of color utilities.
-
-.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
 """
 
 # ***************************************************************************************

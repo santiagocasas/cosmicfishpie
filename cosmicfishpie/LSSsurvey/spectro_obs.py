@@ -31,7 +31,7 @@ class ComputeGalSpectro:
         PShotpars=None,
         fiducial_cosmo=None,
         bias_samples=["g", "g"],
-        use_bias_funcs=True,
+        use_bias_funcs=False,
     ):
         """class to compute the observed power spectrum of a spectroscopic galaxy clustering experiment
 
@@ -121,7 +121,7 @@ class ComputeGalSpectro:
         self.feed_lvl = cfg.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="Entered ComputeGalSpectro",
             instance=self,
         )
@@ -188,15 +188,12 @@ class ComputeGalSpectro:
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
 
         # Load the Nuisance Parameters
-        self.fiducial_spectrobiaspars = cfg.Spectrobiasparams
         self.use_bias_funcs = use_bias_funcs
+        self.fiducial_spectrobiaspars = cfg.Spectrobiasparams
         if spectrobiaspars is None:
-            spectrobiaspars = self.fiducial_spectrobiaspars
+            self.spectrobiaspars = self.fiducial_spectrobiaspars
         else:
-            # If spectrobiaspars are not passed explicitly, use interpolated
-            # bias funcs
-            self.use_bias_funcs = False
-        self.spectrobiaspars = spectrobiaspars
+            self.spectrobiaspars = spectrobiaspars
 
         self.fiducial_PShotpars = cfg.PShotparams
         if PShotpars is None:
@@ -241,7 +238,7 @@ class ComputeGalSpectro:
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="GalSpec initialization done in: ",
             time_ini=tini,
             time_fin=tend,
@@ -470,17 +467,6 @@ class ComputeGalSpectro:
 
         return bao
 
-    # def bterm_key(self):
-    #     bstr = self.vary_bias_str
-    #     if 'GCsp' in self.observables:
-    #         bstr = bstr+'g'
-    #     elif 'IM' in self.observables:
-    #         bstr = bstr+'IM'
-    #     if self.s8terms:
-    #         bstr = bstr+'s8'
-    #     bstr = bstr+'_'
-    #     return bstr
-
     def bterm_fid(self, z, bias_sample="g"):
         """
         Calculates the fiducial bias term at a given redshift z, of either galaxies or intensity mapping.
@@ -501,10 +487,14 @@ class ComputeGalSpectro:
             # This attribute is created when ComputeGalSpectro is called
             bfun = self.gcsp_bias_of_z
             zmidsbins = self.gcsp_z_bin_mids
+            zbins = self.nuisance.gcsp_zbins()
+            upt.debug_print(f"zmidsbins: {zmidsbins}")
             bdict = self.spectrobiaspars
+            upt.debug_print(f"bdict: {bdict}")
         elif bias_sample == "I":
             bfun = self.IM_bias_of_z  # This attribute is created when ComputeGalIM is called
             zmidsbins = self.IM_z_bin_mids
+            zbins = self.nuisance.gcsp_zbins()
             bdict = self.IMbiaspars
         if self.use_bias_funcs:
             if self.s8terms:
@@ -513,14 +503,19 @@ class ComputeGalSpectro:
                 bterm = bfun(z)
         elif self.use_bias_funcs is False:
             # returns len(zmids)-1 if z above max(zmids)
-            zii = unu.bisection(zmidsbins, z)
+            zii = unu.bisection(zbins, z)
+            upt.debug_print(f"zii: {zii}")
             # returns 0 if z below min(zmids)
             zii += 1  # get bin index from 1 to len(Nbins)
+            upt.debug_print(f"zii after adding 1: {zii}")
             bkey, bval = self.nuisance.bterm_z_key(
                 zii, zmidsbins, self.fiducialcosmo, bias_sample=bias_sample
             )
-
+            upt.debug_print(f"bkey: {bkey}")
+            upt.debug_print(f"bval: {bval}")
             bterm = bdict[bkey]
+            upt.debug_print(f"bdict: {bdict}")
+            upt.debug_print(f"bterm: {bterm}")
             if "ln" in bkey:
                 # Exponentiate bias term which is in ln()
                 bterm = np.exp(bterm)
@@ -555,7 +550,7 @@ class ComputeGalSpectro:
 
         .. math::
 
-            \\mathrm{RSD} = \\left(b_i+f\,\\mu^2\\right)
+            \\mathrm{RSD} = \\left(b_i+f\\,\\mu^2\\right)
 
         """
         bterm = b_i  # get bs8 as an external parameter, unless it is none, then get it from cosmo
@@ -847,7 +842,7 @@ class ComputeGalSpectro:
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="observed P_gg computation took: ",
             time_ini=tstart,
             time_fin=tend,
@@ -902,7 +897,9 @@ class ComputeGalIM(ComputeGalSpectro):
 
         tini = time()
         self.feed_lvl = cfg.settings["feedback"]
-        print("Entered ComputeGalIM")
+        upt.time_print(
+            feedback_level=self.feed_lvl, min_level=2, text="Entered ComputeGalIM", instance=self
+        )
 
         if "IM" not in self.observables:
             raise AttributeError("Observables list not defined properly")
@@ -935,7 +932,7 @@ class ComputeGalIM(ComputeGalSpectro):
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="GalIM initialization done in: ",
             time_ini=tini,
             time_fin=tend,

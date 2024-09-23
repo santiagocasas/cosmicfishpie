@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    cosmicfishpie.CMBsurvey
    cosmicfishpie.LSSsurvey
@@ -13,23 +13,3 @@ Subpackages
    cosmicfishpie.cosmology
    cosmicfishpie.fishermatrix
    cosmicfishpie.utilities
-
-Submodules
-----------
-
-cosmicfishpie.version module
-----------------------------
-
-.. automodule:: cosmicfishpie.version
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cosmicfishpie
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :noindex:

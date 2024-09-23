@@ -29,7 +29,7 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 [project.optional-dependencies]
 dev = [
     "ruff",
-    "mypy>=1.0,<1.9",
+    "mypy>=1.0,<1.12",
     "black>=24.4.2,<25.0",
     "isort>=5.12,<5.14",
     "pytest",
@@ -39,16 +39,23 @@ dev = [
     "build",
     "setuptools",
     "wheel",
-    "Sphinx>=4.3.0,<7.1.0",
     "furo==2024.8.6",
-    "myst-parser>=1.0,<2.1",
+    "Sphinx>=4.3.0,<8.1.0",
+    "furo==2024.1.29",
+    "myst-parser>=1.0,<4.1",
     "myst_parser",
     "sphinx-copybutton==0.5.2",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.23.3",
     "sphinx_rtd_theme>=1.0",
-    "packaging"
+    "packaging",
+    "camb",
+    "colossus",
+    "symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git"
 ]
+
+[project.scripts]
+run-tests = "cosmicfishpie.tests.installation_test:main"  # Expose the test script as a CLI command
 
 [tool.setuptools.packages.find]
 exclude = [
@@ -97,6 +104,7 @@ reportPrivateImportUsage = false
 [tool.ruff]
 line-length = 115
 target-version = "py39"
+exclude = ["**/*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

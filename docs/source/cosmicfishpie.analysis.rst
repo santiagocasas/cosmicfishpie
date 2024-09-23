@@ -67,11 +67,3 @@ cosmicfishpie.analysis.utilities module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cosmicfishpie.analysis
-   :members:
-   :undoc-members:
-   :show-inheritance:

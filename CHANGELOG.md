@@ -24,3 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.0.6 : Restructured default parameters for EBS and Survey Specifications
 
 1.0.7 : Added a new installation script to download external data from the github
+1.0.8 : Overview documentation and initial tests
+1.1.0 : Implemented symbolic as a new boltzmann solver class. Fixes of feedback prints. More docstrings.
+1.1.1 : Resolved gcsp bias bug, new test suite. 
+1.1.2 : Coverage badge

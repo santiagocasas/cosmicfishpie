@@ -6,7 +6,7 @@ This is the main engine of CosmicFish.
 """
 import os
 import sys
-from copy import deepcopy
+from copy import copy, deepcopy
 from itertools import product
 from time import time
 
@@ -14,15 +14,10 @@ import numpy as np
 import pandas as pd
 from scipy.integrate import simpson
 
-import cosmicfishpie.CMBsurvey.CMB_cov as CMB_cov
-import cosmicfishpie.configs.config as cfg
-import cosmicfishpie.LSSsurvey.photo_cov as photo_cov
-import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
-import cosmicfishpie.LSSsurvey.spectro_cov as spec_cov
-import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
 from cosmicfishpie.analysis import fisher_matrix as fm
-
-# from cosmicfishpie.cosmology.cosmology import *
+from cosmicfishpie.CMBsurvey import CMB_cov
+from cosmicfishpie.configs import config as cfg
+from cosmicfishpie.LSSsurvey import photo_cov, photo_obs, spectro_cov, spectro_obs
 from cosmicfishpie.utilities.utils import filesystem as ufs
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
@@ -154,16 +149,17 @@ class FisherMatrix:
             spectrononlinearpars=spectrononlinearpars,
         )
 
-        self.fiducialcosmopars = cfg.fiducialparams
-        self.photopars = cfg.photoparams
-        self.IApars = cfg.IAparams
-        self.biaspars = cfg.biasparams
-        self.Spectrobiaspars = cfg.Spectrobiasparams
-        self.Spectrononlinpars = cfg.Spectrononlinearparams
-        self.IMbiaspars = cfg.IMbiasparams
-        self.PShotpars = cfg.PShotparams
-        self.observables = cfg.obs
-        self.freeparams = cfg.freeparams
+        self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
+        self.fiducialcosmo = copy(cfg.fiducialcosmo)
+        self.photopars = deepcopy(cfg.photoparams)
+        self.IApars = deepcopy(cfg.IAparams)
+        self.biaspars = deepcopy(cfg.biasparams)
+        self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+        self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
+        self.IMbiaspars = deepcopy(cfg.IMbiasparams)
+        self.PShotpars = deepcopy(cfg.PShotparams)
+        self.observables = deepcopy(cfg.obs)
+        self.freeparams = deepcopy(cfg.freeparams)
         self.allparams_fidus = {
             **self.fiducialcosmopars,
             **self.photopars,
@@ -175,10 +171,10 @@ class FisherMatrix:
         }
         self.parallel = parallel
         if "z_bins" in cfg.specs:
-            self.z_bins = cfg.specs["z_bins"]
+            self.z_bins = deepcopy(cfg.specs["z_bins"])
             self.num_z_bins = len(cfg.specs["z_bins"]) - 1
-            self.binrange = cfg.specs["binrange"]
-        self.feed_lvl = cfg.settings["feedback"]
+            self.binrange = deepcopy(cfg.specs["binrange"])
+        self.feed_lvl = deepcopy(cfg.settings["feedback"])
         allpars = {}
         allpars.update(self.fiducialcosmopars)
         allpars.update(self.IApars)
@@ -210,6 +206,12 @@ class FisherMatrix:
 
         tfishstart = time()
         if "GCph" in self.observables or "WL" in self.observables:
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=1,
+                text="----> Computing photo Fisher matrix",
+                instance=self,
+            )
             self.photo_obs_fid = photo_obs.ComputeCls(
                 self.fiducialcosmopars,
                 self.photopars,
@@ -225,15 +227,23 @@ class FisherMatrix:
                 fiducial_Cls=self.photo_obs_fid,
             )
             noisy_cls, covmat = self.photo_LSS.compute_covmat()
-            derivs = self.photo_LSS.compute_derivs()
-            photoFM = self.photo_LSS_fishermatrix(noisy_cls=noisy_cls, covmat=covmat, derivs=derivs)
+            self.photo_derivs = self.photo_LSS.compute_derivs()
+            photoFM = self.photo_LSS_fishermatrix(
+                noisy_cls=noisy_cls, covmat=covmat, derivs=self.photo_derivs
+            )
             finalFisher = deepcopy(photoFM)
 
         elif "GCsp" in self.observables or "IM" in self.observables:
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=1,
+                text="----> Computing Pk-spectro Fisher matrix",
+                instance=self,
+            )
             self.set_pk_settings()
             if "IM" in self.observables and "GCsp" in self.observables:
                 self.obs_spectrum = ["I", "g"]
-                self.pk_obs = spec_obs.ComputeGalIM(
+                self.pk_obs = spectro_obs.ComputeGalIM(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
@@ -241,21 +251,21 @@ class FisherMatrix:
 
             elif "IM" in self.observables:
                 self.obs_spectrum = ["I", "I"]
-                self.pk_obs = spec_obs.ComputeGalIM(
+                self.pk_obs = spectro_obs.ComputeGalIM(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
                 )
             elif "GCsp" in self.observables:
                 self.obs_spectrum = ["g", "g"]
-                self.pk_obs = spec_obs.ComputeGalSpectro(
+                self.pk_obs = spectro_obs.ComputeGalSpectro(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
                     spectrononlinearpars=self.Spectrononlinpars,
                 )
 
-            self.pk_cov = spec_cov.SpectroCov(
+            self.pk_cov = spectro_cov.SpectroCov(
                 self.fiducialcosmopars, fiducial_specobs=self.pk_obs, bias_samples=self.obs_spectrum
             )
             self.zmids = self.pk_cov.global_z_bin_mids
@@ -283,7 +293,7 @@ class FisherMatrix:
             tvf = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,
-                min_level=1,
+                min_level=2,
                 text="+++ Volumes computation computed in: ",
                 time_ini=tvi,
                 time_fin=tvf,
@@ -293,7 +303,7 @@ class FisherMatrix:
             tend = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,
-                min_level=1,
+                min_level=2,
                 text="+++ Derivatives computation done in: ",
                 time_ini=tini,
                 time_fin=tend,
@@ -301,7 +311,6 @@ class FisherMatrix:
             )
             self.allparams = self.pk_deriv.fiducial_allpars
             pk_Fish = self.pk_LSS_Fisher(nbins=max_z_bins)
-            print("Redshift binned Fisher shape: ", pk_Fish.shape)
             specFM = np.sum(pk_Fish, axis=0)
             finalFisher = deepcopy(specFM)
 
@@ -310,6 +319,12 @@ class FisherMatrix:
             or "CMB_E" in self.observables
             or "CMB_B" in self.observables
         ):
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=1,
+                text="----> Computing CMB Fisher matrix",
+                instance=self,
+            )
             CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True)
             noisy_cls, covmat = CMB.compute_covmat()
             derivs = CMB.compute_derivs()
@@ -363,7 +378,7 @@ class FisherMatrix:
         dict
             A dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and varied parameter
         """
-        self.pk_deriv = spec_cov.SpectroDerivs(
+        self.pk_deriv = spectro_cov.SpectroDerivs(
             z_arr,
             self.Pk_kmesh,
             self.Pk_mumesh,
@@ -390,13 +405,13 @@ class FisherMatrix:
         fisherMatrix = np.zeros((nbins, len(self.parslist), len(self.parslist)))
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=3,
             text="Computing Pk Fisher matrix, shape: " + str(fisherMatrix.shape),
             instance=self,
         )
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=1,
+            min_level=2,
             text="k_min = {:.3f}Mpc^-1, k_max = {:.3f}Mpc^-1,".format(
                 self.kmin_fish, self.kmax_fish
             ),
@@ -580,7 +595,7 @@ class FisherMatrix:
                         tparend = time()
                         upt.time_print(
                             feedback_level=self.feed_lvl,
-                            min_level=1,
+                            min_level=3,
                             text="FisherV entry ({}, {}) for ell index {} done in ".format(
                                 par1, par2, i_ell
                             ),
@@ -706,7 +721,7 @@ class FisherMatrix:
                     upt.time_print(
                         feedback_level=self.feed_lvl,
                         min_level=1,
-                        text="Removed free param: {:s} = {:s}".format(key, removedpar),
+                        text="Removed free param: {:s} = {:f}".format(key, removedpar),
                         instance=self,
                     )
                 else:
@@ -811,7 +826,7 @@ class FisherMatrix:
 
     def recap_options(self):
         """This will print all the selected options into the standard output"""
-        if cfg.settings["feedback"] > 0:
+        if cfg.settings["feedback"] > 1:
             print("")
             print("----------RECAP OF SELECTED OPTIONS--------")
             print("")

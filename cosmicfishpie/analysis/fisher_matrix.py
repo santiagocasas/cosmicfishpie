@@ -14,15 +14,10 @@
 # ----------------------------------------------------------------------------------------
 
 """
-.. module:: fisher_matrix
-   :platform: Unix
    :synopsis: Module that contains the fisher_matrix class and the operations defined on it.
               The idea is that of creating a Fisher matrix safely, with all operations being
               well defined and safe-guarded once the input matrix is accepted as a Fisher
               matrix.
-
-.. moduleauthor:: Marco Raveri <mraveri@uchicago.edu> for the CosmicFish code.
-
 """
 
 # ***************************************************************************************

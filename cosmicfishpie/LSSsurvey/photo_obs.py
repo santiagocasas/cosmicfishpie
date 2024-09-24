@@ -225,12 +225,19 @@ class ComputeCls:
         self.tracer = cfg.settings["GCph_Tracer"]
         self.binrange = cfg.specs["binrange"]
         self.zsamp = int(round(200 * cfg.settings["accuracy"]))
-        self.ellsamp = int(round(100 * cfg.settings["accuracy"]))
+        if cfg.settings["ell_sampling"] == "accuracy":
+            self.ellsamp = int(round(100 * cfg.settings["accuracy"]))
+        else:
+            if type(cfg.settings["ell_sampling"])==int:
+                self.ellsamp = cfg.settings["ell_sampling"]
+            else:
+                raise ValueError("ell_sampling should be an integer or 'accuracy'")
         self.ell = np.logspace(
-            np.log10(cfg.specs["ellmin"]), np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
+            np.log10(cfg.specs["ellmin"]), 
+            np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
         )
-        self.z_min = cfg.specs["z_bins"][0]
-        self.z_max = cfg.specs["z_bins"][-1]
+        self.z_min = cfg.specs["z_bins_ph"][0]
+        self.z_max = cfg.specs["z_bins_ph"][-1]
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
         self.dz = np.mean(np.diff(self.z))
 
@@ -284,7 +291,7 @@ class ComputeCls:
         )
 
         tcls1 = time()
-        self.result = self.computecls()
+        self.result = self.computecls_vectorized()
         tcls2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -673,6 +680,80 @@ class ComputeCls:
                 time_fin=tbin,
             )
             tcell = tbin
+
+        tend = time()
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=3,
+            text="Cls integral computation done in: ",
+            instance=self,
+            time_ini=tstart,
+            time_fin=tend,
+        )
+
+        return cls
+
+
+    def computecls_vectorized(self):
+        """Vectorized function to compute the angular power spectrum for all observables, redshift bins and multipoles.
+
+        Returns
+        -------
+        dict
+            a dictionary containing all auto and cross correlation angular power spectra. Its keys are formatted to have an array of the power spectra in 'X ixY j'. Also the multipoles for which the angular power spectra were computed for are found in 'ells'.
+
+        Note
+        -----
+        Implements the following equation:
+
+            .. math::
+                C_{i,j}^{X,Y}(\\ell) = c \\int \\mathrm{d}z \\frac{W_i^X (z)W_j^Y (z)}{ H(z) r^2(z)}
+                P_{\\delta \\delta} \\big[\\frac{\\ell + 1/2}{r(z)} , z \\big]
+        """
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=2,
+            text="Computing Cls integral for {}".format(self.observables),
+            instance=self,
+        )
+    
+        full_ell = self.ell
+        cls = {"ells": full_ell}
+        hub = self.cosmo.Hubble(self.z)
+
+        tstart = time()
+
+        # Pre-compute all clsintegrals
+        clinterps = {}
+        for obs1, obs2, bin1, bin2 in product(
+            self.observables, self.observables, self.binrange, self.binrange
+        ):
+            clinterps[(obs1, obs2, bin1, bin2)] = self.clsintegral(obs1, obs2, bin1, bin2, hub)
+
+        # Vectorized computation of finalcls
+        for (obs1, obs2, bin1, bin2), clinterp in clinterps.items():
+            lmin1, lmax1 = cfg.specs[f"lmin_{obs1}"], cfg.specs[f"lmax_{obs1}"]
+            lmin2, lmax2 = cfg.specs[f"lmin_{obs2}"], cfg.specs[f"lmax_{obs2}"]
+        
+            mask = ((full_ell >= lmin1) & (full_ell <= lmax1) & 
+                    (full_ell >= lmin2) & (full_ell <= lmax2))
+        
+            finalcls = np.zeros(len(full_ell))
+            finalcls[mask] = clinterp(full_ell[mask])
+        
+            key = f"{obs1} {bin1}x{obs2} {bin2}"
+            cls[key] = finalcls
+
+            tbin = time()
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=3,
+                text=f"    ...{obs1} {bin1} x {obs2} {bin2} done in: ",
+                instance=self,
+                time_ini=tstart,
+                time_fin=tbin,
+            )
+            tstart = tbin
 
         tend = time()
         upt.time_print(

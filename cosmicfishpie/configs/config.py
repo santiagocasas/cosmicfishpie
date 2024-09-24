@@ -23,11 +23,11 @@ def init(
     freepars=None,
     extfiles=None,
     fiducialpars=None,
-    biaspars=None,
+    photobiaspars=None,
     photopars=None,
     IApars=None,
     PShotpars=None,
-    Spectrobiaspars=None,
+    spectrobiaspars=None,
     spectrononlinearpars=None,
     IMbiaspars=None,
     surveyName="Euclid",
@@ -50,7 +50,7 @@ def init(
                            A dictionary containing the path to the external files as well as how all the names of the files in the folder correspond to the cosmological quantities, units etc.
     fiducialpars         : dict, optional
                            A dictionary containing the fiducial cosmological parameters
-    biaspars             : dict, optional
+    photobiaspars             : dict, optional
                            A dictionary containing the specifications for the galaxy biases of the photometric probe
     photopars            : dict, optional
                            A dictionary containing specifications for the window function's galaxy distribution
@@ -58,7 +58,7 @@ def init(
                            A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear
     PShotpars            : dict, optional
                            A dictionary containing the values of additional shotnoise of the spectroscopic probes
-    Spectrobiaspars      : dict, optional
+    spectrobiaspars      : dict, optional
                            A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
     spectrononlinearpars : dict, optional
                            A dictionary containing the values of the non linear modeling parameters of the spectroscopic probe
@@ -207,6 +207,11 @@ def init(
     settings.setdefault("survey_specs", "ISTF-Optimistic")
     settings.setdefault("survey_name_photo", "Euclid-Photometric-ISTF-Pessimistic")
     settings.setdefault("survey_name_spectro", "Euclid-Spectroscopic-ISTF-Pessimistic")
+    settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
+    settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
+    settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
+    settings.setdefault("available_survey_names", 
+                        ["Euclid", "SKA1", "DESI", "Planck", "Rubin"])
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -251,6 +256,7 @@ def init(
     settings.setdefault("eps_gal_nuispars", 0.0001)
     settings.setdefault("GCsp_Tracer", "matter")
     settings.setdefault("GCph_Tracer", "matter")
+    settings.setdefault("ell_sampling", "accuracy")
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
@@ -398,6 +404,14 @@ def init(
             yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
             specificationsf = parsed_yaml_file_1["specifications"]
+            z_bins_ph = specificationsf["z_bins_ph"]
+            specificationsf["z_bins_ph"] = np.array(z_bins_ph)
+            specificationsf["ngalbin"] = ngal_per_bin(
+                specificationsf["ngal_sqarmin"], specificationsf["z_bins_ph"]
+            )
+            specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
+            specificationsf["z0_p"] = specificationsf["z0"]
+            specificationsf["binrange"] = range(1, len(specificationsf["z_bins_ph"]))
         if surveyNameSpectro != "":
             file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
             if not os.path.isfile(file_2_path):
@@ -407,51 +421,28 @@ def init(
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
-        )
-        specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-        specificationsf["z0_p"] = specificationsf["z0"]
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
-    elif "SKA1" in surveyName:
-        yaml_file = open(os.path.join(settings["specs_dir"], "SKA1-Redbook-Optimistic.yaml"))
+    
+    surveyNameRadio = settings.get("survey_name_radio")
+    if "SKA1" in surveyName:
+        ## TODO: Fix this and check this for radio, sp, ph and IM
+        yaml_file = open(os.path.join(settings["specs_dir"], surveyNameRadio + ".yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
         specificationsf = parsed_yaml_file["specifications"]
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
+        z_bins = specificationsf["z_bins_ph"]
+        specificationsf["z_bins_ph"] = np.array(z_bins)
         specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
+            specificationsf["ngal_sqarmin"], specificationsf["z_bins_ph"]
         )
-        # numgal =  specificationsf['ngal_per_bin']*np.ones_like(z_bins[:-1])
         specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
         specificationsf["z0_p"] = 1.0
         specificationsf["IM_bins_file"] = "SKA1_IM_MDB1_Redbook.dat"
         specificationsf["IM_THI_noise_file"] = "SKA1_THI_sys_noise.txt"
-        # MMmod:
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
+        specificationsf["binrange"] = range(1, len(specificationsf["z_bins_ph"]))
         specificationsf["survey_name"] = surveyName
-    elif (
-        surveyName == "SKA1-pessimistic"
-    ):  # needs to be modified to account for pessimistic and cross
-        yaml_file = open(os.path.join(settings["specs_dir"], "SKA1-Redbook-Pessimistic.yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
-        )
-        specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-        specificationsf["z0_p"] = 1.0
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
-        specificationsf["survey_name"] = surveyName
-    # if 'SKA' in surveyName:
-    #     specificationsf['IM_bins_file'] = 'SKA1_IM_MDB1_Redbook.dat'
-    #     specificationsf['IM_THI_noise_file'] = 'SKA1_THI_sys_noise.txt'
-    elif "Rubin" in surveyName:
+    
+    if "Rubin" in surveyName:
+        ## TODO: Fix this and check this for Rubin ph
         if surveyName == "Rubin":
             surveyName = "Rubin-Optimistic"
         yaml_file = open(os.path.join(settings["specs_dir"], surveyName + ".yaml"))
@@ -467,32 +458,23 @@ def init(
         specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
         print("Survey loaded:  ", surveyName)
-    elif "DESI" in surveyName:
+    
+    if "DESI" in surveyName:
+        ## TODO: Fix this and check this for DESI sp
         yaml_file = open(os.path.join(settings["specs_dir"], "DESI-Optimistic.yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
         specificationsf = parsed_yaml_file["specifications"]
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        # numgal =  specificationsf['ngal_per_bin']*np.ones_like(z_bins[:-1])
-        # specificationsf['ngalbin'] = numgal
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
-        )
-        specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-        specificationsf["z0_p"] = 1.0
-        # SC: These specifications are loaded, but are actually not used, since they are not for spectro
         # Only needed specs are loaded in nuisance.py
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
-    elif surveyName == "Planck":
+    if "Planck" in surveyName:
         yaml_file = open(os.path.join(settings["specs_dir"], "Planck.yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
         specificationsf = parsed_yaml_file["specifications"]
-    else:
+    if surveyName not in settings["available_survey_names"]:
         print("Survey name passed: ", surveyName)
         print(
-            "Other named survey specifications not implemented yet.",
-            "Please pass your custom specifications as a dictionary.",
+            "Survey name not found in available survey names.",
+            "Please pass your full custom specifications as a dictionary.",
         )
 
     specs.update(specificationsf)  # update keys if present in files
@@ -579,91 +561,61 @@ def init(
         time_fin=tcosmo2,
     )
 
-    global biasparams
+    global Photobiasparams
     if "GCph" in obs:
-        if biaspars is None:
-            biasmodel = specs["bias_model"]
-        elif isinstance(biaspars, str):
-            biasmodel = biaspars
-        if not isinstance(biaspars, dict):
-            if biasmodel == "sqrt":
-                biaspars = {"bias_model": "sqrt", "b0": 1.0}
-            elif biasmodel == "flagship":
-                biaspars = {"bias_model": "flagship", "A": 1.0, "B": 2.5, "C": 2.8, "D": 1.6}
-            elif biasmodel == "binned" or biasmodel == "binned_constant":
-                biaspars = {"bias_model": biasmodel}
-                zbins = specs["z_bins"]
-                for ind in range(1, len(zbins)):
-                    key = "b" + str(ind)
-                    biaspars[key] = np.sqrt(1 + 0.5 * (zbins[ind] + zbins[ind - 1]))
+        if isinstance(photobiaspars, str):
+            biasmodel = photobiaspars
+        if isinstance(photobiaspars, dict):
+            biasmodel = photobiaspars["bias_model"]
+            print("using bias model: ", biasmodel)
+            print("with bias keys: ", list(photobiaspars.keys())[1:])
+        if photobiaspars is None:
+            biasmodel = specs["ph_bias_model"]
+            bias_prtz = specs["ph_bias_parametrization"]
+            photobiaspars = dict()
+            photobiaspars["bias_model"] = biasmodel
+            if biasmodel == "binned" or biasmodel == "binned_constant":
+                generate_bias_keys = bias_prtz[biasmodel]["generate_bias_keys"]
+                if generate_bias_keys:
+                    zbins = specs["z_bins_ph"]
+                    for ind in range(1, len(zbins)):
+                        keystr = bias_prtz[biasmodel]["keystr"]
+                        key = keystr + str(ind)
+                        photobiaspars[key] = np.sqrt(1 + 0.5 * (zbins[ind] + zbins[ind - 1]))
+                else:
+                    for key in bias_prtz[biasmodel].keys():
+                        if key != "generate_bias_keys" and key != "keystr":
+                            photobiaspars[key] = bias_prtz[biasmodel][key]
             else:
-                print("Bias model not implemented yet or not correct.")
+                for key in bias_prtz[biasmodel].keys():
+                    photobiaspars[key] = bias_prtz[biasmodel][key]
     else:
-        biaspars = {}
+        photobiaspars = {}
+    Photobiasparams = deepcopy(photobiaspars)
 
-    biasparams = deepcopy(biaspars)
     if "GCph" in obs:
         if specs["vary_ph_bias"] is not None:
-            for key in biaspars.keys():
+            for key in photobiaspars.keys():
                 if key != "bias_model":
                     freeparams[key] = specs["vary_ph_bias"]
 
     global photoparams
     if photopars is None:
-        # print("No photo-z parameters specified. Using default: Euclid-like")
-        photopars = {
-            "fout": 0.1,  # does this need to be updated for SKA1??
-            "co": 1,
-            "cb": 1,
-            "sigma_o": 0.05,
-            "sigma_b": 0.05,
-            "zo": 0.1,
-            "zb": 0.0,
-        }
+        photopars = specs["photo_z_params"]
     photoparams = deepcopy(photopars)
 
     global IAparams
     if IApars is None:
-        # print("No IA specified. Using default: eNLA")
-        IApars = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
-    IAparams = IApars
+        IApars = specs["IA_params"]
+    IAparams = deepcopy(IApars)
     if "WL" in obs:
         if specs["vary_IA_pars"] is not None:
             for key in IAparams.keys():
                 if key != "IA_model":
                     freeparams[key] = specs["vary_IA_pars"]
 
-    nuis = Nuisance()
-
-    # def bterm_z_key(z_ind, z_mids, bias_sample='g'):
-    #     if bias_sample=='g':
-    #         bi_at_z_mids = nuis.gcsp_bias_at_zm()
-    #     if bias_sample=='I':
-    #         bi_at_z_mids = nuis.IM_bias_at_zm()
-    #     bstring = settings['vary_bias_str']
-    #     bstring = bstring+bias_sample
-    #     b_i = bi_at_z_mids[z_ind-1]
-    #     if settings['bfs8terms'] ==  True:
-    #         bstring = bstring + 's8'
-    #         b_i = b_i * fiducialcosmo.sigma8_of_z(z_mids[z_ind-1])
-    #     bstring = bstring + '_'
-    #     bstring = bstring + str(z_ind)
-    #     if 'ln' in bstring:
-    #         b_i = np.log(b_i)
-    #     b_i = b_i.item()    ## Convert 1-element array to scalar
-    #     return bstring, b_i
-
-    global PShotparams
-    PShotparams = dict()
-
-    global Spectrobiasparams
-    Spectrobiasparams = dict()
-
     global Spectrononlinearparams
     Spectrononlinearparams = dict()
-
-    global IMbiasparams
-    IMbiasparams = dict()
 
     if "GCsp" in obs:
         if "vary_GCsp_nonlinear_pars" in specs.keys():
@@ -672,31 +624,38 @@ def init(
                 for key in Spectrononlinearparams.keys():
                     freeparams[key] = specs["vary_GCsp_nonlinear_pars"]
 
-    if Spectrobiaspars is not None:
-        Spectrobiasparams = deepcopy(Spectrobiaspars)
+    global Spectrobiasparams
+    Spectrobiasparams = dict()
+    if spectrobiaspars is not None:
+        Spectrobiasparams = deepcopy(spectrobiaspars)
+    global PShotparams
+    PShotparams = dict()
+    if PShotpars is not None:
+        PShotparams = deepcopy(PShotpars)
     else:
         if "GCsp" in obs:
-            bias_sample = "g"
-            z_mids = nuis.gcsp_zbins_mids()
-            Nbin = len(z_mids)
-            for ii in range(1, Nbin + 1):
-                bstr_i, b_i = nuis.bterm_z_key(ii, z_mids, fiducialcosmo, bias_sample)
-                Spectrobiasparams[bstr_i] = b_i
-                PShotparams["Ps_" + str(ii)] = nuis.extra_Pshot_noise()
+            bias_sample = specs['specifications']['bias_sample']
+            bias_model = specs['specifications']['bias_model']
+            bias_prtz = specs['specifications']['bias_parametrization']
+            for key in bias_prtz[bias_model].keys():
+                Spectrobiasparams[key] = bias_prtz[bias_model][key]
+            shot_noise_model = specs['specifications']['shot_noise_model']
+            shot_noise_prtz = specs['specifications']['shot_noise_parametrization']
+            for key in shot_noise_prtz[shot_noise_model].keys():
+                PShotparams[key] = shot_noise_prtz[shot_noise_model][key]
 
+    global IMbiasparams
+    IMbiasparams = dict()
     if IMbiaspars is not None:
         IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
-            bias_sample = "I"
-            z_mids = nuis.IM_zbins_mids()
-            Nbin = len(z_mids)
-            for ii in range(1, Nbin + 1):
-                bstr_i, b_i = nuis.bterm_z_key(ii, z_mids, fiducialcosmo, bias_sample)
-                IMbiasparams[bstr_i] = b_i
+            bias_sample = specs['specifications']['im_bias_sample']
+            bias_model = specs['specifications']['im_bias_model']
+            bias_prtz = specs['specifications']['im_bias_parametrization']
+            for key in bias_prtz[bias_model].keys():
+                IMbiasparams[key] = bias_prtz[bias_model][key]
 
-    if PShotpars is not None:
-        PShotparams = deepcopy(PShotpars)
 
     if "GCsp" in obs:
         for key in Spectrobiasparams:
@@ -707,9 +666,6 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams[key] = settings["eps_gal_nuispars"]
-    # print("*** Dictionary of varied parameters in this Fisher Matrix run: ")
-    # print(freeparams)
-    # print("                                                            ***")
 
     global latex_names
     latex_names_def = {
@@ -753,17 +709,17 @@ def init(
         "Ps_4": r"P_{S4}",
         "E11": r"E_{11}",
         "E22": r"E_{22}",
-        "bg_1": r"\ln(b_g)_1",
-        "bg_2": r"\ln(b_g)_2",
-        "bg_3": r"\ln(b_g)_3",
-        "bg_4": r"\ln(b_g)_4",
-        "bg_5": r"\ln(b_g)_5",
-        "bg_6": r"\ln(b_g)_6",
-        "bg_7": r"\ln(b_g)_7",
-        "bg_8": r"\ln(b_g)_8",
-        "bg_9": r"\ln(b_g)_9",
-        "bg_10": r"\ln(b_g)_10",
-        "bg_11": r"\ln(b_g)_11",
+        "bg_1":  r"b_{g1}",
+        "bg_2":  r"b_{g2}",
+        "bg_3":  r"b_{g3}",
+        "bg_4":  r"b_{g4}",
+        "bg_5":  r"b_{g5}",
+        "bg_6":  r"b_{g6}",
+        "bg_7":  r"b_{g7}",
+        "bg_8":  r"b_{g8}",
+        "bg_9":  r"b_{g9}",
+        "bg_10": r"b_{g10}",
+        "bg_11": r"b_{g11}",
         "AIA": r"A_{IA}",
         "betaIA": r"\beta_{IA}",
         "etaIA": r"\eta_{IA}",

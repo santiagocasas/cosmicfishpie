@@ -10,9 +10,10 @@ def photo_fisher_matrix():
     # These are typical options that you can pass to Cosmicfishpie
     options = {
         "accuracy": 1,
-        "outroot": "test_installation_test_EBS",
+        "outroot": "test_photo_low_ellsamp",
         "results_dir": "results/",
         "derivatives": "3PT",
+        "ell_sampling": 25,
         "nonlinear": True,
         "feedback": 2,
         "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",

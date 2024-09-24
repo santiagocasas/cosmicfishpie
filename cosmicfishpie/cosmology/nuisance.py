@@ -35,10 +35,12 @@ class Nuisance:
             self.Tsys_arr = np.loadtxt(os.path.join(self.specsdir, filename_THI_noise))
             filename_IM = self.specs["IM_bins_file"]
             self.im_table = np.loadtxt(os.path.join(self.specsdir, filename_IM))
-
-        self.z = np.linspace(
-            self.specs["z_bins"][0], self.specs["z_bins"][-1] + 1, 50 * self.settings["accuracy"]
-        )
+        if "GCph" in self.observables or "WL" in self.observables:
+            self.z_bins_ph = self.specs["z_bins_ph"]
+            self.z_ph = np.linspace(
+                self.z_bins_ph[0], self.z_bins_ph[-1] + 1, 
+                50 * self.settings["accuracy"]
+            )
 
     def gcph_bias(self, biaspars, ibin=1):
         """Galaxy bias
@@ -56,7 +58,7 @@ class Nuisance:
         """
         self.biaspars = biaspars
 
-        z = self.z
+        z = self.z_ph
 
         # TBA: NEED TO INCLUDE CHECK OF THE BIASPARS PASSED
 
@@ -65,7 +67,7 @@ class Nuisance:
             return interp1d(z, b, kind="linear")
 
         elif self.biaspars["bias_model"] == "binned":
-            zb = self.specs["z_bins"]
+            zb = self.z_bins_ph
             zba = np.array(zb)
             brang = self.specs["binrange"]
             last_bin_num = brang[-1]
@@ -121,7 +123,7 @@ class Nuisance:
         self.cosmo = cosmo
         self.Omegam = self.cosmo.Omegam_of_z(0.0)
         pivot_z_IA = self.settings["pivot_z_IA"]
-        z = self.z
+        z = self.z_ph
         if self.IApars["IA_model"] == "eNLA":
             CIA = 0.0134 * (1 + pivot_z_IA)
             fac = -self.IApars["AIA"] * CIA * self.Omegam
@@ -139,13 +141,9 @@ class Nuisance:
         return IAwinfunc
 
     def luminosity_ratio(self):
-        """Luminosity ratio
-
+        """Luminosity ratio function used for Intrinsic Alignment eNLA model.
         Parameters
         ----------
-        z     : float
-                redshift
-
         Returns
         -------
         float

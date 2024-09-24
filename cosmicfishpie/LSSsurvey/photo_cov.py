@@ -78,7 +78,7 @@ class PhotoCov:
         self.fsky_WL = cfg.specs.get("fsky_WL")
         self.fsky_GCph = cfg.specs.get("fsky_GCph")
         self.ngalbin = np.array(cfg.specs["ngalbin"])
-        self.numbins = len(cfg.specs["z_bins"]) - 1
+        self.numbins = len(cfg.specs["z_bins_ph"]) - 1
         self.ellipt_error = cfg.specs["ellipt_error"]
 
     def getcls(self, allpars):

@@ -228,13 +228,12 @@ class ComputeCls:
         if cfg.settings["ell_sampling"] == "accuracy":
             self.ellsamp = int(round(100 * cfg.settings["accuracy"]))
         else:
-            if type(cfg.settings["ell_sampling"])==int:
+            if isinstance(cfg.settings["ell_sampling"], int):
                 self.ellsamp = cfg.settings["ell_sampling"]
             else:
                 raise ValueError("ell_sampling should be an integer or 'accuracy'")
         self.ell = np.logspace(
-            np.log10(cfg.specs["ellmin"]), 
-            np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
+            np.log10(cfg.specs["ellmin"]), np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
         )
         self.z_min = cfg.specs["z_bins_ph"][0]
         self.z_max = cfg.specs["z_bins_ph"][-1]
@@ -693,7 +692,6 @@ class ComputeCls:
 
         return cls
 
-
     def computecls_vectorized(self):
         """Vectorized function to compute the angular power spectrum for all observables, redshift bins and multipoles.
 
@@ -716,7 +714,7 @@ class ComputeCls:
             text="Computing Cls integral for {}".format(self.observables),
             instance=self,
         )
-    
+
         full_ell = self.ell
         cls = {"ells": full_ell}
         hub = self.cosmo.Hubble(self.z)
@@ -734,13 +732,17 @@ class ComputeCls:
         for (obs1, obs2, bin1, bin2), clinterp in clinterps.items():
             lmin1, lmax1 = cfg.specs[f"lmin_{obs1}"], cfg.specs[f"lmax_{obs1}"]
             lmin2, lmax2 = cfg.specs[f"lmin_{obs2}"], cfg.specs[f"lmax_{obs2}"]
-        
-            mask = ((full_ell >= lmin1) & (full_ell <= lmax1) & 
-                    (full_ell >= lmin2) & (full_ell <= lmax2))
-        
+
+            mask = (
+                (full_ell >= lmin1)
+                & (full_ell <= lmax1)
+                & (full_ell >= lmin2)
+                & (full_ell <= lmax2)
+            )
+
             finalcls = np.zeros(len(full_ell))
             finalcls[mask] = clinterp(full_ell[mask])
-        
+
             key = f"{obs1} {bin1}x{obs2} {bin2}"
             cls[key] = finalcls
 

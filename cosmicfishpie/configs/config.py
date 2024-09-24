@@ -10,7 +10,6 @@ import numpy as np
 import yaml
 
 import cosmicfishpie.cosmology.cosmology as cosmology
-from cosmicfishpie.cosmology.nuisance import Nuisance
 from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
@@ -210,8 +209,7 @@ def init(
     settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
-    settings.setdefault("available_survey_names", 
-                        ["Euclid", "SKA1", "DESI", "Planck", "Rubin"])
+    settings.setdefault("available_survey_names", ["Euclid", "SKA1", "DESI", "Planck", "Rubin"])
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -422,7 +420,7 @@ def init(
             specificationsf2 = parsed_yaml_file_2["specifications"]
             specificationsf.update(specificationsf2)
         specificationsf["survey_name"] = surveyName
-    
+
     surveyNameRadio = settings.get("survey_name_radio")
     if "SKA1" in surveyName:
         ## TODO: Fix this and check this for radio, sp, ph and IM
@@ -440,7 +438,7 @@ def init(
         specificationsf["IM_THI_noise_file"] = "SKA1_THI_sys_noise.txt"
         specificationsf["binrange"] = range(1, len(specificationsf["z_bins_ph"]))
         specificationsf["survey_name"] = surveyName
-    
+
     if "Rubin" in surveyName:
         ## TODO: Fix this and check this for Rubin ph
         if surveyName == "Rubin":
@@ -458,7 +456,7 @@ def init(
         specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
         specificationsf["survey_name"] = surveyName
         print("Survey loaded:  ", surveyName)
-    
+
     if "DESI" in surveyName:
         ## TODO: Fix this and check this for DESI sp
         yaml_file = open(os.path.join(settings["specs_dir"], "DESI-Optimistic.yaml"))
@@ -634,13 +632,12 @@ def init(
         PShotparams = deepcopy(PShotpars)
     else:
         if "GCsp" in obs:
-            bias_sample = specs['specifications']['bias_sample']
-            bias_model = specs['specifications']['bias_model']
-            bias_prtz = specs['specifications']['bias_parametrization']
+            bias_model = specs["specifications"]["bias_model"]
+            bias_prtz = specs["specifications"]["bias_parametrization"]
             for key in bias_prtz[bias_model].keys():
                 Spectrobiasparams[key] = bias_prtz[bias_model][key]
-            shot_noise_model = specs['specifications']['shot_noise_model']
-            shot_noise_prtz = specs['specifications']['shot_noise_parametrization']
+            shot_noise_model = specs["specifications"]["shot_noise_model"]
+            shot_noise_prtz = specs["specifications"]["shot_noise_parametrization"]
             for key in shot_noise_prtz[shot_noise_model].keys():
                 PShotparams[key] = shot_noise_prtz[shot_noise_model][key]
 
@@ -650,12 +647,10 @@ def init(
         IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
-            bias_sample = specs['specifications']['im_bias_sample']
-            bias_model = specs['specifications']['im_bias_model']
-            bias_prtz = specs['specifications']['im_bias_parametrization']
+            bias_model = specs["specifications"]["im_bias_model"]
+            bias_prtz = specs["specifications"]["im_bias_parametrization"]
             for key in bias_prtz[bias_model].keys():
                 IMbiasparams[key] = bias_prtz[bias_model][key]
-
 
     if "GCsp" in obs:
         for key in Spectrobiasparams:
@@ -709,15 +704,15 @@ def init(
         "Ps_4": r"P_{S4}",
         "E11": r"E_{11}",
         "E22": r"E_{22}",
-        "bg_1":  r"b_{g1}",
-        "bg_2":  r"b_{g2}",
-        "bg_3":  r"b_{g3}",
-        "bg_4":  r"b_{g4}",
-        "bg_5":  r"b_{g5}",
-        "bg_6":  r"b_{g6}",
-        "bg_7":  r"b_{g7}",
-        "bg_8":  r"b_{g8}",
-        "bg_9":  r"b_{g9}",
+        "bg_1": r"b_{g1}",
+        "bg_2": r"b_{g2}",
+        "bg_3": r"b_{g3}",
+        "bg_4": r"b_{g4}",
+        "bg_5": r"b_{g5}",
+        "bg_6": r"b_{g6}",
+        "bg_7": r"b_{g7}",
+        "bg_8": r"b_{g8}",
+        "bg_9": r"b_{g9}",
         "bg_10": r"b_{g10}",
         "bg_11": r"b_{g11}",
         "AIA": r"A_{IA}",

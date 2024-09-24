@@ -1,5 +1,7 @@
 import numpy as np
+
 from cosmicfishpie.utilities.utils import printing as cpr
+
 
 def test_FisherMatrix_GCsp(spectro_fisher_matrix):
     cpr.debug = False

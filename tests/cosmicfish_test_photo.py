@@ -1,5 +1,7 @@
 import numpy as np
+
 from cosmicfishpie.utilities.utils import printing as cpr
+
 
 def test_FisherMatrix_WL(photo_fisher_matrix):
     cpr.debug = False
@@ -18,5 +20,4 @@ def test_FisherMatrix_WL(photo_fisher_matrix):
     assert np.isclose(fish.fisher_matrix[3, 8], 26.590294486780888)
     assert np.isclose(fish.fisher_matrix[8, 3], 26.590294486780888)
     assert np.isclose(fish.fisher_matrix[9, 10], 18285.415448376294)
-    assert np.isclose(np.sqrt(fish.fisher_matrix_inv[0, 0]), 
-                      0.0005291588745873003)
+    assert np.isclose(np.sqrt(fish.fisher_matrix_inv[0, 0]), 0.0005291588745873003)

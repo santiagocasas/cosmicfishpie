@@ -23,6 +23,7 @@ from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.version import VERSION
 
+
 def ray_session(num_cpus=4, restart=True, shutdown=False):
     import ray
 
@@ -154,7 +155,7 @@ class FisherMatrix:
             PShotpars=PShotpars,
             surveyName=surveyName,
             cosmoModel=cosmoModel,
-            latexnames=latexnames
+            latexnames=latexnames,
         )
 
         self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
@@ -647,12 +648,12 @@ class FisherMatrix:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
             derivs = lss_obj.compute_derivs()
-        
+
         tini = time()
         upt.time_print(
             feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
         )
-        
+
         # compute fisher matrix
         lvec = noisy_cls["ells"]
         lvec_ave = unu.moving_average(lvec, 2)  # computing center of bins
@@ -665,8 +666,9 @@ class FisherMatrix:
         inv_covarr = np.linalg.pinv(covarr)
 
         # Precompute derivatives
-        der_array = np.array([[derivs[par][f"{a}x{b}"] for a in cols for b in cols] 
-                            for par in self.freeparams])
+        der_array = np.array(
+            [[derivs[par][f"{a}x{b}"] for a in cols for b in cols] for par in self.freeparams]
+        )
         der_array = der_array.reshape(len(self.freeparams), len(cols), len(cols), -1)
 
         # Precompute the factor for FisherV
@@ -674,28 +676,28 @@ class FisherMatrix:
 
         # Compute FisherV using vectorized operations
         FisherV = np.zeros((len(lvec_ave), len(self.freeparams), len(self.freeparams)))
-        for l, ell in enumerate(lvec_ave):
-            der = der_array[:, :, :, l]  # Shape: (n_freeparams, n_cols, n_cols)
-            
+        for l_ind, ell in enumerate(lvec_ave):
+            der = der_array[:, :, :, l_ind]  # Shape: (n_freeparams, n_cols, n_cols)
+
             # mat1: multiply der by inv_covarr
             # 'p' is freeparam index, 'i' and 'j' are column indices
-            mat1 = np.einsum('pij,jk->pik', der, inv_covarr[l])
-            
+            mat1 = np.einsum("pij,jk->pik", der, inv_covarr[l_ind])
+
             # mat2: multiply inv_covarr by mat1
             # 'p' is still freeparam index
-            mat2 = np.einsum('ij,pjk->pik', inv_covarr[l], mat1)
-            
+            mat2 = np.einsum("ij,pjk->pik", inv_covarr[l_ind], mat1)
+
             # mat3: final matrix multiplication
             # 'p' and 'q' are indices for the two freeparam dimensions
-            mat3 = np.einsum('pij,qji->pq', der, mat2)
-            
-            FisherV[l] = mat3 * factor[l]
+            mat3 = np.einsum("pij,qji->pq", der, mat2)
 
-            if l == 1:
+            FisherV[l_ind] = mat3 * factor[l_ind]
+
+            if l_ind == 1:
                 upt.time_print(
                     feedback_level=self.feed_lvl,
                     min_level=3,
-                    text=f"FisherV entries for ell={ell} at index {l} done",
+                    text=f"FisherV entries for ell={ell} at index {l_ind} done",
                     time_ini=tini,
                     time_fin=time(),
                 )
@@ -710,7 +712,7 @@ class FisherMatrix:
             time_fin=tfin,
         )
         return FisherVV
-    
+
     def CMB_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, cmb_obj=None):
         if covmat is None and cmb_obj is not None:
             covmat, noisy_cls = cmb_obj.compute_covmat()

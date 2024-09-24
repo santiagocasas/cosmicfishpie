@@ -38,8 +38,7 @@ class Nuisance:
         if "GCph" in self.observables or "WL" in self.observables:
             self.z_bins_ph = self.specs["z_bins_ph"]
             self.z_ph = np.linspace(
-                self.z_bins_ph[0], self.z_bins_ph[-1] + 1, 
-                50 * self.settings["accuracy"]
+                self.z_bins_ph[0], self.z_bins_ph[-1] + 1, 50 * self.settings["accuracy"]
             )
 
     def gcph_bias(self, biaspars, ibin=1):

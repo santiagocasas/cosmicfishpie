@@ -1,7 +1,6 @@
 import numpy as np
-
+from cosmicfishpie.analysis.fisher_operations import marginalise_over
 from cosmicfishpie.utilities.utils import printing as cpr
-
 
 def test_FisherMatrix_GCsp(spectro_fisher_matrix):
     cpr.debug = False
@@ -20,3 +19,12 @@ def test_FisherMatrix_GCsp(spectro_fisher_matrix):
     assert np.isclose(fish.fisher_matrix[1, 3], -7.0450023, rtol=1e-3)
     assert np.isclose(fish.fisher_matrix[3, 1], -7.0450023, rtol=1e-3)
     assert np.isclose(np.sqrt(fish.fisher_matrix_inv[0, 0]), 0.005894, rtol=1e-3)
+
+def test_marginalise_over(spectro_fisher_matrix):
+    fish = spectro_fisher_matrix.compute(max_z_bins=1)
+    marginalized_fish = marginalise_over(fish, ["h"])
+    assert hasattr(marginalized_fish, "fisher_matrix")
+    assert hasattr(marginalized_fish, "fisher_matrix_inv")
+    assert hasattr(marginalized_fish, "get_confidence_bounds")
+    assert hasattr(marginalized_fish, "get_param_names")
+    assert len(marginalized_fish.get_param_names()) == (1 + 2)

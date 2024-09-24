@@ -6,6 +6,7 @@ This module contains nuisance parameter functions.
 """
 
 import os
+from copy import deepcopy
 
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline, UnivariateSpline, interp1d
@@ -16,25 +17,30 @@ from cosmicfishpie.utilities.utils import printing as upr
 
 
 class Nuisance:
-    def __init__(self):
+    def __init__(self, spectrobiasparams=None):
         self.observables = cfg.obs
         self.specs = cfg.specs
         self.settings = cfg.settings
         self.specsdir = self.settings["specs_dir"]
         self.surveyname = cfg.specs["survey_name"]
         if "GCsp" in self.observables:
-            gc_survey_dict = cfg.specs["gc_specs_files_dict"]
-            gc_surveyname = cfg.survey_equivalence(self.surveyname)
-            default_filename = gc_survey_dict["default"]
-            gc_filename = gc_survey_dict.get(gc_surveyname, default_filename)
-            self.gc_table = np.loadtxt(os.path.join(self.specsdir, gc_filename))
-        if "WL" in self.observables:
-            self.lumratio = self.luminosity_ratio()
+            # gc_survey_dict = cfg.specs["gc_specs_files_dict"]
+            # gc_surveyname = cfg.survey_equivalence(self.surveyname)
+            # default_filename = gc_survey_dict["default"]
+            # gc_filename = gc_survey_dict.get(gc_surveyname, default_filename)
+            # self.gc_table = np.loadtxt(os.path.join(self.specsdir, gc_filename))
+            self.sp_zbins = self.gcsp_zbins()
+            self.sp_dndz = self.gcsp_dndz()
+            self.sp_zbins_mids = self.gcsp_zbins_mids()
+            if spectrobiasparams is None:
+                self.Spectrobiasparams = deepcopy(cfg.Spectrobiasparams)
+            else:
+                self.Spectrobiasparams = spectrobiasparams
         if "IM" in self.observables:
             filename_THI_noise = self.specs["IM_THI_noise_file"]
             self.Tsys_arr = np.loadtxt(os.path.join(self.specsdir, filename_THI_noise))
-            filename_IM = self.specs["IM_bins_file"]
-            self.im_table = np.loadtxt(os.path.join(self.specsdir, filename_IM))
+        if "WL" in self.observables:
+            self.lumratio = self.luminosity_ratio()
         if "GCph" in self.observables or "WL" in self.observables:
             self.z_bins_ph = self.specs["z_bins_ph"]
             self.z_ph = np.linspace(
@@ -162,7 +168,80 @@ class Nuisance:
         lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
         return lumratio
 
-    def gcsp_bias(self):
+    def gcsp_zbins(self):
+        """
+        Reads from file for a given survey
+        """
+        zbins = []
+        zbin_inds = []
+        for key, val in self.specs["z_bins_sp"].items():
+            zbins.append(val)
+            zbin_inds.append(key)
+        zbins = np.unique(np.concatenate(zbins))
+        self.sp_zbins_inds = zbin_inds
+        return zbins
+
+    def gcsp_zbins_mids(self):
+        sp_zbins_mids = unu.moving_average(self.sp_zbins)
+        return sp_zbins_mids
+
+    def gcsp_bias_at_zm(self):
+        self.sp_bias_sample = self.specs["sp_bias_sample"]
+        self.sp_bias_root = self.specs["sp_bias_root"]
+        self.sp_bias_model = self.specs["sp_bias_model"]
+        self.sp_bias_prtz = self.specs["sp_bias_parametrization"]
+        b_arr = np.ones(len(self.sp_zbins_mids))
+        if self.sp_bias_model == "linear" or self.sp_bias_model == "linear_log":
+            for ii, z_ind in enumerate(self.sp_zbins_inds):
+                bkey = self.sp_bias_root + self.sp_bias_sample + "_" + str(z_ind)
+                b_arr[ii] = self.Spectrobiasparams[bkey]
+            if self.sp_bias_model == "linear_log":
+                b_arr = np.exp(b_arr)
+        return b_arr
+
+    def gscp_bias_at_zi(self, zi):
+        """
+        Parameters
+        ----------
+        zi : int
+            Redshift bin index
+
+        Returns
+        -------
+        float
+            Bias at the redshift bin index zi
+        """
+        if zi < self.sp_zbins_inds[0]:
+            zi = self.sp_zbins_inds[0]
+        if zi > self.sp_zbins_inds[-1]:
+            zi = self.sp_zbins_inds[-1]
+        bias_at_zmids = self.gcsp_bias_at_zm()
+        arr_ind = zi - 1
+        bias_at_zi = bias_at_zmids[arr_ind]
+        return bias_at_zi
+
+    def gscp_bias_at_z(self, z):
+        """
+        Parameters
+        ----------
+        z : float
+            Redshift
+
+        Returns
+        -------
+        float
+            Bias at the redshift z
+        """
+        bin_arr_ind = unu.bisection(self.sp_zbins, z)
+        bin_num = bin_arr_ind + 1
+        bias_at_zzi = self.gscp_bias_at_zi(bin_num)
+        return bias_at_zzi
+
+    def vectorized_gscp_bias_at_z(self, z):
+        bias_at_z = np.vectorize(self.gscp_bias_at_z)
+        return bias_at_z(z)
+
+    def gcsp_bias_interp(self):
         """Galaxy bias for the galaxies used in spectroscopic Galaxy Clustering
         Parameters
         ----------
@@ -176,38 +255,19 @@ class Nuisance:
         --------
         Reads from file and interpolates for a given survey
         """
-        # this dict can be read from a file
-        # InterpolatedUnivariateSpline allows for extrapolation outside
-        # bounds of the input files. Uses order=1 linear splines.
-        bofz_spec = InterpolatedUnivariateSpline(self.gc_table[:, 1], self.gc_table[:, 4], k=1)
+        bias_at_zmids = self.gcsp_bias_at_zm()
+        z_mids = self.gcsp_zbins_mids()
+        bofz_spec = InterpolatedUnivariateSpline(z_mids, bias_at_zmids, k=1)
         return bofz_spec
 
     def gcsp_dndz(self):
         """
         Reads from file for a given survey
         """
-        # this dict can be read from a file
-        dndz = self.gc_table[:, 3]
-        return dndz
-
-    def gcsp_zbins(self):
-        """
-        Reads from file for a given survey
-        """
-        # this dict can be read from a file
-        zbins = np.unique(np.concatenate((self.gc_table[:, 0], self.gc_table[:, 2])))
-        return zbins
-
-    def gcsp_zbins_mids(self):
-        z_bins = self.gcsp_zbins()
-        z_bin_mids = unu.moving_average(z_bins)
-        return z_bin_mids
-
-    def gcsp_bias_at_zm(self):
-        bfunc = self.gcsp_bias()
-        zmids = self.gcsp_zbins_mids()
-        b_arr = bfunc(zmids)
-        return b_arr
+        dndz = []
+        for ii in self.sp_zbins_inds:
+            dndz.append(self.specs["dndOmegadz"][ii])
+        return np.array(dndz)
 
     def extra_Pshot_noise(self):
         Psfid = self.settings["Pshot_nuisance_fiducial"] = 0

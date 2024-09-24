@@ -391,6 +391,9 @@ def init(
     surveyNamePhoto = settings.get("survey_name_photo")
     surveyNameSpectro = settings.get("survey_name_spectro")
     if "Euclid" in surveyName:
+        specificationsf1 = dict()
+        specificationsf2 = dict()
+        specificationsf = dict()
         if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
             surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
             surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
@@ -401,15 +404,15 @@ def init(
                 raise ValueError
             yaml_file_1 = open(file_1_path)
             parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
-            specificationsf = parsed_yaml_file_1["specifications"]
-            z_bins_ph = specificationsf["z_bins_ph"]
-            specificationsf["z_bins_ph"] = np.array(z_bins_ph)
-            specificationsf["ngalbin"] = ngal_per_bin(
-                specificationsf["ngal_sqarmin"], specificationsf["z_bins_ph"]
+            specificationsf1 = parsed_yaml_file_1["specifications"]
+            z_bins_ph = specificationsf1["z_bins_ph"]
+            specificationsf1["z_bins_ph"] = np.array(z_bins_ph)
+            specificationsf1["ngalbin"] = ngal_per_bin(
+                specificationsf1["ngal_sqarmin"], specificationsf1["z_bins_ph"]
             )
-            specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-            specificationsf["z0_p"] = specificationsf["z0"]
-            specificationsf["binrange"] = range(1, len(specificationsf["z_bins_ph"]))
+            specificationsf1["z0"] = specificationsf1["zm"] / np.sqrt(2)
+            specificationsf1["z0_p"] = specificationsf1["z0"]
+            specificationsf1["binrange"] = range(1, len(specificationsf1["z_bins_ph"]))
         if surveyNameSpectro != "":
             file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
             if not os.path.isfile(file_2_path):
@@ -418,7 +421,8 @@ def init(
             yaml_file_2 = open(file_2_path)
             parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
             specificationsf2 = parsed_yaml_file_2["specifications"]
-            specificationsf.update(specificationsf2)
+        specificationsf.update(specificationsf1)
+        specificationsf.update(specificationsf2)
         specificationsf["survey_name"] = surveyName
 
     surveyNameRadio = settings.get("survey_name_radio")
@@ -486,7 +490,6 @@ def init(
         "fsky_spectro", upm.sqdegtofsky(specificationsf.get("area_survey_spectro", 0.0))
     )
     specs.update(specifications)  # update keys if passed by users
-
     if observables is None:
         observables = ["GCph", "WL"]
     global obs
@@ -632,12 +635,17 @@ def init(
         PShotparams = deepcopy(PShotpars)
     else:
         if "GCsp" in obs:
-            bias_model = specs["specifications"]["bias_model"]
-            bias_prtz = specs["specifications"]["bias_parametrization"]
-            for key in bias_prtz[bias_model].keys():
-                Spectrobiasparams[key] = bias_prtz[bias_model][key]
-            shot_noise_model = specs["specifications"]["shot_noise_model"]
-            shot_noise_prtz = specs["specifications"]["shot_noise_parametrization"]
+            bias_model = specs["sp_bias_model"]
+            bias_sample = specs["sp_bias_sample"]
+            bias_prtz = specs["sp_bias_parametrization"]
+            bias_prmod = deepcopy(bias_prtz[bias_model])
+            for key in bias_prmod.keys():
+                Spectrobiasparams[key] = bias_prmod[key]
+            # sanity check
+            if bias_sample not in list(Spectrobiasparams.keys())[0]:
+                print("Warning: bias_sample not found in bias_parameter keys")
+            shot_noise_model = specs["shot_noise_model"]
+            shot_noise_prtz = specs["shot_noise_parametrization"]
             for key in shot_noise_prtz[shot_noise_model].keys():
                 PShotparams[key] = shot_noise_prtz[shot_noise_model][key]
 
@@ -647,8 +655,8 @@ def init(
         IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
-            bias_model = specs["specifications"]["im_bias_model"]
-            bias_prtz = specs["specifications"]["im_bias_parametrization"]
+            bias_model = specs["im_bias_model"]
+            bias_prtz = specs["im_bias_parametrization"]
             for key in bias_prtz[bias_model].keys():
                 IMbiasparams[key] = bias_prtz[bias_model][key]
 

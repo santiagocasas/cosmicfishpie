@@ -15,7 +15,6 @@ from scipy.interpolate import CubicSpline
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.cosmology.cosmology as cosmology
 import cosmicfishpie.cosmology.nuisance as nuisance
-from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
 
 
@@ -127,12 +126,118 @@ class ComputeGalSpectro:
         )
 
         self.observables = cfg.obs
+        self.specs = deepcopy(cfg.specs)
         # if 'GCsp' not in self.observables:
         #    raise AttributeError("Observables list not defined properly")
 
         self.s8terms = cfg.settings["bfs8terms"]
         self.tracer = cfg.settings["GCsp_Tracer"]
 
+        self.set_fiducial_cosmology(
+            fiducial_cosmopars=fiducial_cosmopars, fiducial_cosmo=fiducial_cosmo
+        )
+        self.cosmopars = cosmopars
+        if self.cosmopars == self.fiducial_cosmopars:
+            self.cosmo = self.fiducialcosmo
+        else:
+            self.cosmo = cosmology.cosmo_functions(cosmopars, cfg.input_type)
+
+        # Load the Nuisance Parameters
+        self.fiducial_spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+        if spectrobiaspars is None:
+            self.spectrobiaspars = self.fiducial_spectrobiaspars
+        else:
+            self.spectrobiaspars = spectrobiaspars
+        self.nuisance = nuisance.Nuisance(spectrobiasparams=self.spectrobiaspars)
+        self.extraPshot = self.nuisance.extra_Pshot_noise()
+        self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
+
+        self.fiducial_PShotpars = cfg.PShotparams
+        if PShotpars is None:
+            PShotpars = self.fiducial_PShotpars
+        self.PShotpars = PShotpars
+
+        self.fiducial_spectrononlinearpars = cfg.Spectrononlinearparams
+        if spectrononlinearpars is None:
+            spectrononlinearpars = self.fiducial_spectrononlinearpars
+        self.spectrononlinearpars = spectrononlinearpars
+
+        # create interpolators, for if the asked z is not the z of the zbins
+        # (maybe this is stupid)
+        if not self.spectrononlinearpars == dict():
+            sigmap_input = [
+                self.spectrononlinearpars["sigmap_{}".format(i)]
+                for i in range(len(self.gcsp_z_bin_mids))
+            ]
+            sigmav_input = [
+                self.spectrononlinearpars["sigmav_{}".format(i)]
+                for i in range(len(self.gcsp_z_bin_mids))
+            ]
+            self.sigmap_inter = CubicSpline(self.gcsp_z_bin_mids, sigmap_input)
+            self.sigmav_inter = CubicSpline(self.gcsp_z_bin_mids, sigmav_input)
+
+        self.allpars = {
+            **self.cosmopars,
+            **self.spectrobiaspars,
+            **self.PShotpars,
+            **self.spectrononlinearpars,
+        }
+        self.fiducial_allpars = {
+            **self.fiducial_cosmopars,
+            **self.fiducial_spectrobiaspars,
+            **self.fiducial_PShotpars,
+            **self.fiducial_spectrononlinearpars,
+        }
+
+        self.set_internal_kgrid()
+        self.activate_terms()
+        self.set_spectro_dz_specs()
+        self.bias_samples = bias_samples
+        self.use_bias_funcs = use_bias_funcs
+        self.set_spectro_bias_specs()
+        tend = time()
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=2,
+            text="GalSpec initialization done in: ",
+            time_ini=tini,
+            time_fin=tend,
+            instance=self,
+        )
+
+    def set_internal_kgrid(self):
+        """Updates the internal grid of wavenumbers used in the computation"""
+        self.specs["kmax"] = self.specs["kmax_GCsp"]
+        self.specs["kmin"] = self.specs["kmin_GCsp"]
+        kmin_int = 0.001
+        kmax_int = 5
+        self.k_grid = np.logspace(np.log10(kmin_int), np.log10(kmax_int), 1024)
+        self.dk_grid = np.diff(self.k_grid)[0]
+
+    def activate_terms(self):
+        """Update which modelling effects should be taken into consideration"""
+        self.linear_switch = cfg.settings["GCsp_linear"]
+        self.FoG_switch = cfg.settings["FoG_switch"]
+        self.APbool = cfg.settings["AP_effect"]
+        self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
+
+    def set_spectro_dz_specs(self):
+        """Updates the spectroscopic redshift error"""
+        self.dz_err = self.specs["spec_sigma_dz"]
+        self.dz_type = self.specs["spec_sigma_dz_type"]
+        ## constant, z-dependent
+        # These bugs are intentionally left in, in order to reproduce old results.
+        # The reallity is that they are not to be here.
+        self.kh_rescaling_bug = cfg.settings["kh_rescaling_bug"]
+        self.kh_rescaling_beforespecerr_bug = cfg.settings["kh_rescaling_beforespecerr_bug"]
+
+    def set_spectro_bias_specs(self):
+        """Updates the spectroscopic bias choices"""
+        self.sp_bias_model = self.specs["sp_bias_model"]
+        self.sp_bias_root = self.specs["sp_bias_root"]
+        self.sp_bias_sample = self.specs["sp_bias_sample"]
+
+    def set_fiducial_cosmology(self, fiducial_cosmopars=None, fiducial_cosmo=None):
         if fiducial_cosmopars is None:
             self.fiducial_cosmopars = deepcopy(cfg.fiducialparams)
         else:
@@ -174,103 +279,6 @@ class ComputeGalSpectro:
         else:
             print("Error: In ComputeGalSpectro fiducial_cosmopars not equal to cfg.fiducialparams")
             raise AttributeError
-
-        self.cosmopars = cosmopars
-        if self.cosmopars == self.fiducial_cosmopars:
-            self.cosmo = self.fiducialcosmo
-        else:
-            self.cosmo = cosmology.cosmo_functions(cosmopars, cfg.input_type)
-
-        self.nuisance = nuisance.Nuisance()
-        self.gcsp_bias_of_z = self.nuisance.gcsp_bias()
-        self.extraPshot = self.nuisance.extra_Pshot_noise()
-        self.bias_samples = bias_samples
-        self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
-
-        # Load the Nuisance Parameters
-        self.use_bias_funcs = use_bias_funcs
-        self.fiducial_spectrobiaspars = cfg.Spectrobiasparams
-        if spectrobiaspars is None:
-            self.spectrobiaspars = self.fiducial_spectrobiaspars
-        else:
-            self.spectrobiaspars = spectrobiaspars
-
-        self.fiducial_PShotpars = cfg.PShotparams
-        if PShotpars is None:
-            PShotpars = self.fiducial_PShotpars
-        self.PShotpars = PShotpars
-
-        self.fiducial_spectrononlinearpars = cfg.Spectrononlinearparams
-        if spectrononlinearpars is None:
-            spectrononlinearpars = self.fiducial_spectrononlinearpars
-        self.spectrononlinearpars = spectrononlinearpars
-
-        # create interpolators, for if the asked z is not the z of the zbins
-        # (maybe this is stupid)
-        if not self.spectrononlinearpars == dict():
-            sigmap_input = [
-                self.spectrononlinearpars["sigmap_{}".format(i)]
-                for i in range(len(self.nuisance.gcsp_zbins_mids()))
-            ]
-            sigmav_input = [
-                self.spectrononlinearpars["sigmav_{}".format(i)]
-                for i in range(len(self.nuisance.gcsp_zbins_mids()))
-            ]
-            self.sigmap_inter = CubicSpline(self.gcsp_z_bin_mids, sigmap_input)
-            self.sigmav_inter = CubicSpline(self.gcsp_z_bin_mids, sigmav_input)
-
-        self.allpars = {
-            **self.cosmopars,
-            **self.spectrobiaspars,
-            **self.PShotpars,
-            **self.spectrononlinearpars,
-        }
-        self.fiducial_allpars = {
-            **self.fiducial_cosmopars,
-            **self.fiducial_spectrobiaspars,
-            **self.fiducial_PShotpars,
-            **self.fiducial_spectrononlinearpars,
-        }
-
-        self.set_internal_kgrid()
-        self.activate_terms()
-        self.set_spectro_specs()
-        tend = time()
-        upt.time_print(
-            feedback_level=self.feed_lvl,
-            min_level=2,
-            text="GalSpec initialization done in: ",
-            time_ini=tini,
-            time_fin=tend,
-            instance=self,
-        )
-
-    def set_internal_kgrid(self):
-        """Updates the internal grid of wavenumbers used in the computation"""
-        cfg.specs["kmax"] = cfg.specs["kmax_GCsp"]
-        cfg.specs["kmin"] = cfg.specs["kmin_GCsp"]
-        kmin_int = 0.001
-        kmax_int = 5
-        self.k_grid = np.logspace(np.log10(kmin_int), np.log10(kmax_int), 1024)
-        self.dk_grid = np.diff(self.k_grid)[0]
-
-    def activate_terms(self):
-        """Update which modelling effects should be taken into consideration"""
-        self.linear_switch = cfg.settings["GCsp_linear"]
-        self.FoG_switch = cfg.settings["FoG_switch"]
-        self.APbool = cfg.settings["AP_effect"]
-        self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
-
-    def set_spectro_specs(self):
-        """Updates the spectroscopic redshift error"""
-        self.dz_err = cfg.specs["spec_sigma_dz"]
-        self.dz_type = cfg.specs["spec_sigma_dz_type"]
-        ## constant, z-dependent
-
-        # These bugs are intentionally left in, in order to reproduce old results.
-        # The reallity is that they are not to be here.
-        self.kh_rescaling_bug = cfg.settings["kh_rescaling_bug"]
-        self.kh_rescaling_beforespecerr_bug = cfg.settings["kh_rescaling_beforespecerr_bug"]
 
     def qparallel(self, z):
         """Function implementing q parallel of the Alcock-Paczynski effect
@@ -483,42 +491,16 @@ class ComputeGalSpectro:
         float
         The value of the bias term at `z`.
         """
-        if bias_sample == "g":
-            # This attribute is created when ComputeGalSpectro is called
-            bfun = self.gcsp_bias_of_z
-            zmidsbins = self.gcsp_z_bin_mids
-            zbins = self.nuisance.gcsp_zbins()
-            upt.debug_print(f"zmidsbins: {zmidsbins}")
-            bdict = self.spectrobiaspars
-            upt.debug_print(f"bdict: {bdict}")
-        elif bias_sample == "I":
-            bfun = self.IM_bias_of_z  # This attribute is created when ComputeGalIM is called
-            zmidsbins = self.IM_z_bin_mids
-            zbins = self.nuisance.gcsp_zbins()
-            bdict = self.IMbiaspars
-        if self.use_bias_funcs:
-            if self.s8terms:
-                bterm = bfun(z) * self.fiducialcosmo.sigma8_of_z(z, tracer=self.tracer)
-            else:
-                bterm = bfun(z)
-        elif self.use_bias_funcs is False:
-            # returns len(zmids)-1 if z above max(zmids)
-            zii = unu.bisection(zbins, z)
-            upt.debug_print(f"zii: {zii}")
-            # returns 0 if z below min(zmids)
-            zii += 1  # get bin index from 1 to len(Nbins)
-            upt.debug_print(f"zii after adding 1: {zii}")
-            bkey, bval = self.nuisance.bterm_z_key(
-                zii, zmidsbins, self.fiducialcosmo, bias_sample=bias_sample
+        if bias_sample != self.sp_bias_sample:
+            raise ValueError(
+                f"Bias sample {bias_sample} not found. "
+                f"Please use {self.sp_bias_sample} bias sample."
             )
-            upt.debug_print(f"bkey: {bkey}")
-            upt.debug_print(f"bval: {bval}")
-            bterm = bdict[bkey]
-            upt.debug_print(f"bdict: {bdict}")
-            upt.debug_print(f"bterm: {bterm}")
-            if "ln" in bkey:
-                # Exponentiate bias term which is in ln()
-                bterm = np.exp(bterm)
+        if self.use_bias_funcs:
+            bfunc_of_z = self.nuisance.gscp_bias_interp()
+            bterm = bfunc_of_z(z)
+        else:
+            bterm = self.nuisance.vectorized_gscp_bias_at_z(z)
         return bterm
 
     def kaiserTerm(self, z, k, mu, b_i=None, just_rsd=False, bias_sample="g"):

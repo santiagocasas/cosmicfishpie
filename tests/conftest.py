@@ -59,7 +59,7 @@ def spectro_fisher_matrix():
         "derivatives": "3PT",
         "nonlinear": False,
         "feedback": 2,
-        "specs_dir": "survey_specifications/",
+        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "cosmo_model": "LCDM",

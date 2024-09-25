@@ -475,21 +475,25 @@ class ComputeGalSpectro:
 
         return bao
 
-    def bterm_fid(self, z, bias_sample="g"):
+    def bterm_fid(self, z, k = None, bias_sample="g"):
         """
-        Calculates the fiducial bias term at a given redshift z, of either galaxies or intensity mapping.
+        Calculates the fiducial bias term at a given redshift z,
+        and an optional wavenumber k.
+        of either galaxies or intensity mapping.
 
         Parameters:
         -----------
-        z           : float, numpy.ndarray
+            z           : float, numpy.ndarray
                       The redshifts value at which to evaluate the bias term.
-        bias_sample : str, optional
+            k           : float, numpy.ndarray, optional
+                      The wavenumber at which to evaluate the bias term.
+            bias_sample : str, optional
                       Specifies whether to compute the galaxy ('g') or intensity mapping ('I') bias term. (default='g')
 
         Returns:
         --------
         float
-        The value of the bias term at `z`.
+        The value of the bias term at `z` and `k`, if provided.
         """
         if bias_sample != self.sp_bias_sample:
             raise ValueError(
@@ -498,10 +502,16 @@ class ComputeGalSpectro:
             )
         if self.use_bias_funcs:
             bfunc_of_z = self.nuisance.gscp_bias_interp()
-            bterm = bfunc_of_z(z)
+            bterm_z = bfunc_of_z(z)
         else:
-            bterm = self.nuisance.vectorized_gscp_bias_at_z(z)
-        return bterm
+            bterm_z  = self.nuisance.vectorized_gscp_bias_at_z(z)
+        bterm_k = 1
+        if k is not None:
+            if self.sp_bias_model == "linear_Qbias":
+                bterm_k = ((1 + k ** 2 * self.spectrobiaspars['A2'])
+                           /(1 + k * self.spectrobiaspars['A1']))
+        bterm_zk = bterm_z * bterm_k
+        return bterm_zk
 
     def kaiserTerm(self, z, k, mu, b_i=None, just_rsd=False, bias_sample="g"):
         """

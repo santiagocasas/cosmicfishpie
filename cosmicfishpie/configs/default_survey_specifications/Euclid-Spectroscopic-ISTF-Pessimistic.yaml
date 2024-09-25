@@ -27,6 +27,13 @@ specifications:
       lnbg_2: 0.4738057
       lnbg_3: 0.55760176
       lnbg_4: 0.64125687
+    linear_Qbias:
+      bg_1: 1.4614804
+      bg_2: 1.6060949
+      bg_3: 1.7464790
+      bg_4: 1.8988660
+      A1: 0.02
+      A2: -2.0
   shot_noise_model: 'constant'
   shot_noise_parametrization:
     constant:

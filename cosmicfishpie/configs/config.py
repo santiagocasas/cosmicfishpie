@@ -76,8 +76,18 @@ def init(
                                   Path to camb. Defaults to the camb in your current environment
     specs_dir                   : str
                                   Path to the survey specifications. Defaults to the `survey_specifications` folder in the home directory of cosmicfishpie
-    survey_names                : str
+    survey_name                 : str
                                   String of the names of the survey. Defaults to the name passed in the parameter `surveyName`
+    survey_name_photo           : str
+                                  Name of the survey specifications file for a photometric probe
+    survey_name_spectro         : str
+                                  Name of the survey specifications file for a spectrocopic probe
+    survey_name_radio_photo     : str
+                                  Name of the survey specifications file for a photometric radio probe
+    survey_name_radio_spectro   : str
+                                  Name of the survey specifications file for a spectrocopic radio probe
+    survey_name_radio_IM        : str
+                                  Name of the survey specifications file for a line intensity mapping probe
     derivatives                 : str
                                   String of the name of the derivative method. Either `3PT`, `4PT_FWD`, `STEM` or `POLY`. Defaults to `3PT`
     nonlinear                   : bool
@@ -394,33 +404,36 @@ def init(
         specificationsf1 = dict()
         specificationsf2 = dict()
         specificationsf = dict()
-        if surveyName == "Euclid" and surveyNamePhoto == "" and surveyNameSpectro == "":
+        if surveyNamePhoto == "":
             surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
+        if surveyNameSpectro == "":
             surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
-        if surveyNamePhoto != "":
-            file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
-            if not os.path.isfile(file_1_path):
-                print(f"specifications file : {file_1_path} not found!")
-                raise ValueError
-            yaml_file_1 = open(file_1_path)
-            parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
-            specificationsf1 = parsed_yaml_file_1["specifications"]
-            z_bins_ph = specificationsf1["z_bins_ph"]
-            specificationsf1["z_bins_ph"] = np.array(z_bins_ph)
-            specificationsf1["ngalbin"] = ngal_per_bin(
-                specificationsf1["ngal_sqarmin"], specificationsf1["z_bins_ph"]
-            )
-            specificationsf1["z0"] = specificationsf1["zm"] / np.sqrt(2)
-            specificationsf1["z0_p"] = specificationsf1["z0"]
-            specificationsf1["binrange"] = range(1, len(specificationsf1["z_bins_ph"]))
-        if surveyNameSpectro != "":
-            file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
-            if not os.path.isfile(file_2_path):
-                print(f"specifications file : {file_2_path} not found!")
-                raise ValueError
-            yaml_file_2 = open(file_2_path)
-            parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
-            specificationsf2 = parsed_yaml_file_2["specifications"]
+
+        # Photometric probe
+        file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
+        if not os.path.isfile(file_1_path):
+            raise FileNotFoundError(f"specifications file : {file_1_path} not found!")
+        yaml_file_1 = open(file_1_path)
+        parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
+        specificationsf1 = parsed_yaml_file_1["specifications"]
+        z_bins_ph = specificationsf1["z_bins_ph"]
+        specificationsf1["z_bins_ph"] = np.array(z_bins_ph)
+        specificationsf1["ngalbin"] = ngal_per_bin(
+            specificationsf1["ngal_sqarmin"], specificationsf1["z_bins_ph"]
+        )
+        specificationsf1["z0"] = specificationsf1["zm"] / np.sqrt(2)
+        specificationsf1["z0_p"] = specificationsf1["z0"]
+        specificationsf1["binrange"] = range(1, len(specificationsf1["z_bins_ph"]))
+
+        # Spectroscopic probe
+        file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
+        if not os.path.isfile(file_2_path):
+            raise FileNotFoundError(f"specifications file : {file_2_path} not found!")
+        yaml_file_2 = open(file_2_path)
+        parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
+        specificationsf2 = parsed_yaml_file_2["specifications"]
+
+        # fill the final specifications dictionary
         specificationsf.update(specificationsf1)
         specificationsf.update(specificationsf2)
         specificationsf["survey_name"] = surveyName

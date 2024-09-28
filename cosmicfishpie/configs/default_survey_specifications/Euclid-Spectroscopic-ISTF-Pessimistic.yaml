@@ -1,5 +1,6 @@
 specifications:
   'spec_sigma_dz': 0.001
+  'spec_sigma_dz_type': 'constant'
   'area_survey_spectro': 15000
   'kmax_GCsp': 0.25
   'kmin_GCsp': 0.001

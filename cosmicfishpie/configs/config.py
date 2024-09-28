@@ -75,7 +75,9 @@ def init(
     camb_path                   : str
                                   Path to camb. Defaults to the camb in your current environment
     specs_dir                   : str
-                                  Path to the survey specifications. Defaults to the `survey_specifications` folder in the home directory of cosmicfishpie
+                                  Path to the survey specifications. Defaults to the `specs_dir_default`
+    specs_dir_default           : str
+                                  Path to the default survey specifications. Defaults to the `survey_specifications` folder in the config directory of cosmicfishpie
     survey_name                 : str
                                   String of the names of the survey. Defaults to the name passed in the parameter `surveyName`
     survey_name_photo           : str
@@ -209,9 +211,13 @@ def init(
         settings["camb_path"] = cambpath
     # Set defaults if not contained previously in options
     settings.setdefault(
-        "specs_dir",
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_survey_specifications"),
+        "specs_dir_default",
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "default_survey_specifications",
+        ),
     )
+    settings.setdefault("specs_dir", settings["specs_dir_default"])
     settings.setdefault("survey_name", surveyName)
     settings.setdefault("survey_specs", "ISTF-Optimistic")
     settings.setdefault("survey_name_photo", "Euclid-Photometric-ISTF-Pessimistic")
@@ -219,7 +225,6 @@ def init(
     settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
-    settings.setdefault("available_survey_names", ["Euclid", "SKA1", "DESI", "Planck", "Rubin"])
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -357,89 +362,72 @@ def init(
         numgal = ngal_bin * ones
         return numgal
 
-    global specs
+    ##############################
+    # Load Survey Specifications #
+    ##############################
 
+    # Add additional surveys here
+    available_survey_names = ["Euclid", "SKA1", "DESI", "Planck", "Rubin"]
+
+    def create_ph_dict(foldername, filename):
+        photo_dict = dict()
+
+        ph_file_path = os.path.join(foldername, filename + ".yaml")
+        if not os.path.isfile(ph_file_path):
+            raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
+
+        ph_yaml_fs = open(ph_file_path, "r")
+        ph_yaml_content = yaml.load(ph_yaml_fs, Loader=yaml.FullLoader)
+        ph_yaml_fs.close()
+
+        photo_dict = ph_yaml_content["specifications"]
+        z_bins_ph = photo_dict["z_bins_ph"]
+        photo_dict["z_bins_ph"] = np.array(z_bins_ph)
+        photo_dict["ngalbin"] = ngal_per_bin(photo_dict["ngal_sqarmin"], photo_dict["z_bins_ph"])
+        photo_dict["z0"] = photo_dict["zm"] / np.sqrt(2)
+        photo_dict["z0_p"] = photo_dict["z0"]
+        photo_dict["binrange"] = range(1, len(photo_dict["z_bins_ph"]))
+
+        return photo_dict
+
+    def create_sp_dict(foldername, filename):
+        spec_dict = dict()
+
+        sp_file_path = os.path.join(foldername, filename + ".yaml")
+        if not os.path.isfile(sp_file_path):
+            raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
+
+        sp_yaml_fs = open(sp_file_path, "r")
+        ph_yaml_content = yaml.load(sp_yaml_fs, Loader=yaml.FullLoader)
+        sp_yaml_fs.close()
+
+        spec_dict = ph_yaml_content["specifications"]
+
+        return spec_dict
+
+    # Load the default Euclid cases
     specs_defaults = {}
-    specs_defaults.setdefault("spec_sigma_dz", 0.002)
-    specs_defaults.setdefault("spec_sigma_dz_type", "constant")
-    specs_defaults["specs_dir"] = settings["specs_dir"]
-    specs = specs_defaults.copy()  # start with default dict
+    specs_defaults.update(
+        create_ph_dict(settings["specs_dir_default"], "Euclid-Photometric-ISTF-Pessimistic")
+    )
+    specs_defaults.update(
+        create_sp_dict(settings["specs_dir_default"], "Euclid-Spectroscopic-ISTF-Pessimistic")
+    )
 
-    global survey_equivalence
+    global specs
+    specs = specs_defaults.copy()  # Start with default dict
 
-    def survey_equivalence(surv_str):
-        # def_surv = 'Euclid'
-        if "Euclid" in surv_str:
-            surv = "Euclid"
-        if "Rubin" in surv_str:
-            surv = "Rubin"
-        elif surv_str == "DESI_E":
-            surv = "DESI_ELG"
-        elif surv_str == "DESI_B":
-            surv = "DESI_BGS"
-        elif "SKA1" in surv_str:
-            surv = "SKA1"
-        elif "SKAO" in surv_str:
-            surv = "SKA1"
-        elif "SKA2" in surv_str:
-            surv = "SKA2"
-        else:
-            surv = surv_str
-        return surv
-
-    specs["gc_specs_files_dict"] = {
-        "default": "Euclid_GCsp_IST.dat",
-        "Euclid": "Euclid_GCsp_IST.dat",
-        "SKA1": "SKA1_GCsp_MDB2_Redbook.dat",
-        "SKA2": "SKA2_GCsp.dat",
-        "DESI_ELG": "DESI_ELG_GCsp.dat",
-        "DESI_ELG_4bins": "DESI_4bins_ELG_GCsp.dat",
-        "SKA1 x DESI_ELG": "DESI_ELG_GCsp.dat",
-        "DESI_BGS": "DESI_BGS_GCsp.dat",
-        "DESI_BGS_2bins": "DESI_2bins_BGS_GCsp.dat",
-    }
-    surveyNamePhoto = settings.get("survey_name_photo")
-    surveyNameSpectro = settings.get("survey_name_spectro")
     if "Euclid" in surveyName:
-        specificationsf1 = dict()
-        specificationsf2 = dict()
-        specificationsf = dict()
-        if surveyNamePhoto == "":
-            surveyNamePhoto = "Euclid-Photometric-ISTF-Pessimistic"
-        if surveyNameSpectro == "":
-            surveyNameSpectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
-
-        # Photometric probe
-        file_1_path = os.path.join(settings["specs_dir"], surveyNamePhoto + ".yaml")
-        if not os.path.isfile(file_1_path):
-            raise FileNotFoundError(f"specifications file : {file_1_path} not found!")
-        yaml_file_1 = open(file_1_path)
-        parsed_yaml_file_1 = yaml.load(yaml_file_1, Loader=yaml.FullLoader)
-        specificationsf1 = parsed_yaml_file_1["specifications"]
-        z_bins_ph = specificationsf1["z_bins_ph"]
-        specificationsf1["z_bins_ph"] = np.array(z_bins_ph)
-        specificationsf1["ngalbin"] = ngal_per_bin(
-            specificationsf1["ngal_sqarmin"], specificationsf1["z_bins_ph"]
-        )
-        specificationsf1["z0"] = specificationsf1["zm"] / np.sqrt(2)
-        specificationsf1["z0_p"] = specificationsf1["z0"]
-        specificationsf1["binrange"] = range(1, len(specificationsf1["z_bins_ph"]))
-
-        # Spectroscopic probe
-        file_2_path = os.path.join(settings["specs_dir"], surveyNameSpectro + ".yaml")
-        if not os.path.isfile(file_2_path):
-            raise FileNotFoundError(f"specifications file : {file_2_path} not found!")
-        yaml_file_2 = open(file_2_path)
-        parsed_yaml_file_2 = yaml.load(yaml_file_2, Loader=yaml.FullLoader)
-        specificationsf2 = parsed_yaml_file_2["specifications"]
-
-        # fill the final specifications dictionary
-        specificationsf.update(specificationsf1)
+        surveyNameSpectro = settings.get("survey_name_spectro")
+        if surveyNameSpectro:
+            specificationsf = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
+        surveyNamePhoto = settings.get("survey_name_photo")
+        if surveyNamePhoto:
+            specificationsf2 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
         specificationsf.update(specificationsf2)
-        specificationsf["survey_name"] = surveyName
 
-    surveyNameRadio = settings.get("survey_name_radio")
     if "SKA1" in surveyName:
+        surveyNameRadio = settings.get("survey_name_radio")
         ## TODO: Fix this and check this for radio, sp, ph and IM
         yaml_file = open(os.path.join(settings["specs_dir"], surveyNameRadio + ".yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
@@ -481,11 +469,13 @@ def init(
         specificationsf = parsed_yaml_file["specifications"]
         # Only needed specs are loaded in nuisance.py
         specificationsf["survey_name"] = surveyName
+
     if "Planck" in surveyName:
         yaml_file = open(os.path.join(settings["specs_dir"], "Planck.yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
         specificationsf = parsed_yaml_file["specifications"]
-    if surveyName not in settings["available_survey_names"]:
+
+    if surveyName not in available_survey_names:
         print("Survey name passed: ", surveyName)
         print(
             "Survey name not found in available survey names.",
@@ -503,6 +493,9 @@ def init(
         "fsky_spectro", upm.sqdegtofsky(specificationsf.get("area_survey_spectro", 0.0))
     )
     specs.update(specifications)  # update keys if passed by users
+    specs["survey_name"] = surveyName
+    specs["specs_dir"] = settings["specs_dir"]  # Path for additional files like luminosity
+
     if observables is None:
         observables = ["GCph", "WL"]
     global obs

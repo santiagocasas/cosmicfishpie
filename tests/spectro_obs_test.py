@@ -18,7 +18,7 @@ def spectro_obs(spectro_fisher_matrix):
         fiducial_cosmo=cosmoFM.fiducialcosmo,
         bias_samples=["g", "g"],
         use_bias_funcs=False,
-        configuration=cosmoFM
+        configuration=cosmoFM,
     )
     return spectro_obs
 

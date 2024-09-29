@@ -5,9 +5,16 @@ This module contains nuisance parameter functions.
 
 """
 
+import logging
 import os
 from copy import deepcopy
-import logging
+
+import numpy as np
+from scipy.interpolate import InterpolatedUnivariateSpline, UnivariateSpline, interp1d
+
+import cosmicfishpie.configs.config as cfg
+from cosmicfishpie.utilities.utils import numerics as unu
+from cosmicfishpie.utilities.utils import printing as upr
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -16,52 +23,43 @@ logging.basicConfig(level=logging.INFO)
 if not logger.handlers:
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
-    
+
     # Define a formatter that includes timestamps and caller information
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - Line %(lineno)d - %(message)s'
+        "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - Line %(lineno)d - %(message)s"
     )
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
 
-import numpy as np
-from scipy.interpolate import (InterpolatedUnivariateSpline, 
-                               UnivariateSpline, interp1d)
-
-import cosmicfishpie.configs.config as cfg
-from cosmicfishpie.utilities.utils import numerics as unu
-from cosmicfishpie.utilities.utils import printing as upr
-
-
 class Nuisance:
-    def __init__(self, spectrobiasparams=None,
-                       spectrononlinearpars=None
-                    ):
-        self.observables = cfg.obs
-        self.specs = cfg.specs
-        self.settings = cfg.settings
+    def __init__(self, configuration = None, 
+                 spectrobiasparams=None, spectrononlinearpars=None):
+        if configuration is None:
+            self.config = cfg
+        else:
+            self.config = configuration
+        self.observables = self.config.obs
+        self.specs = self.config.specs
+        self.settings = self.config.settings
         self.specsdir = self.settings["specs_dir"]
-        self.surveyname = cfg.specs["survey_name"]
+        self.surveyname = self.specs["survey_name"]
         if "GCsp" in self.observables:
-            # gc_survey_dict = cfg.specs["gc_specs_files_dict"]
-            # gc_surveyname = cfg.survey_equivalence(self.surveyname)
-            # default_filename = gc_survey_dict["default"]
-            # gc_filename = gc_survey_dict.get(gc_surveyname, default_filename)
-            # self.gc_table = np.loadtxt(os.path.join(self.specsdir, gc_filename))
             self.sp_zbins = self.gcsp_zbins()
             self.sp_dndz = self.gcsp_dndz()
             self.sp_zbins_mids = self.gcsp_zbins_mids()
             if spectrobiasparams is None:
-                self.Spectrobiasparams = deepcopy(cfg.Spectrobiasparams)
+                self.Spectrobiasparams = deepcopy(self.config.Spectrobiasparams)
             else:
                 self.Spectrobiasparams = spectrobiasparams
             if spectrononlinearpars is None:
-                self.spectrononlinearpars = deepcopy(cfg.Spectrononlinearparams)
+                self.spectrononlinearpars = deepcopy(self.config.Spectrononlinearparams)
             else:
                 self.spectrononlinearpars = spectrononlinearpars
             self._vectorized_gcsp_bias_at_z = np.vectorize(self.gcsp_bias_at_z)
-            self._vectorized_gcsp_sigmapv_at_z = np.vectorize(self.gcsp_sigmapv_at_z, excluded=['sigma_key'])
+            self._vectorized_gcsp_sigmapv_at_z = np.vectorize(
+                self.gcsp_sigmapv_at_z, excluded=["sigma_key"]
+            )
 
         if "IM" in self.observables:
             filename_THI_noise = self.specs["IM_THI_noise_file"]
@@ -225,7 +223,7 @@ class Nuisance:
             if self.sp_bias_model == "linear_log":
                 b_arr = np.exp(b_arr)
         return b_arr
- 
+
     def gcsp_zvalue_to_zindex(self, z):
         bin_arr_ind = unu.bisection(self.sp_zbins, z)
         bin_num = bin_arr_ind + 1
@@ -272,23 +270,22 @@ class Nuisance:
 
     def vectorized_gcsp_bias_at_z(self, z):
         return self._vectorized_gcsp_bias_at_z(z)
-    
-    def gcsp_bias_kscale(self, k, z = None):
+
+    def gcsp_bias_kscale(self, k, z=None):
         bterm_k = 1
         if k is not None:
             if self.sp_bias_model == "linear_Qbias":
-                default_A1 = 0.
-                default_A2 = 0.
+                default_A1 = 0.0
+                default_A2 = 0.0
                 try:
-                    bterm_k = ((1 + k ** 2 *
-                                self.Spectrobiasparams.get('A2', default_A2))
-                               /(1 + k * 
-                                 self.Spectrobiasparams.get('A1', default_A1)))
+                    bterm_k = (1 + k**2 * self.Spectrobiasparams.get("A2", default_A2)) / (
+                        1 + k * self.Spectrobiasparams.get("A1", default_A1)
+                    )
                 except KeyError as ke:
                     print(
                         f"The key {ke} is not in dictionary."
                         f"Check observables and parameters being used"
-                        )
+                    )
                     print("Is spectriobiaspars a dictionary?")
                     print(isinstance(self.Spectrobiasparams, dict))
                     print(self.Spectrobiasparams)
@@ -313,14 +310,14 @@ class Nuisance:
         z_mids = self.gcsp_zbins_mids()
         bofz_spec = InterpolatedUnivariateSpline(z_mids, bias_at_zmids, k=1)
         return bofz_spec
-    
-    def gcsp_sigmapv_at_z(self, z, sigma_key='sigmap'):
+
+    def gcsp_sigmapv_at_z(self, z, sigma_key="sigmap"):
         bin_num = self.gcsp_zvalue_to_zindex(z)
-        sigma_key = sigma_key + '_' + str(bin_num)
+        sigma_key = sigma_key + "_" + str(bin_num)
         sigma_pv_value = self.spectrononlinearpars.get(sigma_key, 1.0)
         return sigma_pv_value
-    
-    def vectorized_gcsp_sigmapv_at_z(self, z, sigma_key='sigmap'):
+
+    def vectorized_gcsp_sigmapv_at_z(self, z, sigma_key="sigmap"):
         return self._vectorized_gcsp_sigmapv_at_z(z, sigma_key=sigma_key)
 
     def gcsp_dndz(self):

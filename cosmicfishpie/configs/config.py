@@ -372,14 +372,16 @@ def init(
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
-        
+
         try:
             ph_file_path = os.path.join(foldername, filename + ".yaml")
             if not os.path.isfile(ph_file_path):
                 raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
-            ph_file_path = os.path.join(settings["specs_dir_default"], specs_default_photo + ".yaml")
+            ph_file_path = os.path.join(
+                settings["specs_dir_default"], specs_default_photo + ".yaml"
+            )
             print(f"Using default specifications for photo: {ph_file_path}")
 
         ph_yaml_fs = open(ph_file_path, "r")
@@ -404,7 +406,9 @@ def init(
                 raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
-            sp_file_path = os.path.join(settings["specs_dir_default"], specs_default_spectro + ".yaml")
+            sp_file_path = os.path.join(
+                settings["specs_dir_default"], specs_default_spectro + ".yaml"
+            )
             print(f"Using default specifications for spectroscopic: {sp_file_path}")
 
         sp_yaml_fs = open(sp_file_path, "r")
@@ -417,12 +421,8 @@ def init(
     specs_defaults = {}
     specs_default_spectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
     specs_default_photo = "Euclid-Photometric-ISTF-Pessimistic"
-    specs_defaults.update(
-        create_ph_dict(settings["specs_dir_default"], specs_default_photo)
-    )
-    specs_defaults.update(
-        create_sp_dict(settings["specs_dir_default"], specs_default_spectro)
-    )
+    specs_defaults.update(create_ph_dict(settings["specs_dir_default"], specs_default_photo))
+    specs_defaults.update(create_sp_dict(settings["specs_dir_default"], specs_default_spectro))
 
     global specs
     specs = specs_defaults.copy()  # Start with default dict
@@ -640,14 +640,13 @@ def init(
     Spectrononlinearparams = dict()
     if "GCsp" in obs:
         gscp_nonlin_model = specs.get("nonlinear_model", "default")
-        if gscp_nonlin_model == 'default':
+        if gscp_nonlin_model == "default":
             Spectrononlinearparams = {}
-        elif gscp_nonlin_model == 'rescale_sigma_pv':
+        elif gscp_nonlin_model == "rescale_sigma_pv":
             nonlin_prtz = specs["nonlinear_parametrization"]
             nonlin_prmod = nonlin_prtz[gscp_nonlin_model]
             for key in nonlin_prmod.keys():
                 Spectrononlinearparams[key] = nonlin_prmod[key]
-    
 
     global Spectrobiasparams
     Spectrobiasparams = dict()
@@ -692,7 +691,7 @@ def init(
         for key in Spectrobiasparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
             upt.debug_print(freeparams)
-        #if "IM" not in obs:
+        # if "IM" not in obs:
         for key in PShotparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
         for key in Spectrononlinearparams:

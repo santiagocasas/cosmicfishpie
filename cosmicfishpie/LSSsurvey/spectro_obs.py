@@ -10,7 +10,6 @@ from time import time
 
 import numpy as np
 import scipy.integrate as integrate
-from scipy.interpolate import CubicSpline
 
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.cosmology.cosmology as cosmology
@@ -31,7 +30,7 @@ class ComputeGalSpectro:
         fiducial_cosmo=None,
         bias_samples=["g", "g"],
         use_bias_funcs=False,
-        configuration=None
+        configuration=None,
     ):
         """class to compute the observed power spectrum of a spectroscopic galaxy clustering experiment
 
@@ -160,9 +159,10 @@ class ComputeGalSpectro:
         if spectrononlinearpars is None:
             spectrononlinearpars = self.fiducial_spectrononlinearpars
         self.spectrononlinearpars = spectrononlinearpars
-        
-        self.nuisance = nuisance.Nuisance(spectrobiasparams=self.spectrobiaspars,
-                                          spectrononlinearpars=self.spectrononlinearpars)
+
+        self.nuisance = nuisance.Nuisance(
+            spectrobiasparams=self.spectrobiaspars, spectrononlinearpars=self.spectrononlinearpars
+        )
         self.extraPshot = self.nuisance.extra_Pshot_noise()
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
 
@@ -216,7 +216,9 @@ class ComputeGalSpectro:
         self.APbool = deepcopy(self.config.settings["AP_effect"])
         self.fix_cosmo_nl_terms = deepcopy(self.config.settings["fix_cosmo_nl_terms"])
         self.nonlinear_model = deepcopy(self.specs.get("nonlinear_model", "default"))
-        self.nonlinear_parametrization = deepcopy(self.specs.get("nonlinear_parametrization", {'default': ""}))
+        self.nonlinear_parametrization = deepcopy(
+            self.specs.get("nonlinear_parametrization", {"default": ""})
+        )
         self.vary_sigmap = self.nonlinear_parametrization.get("vary_sigmap", False)
         self.vary_sigmav = self.nonlinear_parametrization.get("vary_sigmav", False)
 
@@ -228,7 +230,9 @@ class ComputeGalSpectro:
         # These bugs are intentionally left in, in order to reproduce old results.
         # The reallity is that they are not to be here.
         self.kh_rescaling_bug = deepcopy(self.config.settings["kh_rescaling_bug"])
-        self.kh_rescaling_beforespecerr_bug = deepcopy(self.config.settings["kh_rescaling_beforespecerr_bug"])
+        self.kh_rescaling_beforespecerr_bug = deepcopy(
+            self.config.settings["kh_rescaling_beforespecerr_bug"]
+        )
 
     def set_spectro_bias_specs(self):
         """Updates the spectroscopic bias choices"""
@@ -276,7 +280,9 @@ class ComputeGalSpectro:
                     self.fiducial_cosmopars, self.config.input_type
                 )
         else:
-            print("Error: In ComputeGalSpectro fiducial_cosmopars not equal to self.config.fiducialparams")
+            print(
+                "Error: In ComputeGalSpectro fiducial_cosmopars not equal to self.config.fiducialparams"
+            )
             raise AttributeError
 
     def qparallel(self, z):
@@ -474,7 +480,7 @@ class ComputeGalSpectro:
 
         return bao
 
-    def bterm_fid(self, z, k = None, bias_sample="g"):
+    def bterm_fid(self, z, k=None, bias_sample="g"):
         """
         Calculates the fiducial bias term at a given redshift z,
         and an optional wavenumber k.
@@ -503,7 +509,7 @@ class ComputeGalSpectro:
             bfunc_of_z = self.nuisance.gcsp_bias_interp()
             bterm_z = bfunc_of_z(z)
         else:
-            bterm_z  = self.nuisance.vectorized_gcsp_bias_at_z(z)
+            bterm_z = self.nuisance.vectorized_gcsp_bias_at_z(z)
         bterm_k = self.nuisance.gcsp_bias_kscale(k)
         bterm_zk = bterm_z * bterm_k
         return bterm_zk
@@ -620,7 +626,7 @@ class ComputeGalSpectro:
         else:
             sp = np.sqrt(self.P_ThetaTheta_Moments(zz, 2))
             if self.vary_sigmap:
-                sp *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key='sigmap')
+                sp *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key="sigmap")
         return sp
 
     def sigmavNL(self, zz, mu):
@@ -645,7 +651,7 @@ class ComputeGalSpectro:
             f2 = self.P_ThetaTheta_Moments(zz, 2)
             sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
             if self.vary_sigmav:
-                sv *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key='sigmav')
+                sv *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key="sigmav")
         return sv
 
     def P_ThetaTheta_Moments(self, zz, moment=0):
@@ -871,7 +877,7 @@ class ComputeGalIM(ComputeGalSpectro):
         fiducial_cosmo=None,
         use_bias_funcs=True,
         bias_samples=["I", "I"],
-        configuration=None
+        configuration=None,
     ):
         super().__init__(
             cosmopars,
@@ -881,14 +887,13 @@ class ComputeGalIM(ComputeGalSpectro):
             fiducial_cosmo=fiducial_cosmo,
             use_bias_funcs=True,
             bias_samples=bias_samples,
-            configuration=configuration
+            configuration=configuration,
         )
 
         tini = time()
         self.feed_lvl = self.config.settings["feedback"]
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=2, 
-            text="Entered ComputeGalIM", instance=self
+            feedback_level=self.feed_lvl, min_level=2, text="Entered ComputeGalIM", instance=self
         )
 
         if "IM" not in self.observables:

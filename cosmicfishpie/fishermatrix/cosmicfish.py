@@ -160,22 +160,22 @@ class FisherMatrix:
         self.settings = deepcopy(cfg.settings)
         self.specs = deepcopy(cfg.specs)
         self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
-        self.fiducialparams = self.fiducialcosmopars ## for compatibility
+        self.fiducialparams = self.fiducialcosmopars  ## for compatibility
         self.fiducialcosmo = copy(cfg.fiducialcosmo)
         self.photopars = deepcopy(cfg.photoparams)
         self.photobiaspars = deepcopy(cfg.Photobiasparams)
         self.IApars = deepcopy(cfg.IAparams)
         self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
-        self.Spectrobiasparams = self.Spectrobiaspars ## for compatibility
+        self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
         self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
-        self.Spectrononlinearparams = self.Spectrononlinpars ## for compatibility
+        self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
         self.IMbiaspars = deepcopy(cfg.IMbiasparams)
-        self.IMbiasparams = self.IMbiaspars ## for compatibility
+        self.IMbiasparams = self.IMbiaspars  ## for compatibility
         self.PShotpars = deepcopy(cfg.PShotparams)
-        self.PShotparams = self.PShotpars ## for compatibility
+        self.PShotparams = self.PShotpars  ## for compatibility
         self.observables = deepcopy(cfg.obs)
-        self.obs = self.observables ## for compatibility
-        self.input_type = deepcopy(cfg.input_type) ## for compatibility
+        self.obs = self.observables  ## for compatibility
+        self.input_type = deepcopy(cfg.input_type)  ## for compatibility
         self.freeparams = deepcopy(cfg.freeparams)
         self.allparams_fidus = {
             **self.fiducialcosmopars,
@@ -263,7 +263,7 @@ class FisherMatrix:
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
-                    configuration=self
+                    configuration=self,
                 )
 
             elif "IM" in self.observables:
@@ -272,7 +272,7 @@ class FisherMatrix:
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
-                    configuration=self
+                    configuration=self,
                 )
             elif "GCsp" in self.observables:
                 self.obs_spectrum = ["g", "g"]
@@ -283,12 +283,14 @@ class FisherMatrix:
                     spectrononlinearpars=self.Spectrononlinpars,
                     PShotpars=self.PShotpars,
                     bias_samples=self.obs_spectrum,
-                    configuration=self
+                    configuration=self,
                 )
 
             self.pk_cov = spectro_cov.SpectroCov(
-                self.fiducialcosmopars, fiducial_specobs=self.pk_obs, 
-                bias_samples=self.obs_spectrum, configuration=self
+                self.fiducialcosmopars,
+                fiducial_specobs=self.pk_obs,
+                bias_samples=self.obs_spectrum,
+                configuration=self,
             )
             self.zmids = self.pk_cov.global_z_bin_mids
             nbins = len(self.zmids)
@@ -406,7 +408,7 @@ class FisherMatrix:
             self.Pk_mumesh,
             fiducial_spectro_obj=self.pk_obs,
             bias_samples=self.obs_spectrum,
-            configuration=self
+            configuration=self,
         )
         allpars_deriv = self.pk_deriv.compute_derivs(freeparams=self.freeparams)
         return allpars_deriv

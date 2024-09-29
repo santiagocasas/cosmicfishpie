@@ -17,8 +17,9 @@ from cosmicfishpie.utilities.utils import printing as upt
 
 
 class SpectroCov:
-    def __init__(self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"],
-                 configuration=None):
+    def __init__(
+        self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"], configuration=None
+    ):
         """
         Initializes an object with specified fiducial parameters and computes
         various power spectra
@@ -85,16 +86,13 @@ class SpectroCov:
                 instance=self,
             )
             self.pk_obs = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=bias_samples,
-                configuration=self.config
+                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
             )
             self.pk_obs_gg = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=["g", "g"],
-                configuration=self.config
+                fiducialpars, fiducialpars, bias_samples=["g", "g"], configuration=self.config
             )
             self.pk_obs_II = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=["I", "I"],
-                configuration=self.config
+                fiducialpars, fiducialpars, bias_samples=["I", "I"], configuration=self.config
             )
         elif "IM" in self.config.obs and "I" in bias_samples:
             bias_samples = ["I", "I"]
@@ -105,8 +103,7 @@ class SpectroCov:
                 instance=self,
             )
             self.pk_obs = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=bias_samples,
-                configuration=self.config
+                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
             )
         elif "GCsp" in self.config.obs and "g" in bias_samples:
             bias_samples = ["g", "g"]
@@ -117,8 +114,7 @@ class SpectroCov:
                 instance=self,
             )
             self.pk_obs = spec_obs.ComputeGalSpectro(
-                fiducialpars, fiducialpars, bias_samples=bias_samples,
-                configuration=self.config
+                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
             )
         else:
             self.pk_obs = fiducial_specobs
@@ -367,8 +363,15 @@ class SpectroCov:
 
 
 class SpectroDerivs:
-    def __init__(self, z_array, pk_kmesh, pk_mumesh, fiducial_spectro_obj, bias_samples=["g", "g"],
-                 configuration=None):
+    def __init__(
+        self,
+        z_array,
+        pk_kmesh,
+        pk_mumesh,
+        fiducial_spectro_obj,
+        bias_samples=["g", "g"],
+        configuration=None,
+    ):
         """Main derivative Engine for the Spectroscopic probes.
 
         Parameters
@@ -437,7 +440,7 @@ class SpectroDerivs:
         self.cosmology_variations_dict = dict()
         self.pk_kmesh = pk_kmesh
         self.pk_mumesh = pk_mumesh
-        self.freeparams = None  
+        self.freeparams = None
         self.feed_lvl = self.config.settings["feedback"]
 
     def initialize_obs(self, allpars):
@@ -457,7 +460,7 @@ class SpectroDerivs:
                 PShotpars=PShotpars,
                 fiducial_cosmo=self.fiducial_cosmo,
                 bias_samples=self.bias_samples,
-                configuration=self.config
+                configuration=self.config,
             )
         elif "g" in self.bias_samples:
             self.pobs = spec_obs.ComputeGalSpectro(
@@ -468,7 +471,7 @@ class SpectroDerivs:
                 PShotpars=PShotpars,
                 fiducial_cosmo=self.fiducial_cosmo,
                 bias_samples=self.bias_samples,
-                configuration=self.config
+                configuration=self.config,
             )
         strdic = str(sorted(cosmopars.items()))
         hh = hash(strdic)

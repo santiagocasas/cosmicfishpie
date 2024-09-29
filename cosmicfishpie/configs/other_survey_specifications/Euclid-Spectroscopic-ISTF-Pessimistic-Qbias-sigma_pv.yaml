@@ -1,6 +1,5 @@
 specifications:
   'spec_sigma_dz': 0.002
-  'spec_sigma_dz_type': 'constant'
   'area_survey_spectro': 15000
   'kmax_GCsp': 0.25
   'kmin_GCsp': 0.001
@@ -15,8 +14,8 @@ specifications:
     3: 1410.0
     4: 940.97
   sp_bias_sample: 'g'
-  sp_bias_model: 'linear_log'
-  sp_bias_root: 'lnb'
+  sp_bias_model: 'linear_Qbias'
+  sp_bias_root: 'b'
   sp_bias_parametrization:
     linear:
       bg_1: 1.4614804
@@ -42,3 +41,17 @@ specifications:
       Ps_2: 0.0
       Ps_3: 0.0
       Ps_4: 0.0
+  nonlinear_model: 'rescale_sigma_pv' # 'default' or 'rescale_sigma_pv'
+  nonlinear_parametrization:
+    vary_sigmap: True
+    vary_sigmav: True
+    rescale_sigma_pv:
+      sigmap_1: 1.0
+      sigmap_2: 1.0
+      sigmap_3: 1.0
+      sigmap_4: 1.0
+      sigmav_1: 1.0
+      sigmav_2: 1.0
+      sigmav_3: 1.0
+      sigmav_4: 1.0
+    default:

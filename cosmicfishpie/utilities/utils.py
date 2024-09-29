@@ -98,7 +98,7 @@ class numerics:
         if np.isclose(value, array[0]) or value < array[0]:
             return 0
         if np.isclose(value, array[-1]) or value > array[-1]:
-            return n - 1
+            return n - 2  # used with bins, which are defined as [z_i, z_i+1]
 
         left, right = 0, n - 1
         while left < right:

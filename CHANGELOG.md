@@ -30,3 +30,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.1.2 : Coverage badge
 1.1.3 : New split up demonstration notebooks
 1.1.4 : Coverage reports with Codecov
+1.2.0 : Big update of configuration, specification yamls and nuisance parameter interface. No backwards compatibility of yamls!

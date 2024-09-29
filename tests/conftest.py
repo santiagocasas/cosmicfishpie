@@ -81,6 +81,10 @@ def spectro_fisher_matrix():
     }
 
     observables = ["GCsp"]
+    # for testing purposes, we use a smaller sigma_dz
+    specifs = {
+        "spec_sigma_dz": 0.001,
+    }
 
     cosmoFM = cff.FisherMatrix(
         fiducialpars=fiducial,
@@ -89,6 +93,7 @@ def spectro_fisher_matrix():
         observables=observables,
         cosmoModel=options["cosmo_model"],
         surveyName=options["survey_name"],
+        specifications=specifs,
     )
 
     return cosmoFM

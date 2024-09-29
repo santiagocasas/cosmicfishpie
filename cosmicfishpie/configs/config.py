@@ -493,7 +493,7 @@ def init(
             "Please pass your full custom specifications as a dictionary.",
         )
 
-    specs.update(specificationsf)  # update keys if present in files
+    ums.deepupdate(specs, specificationsf)  # deep update keys if present in files
     specs["fsky_GCph"] = specificationsf.get(
         "fsky_GCph", upm.sqdegtofsky(specificationsf.get("area_survey_GCph", 0.0))
     )
@@ -503,7 +503,7 @@ def init(
     specs["fsky_spectro"] = specificationsf.get(
         "fsky_spectro", upm.sqdegtofsky(specificationsf.get("area_survey_spectro", 0.0))
     )
-    specs.update(specifications)  # update keys if passed by users
+    ums.deepupdate(specs, specifications)  # deep update keys if passed by users
     specs["survey_name"] = surveyName
     specs["specs_dir"] = settings["specs_dir"]  # Path for additional files like luminosity
 

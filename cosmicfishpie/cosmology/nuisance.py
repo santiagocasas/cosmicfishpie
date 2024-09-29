@@ -35,7 +35,9 @@ from cosmicfishpie.utilities.utils import printing as upr
 
 
 class Nuisance:
-    def __init__(self, spectrobiasparams=None):
+    def __init__(self, spectrobiasparams=None,
+                       spectrononlinearpars=None
+                    ):
         self.observables = cfg.obs
         self.specs = cfg.specs
         self.settings = cfg.settings
@@ -54,6 +56,13 @@ class Nuisance:
                 self.Spectrobiasparams = deepcopy(cfg.Spectrobiasparams)
             else:
                 self.Spectrobiasparams = spectrobiasparams
+            if spectrononlinearpars is None:
+                self.spectrononlinearpars = deepcopy(cfg.Spectrononlinearparams)
+            else:
+                self.spectrononlinearpars = spectrononlinearpars
+            self._vectorized_gcsp_bias_at_z = np.vectorize(self.gcsp_bias_at_z)
+            self._vectorized_gcsp_sigmapv_at_z = np.vectorize(self.gcsp_sigmapv_at_z, excluded=['sigma_key'])
+
         if "IM" in self.observables:
             filename_THI_noise = self.specs["IM_THI_noise_file"]
             self.Tsys_arr = np.loadtxt(os.path.join(self.specsdir, filename_THI_noise))
@@ -216,8 +225,17 @@ class Nuisance:
             if self.sp_bias_model == "linear_log":
                 b_arr = np.exp(b_arr)
         return b_arr
+ 
+    def gcsp_zvalue_to_zindex(self, z):
+        bin_arr_ind = unu.bisection(self.sp_zbins, z)
+        bin_num = bin_arr_ind + 1
+        if bin_num < self.sp_zbins_inds[0]:
+            bin_num = self.sp_zbins_inds[0]
+        if bin_num > self.sp_zbins_inds[-1]:
+            bin_num = self.sp_zbins_inds[-1]
+        return bin_num
 
-    def gscp_bias_at_zi(self, zi):
+    def gcsp_bias_at_zi(self, zi):
         """
         Parameters
         ----------
@@ -229,16 +247,12 @@ class Nuisance:
         float
             Bias at the redshift bin index zi
         """
-        if zi < self.sp_zbins_inds[0]:
-            zi = self.sp_zbins_inds[0]
-        if zi > self.sp_zbins_inds[-1]:
-            zi = self.sp_zbins_inds[-1]
         bias_at_zmids = self.gcsp_bias_at_zm()
         arr_ind = zi - 1
         bias_at_zi = bias_at_zmids[arr_ind]
         return bias_at_zi
 
-    def gscp_bias_at_z(self, z):
+    def gcsp_bias_at_z(self, z):
         """
         Parameters
         ----------
@@ -250,18 +264,16 @@ class Nuisance:
         float
             Bias at the redshift z
         """
-        bin_arr_ind = unu.bisection(self.sp_zbins, z)
-        bin_num = bin_arr_ind + 1
+        bin_num = self.gcsp_zvalue_to_zindex(z)
         logger.debug(f"bin_num: {bin_num} with z: {z}")
-        bias_at_zzi = self.gscp_bias_at_zi(bin_num)
+        bias_at_zzi = self.gcsp_bias_at_zi(bin_num)
         logger.debug(f"bias_at_zzi: {bias_at_zzi} with zi: {bin_num}")
         return bias_at_zzi
 
-    def vectorized_gscp_bias_at_z(self, z):
-        bias_at_z = np.vectorize(self.gscp_bias_at_z)
-        return bias_at_z(z)
+    def vectorized_gcsp_bias_at_z(self, z):
+        return self._vectorized_gcsp_bias_at_z(z)
     
-    def gscp_bias_kscale(self, k, z = None):
+    def gcsp_bias_kscale(self, k, z = None):
         bterm_k = 1
         if k is not None:
             if self.sp_bias_model == "linear_Qbias":
@@ -301,6 +313,15 @@ class Nuisance:
         z_mids = self.gcsp_zbins_mids()
         bofz_spec = InterpolatedUnivariateSpline(z_mids, bias_at_zmids, k=1)
         return bofz_spec
+    
+    def gcsp_sigmapv_at_z(self, z, sigma_key='sigmap'):
+        bin_num = self.gcsp_zvalue_to_zindex(z)
+        sigma_key = sigma_key + '_' + str(bin_num)
+        sigma_pv_value = self.spectrononlinearpars.get(sigma_key, 1.0)
+        return sigma_pv_value
+    
+    def vectorized_gcsp_sigmapv_at_z(self, z, sigma_key='sigmap'):
+        return self._vectorized_gcsp_sigmapv_at_z(z, sigma_key=sigma_key)
 
     def gcsp_dndz(self):
         """
@@ -347,23 +368,3 @@ class Nuisance:
         """
         Tsys_interp = UnivariateSpline(self.Tsys_arr[:, 0], self.Tsys_arr[:, 1])
         return Tsys_interp
-
-    def bterm_z_key(self, z_ind, z_mids, fiducosmo, bias_sample="g"):
-        if bias_sample == "g":
-            bi_at_z_mids = self.gcsp_bias_at_zm()
-        if bias_sample == "I":
-            bi_at_z_mids = self.IM_bias_at_zm()
-        bstring = self.settings["vary_bias_str"]
-        bstring = bstring + bias_sample
-        b_i = bi_at_z_mids[z_ind - 1]
-        if self.settings["bfs8terms"]:
-            bstring = bstring + "s8"
-            b_i = b_i * fiducosmo.sigma8_of_z(
-                z_mids[z_ind - 1], tracer=self.settings["GCsp_Tracer"]
-            )
-        bstring = bstring + "_"
-        bstring = bstring + str(z_ind)
-        if "ln" in bstring:
-            b_i = np.log(b_i)
-        b_i = b_i.item()  # Convert 1-element array to scalar
-        return bstring, b_i

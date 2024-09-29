@@ -31,6 +31,7 @@ class ComputeGalSpectro:
         fiducial_cosmo=None,
         bias_samples=["g", "g"],
         use_bias_funcs=False,
+        configuration=None
     ):
         """class to compute the observed power spectrum of a spectroscopic galaxy clustering experiment
 
@@ -117,7 +118,15 @@ class ComputeGalSpectro:
                                         Value of the spectroscopic redshift error
         """
         tini = time()
-        self.feed_lvl = cfg.settings["feedback"]
+        if configuration is None:
+            self.config = cfg
+        else:
+            self.config = configuration
+
+        upt.debug_print("Initializing ComputeGalSpectro with the following configuration:")
+        upt.debug_print(self.config.__dict__)
+
+        self.feed_lvl = self.config.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
             min_level=2,
@@ -125,11 +134,11 @@ class ComputeGalSpectro:
             instance=self,
         )
 
-        self.observables = deepcopy(cfg.obs)
-        self.specs = deepcopy(cfg.specs)
+        self.observables = deepcopy(self.config.obs)
+        self.specs = deepcopy(self.config.specs)
 
-        self.s8terms = deepcopy(cfg.settings["bfs8terms"])
-        self.tracer = deepcopy(cfg.settings["GCsp_Tracer"])
+        self.s8terms = deepcopy(self.config.settings["bfs8terms"])
+        self.tracer = deepcopy(self.config.settings["GCsp_Tracer"])
 
         self.set_fiducial_cosmology(
             fiducial_cosmopars=fiducial_cosmopars, fiducial_cosmo=fiducial_cosmo
@@ -138,41 +147,29 @@ class ComputeGalSpectro:
         if self.cosmopars == self.fiducial_cosmopars:
             self.cosmo = self.fiducialcosmo
         else:
-            self.cosmo = cosmology.cosmo_functions(cosmopars, cfg.input_type)
+            self.cosmo = cosmology.cosmo_functions(cosmopars, self.config.input_type)
 
         # Load the Nuisance Parameters
-        self.fiducial_spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+        self.fiducial_spectrobiaspars = deepcopy(self.config.Spectrobiasparams)
         if spectrobiaspars is None:
             self.spectrobiaspars = self.fiducial_spectrobiaspars
         else:
             self.spectrobiaspars = spectrobiaspars
-        self.nuisance = nuisance.Nuisance(spectrobiasparams=self.spectrobiaspars)
-        self.extraPshot = self.nuisance.extra_Pshot_noise()
-        self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
-
-        self.fiducial_PShotpars = deepcopy(cfg.PShotparams)
-        if PShotpars is None:
-            PShotpars = self.fiducial_PShotpars
-        self.PShotpars = PShotpars
-
-        self.fiducial_spectrononlinearpars = deepcopy(cfg.Spectrononlinearparams)
+        # Load the Non Linear Nuisance Parameters
+        self.fiducial_spectrononlinearpars = deepcopy(self.config.Spectrononlinearparams)
         if spectrononlinearpars is None:
             spectrononlinearpars = self.fiducial_spectrononlinearpars
         self.spectrononlinearpars = spectrononlinearpars
+        
+        self.nuisance = nuisance.Nuisance(spectrobiasparams=self.spectrobiaspars,
+                                          spectrononlinearpars=self.spectrononlinearpars)
+        self.extraPshot = self.nuisance.extra_Pshot_noise()
+        self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
 
-        # create interpolators, for if the asked z is not the z of the zbins
-        # (maybe this is stupid)
-        if not self.spectrononlinearpars == dict():
-            sigmap_input = [
-                self.spectrononlinearpars["sigmap_{}".format(i)]
-                for i in range(len(self.gcsp_z_bin_mids))
-            ]
-            sigmav_input = [
-                self.spectrononlinearpars["sigmav_{}".format(i)]
-                for i in range(len(self.gcsp_z_bin_mids))
-            ]
-            self.sigmap_inter = CubicSpline(self.gcsp_z_bin_mids, sigmap_input)
-            self.sigmav_inter = CubicSpline(self.gcsp_z_bin_mids, sigmav_input)
+        self.fiducial_PShotpars = deepcopy(self.config.PShotparams)
+        if PShotpars is None:
+            PShotpars = self.fiducial_PShotpars
+        self.PShotpars = PShotpars
 
         self.allpars = {
             **self.cosmopars,
@@ -214,10 +211,14 @@ class ComputeGalSpectro:
 
     def activate_terms(self):
         """Update which modelling effects should be taken into consideration"""
-        self.linear_switch = deepcopy(cfg.settings["GCsp_linear"])
-        self.FoG_switch = deepcopy(cfg.settings["FoG_switch"])
-        self.APbool = deepcopy(cfg.settings["AP_effect"])
-        self.fix_cosmo_nl_terms = deepcopy(cfg.settings["fix_cosmo_nl_terms"])
+        self.linear_switch = deepcopy(self.config.settings["GCsp_linear"])
+        self.FoG_switch = deepcopy(self.config.settings["FoG_switch"])
+        self.APbool = deepcopy(self.config.settings["AP_effect"])
+        self.fix_cosmo_nl_terms = deepcopy(self.config.settings["fix_cosmo_nl_terms"])
+        self.nonlinear_model = deepcopy(self.specs.get("nonlinear_model", "default"))
+        self.nonlinear_parametrization = deepcopy(self.specs.get("nonlinear_parametrization", {'default': ""}))
+        self.vary_sigmap = self.nonlinear_parametrization.get("vary_sigmap", False)
+        self.vary_sigmav = self.nonlinear_parametrization.get("vary_sigmav", False)
 
     def set_spectro_dz_specs(self):
         """Updates the spectroscopic redshift error"""
@@ -226,8 +227,8 @@ class ComputeGalSpectro:
         ## constant, z-dependent
         # These bugs are intentionally left in, in order to reproduce old results.
         # The reallity is that they are not to be here.
-        self.kh_rescaling_bug = deepcopy(cfg.settings["kh_rescaling_bug"])
-        self.kh_rescaling_beforespecerr_bug = deepcopy(cfg.settings["kh_rescaling_beforespecerr_bug"])
+        self.kh_rescaling_bug = deepcopy(self.config.settings["kh_rescaling_bug"])
+        self.kh_rescaling_beforespecerr_bug = deepcopy(self.config.settings["kh_rescaling_beforespecerr_bug"])
 
     def set_spectro_bias_specs(self):
         """Updates the spectroscopic bias choices"""
@@ -237,13 +238,13 @@ class ComputeGalSpectro:
 
     def set_fiducial_cosmology(self, fiducial_cosmopars=None, fiducial_cosmo=None):
         if fiducial_cosmopars is None:
-            self.fiducial_cosmopars = deepcopy(cfg.fiducialparams)
+            self.fiducial_cosmopars = deepcopy(self.config.fiducialparams)
         else:
             self.fiducial_cosmopars = deepcopy(fiducial_cosmopars)
-        if self.fiducial_cosmopars == cfg.fiducialparams:
+        if self.fiducial_cosmopars == self.config.fiducialparams:
             try:
                 try:
-                    self.fiducialcosmo = cfg.fiducialcosmo
+                    self.fiducialcosmo = self.config.fiducialcosmo
                     upt.time_print(
                         feedback_level=self.feed_lvl,
                         min_level=3,
@@ -272,10 +273,10 @@ class ComputeGalSpectro:
                 print(" >>>>> Fiducial cosmology could not be loaded, recomputing....")
                 print(" **** In ComputeGalSpectro: Calculating fiducial cosmology...")
                 self.fiducialcosmo = cosmology.cosmo_functions(
-                    self.fiducial_cosmopars, cfg.input_type
+                    self.fiducial_cosmopars, self.config.input_type
                 )
         else:
-            print("Error: In ComputeGalSpectro fiducial_cosmopars not equal to cfg.fiducialparams")
+            print("Error: In ComputeGalSpectro fiducial_cosmopars not equal to self.config.fiducialparams")
             raise AttributeError
 
     def qparallel(self, z):
@@ -499,11 +500,11 @@ class ComputeGalSpectro:
                 f"Please use {self.sp_bias_sample} bias sample."
             )
         if self.use_bias_funcs:
-            bfunc_of_z = self.nuisance.gscp_bias_interp()
+            bfunc_of_z = self.nuisance.gcsp_bias_interp()
             bterm_z = bfunc_of_z(z)
         else:
-            bterm_z  = self.nuisance.vectorized_gscp_bias_at_z(z)
-        bterm_k = self.nuisance.gscp_bias_kscale(k)
+            bterm_z  = self.nuisance.vectorized_gcsp_bias_at_z(z)
+        bterm_k = self.nuisance.gcsp_bias_kscale(k)
         bterm_zk = bterm_z * bterm_k
         return bterm_zk
 
@@ -618,8 +619,8 @@ class ComputeGalSpectro:
             sp = 0
         else:
             sp = np.sqrt(self.P_ThetaTheta_Moments(zz, 2))
-            if not self.spectrononlinearpars == dict():
-                sp *= self.sigmap_inter(zz) / np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
+            if self.vary_sigmap:
+                sp *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key='sigmap')
         return sp
 
     def sigmavNL(self, zz, mu):
@@ -643,8 +644,8 @@ class ComputeGalSpectro:
             f1 = self.P_ThetaTheta_Moments(zz, 1)
             f2 = self.P_ThetaTheta_Moments(zz, 2)
             sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
-            if not self.spectrononlinearpars == dict():
-                sv *= self.sigmav_inter(zz) / np.sqrt(self.P_ThetaTheta_Moments(zz, 0))
+            if self.vary_sigmav:
+                sv *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key='sigmav')
         return sv
 
     def P_ThetaTheta_Moments(self, zz, moment=0):
@@ -870,6 +871,7 @@ class ComputeGalIM(ComputeGalSpectro):
         fiducial_cosmo=None,
         use_bias_funcs=True,
         bias_samples=["I", "I"],
+        configuration=None
     ):
         super().__init__(
             cosmopars,
@@ -879,17 +881,19 @@ class ComputeGalIM(ComputeGalSpectro):
             fiducial_cosmo=fiducial_cosmo,
             use_bias_funcs=True,
             bias_samples=bias_samples,
+            configuration=configuration
         )
 
         tini = time()
-        self.feed_lvl = cfg.settings["feedback"]
+        self.feed_lvl = self.config.settings["feedback"]
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=2, text="Entered ComputeGalIM", instance=self
+            feedback_level=self.feed_lvl, min_level=2, 
+            text="Entered ComputeGalIM", instance=self
         )
 
         if "IM" not in self.observables:
             raise AttributeError("Observables list not defined properly")
-        self.fiducial_IMbiaspars = cfg.IMbiasparams
+        self.fiducial_IMbiaspars = self.config.IMbiasparams
         self.use_bias_funcs = use_bias_funcs
         if IMbiaspars is None:
             IMbiaspars = self.fiducial_IMbiaspars
@@ -926,11 +930,11 @@ class ComputeGalIM(ComputeGalSpectro):
         )
 
     def set_IM_specs(self):
-        self.Dd = cfg.specs["D_dish"]  # Dish diameter in m
+        self.Dd = self.config.specs["D_dish"]  # Dish diameter in m
         self.lambda_21 = 21 / 100  # 21cm in m
-        self.fsky_IM = cfg.specs["fsky_IM"]  # sky fraction for IM
-        self.t_tot = cfg.specs["time_tot"] * 3600  # * 3600s -> in s
-        self.N_d = cfg.specs["N_dish"]
+        self.fsky_IM = self.config.specs["fsky_IM"]  # sky fraction for IM
+        self.t_tot = self.config.specs["time_tot"] * 3600  # * 3600s -> in s
+        self.N_d = self.config.specs["N_dish"]
         # self.cosmo.c is in km/s
         # HZ, for MHz: MHz /1e6
         self.f_21 = (self.cosmo.c * 1000) / self.lambda_21

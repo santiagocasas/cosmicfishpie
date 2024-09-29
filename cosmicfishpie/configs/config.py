@@ -267,6 +267,7 @@ def init(
     settings.setdefault("savgol_internalkmin", 0.001)
     settings.setdefault("eps_cosmopars", 0.01)
     settings.setdefault("eps_gal_nuispars", 0.0001)
+    settings.setdefault("eps_gal_nonlinpars", 0.01)
     settings.setdefault("GCsp_Tracer", "matter")
     settings.setdefault("GCph_Tracer", "matter")
     settings.setdefault("ell_sampling", "accuracy")
@@ -637,13 +638,16 @@ def init(
 
     global Spectrononlinearparams
     Spectrononlinearparams = dict()
-
     if "GCsp" in obs:
-        if "vary_GCsp_nonlinear_pars" in specs.keys():
-            if spectrononlinearpars is not None:
-                Spectrononlinearparams = spectrononlinearpars
-                for key in Spectrononlinearparams.keys():
-                    freeparams[key] = specs["vary_GCsp_nonlinear_pars"]
+        gscp_nonlin_model = specs.get("nonlinear_model", "default")
+        if gscp_nonlin_model == 'default':
+            Spectrononlinearparams = {}
+        elif gscp_nonlin_model == 'rescale_sigma_pv':
+            nonlin_prtz = specs["nonlinear_parametrization"]
+            nonlin_prmod = nonlin_prtz[gscp_nonlin_model]
+            for key in nonlin_prmod.keys():
+                Spectrononlinearparams[key] = nonlin_prmod[key]
+    
 
     global Spectrobiasparams
     Spectrobiasparams = dict()
@@ -680,15 +684,19 @@ def init(
             for key in bias_prtz[bias_model].keys():
                 IMbiasparams[key] = bias_prtz[bias_model][key]
 
+    # Set the default free parameters for the spectro nuisance parameters
     if "GCsp" in obs:
         default_eps_gc_nuis = settings["eps_gal_nuispars"]
+        default_eps_gc_nonlin = settings["eps_gal_nonlinpars"]
         # Only add the free parameters that are not already in the dictionary
         for key in Spectrobiasparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
             upt.debug_print(freeparams)
-        if "IM" not in obs:
-            for key in PShotparams:
-                freeparams.setdefault(key, default_eps_gc_nuis)
+        #if "IM" not in obs:
+        for key in PShotparams:
+            freeparams.setdefault(key, default_eps_gc_nuis)
+        for key in Spectrononlinearparams:
+            freeparams.setdefault(key, default_eps_gc_nonlin)
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams.setdefault(key, default_eps_gc_nuis)

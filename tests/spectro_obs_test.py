@@ -18,6 +18,7 @@ def spectro_obs(spectro_fisher_matrix):
         fiducial_cosmo=cosmoFM.fiducialcosmo,
         bias_samples=["g", "g"],
         use_bias_funcs=False,
+        configuration=cosmoFM
     )
     return spectro_obs
 
@@ -33,8 +34,8 @@ def test_bterm_fid(spectro_obs):
     bin_ind = 2
     print(spectro_obs.spectrobiaspars)
     nuisance = Nuisance(spectrobiasparams=spectro_obs.spectrobiaspars)
-    bterm = nuisance.gscp_bias_at_z(z)
-    bterm_2 = nuisance.gscp_bias_at_zi(bin_ind)
+    bterm = nuisance.gcsp_bias_at_z(z)
+    bterm_2 = nuisance.gcsp_bias_at_zi(bin_ind)
     assert isinstance(bterm, float)
     assert isinstance(bterm_2, float)
     assert np.isclose(bterm, 1.6060949)

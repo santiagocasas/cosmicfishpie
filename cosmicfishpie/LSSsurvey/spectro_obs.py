@@ -161,7 +161,9 @@ class ComputeGalSpectro:
         self.spectrononlinearpars = spectrononlinearpars
 
         self.nuisance = nuisance.Nuisance(
-            spectrobiasparams=self.spectrobiaspars, spectrononlinearpars=self.spectrononlinearpars
+            configuration=self.config,
+            spectrobiasparams=self.spectrobiaspars,
+            spectrononlinearpars=self.spectrononlinearpars,
         )
         self.extraPshot = self.nuisance.extra_Pshot_noise()
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()

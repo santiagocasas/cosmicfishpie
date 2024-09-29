@@ -47,6 +47,10 @@ class Nuisance:
             self.sp_zbins = self.gcsp_zbins()
             self.sp_dndz = self.gcsp_dndz()
             self.sp_zbins_mids = self.gcsp_zbins_mids()
+            self.sp_bias_sample = self.specs["sp_bias_sample"]
+            self.sp_bias_root = self.specs["sp_bias_root"]
+            self.sp_bias_model = self.specs["sp_bias_model"]
+            self.sp_bias_prtz = self.specs["sp_bias_parametrization"]
             if spectrobiasparams is None:
                 self.Spectrobiasparams = deepcopy(self.config.Spectrobiasparams)
             else:
@@ -210,10 +214,6 @@ class Nuisance:
         return sp_zbins_mids
 
     def gcsp_bias_at_zm(self):
-        self.sp_bias_sample = self.specs["sp_bias_sample"]
-        self.sp_bias_root = self.specs["sp_bias_root"]
-        self.sp_bias_model = self.specs["sp_bias_model"]
-        self.sp_bias_prtz = self.specs["sp_bias_parametrization"]
         b_arr = np.ones(len(self.sp_zbins_mids))
         if "linear" in self.sp_bias_model:
             for ii, z_ind in enumerate(self.sp_zbins_inds):

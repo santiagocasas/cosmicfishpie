@@ -125,13 +125,11 @@ class ComputeGalSpectro:
             instance=self,
         )
 
-        self.observables = cfg.obs
+        self.observables = deepcopy(cfg.obs)
         self.specs = deepcopy(cfg.specs)
-        # if 'GCsp' not in self.observables:
-        #    raise AttributeError("Observables list not defined properly")
 
-        self.s8terms = cfg.settings["bfs8terms"]
-        self.tracer = cfg.settings["GCsp_Tracer"]
+        self.s8terms = deepcopy(cfg.settings["bfs8terms"])
+        self.tracer = deepcopy(cfg.settings["GCsp_Tracer"])
 
         self.set_fiducial_cosmology(
             fiducial_cosmopars=fiducial_cosmopars, fiducial_cosmo=fiducial_cosmo
@@ -152,12 +150,12 @@ class ComputeGalSpectro:
         self.extraPshot = self.nuisance.extra_Pshot_noise()
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
 
-        self.fiducial_PShotpars = cfg.PShotparams
+        self.fiducial_PShotpars = deepcopy(cfg.PShotparams)
         if PShotpars is None:
             PShotpars = self.fiducial_PShotpars
         self.PShotpars = PShotpars
 
-        self.fiducial_spectrononlinearpars = cfg.Spectrononlinearparams
+        self.fiducial_spectrononlinearpars = deepcopy(cfg.Spectrononlinearparams)
         if spectrononlinearpars is None:
             spectrononlinearpars = self.fiducial_spectrononlinearpars
         self.spectrononlinearpars = spectrononlinearpars
@@ -216,10 +214,10 @@ class ComputeGalSpectro:
 
     def activate_terms(self):
         """Update which modelling effects should be taken into consideration"""
-        self.linear_switch = cfg.settings["GCsp_linear"]
-        self.FoG_switch = cfg.settings["FoG_switch"]
-        self.APbool = cfg.settings["AP_effect"]
-        self.fix_cosmo_nl_terms = cfg.settings["fix_cosmo_nl_terms"]
+        self.linear_switch = deepcopy(cfg.settings["GCsp_linear"])
+        self.FoG_switch = deepcopy(cfg.settings["FoG_switch"])
+        self.APbool = deepcopy(cfg.settings["AP_effect"])
+        self.fix_cosmo_nl_terms = deepcopy(cfg.settings["fix_cosmo_nl_terms"])
 
     def set_spectro_dz_specs(self):
         """Updates the spectroscopic redshift error"""
@@ -228,8 +226,8 @@ class ComputeGalSpectro:
         ## constant, z-dependent
         # These bugs are intentionally left in, in order to reproduce old results.
         # The reallity is that they are not to be here.
-        self.kh_rescaling_bug = cfg.settings["kh_rescaling_bug"]
-        self.kh_rescaling_beforespecerr_bug = cfg.settings["kh_rescaling_beforespecerr_bug"]
+        self.kh_rescaling_bug = deepcopy(cfg.settings["kh_rescaling_bug"])
+        self.kh_rescaling_beforespecerr_bug = deepcopy(cfg.settings["kh_rescaling_beforespecerr_bug"])
 
     def set_spectro_bias_specs(self):
         """Updates the spectroscopic bias choices"""
@@ -505,11 +503,7 @@ class ComputeGalSpectro:
             bterm_z = bfunc_of_z(z)
         else:
             bterm_z  = self.nuisance.vectorized_gscp_bias_at_z(z)
-        bterm_k = 1
-        if k is not None:
-            if self.sp_bias_model == "linear_Qbias":
-                bterm_k = ((1 + k ** 2 * self.spectrobiaspars['A2'])
-                           /(1 + k * self.spectrobiaspars['A1']))
+        bterm_k = self.nuisance.gscp_bias_kscale(k)
         bterm_zk = bterm_z * bterm_k
         return bterm_zk
 
@@ -548,7 +542,7 @@ class ComputeGalSpectro:
         bterm = b_i  # get bs8 as an external parameter, unless it is none, then get it from cosmo
         if b_i is None:
             try:
-                bterm = self.bterm_fid(z, bias_sample=bias_sample)
+                bterm = self.bterm_fid(z, k=k, bias_sample=bias_sample)
             except KeyError as ke:
                 print(
                     " The key {} is not in dictionary. Check observables and parameters being used".format(

@@ -371,10 +371,15 @@ def init(
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
-
-        ph_file_path = os.path.join(foldername, filename + ".yaml")
-        if not os.path.isfile(ph_file_path):
-            raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
+        
+        try:
+            ph_file_path = os.path.join(foldername, filename + ".yaml")
+            if not os.path.isfile(ph_file_path):
+                raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
+        except FileNotFoundError as e:
+            print(f"WARNING: {e}")
+            ph_file_path = os.path.join(settings["specs_dir_default"], specs_default_photo + ".yaml")
+            print(f"Using default specifications for photo: {ph_file_path}")
 
         ph_yaml_fs = open(ph_file_path, "r")
         ph_yaml_content = yaml.load(ph_yaml_fs, Loader=yaml.FullLoader)
@@ -392,40 +397,45 @@ def init(
 
     def create_sp_dict(foldername, filename):
         spec_dict = dict()
-
-        sp_file_path = os.path.join(foldername, filename + ".yaml")
-        if not os.path.isfile(sp_file_path):
-            raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
+        try:
+            sp_file_path = os.path.join(foldername, filename + ".yaml")
+            if not os.path.isfile(sp_file_path):
+                raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
+        except FileNotFoundError as e:
+            print(f"WARNING: {e}")
+            sp_file_path = os.path.join(settings["specs_dir_default"], specs_default_spectro + ".yaml")
+            print(f"Using default specifications for spectroscopic: {sp_file_path}")
 
         sp_yaml_fs = open(sp_file_path, "r")
-        ph_yaml_content = yaml.load(sp_yaml_fs, Loader=yaml.FullLoader)
+        sp_yaml_content = yaml.load(sp_yaml_fs, Loader=yaml.FullLoader)
         sp_yaml_fs.close()
-
-        spec_dict = ph_yaml_content["specifications"]
-
+        spec_dict = sp_yaml_content["specifications"]
         return spec_dict
 
     # Load the default Euclid cases
     specs_defaults = {}
+    specs_default_spectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
+    specs_default_photo = "Euclid-Photometric-ISTF-Pessimistic"
     specs_defaults.update(
-        create_ph_dict(settings["specs_dir_default"], "Euclid-Photometric-ISTF-Pessimistic")
+        create_ph_dict(settings["specs_dir_default"], specs_default_photo)
     )
     specs_defaults.update(
-        create_sp_dict(settings["specs_dir_default"], "Euclid-Spectroscopic-ISTF-Pessimistic")
+        create_sp_dict(settings["specs_dir_default"], specs_default_spectro)
     )
 
     global specs
     specs = specs_defaults.copy()  # Start with default dict
 
     if "Euclid" in surveyName:
+        specificationsf = dict()
         surveyNameSpectro = settings.get("survey_name_spectro")
         if surveyNameSpectro:
-            specificationsf = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
+            specificationsf1 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
+            specificationsf.update(specificationsf1)
         surveyNamePhoto = settings.get("survey_name_photo")
         if surveyNamePhoto:
             specificationsf2 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
-        specificationsf.update(specificationsf2)
-
+            specificationsf.update(specificationsf2)
     if "SKA1" in surveyName:
         surveyNameRadio = settings.get("survey_name_radio")
         ## TODO: Fix this and check this for radio, sp, ph and IM
@@ -602,9 +612,11 @@ def init(
 
     if "GCph" in obs:
         if specs["vary_ph_bias"] is not None:
+            default_eps_ph_bias = specs["vary_ph_bias"]
             for key in photobiaspars.keys():
                 if key != "bias_model":
-                    freeparams[key] = specs["vary_ph_bias"]
+                    # Only add the free parameters that are not already in the dictionary
+                    freeparams.setdefault(key, default_eps_ph_bias)
 
     global photoparams
     if photopars is None:
@@ -617,9 +629,11 @@ def init(
     IAparams = deepcopy(IApars)
     if "WL" in obs:
         if specs["vary_IA_pars"] is not None:
+            default_eps_IA = specs["vary_IA_pars"]
             for key in IAparams.keys():
                 if key != "IA_model":
-                    freeparams[key] = specs["vary_IA_pars"]
+                    # Only add the free parameters that are not already in the dictionary
+                    freeparams.setdefault(key, default_eps_IA)
 
     global Spectrononlinearparams
     Spectrononlinearparams = dict()
@@ -667,14 +681,17 @@ def init(
                 IMbiasparams[key] = bias_prtz[bias_model][key]
 
     if "GCsp" in obs:
+        default_eps_gc_nuis = settings["eps_gal_nuispars"]
+        # Only add the free parameters that are not already in the dictionary
         for key in Spectrobiasparams:
-            freeparams[key] = settings["eps_gal_nuispars"]
+            freeparams.setdefault(key, default_eps_gc_nuis)
+            upt.debug_print(freeparams)
         if "IM" not in obs:
             for key in PShotparams:
-                freeparams[key] = settings["eps_gal_nuispars"]
+                freeparams.setdefault(key, default_eps_gc_nuis)
     if "IM" in obs:
         for key in IMbiasparams:
-            freeparams[key] = settings["eps_gal_nuispars"]
+            freeparams.setdefault(key, default_eps_gc_nuis)
 
     global latex_names
     latex_names_def = {

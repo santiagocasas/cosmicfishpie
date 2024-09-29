@@ -7,9 +7,27 @@ This module contains nuisance parameter functions.
 
 import os
 from copy import deepcopy
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# Check if handlers are already added to prevent duplicate logs in interactive environments
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    
+    # Define a formatter that includes timestamps and caller information
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - Line %(lineno)d - %(message)s'
+    )
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
 
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline, UnivariateSpline, interp1d
+from scipy.interpolate import (InterpolatedUnivariateSpline, 
+                               UnivariateSpline, interp1d)
 
 import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
@@ -191,7 +209,7 @@ class Nuisance:
         self.sp_bias_model = self.specs["sp_bias_model"]
         self.sp_bias_prtz = self.specs["sp_bias_parametrization"]
         b_arr = np.ones(len(self.sp_zbins_mids))
-        if self.sp_bias_model == "linear" or self.sp_bias_model == "linear_log":
+        if "linear" in self.sp_bias_model:
             for ii, z_ind in enumerate(self.sp_zbins_inds):
                 bkey = self.sp_bias_root + self.sp_bias_sample + "_" + str(z_ind)
                 b_arr[ii] = self.Spectrobiasparams[bkey]
@@ -234,12 +252,36 @@ class Nuisance:
         """
         bin_arr_ind = unu.bisection(self.sp_zbins, z)
         bin_num = bin_arr_ind + 1
+        logger.debug(f"bin_num: {bin_num} with z: {z}")
         bias_at_zzi = self.gscp_bias_at_zi(bin_num)
+        logger.debug(f"bias_at_zzi: {bias_at_zzi} with zi: {bin_num}")
         return bias_at_zzi
 
     def vectorized_gscp_bias_at_z(self, z):
         bias_at_z = np.vectorize(self.gscp_bias_at_z)
         return bias_at_z(z)
+    
+    def gscp_bias_kscale(self, k, z = None):
+        bterm_k = 1
+        if k is not None:
+            if self.sp_bias_model == "linear_Qbias":
+                default_A1 = 0.
+                default_A2 = 0.
+                try:
+                    bterm_k = ((1 + k ** 2 *
+                                self.Spectrobiasparams.get('A2', default_A2))
+                               /(1 + k * 
+                                 self.Spectrobiasparams.get('A1', default_A1)))
+                except KeyError as ke:
+                    print(
+                        f"The key {ke} is not in dictionary."
+                        f"Check observables and parameters being used"
+                        )
+                    print("Is spectriobiaspars a dictionary?")
+                    print(isinstance(self.Spectrobiasparams, dict))
+                    print(self.Spectrobiasparams)
+                    raise ke
+        return bterm_k
 
     def gcsp_bias_interp(self):
         """Galaxy bias for the galaxies used in spectroscopic Galaxy Clustering

@@ -33,8 +33,7 @@ if not logger.handlers:
 
 
 class Nuisance:
-    def __init__(self, configuration = None, 
-                 spectrobiasparams=None, spectrononlinearpars=None):
+    def __init__(self, configuration=None, spectrobiasparams=None, spectrononlinearpars=None):
         if configuration is None:
             self.config = cfg
         else:

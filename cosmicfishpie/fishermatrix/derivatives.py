@@ -20,7 +20,7 @@ class derivatives:
         observable,
         fiducial,
         special_deriv_function=None,
-        derivatives_type='3PT',
+        derivatives_type="3PT",
         freeparams=dict(),
         observables_type=None,
         external_settings=None,
@@ -317,7 +317,7 @@ class derivatives:
 
             if "plain" in self.observables_type:
                 dpar = self.der_fwd_4pt(obs_fwd_list, stepsize)
-            
+
             tend = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,

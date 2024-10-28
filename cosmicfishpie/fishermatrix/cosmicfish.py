@@ -127,7 +127,7 @@ class FisherMatrix:
         allparams_fidus   : dict
                             A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
         """
-        if options['feedback'] > 0:
+        if options["feedback"] > 0:
             print("****************************************************************")
             print("   _____               _     _____     __  ")
             print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")

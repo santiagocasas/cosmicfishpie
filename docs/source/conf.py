@@ -131,9 +131,9 @@ html_theme_options = {
 }
 
 html_context = {
-    'display_github': True,     # Show link to GitHub repository
-    'last_updated': True,       # Display the last updated timestamp
-    'commit': False,            # Optionally display commit info
+    "display_github": True,  # Show link to GitHub repository
+    "last_updated": True,  # Display the last updated timestamp
+    "commit": False,  # Optionally display commit info
 }
 # -- Hack to get rid of stupid warnings from sphinx_autodoc_typehints --------
 

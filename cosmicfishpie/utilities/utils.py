@@ -59,6 +59,7 @@ class printing:
 
 class numerics:
     old_round_decimals_up = False
+
     @staticmethod
     def moving_average(data_set, periods=2):
         weights = np.ones(periods) / periods
@@ -83,9 +84,9 @@ class numerics:
             rounded_number = np.ceil(number * factor) / factor
         else:
             exponent = math.floor(math.log10(number))
-            mantissa = number / (10 ** exponent)
+            mantissa = number / (10**exponent)
             rounded_mantissa = math.ceil(mantissa * 10) / 10
-            rounded_number = rounded_mantissa * (10 ** exponent)
+            rounded_number = rounded_mantissa * (10**exponent)
         return rounded_number
 
     @staticmethod

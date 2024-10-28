@@ -381,7 +381,9 @@ def init(
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
             if settings["fail_on_specs_not_found"]:
-                raise FileNotFoundError(f"specifications file : {ph_file_path} not found! Exiting...")
+                raise FileNotFoundError(
+                    f"specifications file : {ph_file_path} not found! Exiting..."
+                )
             else:
                 ph_file_path = os.path.join(
                     settings["specs_dir_default"], specs_default_photo + ".yaml"
@@ -411,7 +413,9 @@ def init(
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
             if settings["fail_on_specs_not_found"]:
-                raise FileNotFoundError(f"specifications file : {sp_file_path} not found! Exiting...")
+                raise FileNotFoundError(
+                    f"specifications file : {sp_file_path} not found! Exiting..."
+                )
             else:
                 sp_file_path = os.path.join(
                     settings["specs_dir_default"], specs_default_spectro + ".yaml"
@@ -565,8 +569,9 @@ def init(
             "dark_energy_model": "ppf",
         }
     else:
-        upt.time_print(feedback_level=feed_lvl, min_level=2, 
-                       text="-> Custom fiducial parameters loaded")
+        upt.time_print(
+            feedback_level=feed_lvl, min_level=2, text="-> Custom fiducial parameters loaded"
+        )
     fiducialparams = deepcopy(fiducialpars)
 
     global fiducialcosmo

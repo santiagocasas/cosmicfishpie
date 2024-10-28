@@ -225,6 +225,7 @@ def init(
     settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
+    settings.setdefault("fail_on_specs_not_found", False)
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
@@ -274,7 +275,7 @@ def init(
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
-
+    feed_lvl = settings["feedback"]
     global external
     global input_type
     if extfiles is not None and settings["code"] == "external":
@@ -379,10 +380,13 @@ def init(
                 raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
-            ph_file_path = os.path.join(
-                settings["specs_dir_default"], specs_default_photo + ".yaml"
-            )
-            print(f"Using default specifications for photo: {ph_file_path}")
+            if settings["fail_on_specs_not_found"]:
+                raise FileNotFoundError(f"specifications file : {ph_file_path} not found! Exiting...")
+            else:
+                ph_file_path = os.path.join(
+                    settings["specs_dir_default"], specs_default_photo + ".yaml"
+                )
+                print(f"Using default specifications for photo: {ph_file_path}")
 
         ph_yaml_fs = open(ph_file_path, "r")
         ph_yaml_content = yaml.load(ph_yaml_fs, Loader=yaml.FullLoader)
@@ -406,10 +410,13 @@ def init(
                 raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
         except FileNotFoundError as e:
             print(f"WARNING: {e}")
-            sp_file_path = os.path.join(
-                settings["specs_dir_default"], specs_default_spectro + ".yaml"
-            )
-            print(f"Using default specifications for spectroscopic: {sp_file_path}")
+            if settings["fail_on_specs_not_found"]:
+                raise FileNotFoundError(f"specifications file : {sp_file_path} not found! Exiting...")
+            else:
+                sp_file_path = os.path.join(
+                    settings["specs_dir_default"], specs_default_spectro + ".yaml"
+                )
+                print(f"Using default specifications for spectroscopic: {sp_file_path}")
 
         sp_yaml_fs = open(sp_file_path, "r")
         sp_yaml_content = yaml.load(sp_yaml_fs, Loader=yaml.FullLoader)
@@ -558,11 +565,11 @@ def init(
             "dark_energy_model": "ppf",
         }
     else:
-        print("Custom fiducial parameters loaded")
+        upt.time_print(feedback_level=feed_lvl, min_level=2, 
+                       text="-> Custom fiducial parameters loaded")
     fiducialparams = deepcopy(fiducialpars)
 
     global fiducialcosmo
-    feed_lvl = settings["feedback"]
     upt.time_print(
         feedback_level=feed_lvl,
         min_level=1,

@@ -127,17 +127,17 @@ class FisherMatrix:
         allparams_fidus   : dict
                             A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
         """
-
-        print("**************************************************************")
-        print("   _____               _     _____     __  ")
-        print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
-        print(" / /__/ _ \\(_-</  ' \\/ / __/ _// (_-</ _ \\ ")
-        print(" \\___/\\___/___/_/_/_/_/\\__/_/ /_/___/_//_/ ")
-        print("")
-        print("**************************************************************")
-        print(" This is the new Python version of the CosmicFish code.")
-        print("**************************************************************")
-        sys.stdout.flush()
+        if options['feedback'] > 0:
+            print("****************************************************************")
+            print("   _____               _     _____     __  ")
+            print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
+            print(" / /__/ _ \\(_-</  ' \\/ / __/ _// (_-</ _ \\ ")
+            print(" \\___/\\___/___/_/_/_/_/\\__/_/ /_/___/_//_/ ")
+            print("")
+            print("****************************************************************")
+            print(" This is the new Python version of the CosmicFish code.")
+            print("****************************************************************")
+            sys.stdout.flush()
 
         cfg.init(
             options=options,

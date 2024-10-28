@@ -60,8 +60,8 @@ class Nuisance:
             else:
                 self.spectrononlinearpars = spectrononlinearpars
             self._vectorized_gcsp_bias_at_z = np.vectorize(self.gcsp_bias_at_z)
-            self._vectorized_gcsp_sigmapv_at_z = np.vectorize(
-                self.gcsp_sigmapv_at_z, excluded=["sigma_key"]
+            self._vectorized_gcsp_rescale_sigmapv_at_z = np.vectorize(
+                self.gcsp_rescale_sigmapv_at_z, excluded=["sigma_key"]
             )
 
         if "IM" in self.observables:
@@ -310,14 +310,14 @@ class Nuisance:
         bofz_spec = InterpolatedUnivariateSpline(z_mids, bias_at_zmids, k=1)
         return bofz_spec
 
-    def gcsp_sigmapv_at_z(self, z, sigma_key="sigmap"):
+    def gcsp_rescale_sigmapv_at_z(self, z, sigma_key="sigmap"):
         bin_num = self.gcsp_zvalue_to_zindex(z)
         sigma_key = sigma_key + "_" + str(bin_num)
         sigma_pv_value = self.spectrononlinearpars.get(sigma_key, 1.0)
         return sigma_pv_value
 
-    def vectorized_gcsp_sigmapv_at_z(self, z, sigma_key="sigmap"):
-        return self._vectorized_gcsp_sigmapv_at_z(z, sigma_key=sigma_key)
+    def vectorized_gcsp_rescale_sigmapv_at_z(self, z, sigma_key="sigmap"):
+        return self._vectorized_gcsp_rescale_sigmapv_at_z(z, sigma_key=sigma_key)
 
     def gcsp_dndz(self):
         """

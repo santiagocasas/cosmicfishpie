@@ -628,7 +628,7 @@ class ComputeGalSpectro:
         else:
             sp = np.sqrt(self.P_ThetaTheta_Moments(zz, 2))
             if self.vary_sigmap:
-                sp *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key="sigmap")
+                sp *= self.nuisance.vectorized_gcsp_rescale_sigmapv_at_z(zz, sigma_key="sigmap")
         return sp
 
     def sigmavNL(self, zz, mu):
@@ -653,7 +653,7 @@ class ComputeGalSpectro:
             f2 = self.P_ThetaTheta_Moments(zz, 2)
             sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
             if self.vary_sigmav:
-                sv *= self.nuisance.vectorized_gcsp_sigmapv_at_z(zz, sigma_key="sigmav")
+                sv *= self.nuisance.vectorized_gcsp_rescale_sigmapv_at_z(zz, sigma_key="sigmav")
         return sv
 
     def P_ThetaTheta_Moments(self, zz, moment=0):

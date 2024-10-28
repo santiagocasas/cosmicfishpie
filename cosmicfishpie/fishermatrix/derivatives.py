@@ -20,7 +20,11 @@ class derivatives:
         observable,
         fiducial,
         special_deriv_function=None,
+        derivatives_type="3PT",
         freeparams=dict(),
+        observables_type=None,
+        external_settings=None,
+        feed_lvl=None,
     ):
         """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute.
 
@@ -59,19 +63,32 @@ class derivatives:
         self.observable = observable
         self.fiducial = fiducial
         self.special = special_deriv_function
-        self.feed_lvl = cfg.settings["feedback"]
-        self.observables = cfg.obs
-        self.external_settings = cfg.external
-        if cfg.settings["derivatives"] == "3PT":
+        if feed_lvl is None:
+            self.feed_lvl = cfg.settings["feedback"]
+        else:
+            self.feed_lvl = feed_lvl
+        if observables_type is None:
+            self.observables_type = cfg.obs
+        else:
+            self.observables_type = observables_type
+        if external_settings is None:
+            self.external_settings = cfg.external
+        else:
+            self.external_settings = external_settings
+        if derivatives_type is None:
+            self.derivatives_type = cfg.settings["derivatives"]
+        else:
+            self.derivatives_type = derivatives_type
+        if derivatives_type == "3PT":
             self.result = self.derivative_3pt()
-        elif cfg.settings["derivatives"] == "STEM":
+        elif derivatives_type == "STEM":
             self.result = self.derivative_stem()
-        elif cfg.settings["derivatives"] == "POLY":
+        elif derivatives_type == "POLY":
             self.result = self.derivative_poly()
-        elif cfg.settings["derivatives"] == "4PT_FWD":
+        elif derivatives_type == "4PT_FWD":
             self.result = self.derivative_forward_4pt()
         else:
-            print("ERROR: I don't know this derivative type!!!")
+            raise ValueError("ERROR: I don't know this derivative type!!!")
 
     def der_3pt_stencil(self, fwd, bwd, step):
         """Helper function to compute the 3PT symmetrical finite step size derivative
@@ -145,20 +162,22 @@ class derivatives:
 
             obs_bwd = self.observable(bwd)
 
-            if "GCph" in self.observables or "WL" in self.observables:
+            if "GCph" in self.observables_type or "WL" in self.observables_type:
                 dpar = {}
                 for key in obs_fwd:
                     if key == "ells":
                         dpar[key] = obs_fwd[key]
                     else:
                         dpar[key] = self.der_3pt_stencil(obs_fwd[key], obs_bwd[key], stepsize)
-            if "GCsp" in self.observables or "IM" in self.observables:
+            if "GCsp" in self.observables_type or "IM" in self.observables_type:
                 dpar = {}
                 for key in obs_fwd:
                     if key == "z_bins":
                         dpar[key] = obs_fwd[key]
                     else:
                         dpar[key] = self.der_3pt_stencil(obs_fwd[key], obs_bwd[key], stepsize)
+            if "plain" in self.observables_type:
+                dpar = self.der_3pt_stencil(obs_fwd, obs_bwd, stepsize)
 
             tend = time()
             upt.time_print(
@@ -279,7 +298,7 @@ class derivatives:
                 text="++^^++ Size of obs_fwd_list : {:d}".format(len(obs_fwd_list)),
             )
 
-            if "GCph" in self.observables or "WL" in self.observables:
+            if "GCph" in self.observables_type or "WL" in self.observables_type:
                 dpar = {}
                 for key in obs_fwd_list[0]:
                     if key == "ells":
@@ -287,7 +306,7 @@ class derivatives:
                     else:
                         obs_fwd_list_at_key = [obs_fwd_list[sti][key] for sti in range(Nsteps_fwd)]
                         dpar[key] = self.der_fwd_4pt(obs_fwd_list_at_key, stepsize)
-            if "GCsp" in self.observables or "IM" in self.observables:
+            if "GCsp" in self.observables_type or "IM" in self.observables_type:
                 dpar = {}
                 for key in obs_fwd_list[0]:
                     if key == "z_bins":
@@ -295,6 +314,9 @@ class derivatives:
                     else:
                         obs_fwd_list_at_key = [obs_fwd_list[sti][key] for sti in range(Nsteps_fwd)]
                         dpar[key] = self.der_fwd_4pt(obs_fwd_list_at_key, stepsize)
+
+            if "plain" in self.observables_type:
+                dpar = self.der_fwd_4pt(obs_fwd_list, stepsize)
 
             tend = time()
             upt.time_print(
@@ -360,7 +382,7 @@ class derivatives:
 
                 obs_mod.append(self.observable(modpars))
 
-            if "GCph" in self.observables or "WL" in self.observables:
+            if "GCph" in self.observables_type or "WL" in self.observables_type:
                 for key in obs_mod[0]:
                     # WARNING: THIS WORKS FOR NOW, BUT OTHER THINGS HAVE TO BE
                     # ADDED TO THE IF FOR OTHER OBS

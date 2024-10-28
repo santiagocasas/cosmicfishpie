@@ -10,9 +10,10 @@ def photo_fisher_matrix():
     # These are typical options that you can pass to Cosmicfishpie
     options = {
         "accuracy": 1,
-        "outroot": "test_installation_test_EBS",
+        "outroot": "test_photo_low_ellsamp",
         "results_dir": "results/",
         "derivatives": "3PT",
+        "ell_sampling": 25,
         "nonlinear": True,
         "feedback": 2,
         "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
@@ -58,7 +59,7 @@ def spectro_fisher_matrix():
         "derivatives": "3PT",
         "nonlinear": False,
         "feedback": 2,
-        "specs_dir": "survey_specifications/",
+        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
@@ -80,6 +81,10 @@ def spectro_fisher_matrix():
     }
 
     observables = ["GCsp"]
+    # for testing purposes, we use a smaller sigma_dz
+    specifs = {
+        "spec_sigma_dz": 0.001,
+    }
 
     cosmoFM = cff.FisherMatrix(
         fiducialpars=fiducial,
@@ -88,6 +93,7 @@ def spectro_fisher_matrix():
         observables=observables,
         cosmoModel=options["cosmo_model"],
         surveyName=options["survey_name"],
+        specifications=specifs,
     )
 
     return cosmoFM

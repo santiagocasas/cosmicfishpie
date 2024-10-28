@@ -1,6 +1,5 @@
 specifications:
   'spec_sigma_dz': 0.002
-  'spec_sigma_dz_type': 'constant'
   'area_survey_spectro': 15000
   'kmax_GCsp': 0.25
   'kmin_GCsp': 0.001
@@ -15,25 +14,14 @@ specifications:
     3: 1410.0
     4: 940.97
   sp_bias_sample: 'g'
-  sp_bias_model: 'linear_log'
-  sp_bias_root: 'lnb'
+  sp_bias_model: 'linear_Qbias'
+  sp_bias_root: 'b'
   sp_bias_parametrization:
-    linear:
-      bg_1: 1.4614804
-      bg_2: 1.6060949
-      bg_3: 1.7464790
-      bg_4: 1.8988660
-    linear_log:
-      lnbg_1: 0.37944989
-      lnbg_2: 0.4738057
-      lnbg_3: 0.55760176
-      lnbg_4: 0.64125687
     linear_Qbias:
       bg_1: 1.4614804
       bg_2: 1.6060949
       bg_3: 1.7464790
       bg_4: 1.8988660
-      A1: 0.02
       A2: -2.0
   shot_noise_model: 'constant'
   shot_noise_parametrization:

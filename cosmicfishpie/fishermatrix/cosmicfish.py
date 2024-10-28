@@ -21,6 +21,7 @@ from cosmicfishpie.LSSsurvey import photo_cov, photo_obs, spectro_cov, spectro_o
 from cosmicfishpie.utilities.utils import filesystem as ufs
 from cosmicfishpie.utilities.utils import numerics as unu
 from cosmicfishpie.utilities.utils import printing as upt
+from cosmicfishpie.version import VERSION
 
 
 def ray_session(num_cpus=4, restart=True, shutdown=False):
@@ -41,7 +42,7 @@ def ray_session(num_cpus=4, restart=True, shutdown=False):
 
 class FisherMatrix:
     # update version at every release
-    cf_version = "CosmicFish_v1.0"
+    cf_version = f"CosmicFish_v{VERSION}"
 
     def __init__(
         self,
@@ -51,10 +52,13 @@ class FisherMatrix:
         freepars=None,
         extfiles=None,
         fiducialpars=None,
-        biaspars=None,
+        photobiaspars=None,
         photopars=None,
         spectrononlinearpars=None,
+        spectrobiaspars=None,
         IApars=None,
+        IMbiaspars=None,
+        PShotpars=None,
         surveyName="Euclid",
         cosmoModel="w0waCDM",
         latexnames=None,
@@ -77,12 +81,14 @@ class FisherMatrix:
                                A dictionary containing the path to the external files as well as how all the names of the files in the folder correspond to the cosmological quantities, units etc.
         fiducialpars         : dict, optional
                                A dictionary containing the fiducial cosmological parameters
-        biaspars             : dict, optional
+        photobiaspars             : dict, optional
                                A dictionary containing the specifications for the galaxy biases of the photometric probe
         photopars            : dict, optional
                                A dictionary containing specifications for the window function's galaxy distribution
         spectrononlinearpars : dict, optional
                                A dictionary containing the values of the non linear modeling parameters of the spectroscopic probe
+        spectrobiaspars     : dict, optional
+                               A dictionary containing the specifications for the galaxy biases of the spectroscopic probe
         IApars               : dict, optional
                                A dictionary containing the specifications for the galaxy biases of the spectroscopic intensity mapping probe
         surveyName           : str, optional
@@ -121,17 +127,17 @@ class FisherMatrix:
         allparams_fidus   : dict
                             A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
         """
-
-        print("**************************************************************")
-        print("   _____               _     _____     __  ")
-        print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
-        print(" / /__/ _ \\(_-</  ' \\/ / __/ _// (_-</ _ \\ ")
-        print(" \\___/\\___/___/_/_/_/_/\\__/_/ /_/___/_//_/ ")
-        print("")
-        print("**************************************************************")
-        print(" This is the new Python version of the CosmicFish code.")
-        print("**************************************************************")
-        sys.stdout.flush()
+        if options["feedback"] > 0:
+            print("****************************************************************")
+            print("   _____               _     _____     __  ")
+            print("  / ___/__  ___ __ _  (_)___/ __(_)__ / /  ")
+            print(" / /__/ _ \\(_-</  ' \\/ / __/ _// (_-</ _ \\ ")
+            print(" \\___/\\___/___/_/_/_/_/\\__/_/ /_/___/_//_/ ")
+            print("")
+            print("****************************************************************")
+            print(" This is the new Python version of the CosmicFish code.")
+            print("****************************************************************")
+            sys.stdout.flush()
 
         cfg.init(
             options=options,
@@ -140,46 +146,56 @@ class FisherMatrix:
             freepars=freepars,
             extfiles=extfiles,
             fiducialpars=fiducialpars,
-            biaspars=biaspars,
+            photobiaspars=photobiaspars,
             photopars=photopars,
             IApars=IApars,
+            spectrononlinearpars=spectrononlinearpars,
+            spectrobiaspars=spectrobiaspars,
+            IMbiaspars=IMbiaspars,
+            PShotpars=PShotpars,
             surveyName=surveyName,
             cosmoModel=cosmoModel,
             latexnames=latexnames,
-            spectrononlinearpars=spectrononlinearpars,
         )
-
+        self.settings = deepcopy(cfg.settings)
+        self.specs = deepcopy(cfg.specs)
         self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
+        self.fiducialparams = self.fiducialcosmopars  ## for compatibility
         self.fiducialcosmo = copy(cfg.fiducialcosmo)
         self.photopars = deepcopy(cfg.photoparams)
+        self.photobiaspars = deepcopy(cfg.Photobiasparams)
         self.IApars = deepcopy(cfg.IAparams)
-        self.biaspars = deepcopy(cfg.biasparams)
         self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+        self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
         self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
+        self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
         self.IMbiaspars = deepcopy(cfg.IMbiasparams)
+        self.IMbiasparams = self.IMbiaspars  ## for compatibility
         self.PShotpars = deepcopy(cfg.PShotparams)
+        self.PShotparams = self.PShotpars  ## for compatibility
         self.observables = deepcopy(cfg.obs)
+        self.obs = self.observables  ## for compatibility
+        self.input_type = deepcopy(cfg.input_type)  ## for compatibility
         self.freeparams = deepcopy(cfg.freeparams)
         self.allparams_fidus = {
             **self.fiducialcosmopars,
             **self.photopars,
+            **self.photobiaspars,
             **self.IApars,
-            **self.biaspars,
             **self.Spectrobiaspars,
+            **self.Spectrononlinpars,
             **self.IMbiaspars,
             **self.PShotpars,
         }
         self.parallel = parallel
-        if "z_bins" in cfg.specs:
-            self.z_bins = deepcopy(cfg.specs["z_bins"])
-            self.num_z_bins = len(cfg.specs["z_bins"]) - 1
-            self.binrange = deepcopy(cfg.specs["binrange"])
-        self.feed_lvl = deepcopy(cfg.settings["feedback"])
+        self.feed_lvl = self.settings["feedback"]
         allpars = {}
         allpars.update(self.fiducialcosmopars)
+        allpars.update(self.photobiaspars)
+        allpars.update(self.photopars)
         allpars.update(self.IApars)
-        allpars.update(self.biaspars)
         allpars.update(self.Spectrobiaspars)
+        allpars.update(self.Spectrononlinpars)
         allpars.update(self.IMbiaspars)
         allpars.update(self.PShotpars)
         self.allparams = allpars
@@ -216,19 +232,19 @@ class FisherMatrix:
                 self.fiducialcosmopars,
                 self.photopars,
                 self.IApars,
-                self.biaspars,
+                self.photobiaspars,
                 print_info_specs=True,
             )
             self.photo_LSS = photo_cov.PhotoCov(
                 self.fiducialcosmopars,
                 self.photopars,
                 self.IApars,
-                self.biaspars,
+                self.photobiaspars,
                 fiducial_Cls=self.photo_obs_fid,
             )
             noisy_cls, covmat = self.photo_LSS.compute_covmat()
             self.photo_derivs = self.photo_LSS.compute_derivs()
-            photoFM = self.photo_LSS_fishermatrix(
+            photoFM = self.photo_LSS_fishermatrix_einsum(
                 noisy_cls=noisy_cls, covmat=covmat, derivs=self.photo_derivs
             )
             finalFisher = deepcopy(photoFM)
@@ -247,6 +263,7 @@ class FisherMatrix:
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
+                    configuration=self,
                 )
 
             elif "IM" in self.observables:
@@ -255,18 +272,25 @@ class FisherMatrix:
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
                     bias_samples=self.obs_spectrum,
+                    configuration=self,
                 )
             elif "GCsp" in self.observables:
                 self.obs_spectrum = ["g", "g"]
                 self.pk_obs = spectro_obs.ComputeGalSpectro(
                     cosmopars=self.fiducialcosmopars,
                     fiducial_cosmopars=self.fiducialcosmopars,
-                    bias_samples=self.obs_spectrum,
+                    spectrobiaspars=self.Spectrobiaspars,
                     spectrononlinearpars=self.Spectrononlinpars,
+                    PShotpars=self.PShotpars,
+                    bias_samples=self.obs_spectrum,
+                    configuration=self,
                 )
 
             self.pk_cov = spectro_cov.SpectroCov(
-                self.fiducialcosmopars, fiducial_specobs=self.pk_obs, bias_samples=self.obs_spectrum
+                self.fiducialcosmopars,
+                fiducial_specobs=self.pk_obs,
+                bias_samples=self.obs_spectrum,
+                configuration=self,
             )
             self.zmids = self.pk_cov.global_z_bin_mids
             nbins = len(self.zmids)
@@ -357,10 +381,10 @@ class FisherMatrix:
         """
         # kmin and kmax GCsp values are always indicated in h/Mpc
         k_units_factor = self.fiducialcosmopars["h"]
-        self.kmin_fish = cfg.specs["kmin_GCsp"] * k_units_factor
-        self.kmax_fish = cfg.specs["kmax_GCsp"] * k_units_factor
-        self.Pk_ksamp = 2049 * cfg.settings["accuracy"]
-        self.Pk_musamp = 129 * cfg.settings["accuracy"]
+        self.kmin_fish = self.specs["kmin_GCsp"] * k_units_factor
+        self.kmax_fish = self.specs["kmax_GCsp"] * k_units_factor
+        self.Pk_ksamp = 2049 * self.settings["accuracy"]
+        self.Pk_musamp = 129 * self.settings["accuracy"]
         self.Pk_kgrid = np.linspace(self.kmin_fish, self.kmax_fish, self.Pk_ksamp)
         self.Pk_mugrid = np.linspace(0.0, 1.0, self.Pk_musamp)
         self.Pk_kmesh, self.Pk_mumesh = np.meshgrid(self.Pk_kgrid, self.Pk_mugrid)
@@ -384,6 +408,7 @@ class FisherMatrix:
             self.Pk_mumesh,
             fiducial_spectro_obj=self.pk_obs,
             bias_samples=self.obs_spectrum,
+            configuration=self,
         )
         allpars_deriv = self.pk_deriv.compute_derivs(freeparams=self.freeparams)
         return allpars_deriv
@@ -544,6 +569,8 @@ class FisherMatrix:
         numpy.ndarray
             The full fisher matrix for the photometric probe
         """
+        self.ph_z_bins = deepcopy(self.specs["z_bins_ph"])
+        self.ph_num_z_bins = len(self.ph_z_bins) - 1
         if covmat is None and lss_obj is not None:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
@@ -557,11 +584,10 @@ class FisherMatrix:
         lvec_ave = unu.moving_average(lvec, 2)  # computing center of bins
         delta_ell = np.diff(lvec)  # compute delta_ell between bin edges
         FisherV = np.zeros((len(lvec_ave), len(self.freeparams), len(self.freeparams)))
-        numbins = self.num_z_bins
 
         cols = []
         for o in self.observables:
-            for ind in range(numbins):
+            for ind in range(self.ph_num_z_bins):
                 cols.append(o + " " + str(ind + 1))
 
         covarr = np.zeros(((len(lvec_ave)), len(cols), len(cols)))
@@ -609,6 +635,96 @@ class FisherMatrix:
             feedback_level=self.feed_lvl,
             min_level=0,
             text="Finished calculation of Fisher Matrix for {} in: ".format(self.observables),
+            time_ini=tini,
+            time_fin=tfin,
+        )
+        return FisherVV
+
+    def photo_LSS_fishermatrix_einsum(self, noisy_cls=None, covmat=None, derivs=None, lss_obj=None):
+        """Compute the Fisher matrix of a photometric probe.
+
+        Arguments
+        ---------
+        noisy_cls : dict, optional
+                    a dictionary with all the auto and cross correlation fiducial angular power spectra with noise added to it. Will recompute from lss_obj when not passed
+        covmat    : list, optional
+                    A list of pandas.DataFrame objects that store the covariance matrix for each multipole. Will recompute from lss_obj when not passed
+        derivs    : dict, optional
+                    A dictionary containing the derivatives of the angular power spectrum at the fiducial for all free parameters. Will recompute from lss_obj when not passed
+        lss_obj   : cosmicfishpie.LSSsurvey.photo_cov.PhotoCov, optional
+                    This object is used to compute the ingredients of the Fisher matrix if they were not passed
+
+        Returns
+        -------
+        numpy.ndarray
+            The full fisher matrix for the photometric probe
+        """
+        self.ph_z_bins = deepcopy(self.specs["z_bins_ph"])
+        self.ph_num_z_bins = len(self.ph_z_bins) - 1
+        if covmat is None and lss_obj is not None:
+            noisy_cls, covmat = lss_obj.compute_covmat()
+        if derivs is None and lss_obj is not None:
+            derivs = lss_obj.compute_derivs()
+
+        tini = time()
+        upt.time_print(
+            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+        )
+
+        # compute fisher matrix
+        lvec = noisy_cls["ells"]
+        lvec_ave = unu.moving_average(lvec, 2)  # computing center of bins
+        delta_ell = np.diff(lvec)  # compute delta_ell between bin edges
+
+        cols = [f"{o} {ind+1}" for o in self.observables for ind in range(self.ph_num_z_bins)]
+
+        # Precompute covariance matrices and their inverses
+        covarr = np.array(covmat)
+        inv_covarr = np.linalg.pinv(covarr)
+
+        # Precompute derivatives
+        der_array = np.array(
+            [[derivs[par][f"{a}x{b}"] for a in cols for b in cols] for par in self.freeparams]
+        )
+        der_array = der_array.reshape(len(self.freeparams), len(cols), len(cols), -1)
+
+        # Precompute the factor for FisherV
+        factor = (lvec_ave + 0.5) * delta_ell
+
+        # Compute FisherV using vectorized operations
+        FisherV = np.zeros((len(lvec_ave), len(self.freeparams), len(self.freeparams)))
+        for l_ind, ell in enumerate(lvec_ave):
+            der = der_array[:, :, :, l_ind]  # Shape: (n_freeparams, n_cols, n_cols)
+
+            # mat1: multiply der by inv_covarr
+            # 'p' is freeparam index, 'i' and 'j' are column indices
+            mat1 = np.einsum("pij,jk->pik", der, inv_covarr[l_ind])
+
+            # mat2: multiply inv_covarr by mat1
+            # 'p' is still freeparam index
+            mat2 = np.einsum("ij,pjk->pik", inv_covarr[l_ind], mat1)
+
+            # mat3: final matrix multiplication
+            # 'p' and 'q' are indices for the two freeparam dimensions
+            mat3 = np.einsum("pij,qji->pq", der, mat2)
+
+            FisherV[l_ind] = mat3 * factor[l_ind]
+
+            if l_ind == 1:
+                upt.time_print(
+                    feedback_level=self.feed_lvl,
+                    min_level=3,
+                    text=f"FisherV entries for ell={ell} at index {l_ind} done",
+                    time_ini=tini,
+                    time_fin=time(),
+                )
+        # Sum up FisherV along the ell dimension
+        FisherVV = np.sum(FisherV, axis=0)
+        tfin = time()
+        upt.time_print(
+            feedback_level=self.feed_lvl,
+            min_level=0,
+            text=f"Finished calculation of Fisher Matrix for {self.observables} in: ",
             time_ini=tini,
             time_fin=tfin,
         )
@@ -743,7 +859,7 @@ class FisherMatrix:
             A instance of fisher_matrix containing the calculated Fisher matrix as well as parameter names, settings, etc
         """
         # If an output root is provided, we write the Fisher matrix on file
-        if cfg.settings["outroot"] != "":
+        if self.settings["outroot"] != "":
             obstring = ""
             for obs in self.observables:
                 obstring = obstring + obs
@@ -752,20 +868,19 @@ class FisherMatrix:
             for col in cols:
                 header = header + " " + col
             FM = pd.DataFrame(fishmat, columns=cols, index=cols)
-            if not os.path.exists(cfg.settings["results_dir"]):
-                os.makedirs(cfg.settings["results_dir"])
+            if not os.path.exists(self.settings["results_dir"]):
+                os.makedirs(self.settings["results_dir"])
             filename = (
-                cfg.settings["results_dir"]
+                self.settings["results_dir"]
                 + "/"
-                + FisherMatrix.cf_version
+                + self.cf_version
                 + "_"
-                + cfg.settings["outroot"]
+                + self.settings["outroot"]
                 + "_"
                 + obstring
             )
-            # if cfg.settings['nonlinear']: filename = filename+'_nonlinear'
             filename = filename + "_fishermatrix"
-            extension = cfg.settings["fishermatrix_file_extension"]
+            extension = self.settings["fishermatrix_file_extension"]
             FM.to_csv(filename + ".csv")
             with open(filename + extension, "w") as f:
                 f.write(header + "\n")
@@ -802,7 +917,7 @@ class FisherMatrix:
                     )
                 f.write("**Observables: %s \n" % (obstring))
                 f.write("### CosmicFish settings ###\n")
-                for key, value in sorted(cfg.settings.items()):
+                for key, value in sorted(self.settings.items()):
                     f.write("%s:%s\n" % (key, value))
                 f.write("### Fiducial parameters ###\n")
                 for key, value in sorted(self.fiducialcosmopars.items()):
@@ -811,7 +926,7 @@ class FisherMatrix:
                 for key, value in sorted(self.freeparams.items()):
                     f.write("%s:%s\n" % (key, value))
                 f.write("### Survey specifications ###\n")
-                for key, value in sorted(cfg.specs.items()):
+                for key, value in sorted(self.specs.items()):
                     f.write("%s:%s\n" % (key, value))
             print()
             upt.time_print(
@@ -826,18 +941,18 @@ class FisherMatrix:
 
     def recap_options(self):
         """This will print all the selected options into the standard output"""
-        if cfg.settings["feedback"] > 1:
+        if self.settings["feedback"] > 1:
             print("")
             print("----------RECAP OF SELECTED OPTIONS--------")
             print("")
             print("Settings:")
-            for key in cfg.settings:
-                print("   " + key + ": {}".format(cfg.settings[key]))
+            for key in self.settings:
+                print("   " + key + ": {}".format(self.settings[key]))
             print("")
             print("Specifications:")
-            for key in cfg.specs:
-                print("   " + key + ": {}".format(cfg.specs[key]))
-            if cfg.settings["feedback"] > 1:
+            for key in self.specs:
+                print("   " + key + ": {}".format(self.specs[key]))
+            if self.feed_lvl > 1:
                 print("Cosmological parameters:")
                 for key in self.fiducialcosmopars:
                     print("   " + key + ": {}".format(self.fiducialcosmopars[key]))
@@ -848,8 +963,8 @@ class FisherMatrix:
                 for key in self.IApars:
                     print("   " + key + ": {}".format(self.IApars[key]))
                 print("Bias parameters:")
-                for key in self.biaspars:
-                    print("   " + key + ": {}".format(self.biaspars[key]))
+                for key in self.photobiaspars:
+                    print("   " + key + ": {}".format(self.photobiaspars[key]))
                 print("SpectroBias parameters:")
                 for key in self.Spectrobiaspars:
                     print("   " + key + ": {}".format(self.Spectrobiaspars[key]))

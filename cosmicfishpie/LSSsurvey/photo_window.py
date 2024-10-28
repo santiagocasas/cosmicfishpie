@@ -44,7 +44,7 @@ class GalaxyPhotoDist:
         n_i_vec : callable
                   callable function that receives the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
         """
-        self.z_bins = cfg.specs["z_bins"]
+        self.z_bins = cfg.specs["z_bins_ph"]
         self.n_bins = len(self.z_bins)
         self.z0 = cfg.specs["z0"]
         self.z0_p = cfg.specs["z0_p"]

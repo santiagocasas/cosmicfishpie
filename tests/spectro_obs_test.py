@@ -18,6 +18,7 @@ def spectro_obs(spectro_fisher_matrix):
         fiducial_cosmo=cosmoFM.fiducialcosmo,
         bias_samples=["g", "g"],
         use_bias_funcs=False,
+        configuration=cosmoFM,
     )
     return spectro_obs
 
@@ -32,17 +33,13 @@ def test_bterm_fid(spectro_obs):
     z = 1.2  # 1.2 is central value of second bin
     bin_ind = 2
     print(spectro_obs.spectrobiaspars)
-    print(spectro_obs.bterm_fid(z, bias_sample="g"))
-    nuisance = Nuisance()
-    print(spectro_obs.gcsp_z_bin_mids)
-    bkey, bval = nuisance.bterm_z_key(
-        bin_ind, spectro_obs.gcsp_z_bin_mids, spectro_obs.fiducialcosmo, bias_sample="g"
-    )
-    bterm = spectro_obs.bterm_fid(z, bias_sample="g")
+    nuisance = Nuisance(spectrobiasparams=spectro_obs.spectrobiaspars)
+    bterm = nuisance.gcsp_bias_at_z(z)
+    bterm_2 = nuisance.gcsp_bias_at_zi(bin_ind)
     assert isinstance(bterm, float)
+    assert isinstance(bterm_2, float)
     assert np.isclose(bterm, 1.6060949)
-    assert np.isclose(bval, bterm)
-    assert bkey == "bg_2"
+    assert np.isclose(bterm_2, bterm)
 
 
 def test_qparallel(spectro_obs):

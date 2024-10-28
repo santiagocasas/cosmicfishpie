@@ -1,3 +1,4 @@
+import math
 import os
 import subprocess
 from collections import abc
@@ -57,6 +58,8 @@ class printing:
 
 
 class numerics:
+    old_round_decimals_up = False
+
     @staticmethod
     def moving_average(data_set, periods=2):
         weights = np.ones(periods) / periods
@@ -67,17 +70,24 @@ class numerics:
         """
         Returns a value rounded up to a specific number of decimal places.
         """
-        number = np.float16(np.format_float_positional(number, precision=precision))
-        # this function protects from precision issues with floats
-        if decimals == 0:
-            return np.ceil(number)
-        elif number < 1e-2:
-            decimals = 4
-        elif number < 1e-1:
-            decimals = 3
+        if numerics.old_round_decimals_up:
+            number = np.float16(np.format_float_positional(number, precision=precision))
+            # this function protects from precision issues with floats
+            if decimals == 0:
+                return np.ceil(number)
+            elif number < 1e-2:
+                decimals = 4
+            elif number < 1e-1:
+                decimals = 3
 
-        factor = 10**decimals
-        return np.ceil(number * factor) / factor
+            factor = 10**decimals
+            rounded_number = np.ceil(number * factor) / factor
+        else:
+            exponent = math.floor(math.log10(number))
+            mantissa = number / (10**exponent)
+            rounded_mantissa = math.ceil(mantissa * 10) / 10
+            rounded_number = rounded_mantissa * (10**exponent)
+        return rounded_number
 
     @staticmethod
     def closest(lst, K):
@@ -98,7 +108,7 @@ class numerics:
         if np.isclose(value, array[0]) or value < array[0]:
             return 0
         if np.isclose(value, array[-1]) or value > array[-1]:
-            return n - 1
+            return n - 2  # used with bins, which are defined as [z_i, z_i+1]
 
         left, right = 0, n - 1
         while left < right:

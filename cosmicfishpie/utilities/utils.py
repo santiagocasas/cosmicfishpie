@@ -1,8 +1,9 @@
+import math
 import os
 import subprocess
 from collections import abc
 from configparser import ConfigParser
-import math
+
 import numpy as np
 
 

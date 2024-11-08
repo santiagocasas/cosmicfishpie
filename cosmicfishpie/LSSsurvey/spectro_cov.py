@@ -18,7 +18,8 @@ from cosmicfishpie.utilities.utils import printing as upt
 
 class SpectroCov:
     def __init__(
-        self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"], configuration=None
+        self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"], 
+        configuration=None
     ):
         """
         Initializes an object with specified fiducial parameters and computes
@@ -41,8 +42,6 @@ class SpectroCov:
         ----------
         pk_obs                    : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
                                     Fiducial instance of the observable of the spectroscopic probe. Either Galaxy Clustering, Intensity  mapping or cross correlation.
-        pk_obs_gg                 : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
-                                    Fiducial instance of the galaxy clustering autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
         pk_obs_II                 : cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro, cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalIM
                                     Fiducial instance of the intensity mapping autocorrelation observable of the spectroscopic probe if cross correlation is asked for.
         area_survey_spectro       : float
@@ -63,13 +62,10 @@ class SpectroCov:
                                     Redshift bin edges
         """
         # initializing the class only with fiducial parameters
-        # if fiducial_specobs is None:
-
         if configuration is None:
             self.config = cfg
         else:
             self.config = configuration
-
         self.feed_lvl = self.config.settings["feedback"]
         try:
             self.fsky_spectro = self.config.specs["fsky_spectro"]
@@ -77,45 +73,14 @@ class SpectroCov:
         except KeyError:
             self.area_survey = self.config.specs["area_survey_spectro"]
             self.fsky_spectro = self.area_survey / upm.areasky()
-        if "IM" in self.config.obs and "GCsp" in self.config.obs:
-            bias_samples = ["I", "g"]
-            upt.time_print(
-                feedback_level=self.feed_lvl,
-                min_level=2,
-                text="Entering Cov cross XC IM,g term",
-                instance=self,
-            )
-            self.pk_obs = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
-            )
-            self.pk_obs_gg = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=["g", "g"], configuration=self.config
-            )
-            self.pk_obs_II = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=["I", "I"], configuration=self.config
-            )
-        elif "IM" in self.config.obs and "I" in bias_samples:
-            bias_samples = ["I", "I"]
-            upt.time_print(
-                feedback_level=self.feed_lvl,
-                min_level=2,
-                text="Entering Cov IM term",
-                instance=self,
-            )
-            self.pk_obs = spec_obs.ComputeGalIM(
-                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
-            )
-        elif "GCsp" in self.config.obs and "g" in bias_samples:
-            bias_samples = ["g", "g"]
-            upt.time_print(
-                feedback_level=self.feed_lvl,
-                min_level=2,
-                text="Entering Cov gg term",
-                instance=self,
-            )
+        if fiducial_specobs is None:
             self.pk_obs = spec_obs.ComputeGalSpectro(
-                fiducialpars, fiducialpars, bias_samples=bias_samples, configuration=self.config
-            )
+                fiducialpars, 
+                fiducial_cosmopars=fiducialpars, 
+                bias_samples=bias_samples, 
+                configuration=self.config
+                                                    )
+            # if no other parameters are provided, the method will use the fiducials from config
         else:
             self.pk_obs = fiducial_specobs
 
@@ -126,20 +91,23 @@ class SpectroCov:
             self.dz_bins = np.diff(self.z_bins)
             self.global_z_bin_mids = self.z_bin_mids
             self.global_z_bins = self.z_bins
+            self.inter_z_bin_mids = self.z_bin_mids
+            self.inter_z_bins = self.z_bins
         if "IM" in self.pk_obs.observables:
-            self.IM_z_bins = self.pk_obs.nuisance.IM_zbins()
-            self.IM_z_bin_mids = self.pk_obs.nuisance.IM_zbins_mids()
+            self.IM_z_bins = self.pk_obs.nuisance.IM_zbins
+            self.IM_z_bin_mids = self.pk_obs.nuisance.IM_zbins_mids
             self.Tsys_interp = self.pk_obs.nuisance.IM_THI_noise()
             self.global_z_bin_mids = self.IM_z_bin_mids
             self.global_z_bins = self.IM_z_bins
+            self.inter_z_bin_mids = self.IM_z_bin_mids
+            self.inter_z_bins = self.IM_z_bins
         # Choose longest zbins array to loop in Fisher matrix
         if "GCsp" in self.pk_obs.observables and "IM" in self.pk_obs.observables:
-            if len(self.z_bin_mids) >= len(self.IM_z_bin_mids):
-                self.global_z_bin_mids = self.z_bin_mids
-                self.global_z_bins = self.z_bins
-            else:
-                self.global_z_bin_mids = self.IM_z_bin_mids
-                self.global_z_bins = self.IM_z_bins
+            self.global_z_bin_mids = np.union1d(self.z_bin_mids, self.IM_z_bin_mids)
+            self.global_z_bins = np.union1d(self.z_bins, self.IM_z_bins)
+            ## overlapping z bins
+            self.inter_z_bin_mids = np.intersect1d(self.z_bin_mids, self.IM_z_bin_mids)
+            self.inter_z_bins = np.intersect1d(self.z_bins, self.IM_z_bins)
 
     def Tsys_func(self, z):
         """Calculates Tsys in mK
@@ -209,7 +177,7 @@ class SpectroCov:
         vol = self.fsky_spectro * self.d_volume(ibin)
         return vol
 
-    def n_density(self, ibin):
+    def n_density(self, zi):
         """calculate the comoving number density of the probe
 
         Parameters
@@ -222,17 +190,22 @@ class SpectroCov:
         float
             comoving number density of the probe
         """
+        try:
+            ibin = np.where(np.isclose(self.inter_z_bin_mids, zi, rtol=1e-2))[0][0]
+        except IndexError:
+            print(f"Warning: zi = {zi} not in global_z_bin_mids")
+            return 0
         ndens = self.dnz[ibin] * self.dz_bins[ibin] / self.d_volume(ibin)
         ndens = upm.areasky() * ndens  ## multiply with the full sky area in degrees
         return ndens
 
-    def veff(self, ibin, k, mu):
+    def veff(self, zi, k, mu):
         """calculate the effective volume entering the covariance of the galaxy clustering probe
 
         Parameters
         ----------
-        i  : int
-             Index of the survey redshift bin
+        zi : float
+             Redshift of the inner sphere
         k  : float, numpy.ndarray
              wave number at which the effective volume should be calculated
         mu : float, numpy.ndarray
@@ -242,10 +215,11 @@ class SpectroCov:
         float, numpy.ndarray
             The effective volume for a given wavenumber, angle and redshift
         """
-        zi = self.z_bin_mids[ibin]
-        npobs = self.n_density(ibin) * self.pk_obs.observed_Pgg(zi, k, mu)
+        npobs = self.n_density(zi) * self.pk_obs.observed_Pgg(zi, k, mu)
         prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (npobs / (1 + npobs)) ** 2
+        if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
+            covterm = np.zeros_like(covterm)
         return covterm
 
     def cov(self, ibin, k, mu):
@@ -265,7 +239,7 @@ class SpectroCov:
         float, numpy.ndarray
             Covariance of the Galaxy clustering probe
         """
-        zmid = self.z_bin_mids[ibin]
+        zmid = self.global_z_bin_mids[ibin]
         veffS = self.veff(ibin, k, mu) * self.volume_survey(ibin)
         pobs = self.pk_obs.observed_Pgg(zmid, k, mu)
         prefactor = 2 * (2 * np.pi) ** 3
@@ -298,7 +272,7 @@ class SpectroCov:
         elif temp_dim:
             temp = 1
         pref = (2 * np.pi * self.pk_obs.fsky_IM) / (self.pk_obs.f_21 * self.pk_obs.t_tot)
-        cosmo = ((1 + z) ** 2 * self.pk_obs.cosmo.comoving(z) ** 2) / self.pk_obs.cosmo.Hubble(z)
+        cosmo = ((1 + z) ** 2 * self.pk_obs.fiducialcosmo.comoving(z) ** 2) / self.pk_obs.fiducialcosmo.Hubble(z)
         T_term = (self.Tsys_func(z) / temp) ** 2  # in K
         alpha = self.pk_obs.alpha_SD()
         if beam_term:
@@ -308,13 +282,13 @@ class SpectroCov:
         noise = pref * cosmo * T_term * (alpha / beta**2)
         return noise
 
-    def veff_21cm(self, ibin, k, mu):
+    def veff_II(self, zi, k, mu):
         """calculate the effective volume entering the covariance of the line intensity mapping probe
 
         Parameters
         ----------
-        i  : int
-             Index of the survey redshift bin
+        zi : float
+             Redshift
         k  : float, numpy.ndarray
              wave number at which the effective volume should be calculated
         mu : float, numpy.ndarray
@@ -324,20 +298,21 @@ class SpectroCov:
         float, numpy.ndarray
             The effective volume for a given wavenumber, angle and redshift
         """
-        zi = self.IM_z_bin_mids[ibin]
-        pobs = self.pk_obs.observed_P_HI(zi, k, mu)
-        pnoisy = pobs + self.P_noise_21(zi, k, mu)
+        pobs = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="I")
+        pnoisy = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
         prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (pobs / pnoisy) ** 2
+        if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
+            covterm = np.zeros_like(covterm)
         return covterm
 
-    def veff_XC(self, ibin, k, mu):
+    def veff_Ig(self, zi, k, mu):
         """calculate the effective volume entering the covariance of the cross correlation of galaxy clustering and intensity mapping
 
         Parameters
         ----------
-        i  : int
-             Index of the survey redshift bin
+        zi : float
+             Redshift
         k  : float, numpy.ndarray
              wave number at which the effective volume should be calculated
         mu : float, numpy.ndarray
@@ -348,19 +323,29 @@ class SpectroCov:
             The effective volume for a given wavenumber, angle and redshift
         """
         print("Entering veff_XC term")
-        zi = self.IM_z_bin_mids[ibin]
         # when calling this function, this is the XC spectrum
-        pobs_Ig = self.pk_obs.observed_P_HI(zi, k, mu)
-        pobs_gg = self.pk_obs_gg.observed_P_HI(zi, k, mu)
-        pobs_II = self.pk_obs_II.observed_P_HI(zi, k, mu)
-        pnoisy_Ig = pobs_Ig
-        pnoisy_II = pobs_II + self.P_noise_21(zi, k, mu)
-        pnoisy_gg = pobs_gg + self.n_density(ibin)
+        # the si, sj indices will be overwritten by the self.bias_samples in the observed_P_Ig function
+        pobs_Ig = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="g")
+        pnoisy_Ig = self.noisy_P_ij(zi, k, mu, si="I", sj="g")
+        pnoisy_II = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
+        pnoisy_gg = self.noisy_P_ij(zi, k, mu, si="g", sj="g")
         covterm = pobs_Ig**2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
         prefactor = 1 / (4 * (np.pi**2))
         covterm = prefactor * covterm
+        if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
+            covterm = np.zeros_like(covterm)
         return covterm
-
+    
+    def noisy_P_ij(self, z, k, mu, si="I", sj="g"):
+        if si == "I" and sj == "I":
+            noiseterm = self.P_noise_21(z, k, mu, temp_dim=True)
+        elif si == "g" and sj == "g":
+            noiseterm = 1/self.n_density(z)
+        else:
+            noiseterm = 0
+        pobs_ij = self.pk_obs.observed_P_ij(z, k, mu, si=si, sj=sj)
+        pnoisy_ij = pobs_ij + noiseterm
+        return pnoisy_ij
 
 class SpectroDerivs:
     def __init__(
@@ -432,6 +417,8 @@ class SpectroDerivs:
         self.fiducial_spectrobiaspars = fiducial_spectro_obj.fiducial_spectrobiaspars
         if "IM" in self.observables:
             self.fiducial_IMbiaspars = fiducial_spectro_obj.fiducial_IMbiaspars
+        else:
+            self.fiducial_IMbiaspars = None
         self.fiducial_PShotpars = fiducial_spectro_obj.PShotpars
         self.fiducial_allpars = fiducial_spectro_obj.fiducial_allpars
         self.fiducial_spectrononlinearpars = fiducial_spectro_obj.fiducial_spectrononlinearpars
@@ -448,27 +435,17 @@ class SpectroDerivs:
         spectrobiaspars = dict((k, allpars[k]) for k in self.fiducial_spectrobiaspars)
         PShotpars = dict((k, allpars[k]) for k in self.fiducial_PShotpars)
         spectrononlinearpars = dict((k, allpars[k]) for k in self.fiducial_spectrononlinearpars)
-
-        if "I" in self.bias_samples:
+        if "IM" in self.observables:
             IMbiaspars = dict((k, allpars[k]) for k in self.fiducial_IMbiaspars)
-
-            self.pobs = spec_obs.ComputeGalIM(
-                cosmopars=cosmopars,
-                fiducial_cosmopars=self.fiducial_cosmopars,
-                spectrobiaspars=spectrobiaspars,
-                IMbiaspars=IMbiaspars,
-                PShotpars=PShotpars,
-                fiducial_cosmo=self.fiducial_cosmo,
-                bias_samples=self.bias_samples,
-                configuration=self.config,
-            )
-        elif "g" in self.bias_samples:
-            self.pobs = spec_obs.ComputeGalSpectro(
+        else:
+            IMbiaspars = None
+        self.pobs = spec_obs.ComputeGalSpectro(
                 cosmopars=cosmopars,
                 fiducial_cosmopars=self.fiducial_cosmopars,
                 spectrobiaspars=spectrobiaspars,
                 spectrononlinearpars=spectrononlinearpars,
                 PShotpars=PShotpars,
+                IMbiaspars=IMbiaspars,
                 fiducial_cosmo=self.fiducial_cosmo,
                 bias_samples=self.bias_samples,
                 configuration=self.config,
@@ -495,10 +472,12 @@ class SpectroDerivs:
         result_array = dict()
         result_array["z_bins"] = self.z_array
         for ii, zzi in enumerate(self.z_array):
-            if "I" in self.bias_samples:
-                result_array[ii] = self.pobs.lnpobs_IM(zzi, self.pk_kmesh, self.pk_mumesh)
-            elif "g" in self.bias_samples:
+            if self.bias_samples == ["I", "I"]:
+                result_array[ii] = self.pobs.lnpobs_ij(zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="I")
+            elif self.bias_samples == ["g", "g"]:
                 result_array[ii] = self.pobs.lnpobs_gg(zzi, self.pk_kmesh, self.pk_mumesh)
+            elif self.bias_samples == ["I", "g"] or self.bias_samples == ["g", "I"]:
+                result_array[ii] = self.pobs.lnpobs_ij(zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="g")
         return result_array
 
     def exact_derivs(self, par):
@@ -518,7 +497,7 @@ class SpectroDerivs:
             deriv = dict()
             for ii, zzi in enumerate(self.z_array):
                 pgg_obs = self.pobs.observed_Pgg(zzi, self.pk_kmesh, self.pk_mumesh)
-                z_bin_mids = self.pobs.gcsp_z_bin_mids
+                z_bin_mids = self.z_array
                 kron = self.kronecker_bins(par, z_bin_mids, zzi)
                 deriv_i = 1 / pgg_obs
                 deriv[ii] = kron * deriv_i
@@ -695,7 +674,7 @@ class SpectroDerivs:
             print("Error: Param name not supported in nuisance parameters")
             deriv = 0
         # get index in bin
-        ii = np.where(np.isclose(self.z_bin_mids, zi))
+        ii = np.where(np.isclose(self.global_z_bin_mids, zi))
         ii = ii[0][0] + 1
         pi = par.split("_")
         pi = int(pi[-1])

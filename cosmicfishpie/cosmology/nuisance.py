@@ -33,7 +33,8 @@ if not logger.handlers:
 
 
 class Nuisance:
-    def __init__(self, configuration=None, spectrobiasparams=None, spectrononlinearpars=None):
+    def __init__(self, configuration=None, spectrobiasparams=None, 
+                 spectrononlinearpars=None, IMbiasparams=None):
         if configuration is None:
             self.config = cfg
         else:
@@ -43,7 +44,7 @@ class Nuisance:
         self.settings = self.config.settings
         self.specsdir = self.settings["specs_dir"]
         self.surveyname = self.specs["survey_name"]
-        if "GCsp" in self.observables:
+        if "GCsp" in self.observables or "IM" in self.observables:
             self.sp_zbins = self.gcsp_zbins()
             self.sp_dndz = self.gcsp_dndz()
             self.sp_zbins_mids = self.gcsp_zbins_mids()
@@ -55,18 +56,31 @@ class Nuisance:
                 self.Spectrobiasparams = deepcopy(self.config.Spectrobiasparams)
             else:
                 self.Spectrobiasparams = spectrobiasparams
+            self._vectorized_gcsp_bias_at_z = np.vectorize(self.gcsp_bias_at_z)
+        if "IM" in self.observables:
+            self.IM_zbins = self.IM_zbins_func()
+            self.IM_zbins_mids = self.IM_zbins_mids_func()
+            self.IM_bias_sample = self.specs["IM_bias_sample"]
+            self.IM_bias_root = self.specs["IM_bias_root"]
+            self.IM_bias_model = self.specs["IM_bias_model"]
+            self.IM_bias_prtz = self.specs["IM_bias_parametrization"]
+            if IMbiasparams is None:
+                self.IMbiasparams = deepcopy(self.config.IMbiasparams)
+            else:
+                self.IMbiasparams = IMbiasparams
+            if self.IM_bias_model == "fitting":
+               self.IM_bias_at_z = self.IM_bias_fitting
+            else:
+                print("Not implemented bias model for IM")
+                raise ValueError(f"IM bias model {self.IM_bias_model} not implemented")
+        if "GCsp" in self.observables or "IM" in self.observables:
             if spectrononlinearpars is None:
                 self.spectrononlinearpars = deepcopy(self.config.Spectrononlinearparams)
             else:
                 self.spectrononlinearpars = spectrononlinearpars
-            self._vectorized_gcsp_bias_at_z = np.vectorize(self.gcsp_bias_at_z)
             self._vectorized_gcsp_rescale_sigmapv_at_z = np.vectorize(
                 self.gcsp_rescale_sigmapv_at_z, excluded=["sigma_key"]
             )
-
-        if "IM" in self.observables:
-            filename_THI_noise = self.specs["IM_THI_noise_file"]
-            self.Tsys_arr = np.loadtxt(os.path.join(self.specsdir, filename_THI_noise))
         if "WL" in self.observables:
             self.lumratio = self.luminosity_ratio()
         if "GCph" in self.observables or "WL" in self.observables:
@@ -332,35 +346,55 @@ class Nuisance:
         Psfid = self.settings["Pshot_nuisance_fiducial"] = 0
         return Psfid
 
-    def IM_bias(self, z):
+    def IM_zbins_func(self):
+        """
+        Reads from file for a given survey
+        """
+        zbins = []
+        zbin_inds = []
+        for key, val in self.specs["z_bins_IM"].items():
+            zbins.append(val)
+            zbin_inds.append(key)
+        zbins = np.unique(np.concatenate(zbins))
+        self.IM_zbins_inds = zbin_inds
+        return zbins
+    
+    def IM_zbins_mids_func(self):
+        IM_zbins_mids = unu.moving_average(self.IM_zbins)
+        return IM_zbins_mids
+    
+    def IM_bias_fitting(self, z):
         """
         IM 21cm HI bias function from http://arxiv.org/abs/2006.05996
         """
-        bb = 0.3 * (1 + z) + 0.6
+        c1 = self.IMbiasparams["bI_c1"]
+        c2 = self.IMbiasparams["bI_c2"]
+        bb = c1 * (1 + z) + c2
         return bb
 
-    def IM_zbins(self):
-        """
-        Reads from file for a given survey
-        """
-        # this dict can be read from a file
-        zbins = np.unique(np.concatenate((self.im_table[:, 0], self.im_table[:, 2])))
-        return zbins
-
-    def IM_zbins_mids(self):
-        z_bins = self.IM_zbins()
-        z_bin_mids = unu.moving_average(z_bins)
-        return z_bin_mids
-
-    def IM_bias_at_zm(self):
-        bfunc = self.IM_bias
-        zmids = self.IM_zbins_mids()
-        b_arr = bfunc(zmids)
-        return b_arr
-
     def IM_THI_noise(self):
-        """ "
-        Reads from file for a given survey
+        """Get the system noise temperature interpolation function for Intensity Mapping.
+
+        This function creates an interpolation of the system noise temperature (T_sys)
+        as a function of redshift for HI intensity mapping observations.
+
+        Returns
+        -------
+        scipy.interpolate.UnivariateSpline
+            Interpolation function that takes redshift as input and returns the 
+            corresponding system noise temperature value.
+
+        Notes
+        -----
+        The function reads the system noise data from the survey specifications,
+        which should contain:
+        - z_vals_THI : array-like
+            Redshift values where the noise temperature is defined
+        - THI_sys_noise : array-like
+            System noise temperature values corresponding to the redshift points
         """
-        Tsys_interp = UnivariateSpline(self.Tsys_arr[:, 0], self.Tsys_arr[:, 1])
+        THI_sys = self.specs["THI_sys_noise"]
+        z_vals_THI = THI_sys['z_vals_THI']
+        THI_vals = THI_sys['THI_sys_noise']
+        Tsys_interp = UnivariateSpline(z_vals_THI, THI_vals)
         return Tsys_interp

@@ -259,44 +259,34 @@ class FisherMatrix:
             self.set_pk_settings()
             if "IM" in self.observables and "GCsp" in self.observables:
                 self.obs_spectrum = ["I", "g"]
-                self.pk_obs = spectro_obs.ComputeGalIM(
-                    cosmopars=self.fiducialcosmopars,
-                    fiducial_cosmopars=self.fiducialcosmopars,
-                    bias_samples=self.obs_spectrum,
-                    configuration=self,
-                )
-
-            elif "IM" in self.observables:
+            elif "IM" in self.observables:  # compute  in the case of IM only
                 self.obs_spectrum = ["I", "I"]
-                self.pk_obs = spectro_obs.ComputeGalIM(
-                    cosmopars=self.fiducialcosmopars,
-                    fiducial_cosmopars=self.fiducialcosmopars,
-                    bias_samples=self.obs_spectrum,
-                    configuration=self,
-                )
             elif "GCsp" in self.observables:
                 self.obs_spectrum = ["g", "g"]
-                self.pk_obs = spectro_obs.ComputeGalSpectro(
-                    cosmopars=self.fiducialcosmopars,
-                    fiducial_cosmopars=self.fiducialcosmopars,
-                    spectrobiaspars=self.Spectrobiaspars,
-                    spectrononlinearpars=self.Spectrononlinpars,
-                    PShotpars=self.PShotpars,
-                    bias_samples=self.obs_spectrum,
-                    configuration=self,
-                )
-
+            #    self.obs_spectrum = ["I", "g"]
+            self.pk_obs_fid = spectro_obs.ComputeGalSpectro(
+                cosmopars=self.fiducialcosmopars,
+                fiducial_cosmopars=self.fiducialcosmopars,
+                spectrobiaspars=self.Spectrobiaspars,
+                spectrononlinearpars=self.Spectrononlinpars,
+                IMbiaspars=self.IMbiaspars,
+                PShotpars=self.PShotpars,
+            #    bias_samples=self.obs_spectrum,
+                configuration=self,
+            )
             self.pk_cov = spectro_cov.SpectroCov(
                 self.fiducialcosmopars,
-                fiducial_specobs=self.pk_obs,
+                fiducial_specobs=self.pk_obs_fid,
                 bias_samples=self.obs_spectrum,
                 configuration=self,
             )
-            self.zmids = self.pk_cov.global_z_bin_mids
+            self.zmids = self.pk_cov.inter_z_bin_mids
             nbins = len(self.zmids)
-            if max_z_bins is None:
-                max_z_bins = nbins
-            self.eliminate_zbinned_freepars(max_z_bins)
+            if max_z_bins is not None and type(max_z_bins) == int:
+                cutnbins = max_z_bins
+                self.eliminate_zbinned_freepars(cutnbins)
+                self.zmids = self.zmids[0:cutnbins]
+                nbins = len(self.zmids)
             tini = time()
             self.derivs_dict = dict()
             # if self.parallel == False:
@@ -304,16 +294,14 @@ class FisherMatrix:
             mu_mesh = self.Pk_mumesh
             self.veff_arr = []
             tvi = time()
-            self.fish_z_arr = np.empty(max_z_bins)
-            for ibi in range(max_z_bins):
-                self.fish_z_arr[ibi] = self.zmids[ibi]
+            self.fish_z_arr = np.array(self.zmids)
+            for zi in self.zmids:
                 if "IM" in self.observables and "GCsp" in self.observables:
-                    # compute  in the case of IMxGC
-                    self.veff_arr.append(self.pk_cov.veff_XC(ibi, k_mesh, mu_mesh))
+                    self.veff_arr.append(self.pk_cov.veff_Ig(zi, k_mesh, mu_mesh))
                 elif "IM" in self.observables:  # compute  in the case of IM only
-                    self.veff_arr.append(self.pk_cov.veff_21cm(ibi, k_mesh, mu_mesh))
+                    self.veff_arr.append(self.pk_cov.veff_II(zi, k_mesh, mu_mesh))
                 elif "GCsp" in self.observables:
-                    self.veff_arr.append(self.pk_cov.veff(ibi, k_mesh, mu_mesh))
+                    self.veff_arr.append(self.pk_cov.veff(zi, k_mesh, mu_mesh))
             tvf = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,
@@ -334,7 +322,7 @@ class FisherMatrix:
                 instance=self,
             )
             self.allparams = self.pk_deriv.fiducial_allpars
-            pk_Fish = self.pk_LSS_Fisher(nbins=max_z_bins)
+            pk_Fish = self.pk_LSS_Fisher(nbins=nbins)
             specFM = np.sum(pk_Fish, axis=0)
             finalFisher = deepcopy(specFM)
 
@@ -383,8 +371,8 @@ class FisherMatrix:
         k_units_factor = self.fiducialcosmopars["h"]
         self.kmin_fish = self.specs["kmin_GCsp"] * k_units_factor
         self.kmax_fish = self.specs["kmax_GCsp"] * k_units_factor
-        self.Pk_ksamp = 2049 * self.settings["accuracy"]
-        self.Pk_musamp = 129 * self.settings["accuracy"]
+        self.Pk_ksamp = 513 * self.settings["accuracy"]
+        self.Pk_musamp = 9 * self.settings["accuracy"]
         self.Pk_kgrid = np.linspace(self.kmin_fish, self.kmax_fish, self.Pk_ksamp)
         self.Pk_mugrid = np.linspace(0.0, 1.0, self.Pk_musamp)
         self.Pk_kmesh, self.Pk_mumesh = np.meshgrid(self.Pk_kgrid, self.Pk_mugrid)
@@ -406,7 +394,7 @@ class FisherMatrix:
             z_arr,
             self.Pk_kmesh,
             self.Pk_mumesh,
-            fiducial_spectro_obj=self.pk_obs,
+            fiducial_spectro_obj=self.pk_obs_fid,
             bias_samples=self.obs_spectrum,
             configuration=self,
         )
@@ -827,12 +815,11 @@ class FisherMatrix:
             if "_" in key:
                 # convention for z-binned pars: par_ibin
                 keysplit = key.split("_")
-                ibin = int(keysplit[1])
                 try:
                     ibin = int(keysplit[1])
                 except ValueError:
                     continue
-                if ibin > nmax:
+                if type(ibin) == int and ibin > nmax:
                     removedpar = self.freeparams.pop(key)
                     upt.time_print(
                         feedback_level=self.feed_lvl,

@@ -1,0 +1,58 @@
+specifications:
+  'spec_sigma_dz': 0.002
+  'area_survey_spectro': 15000
+  'kmax_GCsp': 0.25
+  'kmin_GCsp': 0.001
+  'z_bins_sp': 
+    1: [0.90, 1.10]
+    2: [1.10, 1.30]
+    3: [1.30, 1.50]
+    4: [1.50, 1.80]
+  'dndOmegadz' : 
+    1: 1815.0
+    2: 1701.5
+    3: 1410.0
+    4: 940.97
+  sp_bias_sample: 'g'
+  sp_bias_model: 'linear_log'
+  sp_bias_root: 'lnb'
+  sp_bias_parametrization:
+    linear:
+      bg_1: 1.4614804
+      bg_2: 1.6060949
+      bg_3: 1.7464790
+      bg_4: 1.8988660
+    linear_log:
+      lnbg_1: 0.37944989
+      lnbg_2: 0.4738057
+      lnbg_3: 0.55760176
+      lnbg_4: 0.64125687
+    linear_Qbias:
+      bg_1: 1.4614804
+      bg_2: 1.6060949
+      bg_3: 1.7464790
+      bg_4: 1.8988660
+      A1: 0.02
+      A2: -2.0
+  shot_noise_model: 'fixed' #'constant'
+  shot_noise_parametrization:
+    fixed:
+    constant:
+      Ps_1: 0.0
+      Ps_2: 0.0
+      Ps_3: 0.0
+      Ps_4: 0.0
+  nonlinear_model: default #'rescale_sigma_pv' # 'default' or 'rescale_sigma_pv'
+  nonlinear_parametrization:
+    vary_sigmap: False #True
+    vary_sigmav: False #True
+    rescale_sigma_pv:
+      sigmap_1: 1.0
+      sigmap_2: 1.0
+      sigmap_3: 1.0
+      sigmap_4: 1.0
+      sigmav_1: 1.0
+      sigmav_2: 1.0
+      sigmav_3: 1.0
+      sigmav_4: 1.0
+    default:

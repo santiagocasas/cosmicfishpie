@@ -1,0 +1,75 @@
+specifications:
+  'IM_sigma_dz': 0.0001
+  'area_survey_IM': 7500
+  'kmax_IM': 0.1
+  'kmin_IM': 0.001
+  'D_dish': 13
+  'time_tot': 10000  ## in hr
+  'N_dish': 60
+  'z_bins_IM': 
+    1:  [0.40, 0.60]
+    2:  [0.60, 0.80]
+    3:  [0.80, 1.00]
+    4:  [1.00, 1.20]
+  Omega_HI_params:  # O_c1*(1 + z)**O_c2 * O_scale
+    O_c1: 4.0
+    O_c2: 0.6
+    O_scale: 0.0001
+  IM_bias_sample: 'I'
+  IM_bias_model: 'fitting' #'linear' #'fitting'
+  IM_bias_root: 'bH'
+  IM_bias_parametrization:
+    fitting:  # bI = bI_c1 * (1 + z) + bI_c2
+      bI_c1: 0.3
+      bI_c2: 0.6 
+    linear:
+      bHI_1: 1.08
+      bHI_2: 1.14
+      bHI_3: 1.2
+      bHI_4: 1.26
+      bHI_5: 1.32
+      bHI_6: 1.395
+      bHI_7: 1.47
+      bHI_8: 1.53
+      bHI_9: 1.59
+      bHI_10: 1.65
+    linear_log:
+    linear_Qbias:
+      bg_1: 0.64813367
+      bg_2: 0.71751723
+      bg_3: 0.79432839
+      bg_4: 0.87936228
+      bg_4: 0.97349916
+      A1: 0.02
+      A2: -2.0
+  shot_noise_model: 'fixed' #'constant'
+  shot_noise_parametrization:
+    fixed:
+    constant:
+      Ps_1: 0.0
+      Ps_2: 0.0
+      Ps_3: 0.0
+      Ps_4: 0.0
+      Ps_5: 0.0
+      Ps_6: 0.0
+      Ps_7: 0.0
+      Ps_8: 0.0
+      Ps_9: 0.0
+      Ps_10: 0.0
+  nonlinear_model: 'default' #'rescale_sigma_pv' # 'default' or 'rescale_sigma_pv'
+  nonlinear_parametrization:
+    vary_sigmap: True
+    vary_sigmav: True
+    rescale_sigma_pv:
+      sigmap_1: 1.0
+      sigmap_2: 1.0
+      sigmap_3: 1.0
+      sigmap_4: 1.0
+      sigmav_1: 1.0
+      sigmav_2: 1.0
+      sigmav_3: 1.0
+      sigmav_4: 1.0
+    default:
+  THI_sys_noise:
+    z_vals_THI: [0.403, 0.470, 0.539, 0.612, 0.767, 0.850, 0.938, 1.03, 1.12, 1.22, 1.33, 1.44, 1.55, 1.67, 1.80, 1.93, 2.07, 2.22, 2.37, 2.54, 2.69, 2.87, 3.05]
+    THI_sys_noise: [27.2, 26.9, 26.8, 26.9, 27.5, 28.1, 28.8, 29.8, 30.8, 32.1, 33.5, 35.2, 37.1, 39.2, 41.6, 44.2, 47.2, 50.6, 54.4, 58.6, 63.4, 68.8, 74.8]

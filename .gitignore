@@ -1,3 +1,6 @@
+# heavy data
+*.hdf5
+*.pdf
 # build artifacts
 
 .eggs/

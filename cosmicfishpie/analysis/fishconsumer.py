@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
-from chainconsumer import ChainConsumer
+from chainconsumer import Chain, ChainConsumer, make_sample, Truth, ChainConfig, PlotConfig
 from numpy.random import multivariate_normal
 
 import cosmicfishpie.analysis.colors as fc
@@ -860,3 +860,155 @@ def simple_fisher_plot(
         print(f"Plot saved to: {output_file}")
         
     return fig
+
+def make_triangle_plot(
+    fishers=None,
+    chains=None,
+    fisher_labels=None,
+    chain_labels=None,
+    params=None,
+    colors=None,
+    truth_values=None,
+    shade_fisher=False,
+    shade_chains=True,
+    fontsize=16,
+    param_labels=None,
+):
+    """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
+
+    Parameters
+    ----------
+    fishers : list, optional
+        List of Fisher matrix objects with attributes param_fiducial, fisher_matrix_inv, param_names
+    chains : list, optional
+        List of pandas DataFrames containing MCMC chains with 'weight' column
+    fisher_labels : list, optional
+        Labels for Fisher matrices in the plot legend
+    chain_labels : list, optional
+        Labels for MCMC chains in the plot legend
+    params : list, optional
+        Parameters to plot. If None, uses all parameters from first Fisher/chain
+    colors : list, optional
+        Colors for each Fisher/chain. Defaults to a preset color scheme
+    truth_values : dict, optional
+        Dictionary of true parameter values to plot as vertical lines
+    shade_fisher : bool or list, optional
+        Whether to shade Fisher contours. Can be single bool or list for each Fisher
+    shade_chains : bool or list, optional
+        Whether to shade chain contours. Can be single bool or list for each chain
+    fontsize : int, optional
+        Font size for legend and labels
+    param_labels : dict, optional
+        Dictionary mapping parameter names to LaTeX labels. Default provides common cosmological parameters
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The generated triangle plot
+
+    Examples
+    --------
+    >>> # Plot just Fisher matrices
+    >>> fig = make_triangle_plot(
+    ...     fishers=[fisher1, fisher2],
+    ...     fisher_labels=['SKAO', 'Euclid']
+    ... )
+
+    >>> # Plot Fisher matrices and chains
+    >>> fig = make_triangle_plot(
+    ...     fishers=[fisher1],
+    ...     chains=[chain_df],
+    ...     fisher_labels=['Fisher'],
+    ...     chain_labels=['MCMC'],
+    ...     truth_values={'Omegam': 0.3, 'h': 0.7}
+    ... )
+    """
+    # Initialize ChainConsumer
+    c = ChainConsumer()
+
+    # Default colors
+    default_colors = ['#3a86ff', '#fb5607', '#8338ec', '#ffbe0b', '#d11149']
+    if colors is None:
+        colors = default_colors
+
+    # Default parameter labels
+    default_param_labels = {
+        'Omegam': r'$\Omega_{{\rm m}, 0}$',
+        'Omegab': r'$\Omega_{{\rm b}, 0}$',
+        'h': r'$h$',
+        'ns': r'$n_{\rm s}$',
+        'sigma8': r'$\sigma_8$',
+        'bI_c1': r'$bI_{{\rm c}, 1}$',
+        'bI_c2': r'$bI_{{\rm c}, 2}$'
+    }
+    if param_labels is None:
+        param_labels = default_param_labels
+
+    # Process Fisher matrices
+    if fishers is not None:
+        if fisher_labels is None:
+            fisher_labels = [f'Fisher {i+1}' for i in range(len(fishers))]
+        
+        # Convert shade_fisher to list if needed
+        if isinstance(shade_fisher, bool):
+            shade_fisher = [shade_fisher] * len(fishers)
+
+        for i, fisher in enumerate(fishers):
+            fishchain = Chain.from_covariance(
+                mean=fisher.param_fiducial,
+                covariance=fisher.fisher_matrix_inv,
+                columns=fisher.param_names,
+                color=colors[i],
+                shade=shade_fisher[i],
+                name=fisher_labels[i]
+            )
+            c.add_chain(fishchain)
+
+    # Process MCMC chains
+    if chains is not None:
+        if chain_labels is None:
+            chain_labels = [f'Chain {i+1}' for i in range(len(chains))]
+        
+        # Convert shade_chains to list if needed
+        if isinstance(shade_chains, bool):
+            shade_chains = [shade_chains] * len(chains)
+
+        start_color = len(fishers) if fishers is not None else 0
+        for j, chain in enumerate(chains):
+            chain_nonzero = chain[chain['weight'] > 0]
+            c.add_chain(
+                Chain(
+                    samples=chain_nonzero,
+                    name=chain_labels[j],
+                    color=colors[start_color + j],
+                    shade=shade_chains[j]
+                )
+            )
+
+    # Add truth values if provided
+    if truth_values is not None:
+        c.add_truth(Truth(location=truth_values))
+
+    # Configure plot settings
+    c.set_plot_config(
+        PlotConfig(
+            sigma2d=False,
+            summary=True,
+            plot_point=True,
+            legend_kwargs={"fontsize": fontsize},
+            labels=param_labels
+        )
+    )
+
+    # Create and return the plot
+    fig = c.plotter.plot(columns=params)
+    return fig
+
+def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
+    """Load Nautilus chains from a text file."""
+    chain_arr = np.loadtxt(filename)
+    chain_df = pd.DataFrame(chain_arr, columns = param_cols + ['weight', 'posterior'])
+    if log_weights:
+        chain_df['weight'] = np.exp(chain_df['weight'])
+    chain_df = chain_df[chain_df['weight'] > 0]
+    return chain_df

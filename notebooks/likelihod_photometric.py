@@ -437,7 +437,7 @@ sampler = Sampler(prior,
                           loglike, 
                           n_live=1000, 
                           n_networks=4, 
-                          n_batch=256, pool=8, 
+                          n_batch=256, pool=24, 
                           pass_dict=False,
                           filepath='cosmicshark_3x2photo_symb_justcosmopar.hdf5', 
                           resume=True,
@@ -447,6 +447,9 @@ sampler.run(verbose=True, discard_exploration=True)
 log_z_all = sampler.evidence()
 print('Evidence:', log_z_all)
 points_all, log_w_all, log_l_all = sampler.posterior()
+sample_wghlkl = (np.vstack((points_all.T, np.exp(log_w_all), log_l_all)).T)
+print("Printing chain to file.....")
+np.savetxt('sample_wghlkl.txt', sample_wghlkl)
 
 
 # In[ ]:

@@ -141,8 +141,8 @@ class SpectroCov:
         float, numpy.ndarray
             Volume of the comoving spherical shell between zj and zi
         """
-        d1 = self.pk_obs.cosmo.angdist(zi)
-        d2 = self.pk_obs.cosmo.angdist(zj)
+        d1 = self.pk_obs.fiducialcosmo.angdist(zi)
+        d2 = self.pk_obs.fiducialcosmo.angdist(zj)
         sphere_vol = (4 * np.pi / 3) * (pow((1 + zj) * d2, 3) - pow((1 + zi) * d1, 3))
         return sphere_vol
 

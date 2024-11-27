@@ -108,7 +108,7 @@ class SpectroCov:
             ## overlapping z bins
             self.inter_z_bin_mids = np.intersect1d(self.z_bin_mids, self.IM_z_bin_mids)
             self.inter_z_bins = np.intersect1d(self.z_bins, self.IM_z_bins)
-
+        self.volume_survey_array = np.array([self.volume_survey(ii) for ii in range(len(self.global_z_bin_mids))])
     def Tsys_func(self, z):
         """Calculates Tsys in mK
 

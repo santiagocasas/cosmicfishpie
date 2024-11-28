@@ -956,9 +956,9 @@ class boltzmann_code:
             if "logAs" in symbpars:
                 symbpars["10^9As"] = 10**9 * (np.exp(symbpars.pop("logAs")) * 1.0e-10)
             try:
-                As_value = symbpars.get("10^9As")
+                As_value = symbpars.get("10^9As", -np.inf)
                 upr.debug_print("DEBUG: symbpars['10^9As'] = ", As_value)
-                if np.isscalar(As_value):
+                if As_value != -np.inf:
                     try:
                         symbpars["sigma8"] = self.symblin.As_to_sigma8(
                             symbpars["10^9As"],
@@ -967,16 +967,20 @@ class boltzmann_code:
                             symbpars["h"],
                             symbpars["ns"],
                         )
-                        upr.debug_print("DEBUG: symbpars['sigma8'] = ", symbpars["sigma8"])
+                        upr.debug_print("DEBUG: derived sigma8 = ", symbpars["sigma8"])
                     except Exception as e:
                         print(f"An error occurred: {e}")
                         print("As to sigma8 conversion failed")
                         raise ValueError
+                else:
+                    print("10^9As value not found")
+                    upr.debug_print("DEBUG: symbpars = ", symbpars)
             except KeyError:
                 pass
             try:
-                sigma8_value = symbpars.get("sigma8")
-                if np.isscalar(sigma8_value):
+                sigma8_value = symbpars.get("sigma8", -np.inf)
+                #if np.isscalar(sigma8_value) or (isinstance(sigma8_value, np.ndarray) and sigma8_value.ndim == 0):
+                if sigma8_value != -np.inf:
                     try:
                         As_n = self.symblin.sigma8_to_As(
                             symbpars["sigma8"],
@@ -985,14 +989,14 @@ class boltzmann_code:
                             symbpars["h"],
                             symbpars["ns"],
                         )
-                        upr.debug_print("DEBUG: As_n = ", As_n)
+                        upr.debug_print("DEBUG: derived 10^9As = ", As_n)
                         symbpars["10^9As"] = As_n
                     except Exception as e:
                         print(f"An error occurred: {e}")
                         print("sigma8 to As conversion failed")
                         raise ValueError
                 else:
-                    print("sigma8 value not scalar")
+                    print("sigma8 value not found")
                     upr.debug_print("DEBUG: symbpars = ", symbpars)
             except KeyError:
                 print("sigma8 or 10^9As not in symbpars")

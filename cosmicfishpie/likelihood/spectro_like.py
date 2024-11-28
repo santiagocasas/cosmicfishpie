@@ -171,19 +171,10 @@ def compute_wedge_chi2(P_obs_data, P_obs_theory, cosmoFM_data: cosmicfish.Fisher
     
     return chi2
 
-
-def loglike(param_vec, prior=None, leg_flag='wedges', 
-            cosmoFM_theory: cosmicfish.FisherMatrix = None,
-            cosmoFM_data: cosmicfish.FisherMatrix = None,
-            data_obsPgg: np.ndarray = None):
-
-    z_bins = cosmoFM_data.pk_cov.global_z_bin_mids
+def compute_theory_spectro(param_dict, cosmoFM_theory: cosmicfish.FisherMatrix,
+                           leg_flag='wedges'):
     
-    if type(param_vec) == dict:
-        param_dict = deepcopy(param_vec)
-    elif is_indexable_iterable(param_vec) and prior is not None:
-        #print(f'Loading prior with keys: {prior.keys}')
-        param_dict={key: param_vec[i] for i, key in enumerate(prior.keys)}
+    z_bins = cosmoFM_theory.pk_cov.global_z_bin_mids
     
     nuisance_shot = np.zeros(len(z_bins))
     pshotpars = deepcopy(cosmoFM_theory.PShotpars)
@@ -216,19 +207,39 @@ def loglike(param_vec, prior=None, leg_flag='wedges',
     obsPgg_vary = observable_Pgg(spectro_cov_vary, 
                                  cosmoFM_theory,
                                  nuisance_shot=nuisance_shot)
-    
+    if leg_flag == 'wedges':
+        return obsPgg_vary
+    elif leg_flag == 'legendre':
+        P_ell_vary = legendre_Pgg(obsPgg_vary, cosmoFM_theory)
+        return P_ell_vary
+
+def loglike(param_vec=None, 
+            theory_obsPgg=None,
+            prior=None, leg_flag='wedges', 
+            cosmoFM_theory: cosmicfish.FisherMatrix = None,
+            cosmoFM_data: cosmicfish.FisherMatrix = None,
+            data_obsPgg: np.ndarray = None):
+    if theory_obsPgg is None and param_vec is not None:
+        if type(param_vec) == dict:
+            param_dict = deepcopy(param_vec)
+        elif is_indexable_iterable(param_vec) and prior is not None:
+            #print(f'Loading prior with keys: {prior.keys}')
+            param_dict={key: param_vec[i] for i, key in enumerate(prior.keys)}
+        theory_obsPgg = compute_theory_spectro(param_dict, cosmoFM_theory, leg_flag)
+    else:
+        upr.debug_print('No theory_obsPgg provided and no param_vec provided')
+        return -np.inf
     if leg_flag == 'wedges':
         chi2 = compute_wedge_chi2(
                                   P_obs_data=data_obsPgg,  
-                                  P_obs_theory=obsPgg_vary,     
-                                  cosmoFM_data=cosmoFM_data
+                                  P_obs_theory=theory_obsPgg
                                 )
     elif leg_flag == 'legendre':
-        P_ell_vary = legendre_Pgg(obsPgg_vary, cosmoFM_theory)
         P_ell_data = legendre_Pgg(data_obsPgg, cosmoFM_data)
         covariance_leg, inv_covariance_leg = compute_covariance_legendre(
                                               P_ell=P_ell_data,
                                               cosmoFM=cosmoFM_data
                                               )
-        chi2 = compute_chi2_legendre(P_ell_data, P_ell_vary, inv_covariance_leg)
+        chi2 = compute_chi2_legendre(P_ell_data, theory_obsPgg, 
+                                     inv_covariance_leg)
     return -0.5 * chi2

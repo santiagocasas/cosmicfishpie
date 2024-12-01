@@ -179,19 +179,28 @@ class Nuisance:
 
     def luminosity_ratio(self):
         """Luminosity ratio function used for Intrinsic Alignment eNLA model.
+
+        This function reads and interpolates the luminosity ratio <L(z)>/L*(z) from a file.
+        The ratio is used in the extended nonlinear alignment (eNLA) model for intrinsic alignments.
+
         Parameters
         ----------
+        None
+
         Returns
         -------
         callable
-            Function that returns the luminosity ratio value. Returns 1.0 if file not found.
+            An interpolation function that takes redshift z as input and returns the luminosity ratio.
+            If the luminosity ratio file cannot be loaded, returns a function that always returns 1.0.
 
-        Note
+        Notes
         -----
-        Reads from file and interpolates the following quantity:
-        .. math::
-            \\frac{<L(z)>}{L_*(z)}
-        If the file is not found, returns a function that always returns 1.0
+        - Attempts to read the luminosity ratio from 'lumratio_file.dat' in the specs directory
+        - The file should contain two columns: redshift and luminosity ratio values
+        - The luminosity ratio represents <L(z)>/L*(z), where:
+            - <L(z)> is the mean luminosity at redshift z
+            - L*(z) is the characteristic luminosity at redshift z
+        - Uses linear interpolation between data points
         """
         try:
             # Lumratio file for IA

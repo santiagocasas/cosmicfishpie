@@ -33,3 +33,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.2.0 : Big update of configuration, specification yamls and nuisance parameter interface. No backwards compatibility of yamls!
 1.2.1 : Updating configs of other surveys: SKAO, DESI, LSST to work in new config file structure
 1.2.2 : Galaxy sample split for sources and lenses. Feedback prints more consistent.
+1.2.3 : Added a new likelihood function for photometric and spectroscopic surveys.

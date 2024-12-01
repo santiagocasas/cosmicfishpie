@@ -1,5 +1,6 @@
 import collections
 import copy
+import os
 import re
 
 import matplotlib
@@ -8,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
-from chainconsumer import ChainConsumer
+from chainconsumer import Chain, ChainConfig, ChainConsumer, PlotConfig, Truth
 from numpy.random import multivariate_normal
 
 import cosmicfishpie.analysis.colors as fc
@@ -854,3 +855,343 @@ def simple_fisher_plot(
         print(f"Plot saved to: {output_file}")
 
     return fig
+
+
+def make_triangle_plot(
+    fishers=None,
+    chains=None,
+    fisher_labels=None,
+    chain_labels=None,
+    params=None,
+    colors=None,
+    truth_values=None,
+    shade_fisher=False,
+    shade_chains=True,
+    ls_fisher="-",
+    lw_fisher=2.5,
+    fontsize=16,
+    param_labels=None,
+    smooth=3,
+    kde=False,
+    bins=None,
+):
+    """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
+
+    Parameters
+    ----------
+    fishers : list, optional
+        List of Fisher matrix objects with attributes param_fiducial, fisher_matrix_inv, param_names
+    chains : list, optional
+        List of pandas DataFrames containing MCMC chains with 'weight' column
+    fisher_labels : list, optional
+        Labels for Fisher matrices in the plot legend
+    chain_labels : list, optional
+        Labels for MCMC chains in the plot legend
+    params : list, optional
+        Parameters to plot. If None, uses all parameters from first Fisher/chain
+    colors : list, optional
+        Colors for each Fisher/chain. Defaults to a preset color scheme
+    truth_values : dict, optional
+        Dictionary of true parameter values to plot as vertical lines
+    shade_fisher : bool or list, optional
+        Whether to shade Fisher contours. Can be single bool or list for each Fisher
+    shade_chains : bool or list, optional
+        Whether to shade chain contours. Can be single bool or list for each chain
+    fontsize : int, optional
+        Font size for legend and labels
+    param_labels : dict, optional
+        Dictionary mapping parameter names to LaTeX labels. Default provides common cosmological parameters
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The generated triangle plot
+
+    Examples
+    --------
+    >>> # Plot just Fisher matrices
+    >>> fig = make_triangle_plot(
+    ...     fishers=[fisher1, fisher2],
+    ...     fisher_labels=['SKAO', 'Euclid']
+    ... )
+
+    >>> # Plot Fisher matrices and chains
+    >>> fig = make_triangle_plot(
+    ...     fishers=[fisher1],
+    ...     chains=[chain_df],
+    ...     fisher_labels=['Fisher'],
+    ...     chain_labels=['MCMC'],
+    ...     truth_values={'Omegam': 0.3, 'h': 0.7}
+    ... )
+    """
+    # Initialize ChainConsumer
+    c = ChainConsumer()
+
+    # Default colors
+    default_colors = ["#3a86ff", "#fb5607", "#8338ec", "#ffbe0b", "#d11149"]
+    if colors is None:
+        colors = default_colors
+
+    # Default parameter labels
+    default_param_labels = {
+        "Omegam": r"$\Omega_{{\rm m}, 0}$",
+        "Omegab": r"$\Omega_{{\rm b}, 0}$",
+        "h": r"$h$",
+        "ns": r"$n_{\rm s}$",
+        "sigma8": r"$\sigma_8$",
+        "bI_c1": r"$bI_{{\rm c}, 1}$",
+        "bI_c2": r"$bI_{{\rm c}, 2}$",
+    }
+    if param_labels is None:
+        param_labels = default_param_labels
+
+    # Process Fisher matrices
+    if fishers is not None:
+        if fisher_labels is None:
+            fisher_labels = [f"Fisher {i+1}" for i in range(len(fishers))]
+
+        # Convert shade_fisher to list if needed
+        if isinstance(shade_fisher, bool):
+            shade_fisher = [shade_fisher] * len(fishers)
+
+        for i, fisher in enumerate(fishers):
+            fishchain = Chain.from_covariance(
+                mean=fisher.param_fiducial,
+                covariance=fisher.fisher_matrix_inv,
+                columns=fisher.param_names,
+                color=colors[i],
+                linestyle=ls_fisher,
+                linewidth=lw_fisher,
+                shade=shade_fisher[i],
+                name=fisher_labels[i],
+            )
+            c.add_chain(fishchain)
+
+    # Process MCMC chains
+    if chains is not None:
+        if chain_labels is None:
+            chain_labels = [f"Chain {i+1}" for i in range(len(chains))]
+
+        # Convert shade_chains to list if needed
+        if isinstance(shade_chains, bool):
+            shade_chains = [shade_chains] * len(chains)
+
+        start_color = len(fishers) if fishers is not None else 0
+        for j, chain in enumerate(chains):
+            chain_nonzero = chain[chain["weight"] > 0]
+            c.add_chain(
+                Chain(
+                    samples=chain_nonzero,
+                    name=chain_labels[j],
+                    color=colors[start_color + j],
+                    shade=shade_chains[j],
+                )
+            )
+
+    # Add truth values if provided
+    if truth_values is not None:
+        c.add_truth(Truth(location=truth_values))
+
+    # Configure plot settings
+    c.set_plot_config(
+        PlotConfig(
+            sigma2d=False,
+            summary=True,
+            plot_point=True,
+            legend_kwargs={"fontsize": fontsize},
+            labels=param_labels,
+        )
+    )
+    c.set_override(ChainConfig(smooth=smooth, kde=kde, bins=bins))
+
+    # Create and return the plot
+    fig = c.plotter.plot(columns=params)
+    return fig
+
+
+def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
+    """Load Nautilus chains from a text file."""
+    chain_arr = np.loadtxt(filename)
+    chain_df = pd.DataFrame(chain_arr, columns=param_cols + ["weight", "posterior"])
+    if log_weights:
+        chain_df["weight"] = np.exp(chain_df["weight"])
+    chain_df = chain_df[chain_df["weight"] > 0]
+    return chain_df
+
+
+def parse_log_param(log_file_path):
+    """Extract truth values from MontePython log.param file.
+
+    Parameters
+    ----------
+    log_file_path : str
+        Path to the log.param file
+
+    Returns
+    -------
+    dict
+        Dictionary with parameter names as keys and their truth values as values
+    """
+    truth_values = {}
+
+    try:
+        with open(log_file_path, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "data.parameters['" in line and "]" in line:
+                    param_name = line.split("['")[1].split("']")[0]
+                    values_str = line.split("=")[1].strip()
+                    try:
+                        values = eval(values_str)
+                        truth_values[param_name] = values[0]
+                    except Exception as e:
+                        print(
+                            f"Warning: Could not parse values for parameter {param_name}: {str(e)}"
+                        )
+    except Exception as e:
+        raise ValueError(f"Error reading log.param file: {str(e)}")
+
+    if not truth_values:
+        raise ValueError("No parameter values found in log.param file")
+
+    return truth_values
+
+
+def load_montepython_chains(
+    base_path,
+    chain_root,
+    num_chains,
+    burn_in=0.3,
+    param_names=None,
+    param_names_conversion_dict=None,
+    derived_params=None,
+    chain_suffix=".txt",
+    start_index=1,
+):
+    """Load and process multiple MontePython chains.
+
+    Parameters
+    ----------
+    base_path : str
+        Path to the folder containing chains and log.param
+    chain_root : str
+        Root name of the chain files (e.g., "2024-09-11_200000_")
+    num_chains : int
+        Number of chains to load
+    burn_in : float, optional
+        Fraction of initial chain to remove (default: 0.3)
+    param_names : list, optional
+        List of parameter names. If None, will try to read from '.paramnames' file
+    param_conversion_dict : dict, optional
+        Dictionary to convert parameter names (e.g., {'omega_cdm': 'wc'})
+    derived_params : dict, optional
+        Dictionary of derived parameters to compute. Each key is the new parameter name
+        and the value is a tuple of (source_param, transform_function)
+    chain_suffix : str, optional
+        Suffix of chain files (default: '.txt')
+    start_index : int, optional
+        Starting index for chain numbering (default: 1)
+
+    Returns
+    -------
+    pandas.DataFrame
+        Combined DataFrame containing all chains with burn-in removed and metadata
+    """
+    # Validate burn-in
+    if not (0 <= burn_in < 1):
+        raise ValueError("burn_in must be between 0 and 1")
+
+    # Construct full paths
+    chain_path = os.path.join(base_path, chain_root)
+    param_file = os.path.join(base_path, chain_root + ".paramnames")
+    log_param_file = os.path.join(base_path, "log.param")
+
+    # Read parameter names if not provided
+    if param_names is None:
+        try:
+            original_param_names = np.genfromtxt(param_file, dtype=str, usecols=0)
+            original_param_names = list(original_param_names)
+        except Exception as e:
+            raise ValueError(f"Could not read parameter names file: {str(e)}")
+
+    # Read truth values
+    try:
+        truth_values = parse_log_param(log_param_file)
+        print(f"Successfully read truth values for {len(truth_values)} parameters")
+    except Exception as e:
+        print(f"Warning: Could not read truth values: {str(e)}")
+        truth_values = None
+
+    # Convert parameter names if dictionary provided
+    if param_names_conversion_dict is not None:
+        param_names = [param_names_conversion_dict.get(p, p) for p in original_param_names]
+        # Also convert truth value keys if they exist
+        if truth_values is not None:
+            truth_values = {
+                param_names_conversion_dict.get(k, k): v for k, v in truth_values.items()
+            }
+    else:
+        param_names = original_param_names
+
+    chain_dfs = []
+
+    # Load and process each chain
+    for ci in range(num_chains):
+        # Construct chain path
+        full_chain_path = f"{chain_path}_{ci + start_index}{chain_suffix}"
+        print(f"Loading chain from {full_chain_path}")
+
+        try:
+            # Load chain
+            chain_np = np.loadtxt(full_chain_path)
+
+            # Create DataFrame
+            chain_df = pd.DataFrame(chain_np, columns=["weight", "posterior"] + param_names)
+
+            # Remove burn-in
+            if burn_in > 0:
+                start_idx = int(burn_in * len(chain_df))
+                chain_df = chain_df.iloc[start_idx:]
+
+            # Append to list
+            chain_dfs.append(chain_df)
+
+        except Exception as e:
+            print(f"Warning: Failed to load chain {full_chain_path}: {str(e)}")
+
+    if not chain_dfs:
+        raise ValueError("No chains were successfully loaded")
+
+    # Concatenate all chains
+    combined_chain = pd.concat(chain_dfs, ignore_index=True)
+
+    # Add metadata as attributes
+    combined_chain.attrs["num_chains"] = len(chain_dfs)
+    combined_chain.attrs["total_samples"] = len(combined_chain)
+    combined_chain.attrs["samples_per_chain"] = [len(df) for df in chain_dfs]
+    combined_chain.attrs["original_params"] = original_param_names
+    combined_chain.attrs["params"] = param_names
+    combined_chain.attrs["columns"] = list(combined_chain.columns)
+    if truth_values is not None:
+        combined_chain.attrs["truth_values"] = truth_values
+
+    if derived_params is not None:
+        for new_param, (source_param, transform_func) in derived_params.items():
+            try:
+                # Add derived parameter to chain
+                combined_chain[new_param] = combined_chain[source_param].apply(transform_func)
+                combined_chain.attrs["params"].append(new_param)
+                combined_chain.attrs["columns"] = list(combined_chain.columns)
+                # Add derived parameter to truth values
+                if truth_values is not None and source_param in truth_values:
+                    source_truth = truth_values[source_param]
+                    derived_truth = transform_func(source_truth)
+                    combined_chain.attrs["truth_values"][new_param] = derived_truth
+                    print(f"Added truth value for derived parameter {new_param}: {derived_truth}")
+
+            except Exception as e:
+                print(f"Warning: Failed to compute derived parameter {new_param}: {str(e)}")
+
+    return combined_chain

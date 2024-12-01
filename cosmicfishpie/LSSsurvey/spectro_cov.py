@@ -92,12 +92,18 @@ class SpectroCov:
             self.global_z_bins = self.z_bins
             self.inter_z_bin_mids = self.z_bin_mids
             self.inter_z_bins = self.z_bins
+            self.inter_z_bin_mids = self.z_bin_mids
+            self.inter_z_bins = self.z_bins
         if "IM" in self.pk_obs.observables:
+            self.IM_z_bins = self.pk_obs.nuisance.IM_zbins
+            self.IM_z_bin_mids = self.pk_obs.nuisance.IM_zbins_mids
             self.IM_z_bins = self.pk_obs.nuisance.IM_zbins
             self.IM_z_bin_mids = self.pk_obs.nuisance.IM_zbins_mids
             self.Tsys_interp = self.pk_obs.nuisance.IM_THI_noise()
             self.global_z_bin_mids = self.IM_z_bin_mids
             self.global_z_bins = self.IM_z_bins
+            self.inter_z_bin_mids = self.IM_z_bin_mids
+            self.inter_z_bins = self.IM_z_bins
             self.inter_z_bin_mids = self.IM_z_bin_mids
             self.inter_z_bins = self.IM_z_bins
         # Choose longest zbins array to loop in Fisher matrix
@@ -140,8 +146,8 @@ class SpectroCov:
         float, numpy.ndarray
             Volume of the comoving spherical shell between zj and zi
         """
-        d1 = self.pk_obs.cosmo.angdist(zi)
-        d2 = self.pk_obs.cosmo.angdist(zj)
+        d1 = self.pk_obs.fiducialcosmo.angdist(zi)
+        d2 = self.pk_obs.fiducialcosmo.angdist(zj)
         sphere_vol = (4 * np.pi / 3) * (pow((1 + zj) * d2, 3) - pow((1 + zi) * d1, 3))
         return sphere_vol
 
@@ -290,6 +296,8 @@ class SpectroCov:
         ----------
         zi : float
              Redshift
+        zi : float
+             Redshift
         k  : float, numpy.ndarray
              wave number at which the effective volume should be calculated
         mu : float, numpy.ndarray
@@ -301,8 +309,12 @@ class SpectroCov:
         """
         pobs = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
+        pobs = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="I")
+        pnoisy = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
         prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (pobs / pnoisy) ** 2
+        if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
+            covterm = np.zeros_like(covterm)
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
         return covterm
@@ -312,6 +324,8 @@ class SpectroCov:
 
         Parameters
         ----------
+        zi : float
+             Redshift
         zi : float
              Redshift
         k  : float, numpy.ndarray
@@ -330,9 +344,16 @@ class SpectroCov:
         pnoisy_Ig = self.noisy_P_ij(zi, k, mu, si="I", sj="g")
         pnoisy_II = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy_gg = self.noisy_P_ij(zi, k, mu, si="g", sj="g")
+        # the si, sj indices will be overwritten by the self.bias_samples in the observed_P_Ig function
+        pobs_Ig = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="g")
+        pnoisy_Ig = self.noisy_P_ij(zi, k, mu, si="I", sj="g")
+        pnoisy_II = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
+        pnoisy_gg = self.noisy_P_ij(zi, k, mu, si="g", sj="g")
         covterm = pobs_Ig**2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
         prefactor = 1 / (4 * (np.pi**2))
         covterm = prefactor * covterm
+        if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
+            covterm = np.zeros_like(covterm)
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
         return covterm
@@ -503,6 +524,7 @@ class SpectroDerivs:
             deriv = dict()
             for ii, zzi in enumerate(self.z_array):
                 pgg_obs = self.pobs.observed_Pgg(zzi, self.pk_kmesh, self.pk_mumesh)
+                z_bin_mids = self.z_array
                 z_bin_mids = self.z_array
                 kron = self.kronecker_bins(par, z_bin_mids, zzi)
                 deriv_i = 1 / pgg_obs
@@ -680,6 +702,7 @@ class SpectroDerivs:
             print("Error: Param name not supported in nuisance parameters")
             deriv = 0
         # get index in bin
+        ii = np.where(np.isclose(self.global_z_bin_mids, zi))
         ii = np.where(np.isclose(self.global_z_bin_mids, zi))
         ii = ii[0][0] + 1
         pi = par.split("_")

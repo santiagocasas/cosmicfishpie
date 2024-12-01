@@ -1,9 +1,10 @@
 import pytest
 
 from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicfishpie.utilities.utils import printing as upt
 
 code_to_use = "symbolic"
-
+upt.debug = True
 
 @pytest.fixture(scope="module")
 def photo_fisher_matrix():

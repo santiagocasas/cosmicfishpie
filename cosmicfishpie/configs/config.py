@@ -739,6 +739,8 @@ def init(
     if "IM" in obs:
         for key in IMbiasparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
+    upt.debug_print("Final dict of free parameters in config.py:")
+    upt.debug_print(freeparams)
 
     global latex_names
     latex_names_def = {

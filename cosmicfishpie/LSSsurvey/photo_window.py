@@ -78,7 +78,7 @@ class GalaxyPhotoDist:
         pref = z / self.z0_p
         expo = z / self.z0
 
-        return pref**2 * np.exp(-(expo**self.ngamma))
+        return pref ** 2 * np.exp(-(expo ** self.ngamma))
 
     def n_i(self, z, i):
         """Function to compute the unnormalized dN/dz(z) with a window picking function applied to it

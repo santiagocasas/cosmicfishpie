@@ -80,13 +80,13 @@ class numerics:
             elif number < 1e-1:
                 decimals = 3
 
-            factor = 10**decimals
+            factor = 10 ** decimals
             rounded_number = np.ceil(number * factor) / factor
         else:
             exponent = math.floor(math.log10(number))
-            mantissa = number / (10**exponent)
+            mantissa = number / (10 ** exponent)
             rounded_mantissa = math.ceil(mantissa * 10) / 10
-            rounded_number = rounded_mantissa * (10**exponent)
+            rounded_number = rounded_mantissa * (10 ** exponent)
         return rounded_number
 
     @staticmethod

@@ -101,7 +101,7 @@ def display_colors(colors, figsize=(6, 6)):
         #    rotation_angle = angle
         x1, y1 = wedges[i].center
         x2, y2 = np.cos(np.deg2rad(angle)), np.sin(np.deg2rad(angle))
-        dx, dy = 1.2 * np.array([x2, y2]) / np.sqrt(x2**2 + y2**2)
+        dx, dy = 1.2 * np.array([x2, y2]) / np.sqrt(x2 ** 2 + y2 ** 2)
         ax.annotate(
             color,
             xy=(x1, y1),
@@ -627,8 +627,7 @@ def prepare_settings_plot(
 
 
 def chainfishplot(
-    return_dictionary,
-    **cckwargs,
+    return_dictionary, **cckwargs,
 ):
     """
     Chain fish plot function
@@ -776,6 +775,7 @@ def chainfishplot(
         print("Plot saved to: ", plotfilename)
     return fig
 
+
 def simple_fisher_plot(
     fisher_list,
     params_to_plot,
@@ -784,7 +784,7 @@ def simple_fisher_plot(
     save_plot=False,
     legend=True,
     n_samples=10000,
-    output_file="fisher_plot.pdf"
+    output_file="fisher_plot.pdf",
 ):
     """Create a triangle plot from Fisher matrices using ChainConsumer.
     
@@ -810,34 +810,27 @@ def simple_fisher_plot(
     """
     # Initialize ChainConsumer
     c = ChainConsumer()
-    
+
     # Default colors if none provided
     if colors is None:
-        colors = ['#3a86ff', '#fb5607', '#8338ec', '#ffbe0b', '#d11149']
-        colors = colors[:len(fisher_list)]  # Truncate to needed length
-    
+        colors = ["#3a86ff", "#fb5607", "#8338ec", "#ffbe0b", "#d11149"]
+        colors = colors[: len(fisher_list)]  # Truncate to needed length
+
     # Default labels if none provided
     if labels is None:
         labels = [f"Fisher {i+1}" for i in range(len(fisher_list))]
-    
+
     # Generate samples for each Fisher matrix
     n_samples = 100000
     for i, fisher in enumerate(fisher_list):
         # Get samples from multivariate normal using Fisher matrix
         samples = multivariate_normal(
-            fisher.param_fiducial,
-            fisher.inverse_fisher_matrix(),
-            size=n_samples
+            fisher.param_fiducial, fisher.inverse_fisher_matrix(), size=n_samples
         )
-        
+
         # Add chain to plot
-        c.add_chain(
-            samples,
-            parameters=fisher.get_param_names(),
-            name=labels[i],
-            color=colors[i]
-        )
-    
+        c.add_chain(samples, parameters=fisher.get_param_names(), name=labels[i], color=colors[i])
+
     # Configure plot settings
     c.configure(
         plot_hists=True,
@@ -848,15 +841,15 @@ def simple_fisher_plot(
         shade_alpha=0.3,
         bar_shade=True,
         linewidths=2,
-        legend_kwargs={"fontsize": 12}
+        legend_kwargs={"fontsize": 12},
     )
-    
+
     # Create the plot
     fig = c.plotter.plot(parameters=params_to_plot, legend=legend)
-    
+
     # Save if requested
     if save_plot:
-        fig.savefig(output_file, bbox_inches='tight', dpi=200)
+        fig.savefig(output_file, bbox_inches="tight", dpi=200)
         print(f"Plot saved to: {output_file}")
-        
+
     return fig

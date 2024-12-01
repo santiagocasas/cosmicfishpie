@@ -33,8 +33,13 @@ if not logger.handlers:
 
 
 class Nuisance:
-    def __init__(self, configuration=None, spectrobiasparams=None, 
-                 spectrononlinearpars=None, IMbiasparams=None):
+    def __init__(
+        self,
+        configuration=None,
+        spectrobiasparams=None,
+        spectrononlinearpars=None,
+        IMbiasparams=None,
+    ):
         if configuration is None:
             self.config = cfg
         else:
@@ -69,7 +74,7 @@ class Nuisance:
             else:
                 self.IMbiasparams = IMbiasparams
             if self.IM_bias_model == "fitting":
-               self.IM_bias_at_z = self.IM_bias_fitting
+                self.IM_bias_at_z = self.IM_bias_fitting
             else:
                 print("Not implemented bias model for IM")
                 raise ValueError(f"IM bias model {self.IM_bias_model} not implemented")
@@ -291,7 +296,7 @@ class Nuisance:
                 default_A1 = 0.0
                 default_A2 = 0.0
                 try:
-                    bterm_k = (1 + k**2 * self.Spectrobiasparams.get("A2", default_A2)) / (
+                    bterm_k = (1 + k ** 2 * self.Spectrobiasparams.get("A2", default_A2)) / (
                         1 + k * self.Spectrobiasparams.get("A1", default_A1)
                     )
                 except KeyError as ke:
@@ -358,11 +363,11 @@ class Nuisance:
         zbins = np.unique(np.concatenate(zbins))
         self.IM_zbins_inds = zbin_inds
         return zbins
-    
+
     def IM_zbins_mids_func(self):
         IM_zbins_mids = unu.moving_average(self.IM_zbins)
         return IM_zbins_mids
-    
+
     def IM_bias_fitting(self, z):
         """
         IM 21cm HI bias function from http://arxiv.org/abs/2006.05996
@@ -394,7 +399,7 @@ class Nuisance:
             System noise temperature values corresponding to the redshift points
         """
         THI_sys = self.specs["THI_sys_noise"]
-        z_vals_THI = THI_sys['z_vals_THI']
-        THI_vals = THI_sys['THI_sys_noise']
+        z_vals_THI = THI_sys["z_vals_THI"]
+        THI_vals = THI_sys["THI_sys_noise"]
         Tsys_interp = UnivariateSpline(z_vals_THI, THI_vals)
         return Tsys_interp

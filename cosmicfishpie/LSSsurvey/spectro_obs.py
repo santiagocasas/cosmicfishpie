@@ -166,7 +166,7 @@ class ComputeGalSpectro:
             self.IMbiaspars = self.fiducial_IMbiaspars
         else:
             self.IMbiaspars = IMbiaspars
-        
+
         self.nuisance = nuisance.Nuisance(
             configuration=self.config,
             spectrobiasparams=self.spectrobiaspars,
@@ -211,7 +211,7 @@ class ComputeGalSpectro:
         if "IM" in self.observables:
             self.set_IM_specs()
             self.set_IM_bias_specs()
-        
+
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -376,7 +376,7 @@ class ComputeGalSpectro:
             Observed perpendicular projection of wavevector onto the line of sight with AP-effect corrected for
         """
 
-        k_per = k * np.sqrt(1 - mu**2) * (1 / self.qperpendicular(z))
+        k_per = k * np.sqrt(1 - mu ** 2) * (1 / self.qperpendicular(z))
         return k_per
 
     def k_units_change(self, k):
@@ -471,7 +471,7 @@ class ComputeGalSpectro:
         elif self.dz_type == "z-dependent":
             spec_dz_err = self.dz_err * (1 + z)
         err = spec_dz_err * (1 / self.cosmo.Hubble(z)) * self.kpar(z, k, mu)
-        return np.exp(-(1 / 2) * err**2)
+        return np.exp(-(1 / 2) * err ** 2)
 
     def BAO_term(self, z):
         """Calculates the BAO term. This is the rescaling of the Fourier volume by the  AP-effect
@@ -538,7 +538,7 @@ class ComputeGalSpectro:
                 raise ValueError(
                     f"Bias sample {bias_sample} not found. "
                     f"Please use {self.IM_bias_sample} bias sample."
-                ) 
+                )
             bterm_z = self.nuisance.IM_bias_at_z(z)
         bterm_k = self.nuisance.gcsp_bias_kscale(k)
         bterm_zk = bterm_z * bterm_k
@@ -593,9 +593,9 @@ class ComputeGalSpectro:
             fterm = self.cosmo.f_growthrate(z, k, tracer=self.tracer)
 
         if not just_rsd:
-            kaiser = bterm + fterm * mu**2
+            kaiser = bterm + fterm * mu ** 2
         elif just_rsd:
-            kaiser = 1 + (fterm / bterm) * mu**2
+            kaiser = 1 + (fterm / bterm) * mu ** 2
 
         return kaiser
 
@@ -679,7 +679,7 @@ class ComputeGalSpectro:
             f0 = self.P_ThetaTheta_Moments(zz, 0)
             f1 = self.P_ThetaTheta_Moments(zz, 1)
             f2 = self.P_ThetaTheta_Moments(zz, 2)
-            sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
+            sv = np.sqrt(f0 + 2 * mu ** 2 * f1 + mu ** 2 * f2)
             if self.vary_sigmav:
                 sv *= self.nuisance.vectorized_gcsp_rescale_sigmapv_at_z(zz, sigma_key="sigmav")
         return sv
@@ -714,7 +714,7 @@ class ComputeGalSpectro:
         pp = cosmoF.matpow(zz, self.k_grid).flatten()
         integrand = pp * ff
         Int = integrate.trapezoid(integrand, x=self.k_grid)
-        ptt = (1 / (6 * np.pi**2)) * Int
+        ptt = (1 / (6 * np.pi ** 2)) * Int
         return ptt
 
     def normalized_pdd(self, z, k):
@@ -800,8 +800,8 @@ class ComputeGalSpectro:
 
         self.p_dd = self.normalized_pdd(z, k)
         self.p_dd_NW = self.normalized_pnw(z, k)
-        self.p_dd_DW = self.p_dd * np.exp(-gmudamping * k**2) + self.p_dd_NW * (
-            1 - np.exp(-gmudamping * k**2)
+        self.p_dd_DW = self.p_dd * np.exp(-gmudamping * k ** 2) + self.p_dd_NW * (
+            1 - np.exp(-gmudamping * k ** 2)
         )
         return self.p_dd_DW
 
@@ -860,7 +860,7 @@ class ComputeGalSpectro:
         lorentzFoG = self.FingersOfGod(z, k, mu, mode="Lorentz")
         p_dd_DW = self.dewiggled_pdd(z, k, mu)
 
-        pgg_obs = baoterm * (kaiser**2) * p_dd_DW * lorentzFoG * (error_z**2) + extra_shotnoise
+        pgg_obs = baoterm * (kaiser ** 2) * p_dd_DW * lorentzFoG * (error_z ** 2) + extra_shotnoise
 
         tend = time()
         upt.time_print(
@@ -940,7 +940,7 @@ class ComputeGalSpectro:
         tol = 1.0e-12
         k = np.atleast_1d(k)
         mu = np.atleast_1d(mu)
-        expo = k**2 * (1 - mu**2) * self.fiducialcosmo.comoving(z) ** 2 * self.theta_b(z) ** 2
+        expo = k ** 2 * (1 - mu ** 2) * self.fiducialcosmo.comoving(z) ** 2 * self.theta_b(z) ** 2
         bet = np.exp(-expo / (16.0 * np.log(2.0)))
         bet[np.abs(bet) < tol] = tol
         return bet
@@ -949,9 +949,11 @@ class ComputeGalSpectro:
         error_z = self.spec_err_z(z, k, mu)
         beam_damping_term_si = self.beta_SD(z, k, mu) if si == "I" else 1
         beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == "I" else 1
-        k = self.k_units_change(k) # h-bug set to False by default, leaving here for cross-check of old cases 
+        k = self.k_units_change(
+            k
+        )  # h-bug set to False by default, leaving here for cross-check of old cases
         k, mu = self.kmu_alc_pac(z, k, mu)
-        #if self.bias_samples is not None:
+        # if self.bias_samples is not None:
         #    si = self.bias_samples[0]
         #    sj = self.bias_samples[1]
         baoterm = self.BAO_term(z)

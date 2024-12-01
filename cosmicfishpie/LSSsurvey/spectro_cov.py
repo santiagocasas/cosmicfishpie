@@ -18,8 +18,7 @@ from cosmicfishpie.utilities.utils import printing as upt
 
 class SpectroCov:
     def __init__(
-        self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"], 
-        configuration=None
+        self, fiducialpars, fiducial_specobs=None, bias_samples=["g", "g"], configuration=None
     ):
         """
         Initializes an object with specified fiducial parameters and computes
@@ -75,11 +74,11 @@ class SpectroCov:
             self.fsky_spectro = self.area_survey / upm.areasky()
         if fiducial_specobs is None:
             self.pk_obs = spec_obs.ComputeGalSpectro(
-                fiducialpars, 
-                fiducial_cosmopars=fiducialpars, 
-                bias_samples=bias_samples, 
-                configuration=self.config
-                                                    )
+                fiducialpars,
+                fiducial_cosmopars=fiducialpars,
+                bias_samples=bias_samples,
+                configuration=self.config,
+            )
             # if no other parameters are provided, the method will use the fiducials from config
         else:
             self.pk_obs = fiducial_specobs
@@ -216,7 +215,7 @@ class SpectroCov:
             The effective volume for a given wavenumber, angle and redshift
         """
         npobs = self.n_density(zi) * self.pk_obs.observed_Pgg(zi, k, mu)
-        prefactor = 1 / (8 * (np.pi**2))
+        prefactor = 1 / (8 * (np.pi ** 2))
         covterm = prefactor * (npobs / (1 + npobs)) ** 2
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
@@ -272,14 +271,16 @@ class SpectroCov:
         elif temp_dim:
             temp = 1
         pref = (2 * np.pi * self.pk_obs.fsky_IM) / (self.pk_obs.f_21 * self.pk_obs.t_tot)
-        cosmo = ((1 + z) ** 2 * self.pk_obs.fiducialcosmo.comoving(z) ** 2) / self.pk_obs.fiducialcosmo.Hubble(z)
+        cosmo = (
+            (1 + z) ** 2 * self.pk_obs.fiducialcosmo.comoving(z) ** 2
+        ) / self.pk_obs.fiducialcosmo.Hubble(z)
         T_term = (self.Tsys_func(z) / temp) ** 2  # in K
         alpha = self.pk_obs.alpha_SD()
         if beam_term:
             beta = self.pk_obs.beta_SD(z, k, mu)
         else:
             beta = np.ones_like(k)
-        noise = pref * cosmo * T_term * (alpha / beta**2)
+        noise = pref * cosmo * T_term * (alpha / beta ** 2)
         return noise
 
     def veff_II(self, zi, k, mu):
@@ -300,7 +301,7 @@ class SpectroCov:
         """
         pobs = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
-        prefactor = 1 / (8 * (np.pi**2))
+        prefactor = 1 / (8 * (np.pi ** 2))
         covterm = prefactor * (pobs / pnoisy) ** 2
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
@@ -329,23 +330,24 @@ class SpectroCov:
         pnoisy_Ig = self.noisy_P_ij(zi, k, mu, si="I", sj="g")
         pnoisy_II = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy_gg = self.noisy_P_ij(zi, k, mu, si="g", sj="g")
-        covterm = pobs_Ig**2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
-        prefactor = 1 / (4 * (np.pi**2))
+        covterm = pobs_Ig ** 2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
+        prefactor = 1 / (4 * (np.pi ** 2))
         covterm = prefactor * covterm
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
         return covterm
-    
+
     def noisy_P_ij(self, z, k, mu, si="I", sj="g"):
         if si == "I" and sj == "I":
             noiseterm = self.P_noise_21(z, k, mu, temp_dim=True)
         elif si == "g" and sj == "g":
-            noiseterm = 1/self.n_density(z)
+            noiseterm = 1 / self.n_density(z)
         else:
             noiseterm = 0
         pobs_ij = self.pk_obs.observed_P_ij(z, k, mu, si=si, sj=sj)
         pnoisy_ij = pobs_ij + noiseterm
         return pnoisy_ij
+
 
 class SpectroDerivs:
     def __init__(
@@ -440,16 +442,16 @@ class SpectroDerivs:
         else:
             IMbiaspars = None
         self.pobs = spec_obs.ComputeGalSpectro(
-                cosmopars=cosmopars,
-                fiducial_cosmopars=self.fiducial_cosmopars,
-                spectrobiaspars=spectrobiaspars,
-                spectrononlinearpars=spectrononlinearpars,
-                PShotpars=PShotpars,
-                IMbiaspars=IMbiaspars,
-                fiducial_cosmo=self.fiducial_cosmo,
-                bias_samples=self.bias_samples,
-                configuration=self.config,
-            )
+            cosmopars=cosmopars,
+            fiducial_cosmopars=self.fiducial_cosmopars,
+            spectrobiaspars=spectrobiaspars,
+            spectrononlinearpars=spectrononlinearpars,
+            PShotpars=PShotpars,
+            IMbiaspars=IMbiaspars,
+            fiducial_cosmo=self.fiducial_cosmo,
+            bias_samples=self.bias_samples,
+            configuration=self.config,
+        )
         strdic = str(sorted(cosmopars.items()))
         hh = hash(strdic)
         self.cosmology_variations_dict[hh] = self.pobs.cosmo
@@ -473,11 +475,15 @@ class SpectroDerivs:
         result_array["z_bins"] = self.z_array
         for ii, zzi in enumerate(self.z_array):
             if self.bias_samples == ["I", "I"]:
-                result_array[ii] = self.pobs.lnpobs_ij(zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="I")
+                result_array[ii] = self.pobs.lnpobs_ij(
+                    zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="I"
+                )
             elif self.bias_samples == ["g", "g"]:
                 result_array[ii] = self.pobs.lnpobs_gg(zzi, self.pk_kmesh, self.pk_mumesh)
             elif self.bias_samples == ["I", "g"] or self.bias_samples == ["g", "I"]:
-                result_array[ii] = self.pobs.lnpobs_ij(zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="g")
+                result_array[ii] = self.pobs.lnpobs_ij(
+                    zzi, self.pk_kmesh, self.pk_mumesh, si="I", sj="g"
+                )
         return result_array
 
     def exact_derivs(self, par):

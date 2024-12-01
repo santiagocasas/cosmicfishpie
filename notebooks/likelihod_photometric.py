@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import seaborn as sns
 import numpy as np
 import logging
 from itertools import product
@@ -17,9 +16,9 @@ from nautilus import Prior
 from nautilus import Sampler
 import re
 import time
+from pathlib import Path
 
 
-snscolors = sns.color_palette("colorblind")
 def is_indexable_iterable(var):
     return isinstance(var, (list, np.ndarray, Sequence)) and not isinstance(var, (str, bytes))
 
@@ -33,15 +32,20 @@ upr.debug = False
 
 upr.debug_print("test")
 
-
+outfolder = "nautichain_results"
 outroot = "cosmicjellyfish_Euclid-ISTF-Pess-3x2photo_symb_withnuis"
 
+outpath = Path(outfolder)
+outpath.mkdir(parents=True, exist_ok=True)  # parents=True creates parent directories if needed
+outfilepath = outpath / f"{outroot}"
+outfilepath = str(outfilepath)
+print(f"Results will be saved to {outfilepath}")
 
 sampler_settings = {
     "n_live": 2000,
     "n_networks": 16,
     "n_batch": 256,
-    "pool": 8,
+    "pool": 64,
 }
 
 
@@ -67,7 +71,8 @@ options = {
     "survey_name": "Euclid",
     "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
     "survey_name_spectro": False,
-    "specs_dir": "../cosmicfishpie/configs/default_survey_specifications/",
+    "specs_dir": "./cosmicfishpie/configs/default_survey_specifications/",
+    # relative to where script is launched from not where it is located
     "cosmo_model": "LCDM",
 }
 cosmoFM_fid = cosmicfish.FisherMatrix(
@@ -415,7 +420,7 @@ sampler = Sampler(prior_chosen,
                           n_batch=sampler_settings["n_batch"], 
                           pool=sampler_settings["pool"], 
                           pass_dict=False,
-                          filepath=options["outroot"]+".hdf5", 
+                          filepath=outfilepath+".hdf5", 
                           resume=True,
                           likelihood_kwargs={'prior': prior_chosen}
                           )
@@ -437,7 +442,7 @@ print(f"Total time elapsed: {hours:02d}:{minutes:02d}:{seconds:02d}")
 sample_wghlkl = (np.vstack((points_all.T, np.exp(log_w_all), log_l_all)).T)
 
 
-outfile_chain = options["outroot"]+".txt"
+outfile_chain = outfilepath+".txt"
 print(f"Saving chain to text file {outfile_chain}")
 
 
@@ -447,4 +452,4 @@ print("Saving header: ", header)
 
 
 np.savetxt(outfile_chain, sample_wghlkl, header=header)
-
+print("Finished Sampling Run")

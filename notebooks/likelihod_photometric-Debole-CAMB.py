@@ -33,7 +33,7 @@ upr.debug_print("test")
 
 
 outfolder = "nautichain_results"
-outroot = "cosmicjellyfish_Euclid-DeboleR1-3x2photo_symb_withnuis"
+outroot = "cosmicjellyfish_Euclid-DeboleR1-3x2photo_camb_withnuis"
 
 outpath = Path(outfolder)
 outpath.mkdir(parents=True, exist_ok=True)  # parents=True creates parent directories if needed
@@ -57,8 +57,13 @@ fiducial = {
     "sigma8": 0.81,
     "w0": -1.0,
     "wa": 0.0,
-    "mnu": 0.06,
-    "Neff": 3.044,
+    "mnu": 0.0,
+    "num_massive_neutrinos" : 0,
+    "num_nu_massive": 0,
+    "num_nu_massless": 3.044,
+    "tau": 0.0561,
+    'kmax': 10,
+    'extrap_kmax': None
 }
 observables = ['WL', 'GCph']
 
@@ -66,7 +71,7 @@ observables = ['WL', 'GCph']
 options = {
     "accuracy": 1,
     "feedback": 1,
-    "code": "symbolic",
+    "code": "camb",
     "outroot": outroot,
     "survey_name": "Euclid",
     "survey_name_photo": "Euclid-Photometric-DeboleR1",
@@ -312,37 +317,19 @@ cosmoFM_fid.freeparams
 cosmoFM_fid.allparams
 
 
-samp1dic = {'Omegam': 0.3145714273,
+samp1dic = {
+ 'Omegam': 0.3145714273,
  'Omegab': 0.0491989,
  'h': 0.6737,
  'ns': 0.96605,
  'sigma8': 0.81,
- 'w0': -1.0,
- 'wa': 0.0,
- 'mnu': 0.06,
- 'Neff': 3.044,
- 'bias_model': 'binned',
  'b1': 1.0997727037892875,
  'b2': 1.220245876862528,
  'b3': 1.2723993083933989,
  'b4': 1.316624471897739,
  'b5': 1.35812370570578,
  'b6': 1.3998214171814918,
- 'b7': 1.4446452851824907,
- 'b8': 1.4964959071110084,
- 'b9': 1.5652475842498528,
- 'b10': 1.7429859437184225,
- 'fout': 0.1,
- 'co': 1,
- 'cb': 1,
- 'sigma_o': 0.05,
- 'sigma_b': 0.05,
- 'zo': 0.1,
- 'zb': 0.0,
- 'IA_model': 'eNLA',
- 'AIA': 1.72,
- 'betaIA': 2.17,
- 'etaIA': -0.41*1.1}
+ }
 print("Sample likelihood", loglike(samp1dic))
 
 

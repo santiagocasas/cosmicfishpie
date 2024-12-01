@@ -239,6 +239,7 @@ def init(
     settings.setdefault("code", "camb")
     settings.setdefault("memorize_cosmo", False)
     settings.setdefault("results_dir", "./results")
+    settings.setdefault("SUPPRESS_WARNINGS", True)
     settings.setdefault(
         "boltzmann_yaml_path",
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_boltzmann_yaml_files"),
@@ -326,8 +327,6 @@ def init(
                         min_level=1,
                         text=f"-> {lensub} folders for parameter {dd}",
                     )
-                    # print("External directory: ", external["directory"])
-                    # print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:
             raise ValueError("External directory does not exist")
 

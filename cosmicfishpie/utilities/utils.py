@@ -3,8 +3,12 @@ import os
 import subprocess
 from collections import abc
 from configparser import ConfigParser
+from functools import wraps
+from warnings import catch_warnings, simplefilter
 
 import numpy as np
+
+# Add this global variable after imports
 
 
 class misc:
@@ -25,6 +29,7 @@ class misc:
 
 
 class printing:
+    SUPPRESS_WARNINGS = False  # Can be toggled elsewhere in the codebase
     debug = False
 
     @staticmethod
@@ -55,6 +60,32 @@ class printing:
             print("")
             print(instr + "  " + text + ela_str)
         return None
+
+    @staticmethod
+    def suppress_warnings(func):
+        """
+        Decorator to optionally suppress warnings based on global SUPPRESS_WARNINGS flag.
+
+        Parameters
+        ----------
+        func : callable
+            The function to wrap
+
+        Returns
+        -------
+        callable
+            Wrapped function with optional warning suppression
+        """
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if printing.SUPPRESS_WARNINGS:
+                with catch_warnings():
+                    simplefilter("ignore")
+                    return func(*args, **kwargs)
+            return func(*args, **kwargs)
+
+        return wrapper
 
 
 class numerics:

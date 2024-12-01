@@ -109,6 +109,7 @@ class boltzmann_code:
         self.cosmopars = deepcopy(cosmopars)
         self.feed_lvl = cfg.settings["feedback"]
         self.settings = cfg.settings
+        upr.SUPPRESS_WARNINGS = cfg.settings["SUPPRESS_WARNINGS"]
         self.set_cosmicfish_defaults()
         if code == "camb":
             camb_path = os.path.realpath(os.path.join(os.getcwd(), self.settings["camb_path"]))
@@ -1046,6 +1047,7 @@ class boltzmann_code:
             self.symbcosmopars, feedback=self.feed_lvl, text="--- Symbolic Cosmo parameters ---"
         )
 
+    @upr.suppress_warnings
     def symbolic_results(self):
         """
         Compute and store results using symbolic computation.

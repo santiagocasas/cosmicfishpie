@@ -1,0 +1,45 @@
+specifications:
+  'z_bins_GCph': [0.2, 0.39, 0.5, 0.65, 0.83, 1.03, 2.50]
+  'z_bins_WL': [0.2, 0.44, 0.69, 0.91, 1.18, 1.51, 2.50]
+  'zm': 0.9
+  'ngamma': 1.5
+  'ngal_sqarmin_GCph': 10.13
+  'ngal_sqarmin_WL': 35.88
+  photo_z_params:
+    'fout': 0.1
+    'co': 1
+    'cb': 1
+    'sigma_o': 0.05
+    'sigma_b': 0.05
+    'zo': 0.1
+    'zb': 0.0
+  'area_survey_GCph': 2500
+  'lmax_GCph': 750
+  'lmin_GCph': 10
+  'ellipt_error': 0.3
+  'area_survey_WL': 2500
+  'lmax_WL': 3000
+  'lmin_WL': 10
+  'kmax': 30.
+  'vary_ph_bias': 0.06
+  'vary_IA_pars': 0.035
+  ph_bias_model: 'binned'
+  ph_bias_parametrization: 
+    binned:
+      keystr: 'b'
+      generate_bias_keys: true
+    binned_constant:
+      keystr: 'b'
+      generate_bias_keys: true
+    sqrt:
+      b0: 1.0
+    flagship:
+      A: 1.0
+      B: 2.5
+      C: 2.8
+      D: 1.6
+  IA_params:
+    IA_model: 'eNLA'
+    AIA: 1.72
+    betaIA: 2.17
+    etaIA: -0.41

@@ -209,6 +209,8 @@ def init(
         ),
     )
     settings.setdefault("specs_dir", settings["specs_dir_default"])
+    settings.setdefault("external_data_dir", os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+                                                          "external_data"))
     settings.setdefault("survey_name", surveyName)
     settings.setdefault("survey_specs", "ISTF-Optimistic")
     settings.setdefault("survey_name_photo", "Euclid-Photometric-ISTF-Pessimistic")

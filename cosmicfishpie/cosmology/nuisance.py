@@ -48,6 +48,7 @@ class Nuisance:
         self.specs = self.config.specs
         self.settings = self.config.settings
         self.specsdir = self.settings["specs_dir"]
+        self.extdir = self.settings["external_data_dir"]
         self.surveyname = self.specs["survey_name"]
         if "GCsp" in self.observables or "IM" in self.observables:
             self.sp_zbins = self.gcsp_zbins()
@@ -220,9 +221,8 @@ class Nuisance:
         """
         try:
             # Lumratio file for IA
-            lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
+            lum = np.loadtxt(os.path.join(self.extdir, "lumratio_file.dat"))
             lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
-            logger.info("Successfully loaded luminosity ratio file")
         except (FileNotFoundError, OSError) as e:
             logger.warning(f"Could not load luminosity ratio file: {e}. Using default value of 1.0")
 

@@ -189,6 +189,7 @@ class FisherMatrix:
         }
         self.parallel = parallel
         self.feed_lvl = self.settings["feedback"]
+        self.feed_lvl = cfg.settings["feedback"]
         allpars = {}
         allpars.update(self.fiducialcosmopars)
         allpars.update(self.photobiaspars)
@@ -557,8 +558,13 @@ class FisherMatrix:
         numpy.ndarray
             The full fisher matrix for the photometric probe
         """
-        self.ph_z_bins = deepcopy(self.specs["z_bins_ph"])
-        self.ph_num_z_bins = len(self.ph_z_bins) - 1
+        # this numbers reduce to old z_bins_ph in config if specs not found
+        self.z_bins_WL = self.specs["z_bins_WL"]
+        self.num_z_bins_WL = len(self.specs["z_bins_WL"]) - 1
+        self.binrange_WL = self.specs["binrange_WL"]
+        self.z_bins_GCph = self.specs["z_bins_GCph"]
+        self.num_z_bins_GCph = len(self.specs["z_bins_GCph"]) - 1
+        self.binrange_GCph = self.specs["binrange_GCph"]
         if covmat is None and lss_obj is not None:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
@@ -575,8 +581,12 @@ class FisherMatrix:
 
         cols = []
         for o in self.observables:
-            for ind in range(self.ph_num_z_bins):
-                cols.append(o + " " + str(ind + 1))
+            if o == "GCph":
+                for ind in range(self.num_z_bins_GCph):
+                    cols.append(o + " " + str(ind + 1))
+            elif o == "WL":
+                for ind in range(self.num_z_bins_WL):
+                    cols.append(o + " " + str(ind + 1))
 
         covarr = np.zeros(((len(lvec_ave)), len(cols), len(cols)))
         der1 = np.zeros((len(cols), len(cols)))
@@ -647,8 +657,14 @@ class FisherMatrix:
         numpy.ndarray
             The full fisher matrix for the photometric probe
         """
-        self.ph_z_bins = deepcopy(self.specs["z_bins_ph"])
-        self.ph_num_z_bins = len(self.ph_z_bins) - 1
+        # Get bin information for both WL and GCph
+        self.z_bins_WL = self.specs["z_bins_WL"]
+        self.num_z_bins_WL = len(self.specs["z_bins_WL"]) - 1
+        self.binrange_WL = self.specs["binrange_WL"]
+        self.z_bins_GCph = self.specs["z_bins_GCph"]
+        self.num_z_bins_GCph = len(self.specs["z_bins_GCph"]) - 1
+        self.binrange_GCph = self.specs["binrange_GCph"]
+
         if covmat is None and lss_obj is not None:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
@@ -664,7 +680,13 @@ class FisherMatrix:
         lvec_ave = unu.moving_average(lvec, 2)  # computing center of bins
         delta_ell = np.diff(lvec)  # compute delta_ell between bin edges
 
-        cols = [f"{o} {ind+1}" for o in self.observables for ind in range(self.ph_num_z_bins)]
+        # Create columns list based on observables and their respective bin numbers
+        cols = []
+        for o in self.observables:
+            if o == "GCph":
+                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_GCph)])
+            elif o == "WL":
+                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_WL)])
 
         # Precompute covariance matrices and their inverses
         covarr = np.array(covmat)
@@ -706,6 +728,7 @@ class FisherMatrix:
                     time_ini=tini,
                     time_fin=time(),
                 )
+
         # Sum up FisherV along the ell dimension
         FisherVV = np.sum(FisherV, axis=0)
         tfin = time()

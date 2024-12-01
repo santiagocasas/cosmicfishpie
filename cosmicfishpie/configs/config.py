@@ -200,11 +200,6 @@ def init(
     """
     global settings
     settings = options
-    if "camb_path" not in settings:
-        import camb
-
-        cambpath = os.path.dirname(camb.__file__)
-        settings["camb_path"] = cambpath
     # Set defaults if not contained previously in options
     settings.setdefault(
         "specs_dir_default",
@@ -273,11 +268,12 @@ def init(
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
+
     feed_lvl = settings["feedback"]
+
     global external
     global input_type
     if extfiles is not None and settings["code"] == "external":
-        print("Using input files for cosmology observables.")
         input_type = settings["code"]
         extfiles_default = {
             "file_names": {
@@ -305,6 +301,12 @@ def init(
 
         if os.path.isdir(external["directory"]):
             ff = external["fiducial_folder"]
+            dii = external["directory"]
+            upt.time_print(
+                feedback_level=feed_lvl,
+                min_level=0,
+                text=f"-> Using input files for cosmology observables: {dii}",
+            )
             fidudir = glob.glob(os.path.join(external["directory"], ff + "*"))
             lendir = len(fidudir)
             if lendir < 1:
@@ -319,8 +321,13 @@ def init(
                         )
                     )
                 else:
-                    print("External directory: ", external["directory"])
-                    print("{:d} subfolders for parameter {:s}".format(lensub, dd))
+                    upt.time_print(
+                        feedback_level=feed_lvl,
+                        min_level=1,
+                        text=f"-> {lensub} folders for parameter {dd}",
+                    )
+                    # print("External directory: ", external["directory"])
+                    # print("{:d} subfolders for parameter {:s}".format(lensub, dd))
         else:
             raise ValueError("External directory does not exist")
 
@@ -332,6 +339,11 @@ def init(
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
+        if "camb_path" not in settings:
+            import camb
+
+            cambpath = os.path.dirname(camb.__file__)
+            settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
         boltzmann_yaml_file = open(settings["camb_config_yaml"])
@@ -399,12 +411,28 @@ def init(
         ph_yaml_fs.close()
 
         photo_dict = ph_yaml_content["specifications"]
-        z_bins_ph = photo_dict["z_bins_ph"]
-        photo_dict["z_bins_ph"] = np.array(z_bins_ph)
-        photo_dict["ngalbin"] = ngal_per_bin(photo_dict["ngal_sqarmin"], photo_dict["z_bins_ph"])
+        # Load WL bins and num galaxies per bin make it backwards compatible
+        z_bins_WL = photo_dict.get("z_bins_WL", photo_dict.get("z_bins_ph"))
+        photo_dict["z_bins_WL"] = np.array(z_bins_WL)
+        photo_dict["ngal_sqarmin_WL"] = photo_dict.get(
+            "ngal_sqarmin_WL", photo_dict.get("ngal_sqarmin")
+        )
+        photo_dict["ngalbin_WL"] = ngal_per_bin(
+            photo_dict["ngal_sqarmin_WL"], photo_dict["z_bins_WL"]
+        )
+        photo_dict["binrange_WL"] = range(1, len(photo_dict["z_bins_WL"]))
+        # Load GCph bins and num galaxies per bin make it backwards compatible
+        photo_dict["z_bins_GCph"] = photo_dict.get("z_bins_GCph", photo_dict.get("z_bins_ph"))
+        photo_dict["ngal_sqarmin_GCph"] = photo_dict.get(
+            "ngal_sqarmin_GCph", photo_dict.get("ngal_sqarmin")
+        )
+        photo_dict["ngalbin_GCph"] = ngal_per_bin(
+            photo_dict["ngal_sqarmin_GCph"], photo_dict["z_bins_GCph"]
+        )
+        photo_dict["binrange_GCph"] = range(1, len(photo_dict["z_bins_GCph"]))
+        # Load theoretical n(z) parameters
         photo_dict["z0"] = photo_dict["zm"] / np.sqrt(2)
         photo_dict["z0_p"] = photo_dict["z0"]
-        photo_dict["binrange"] = range(1, len(photo_dict["z_bins_ph"]))
 
         return photo_dict
 
@@ -634,7 +662,7 @@ def init(
             if biasmodel == "binned" or biasmodel == "binned_constant":
                 generate_bias_keys = bias_prtz[biasmodel]["generate_bias_keys"]
                 if generate_bias_keys:
-                    zbins = specs["z_bins_ph"]
+                    zbins = specs.get("z_bins_GCph", specs.get("z_bins_ph"))
                     for ind in range(1, len(zbins)):
                         keystr = bias_prtz[biasmodel]["keystr"]
                         key = keystr + str(ind)
@@ -742,7 +770,7 @@ def init(
             freeparams.setdefault(key, default_eps_gc_nuis)
         for key in Spectrononlinearparams:
             freeparams.setdefault(key, default_eps_gc_nonlin)
-        # Only add the free parameters that are not already in the dictionary
+    # Only add the free parameters that are not already in the dictionary
     upt.debug_print("Final dict of free parameters in config.py:")
     upt.debug_print(freeparams)
 

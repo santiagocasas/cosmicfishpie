@@ -208,7 +208,10 @@ def init(
     # Set defaults if not contained previously in options
     settings.setdefault(
         "specs_dir_default",
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_survey_specifications",),
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "default_survey_specifications",
+        ),
     )
     settings.setdefault("specs_dir", settings["specs_dir_default"])
     settings.setdefault("survey_name", surveyName)
@@ -231,6 +234,8 @@ def init(
     settings.setdefault("Pshot_nuisance_fiducial", 0.0)
     settings.setdefault("pivot_z_IA", 0.0)
     settings.setdefault("accuracy", 1)
+    settings.setdefault("spectro_Pk_k_samples", 1025)
+    settings.setdefault("spectro_Pk_mu_samples", 17)
     settings.setdefault("feedback", 2)
     settings.setdefault("activateMG", False)
     settings.setdefault("external_activateMG", False)
@@ -366,11 +371,11 @@ def init(
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
-        if filename == False:
+        if not filename:
             upt.time_print(
                 feedback_level=feed_lvl,
                 min_level=1,
-                text=f"-> No photo survey passed, returning empty dict",
+                text="-> No photo survey passed, returning empty dict",
             )
             return photo_dict
         try:
@@ -405,7 +410,7 @@ def init(
 
     def create_sp_dict(foldername, filename, type="spectro"):
         spec_dict = dict()
-        if filename == False:
+        if not filename:
             upt.time_print(
                 feedback_level=feed_lvl,
                 min_level=1,
@@ -471,7 +476,7 @@ def init(
         upt.time_print(
             feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameRadioIM}"
         )
-        if spectroTaken == False:
+        if not spectroTaken:
             surveyNameSpectro = settings.get("survey_name_spectro")
             specificationsf4 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
             specificationsf.update(specificationsf4)
@@ -479,7 +484,7 @@ def init(
             upt.time_print(
                 feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameSpectro}"
             )
-        if photoTaken == False:
+        if not photoTaken:
             surveyNamePhoto = settings.get("survey_name_photo")
             specificationsf5 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
             specificationsf.update(specificationsf5)
@@ -488,7 +493,7 @@ def init(
                 feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNamePhoto}"
             )
     if "Rubin" in surveyName:
-        if photoTaken == False:
+        if not photoTaken:
             surveyNamePhoto = settings.get("survey_name_photo")
             specificationsf6 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
             specificationsf.update(specificationsf6)
@@ -497,7 +502,7 @@ def init(
                 feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNamePhoto}"
             )
     if "DESI" in surveyName:
-        if spectroTaken == False:
+        if not spectroTaken:
             surveyNameSpectro = settings.get("survey_name_spectro")
             specificationsf7 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
             specificationsf.update(specificationsf7)
@@ -510,7 +515,7 @@ def init(
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
         specificationsfPlanck = parsed_yaml_file["specifications"]
         specificationsf.update(specificationsfPlanck)
-        upt.time_print(feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  Planck")
+        upt.time_print(feedback_level=feed_lvl, min_level=1, text="-> Survey loaded:  Planck")
     if surveyName not in available_survey_names:
         print("Survey name passed: ", surveyName)
         print(
@@ -598,7 +603,9 @@ def init(
 
     global fiducialcosmo
     upt.time_print(
-        feedback_level=feed_lvl, min_level=1, text="-> Computing cosmology at the fiducial point",
+        feedback_level=feed_lvl,
+        min_level=1,
+        text="-> Computing cosmology at the fiducial point",
     )
     tcosmo1 = time()
     fiducialcosmo = cosmology.cosmo_functions(fiducialparams, input_type)
@@ -722,20 +729,22 @@ def init(
                 IMbiasparams[key] = bias_prmod[key]
 
     # Set the default free parameters for the spectro nuisance parameters
+    default_eps_gc_nuis = settings["eps_gal_nuispars"]
+    default_eps_gc_nonlin = settings["eps_gal_nonlinpars"]
+    if "GCsp" in obs:
+        for key in Spectrobiasparams:
+            freeparams.setdefault(key, default_eps_gc_nuis)
+    if "IM" in obs:
+        for key in IMbiasparams:
+            freeparams.setdefault(key, default_eps_gc_nuis)
     if "GCsp" in obs or "IM" in obs:
-        default_eps_gc_nuis = settings["eps_gal_nuispars"]
-        default_eps_gc_nonlin = settings["eps_gal_nonlinpars"]
         for key in PShotparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
         for key in Spectrononlinearparams:
             freeparams.setdefault(key, default_eps_gc_nonlin)
         # Only add the free parameters that are not already in the dictionary
-        if "GCsp" in obs:
-            for key in Spectrobiasparams:
-                freeparams.setdefault(key, default_eps_gc_nuis)
-        if "IM" in obs:
-            for key in IMbiasparams:
-                freeparams.setdefault(key, default_eps_gc_nuis)
+    upt.debug_print("Final dict of free parameters in config.py:")
+    upt.debug_print(freeparams)
 
     global latex_names
     latex_names_def = {

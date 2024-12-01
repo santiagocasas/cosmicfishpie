@@ -215,7 +215,7 @@ class SpectroCov:
             The effective volume for a given wavenumber, angle and redshift
         """
         npobs = self.n_density(zi) * self.pk_obs.observed_Pgg(zi, k, mu)
-        prefactor = 1 / (8 * (np.pi ** 2))
+        prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (npobs / (1 + npobs)) ** 2
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
@@ -280,7 +280,7 @@ class SpectroCov:
             beta = self.pk_obs.beta_SD(z, k, mu)
         else:
             beta = np.ones_like(k)
-        noise = pref * cosmo * T_term * (alpha / beta ** 2)
+        noise = pref * cosmo * T_term * (alpha / beta**2)
         return noise
 
     def veff_II(self, zi, k, mu):
@@ -301,7 +301,7 @@ class SpectroCov:
         """
         pobs = self.pk_obs.observed_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
-        prefactor = 1 / (8 * (np.pi ** 2))
+        prefactor = 1 / (8 * (np.pi**2))
         covterm = prefactor * (pobs / pnoisy) ** 2
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)
@@ -330,8 +330,8 @@ class SpectroCov:
         pnoisy_Ig = self.noisy_P_ij(zi, k, mu, si="I", sj="g")
         pnoisy_II = self.noisy_P_ij(zi, k, mu, si="I", sj="I")
         pnoisy_gg = self.noisy_P_ij(zi, k, mu, si="g", sj="g")
-        covterm = pobs_Ig ** 2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
-        prefactor = 1 / (4 * (np.pi ** 2))
+        covterm = pobs_Ig**2 / (pnoisy_gg * pnoisy_II + pnoisy_Ig * pnoisy_Ig)
+        prefactor = 1 / (4 * (np.pi**2))
         covterm = prefactor * covterm
         if zi < self.inter_z_bin_mids[0] or zi > self.inter_z_bin_mids[-1]:
             covterm = np.zeros_like(covterm)

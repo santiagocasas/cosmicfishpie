@@ -296,7 +296,7 @@ class Nuisance:
                 default_A1 = 0.0
                 default_A2 = 0.0
                 try:
-                    bterm_k = (1 + k ** 2 * self.Spectrobiasparams.get("A2", default_A2)) / (
+                    bterm_k = (1 + k**2 * self.Spectrobiasparams.get("A2", default_A2)) / (
                         1 + k * self.Spectrobiasparams.get("A1", default_A1)
                     )
                 except KeyError as ke:
@@ -386,7 +386,7 @@ class Nuisance:
         Returns
         -------
         scipy.interpolate.UnivariateSpline
-            Interpolation function that takes redshift as input and returns the 
+            Interpolation function that takes redshift as input and returns the
             corresponding system noise temperature value.
 
         Notes

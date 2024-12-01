@@ -1,7 +1,9 @@
 import pytest
 
 from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicfishpie.utilities.utils import printing as upt
 
+upt.debug = True
 code_to_use = "symbolic"
 
 

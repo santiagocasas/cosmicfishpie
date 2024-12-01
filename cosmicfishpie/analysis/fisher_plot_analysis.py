@@ -663,14 +663,14 @@ class CosmicFish_FisherAnalysis:
                 if normalized:
                     y_points = np.array(
                         [
-                            np.exp(-((x - fiducial) ** 2) / (2.0 * sigma ** 2))
+                            np.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2))
                             / (sigma * np.sqrt(2.0 * math.pi))
                             for x in x_points
                         ]
                     )
                 else:
                     y_points = np.array(
-                        [np.exp(-((x - fiducial) ** 2) / (2.0 * sigma ** 2)) for x in x_points]
+                        [np.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2)) for x in x_points]
                     )
 
                 dict_names[name] = [x_points, y_points, [fiducial, sigma]]
@@ -749,11 +749,11 @@ class CosmicFish_FisherAnalysis:
                     # compute the ellipse coefficients:
                     coeff_a = confidence_coefficient * math.sqrt(
                         (sigma_x + sigma_y) / 2.0
-                        + math.sqrt((sigma_x - sigma_y) ** 2 / 4.0 + sigma_xy ** 2)
+                        + math.sqrt((sigma_x - sigma_y) ** 2 / 4.0 + sigma_xy**2)
                     )
                     coeff_b = confidence_coefficient * math.sqrt(
                         (sigma_x + sigma_y) / 2.0
-                        - math.sqrt((sigma_x - sigma_y) ** 2 / 4.0 + sigma_xy ** 2)
+                        - math.sqrt((sigma_x - sigma_y) ** 2 / 4.0 + sigma_xy**2)
                     )
                     theta_0 = math.atan2((2.0 * sigma_xy), (sigma_x - sigma_y)) / 2.0
                     # generate the ellipses

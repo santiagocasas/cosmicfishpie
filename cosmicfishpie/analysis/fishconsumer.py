@@ -101,7 +101,7 @@ def display_colors(colors, figsize=(6, 6)):
         #    rotation_angle = angle
         x1, y1 = wedges[i].center
         x2, y2 = np.cos(np.deg2rad(angle)), np.sin(np.deg2rad(angle))
-        dx, dy = 1.2 * np.array([x2, y2]) / np.sqrt(x2 ** 2 + y2 ** 2)
+        dx, dy = 1.2 * np.array([x2, y2]) / np.sqrt(x2**2 + y2**2)
         ax.annotate(
             color,
             xy=(x1, y1),
@@ -627,7 +627,8 @@ def prepare_settings_plot(
 
 
 def chainfishplot(
-    return_dictionary, **cckwargs,
+    return_dictionary,
+    **cckwargs,
 ):
     """
     Chain fish plot function
@@ -787,7 +788,7 @@ def simple_fisher_plot(
     output_file="fisher_plot.pdf",
 ):
     """Create a triangle plot from Fisher matrices using ChainConsumer.
-    
+
     Parameters
     ----------
     fisher_list : list
@@ -802,7 +803,7 @@ def simple_fisher_plot(
         Whether to save the plot to file (default: False)
     output_file : str, optional
         Filename for saving the plot (default: 'fisher_plot.pdf')
-        
+
     Returns
     -------
     matplotlib.figure.Figure

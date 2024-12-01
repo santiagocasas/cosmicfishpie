@@ -43,7 +43,7 @@ def num_to_mant_exp(num):
         exponent = math.floor(math.log10(abs(num)))
     except ValueError:  # Case of log10(0)
         return (0, 0)  # Convention: 0 = 0*10^0
-    mantissa = num / 10 ** exponent
+    mantissa = num / 10**exponent
 
     return (mantissa, int(exponent))
 

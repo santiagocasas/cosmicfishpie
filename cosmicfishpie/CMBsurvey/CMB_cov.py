@@ -97,7 +97,7 @@ class CMBCov:
         ]
 
         Bell = [
-            np.exp(ang ** 2.0 * noisy_cls["ells"] * (noisy_cls["ells"] + 1) / 2.0) for ang in thetab
+            np.exp(ang**2.0 * noisy_cls["ells"] * (noisy_cls["ells"] + 1) / 2.0) for ang in thetab
         ]
 
         wtemp = [

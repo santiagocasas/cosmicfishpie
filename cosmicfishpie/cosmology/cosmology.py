@@ -301,10 +301,10 @@ class boltzmann_code:
                 9
                 * (k * R * np.cos(k * R) - np.sin(k * R)) ** 2
                 * pk_z[i]
-                / k ** 4
-                / R ** 6
+                / k**4
+                / R**6
                 / 2
-                / np.pi ** 2
+                / np.pi**2
             )
             sigma_z[i] = np.sqrt(integrate.trapezoid(integrand, k))
 
@@ -426,7 +426,7 @@ class boltzmann_code:
             g_factor = fidNeff / 3
 
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-        h2 = self.h_now ** 2
+        h2 = self.h_now**2
 
         if "mnu" in cambpars:
             Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
@@ -611,11 +611,11 @@ class boltzmann_code:
         )
         Pk_cb_nl = (
             1
-            / f_cb ** 2
+            / f_cb**2
             * (
                 Pk_nl.P(self.results.zgrid, self.results.kgrid)
                 - 2 * Pk_cross_l.P(self.results.zgrid, self.results.kgrid) * f_cb * f_nu
-                - Pk_nunu_l.P(self.results.zgrid, self.results.kgrid) * f_nu ** 2
+                - Pk_nunu_l.P(self.results.zgrid, self.results.kgrid) * f_nu**2
             )
         )
         self.results.Pk_cb_nl = RectBivariateSpline(
@@ -756,7 +756,7 @@ class boltzmann_code:
         if "mnu" in classpars:
             classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
             classpars["Omega_ncdm"] = (
-                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h ** 2
+                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
             )
             classpars.pop("mnu")
             # classpars['m_ncdm'] = classpars.pop('mnu')
@@ -844,13 +844,13 @@ class boltzmann_code:
         pm = classres.get_primordial()
         pk_prim = (
             UnivariateSpline(pm["k [1/Mpc]"], pm["P_scalar(k)"])(k)
-            * (2.0 * np.pi ** 2)
+            * (2.0 * np.pi**2)
             / np.power(k, 3)
         )
 
         pk_cnu = T_nu * T_cb * pk_prim[:, None]
         pk_nunu = T_nu * T_nu * pk_prim[:, None]
-        Pk_cb_nl = 1.0 / f_cb ** 2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
+        Pk_cb_nl = 1.0 / f_cb**2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
 
         self.results.Pk_cb_nl = RectBivariateSpline(
             z[::-1], k, (np.flip(Pk_cb_nl, axis=1)).transpose()
@@ -952,9 +952,9 @@ class boltzmann_code:
         # ["sigma8", "As", "logAs", "10^9As", "ln_A_s_1e10"]
         try:
             if "As" in symbpars:
-                symbpars["10^9As"] = 10 ** 9 * symbpars.pop("As")
+                symbpars["10^9As"] = 10**9 * symbpars.pop("As")
             if "logAs" in symbpars:
-                symbpars["10^9As"] = 10 ** 9 * (np.exp(symbpars.pop("logAs")) * 1.0e-10)
+                symbpars["10^9As"] = 10**9 * (np.exp(symbpars.pop("logAs")) * 1.0e-10)
             try:
                 As_value = symbpars.get("10^9As")
                 upr.debug_print("DEBUG: symbpars['10^9As'] = ", As_value)
@@ -1096,7 +1096,7 @@ class boltzmann_code:
             extrapolate=self.extrapolate,
         )
         # symbfit plin_emulated returns P_l(k,z=0) in 1/Mpc^3, requests kgrid in h/Mpc
-        Pk_at_z = (D_kz ** 2) * self.results.Pk_l_0
+        Pk_at_z = (D_kz**2) * self.results.Pk_l_0
         self.results.Pk_l = RectBivariateSpline(
             self.zgrid, self.kgrid_1Mpc, Pk_at_z
         )  # P_l(k,z) in 1/Mpc^3

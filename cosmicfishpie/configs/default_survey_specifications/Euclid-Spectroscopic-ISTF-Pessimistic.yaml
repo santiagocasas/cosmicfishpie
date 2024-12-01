@@ -15,7 +15,7 @@ specifications:
     3: 1410.0
     4: 940.97
   sp_bias_sample: 'g'
-  sp_bias_model: 'linear_log'
+  sp_bias_model: 'linear_log' #'linear_log'
   sp_bias_root: 'lnb'
   sp_bias_parametrization:
     linear:

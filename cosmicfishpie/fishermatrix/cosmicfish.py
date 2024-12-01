@@ -282,7 +282,7 @@ class FisherMatrix:
             )
             self.zmids = self.pk_cov.inter_z_bin_mids
             nbins = len(self.zmids)
-            if max_z_bins is not None and type(max_z_bins) == int:
+            if max_z_bins is not None and isinstance(max_z_bins, int):
                 cutnbins = max_z_bins
                 self.eliminate_zbinned_freepars(cutnbins)
                 self.zmids = self.zmids[0:cutnbins]
@@ -371,8 +371,8 @@ class FisherMatrix:
         k_units_factor = self.fiducialcosmopars["h"]
         self.kmin_fish = self.specs["kmin_GCsp"] * k_units_factor
         self.kmax_fish = self.specs["kmax_GCsp"] * k_units_factor
-        self.Pk_ksamp = 513 * self.settings["accuracy"]
-        self.Pk_musamp = 9 * self.settings["accuracy"]
+        self.Pk_ksamp = self.settings["spectro_Pk_k_samples"]
+        self.Pk_musamp = self.settings["spectro_Pk_mu_samples"]
         self.Pk_kgrid = np.linspace(self.kmin_fish, self.kmax_fish, self.Pk_ksamp)
         self.Pk_mugrid = np.linspace(0.0, 1.0, self.Pk_musamp)
         self.Pk_kmesh, self.Pk_mumesh = np.meshgrid(self.Pk_kgrid, self.Pk_mugrid)
@@ -535,7 +535,7 @@ class FisherMatrix:
         # zmid = self.pk_cov.global_z_bin_mids[zi]
         dPdpi = self.derivs_dict[pi][zi]
         dPdpj = self.derivs_dict[pj][zi]
-        intg = k ** 2 * pref * volsurv * self.veff_arr[zi] * dPdpi * dPdpj
+        intg = k**2 * pref * volsurv * self.veff_arr[zi] * dPdpi * dPdpj
         return intg
 
     def photo_LSS_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, lss_obj=None):
@@ -819,7 +819,7 @@ class FisherMatrix:
                     ibin = int(keysplit[1])
                 except ValueError:
                     continue
-                if type(ibin) == int and ibin > nmax:
+                if isinstance(ibin, int) and ibin > nmax:
                     removedpar = self.freeparams.pop(key)
                     upt.time_print(
                         feedback_level=self.feed_lvl,

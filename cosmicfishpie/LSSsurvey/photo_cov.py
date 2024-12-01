@@ -142,7 +142,7 @@ class PhotoCov:
                     )
                 elif obs == "WL":
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
-                        self.ellipt_error ** 2.0
+                        self.ellipt_error**2.0
                     ) / self.ngalbin[ind - 1]
 
         return noisy_cls

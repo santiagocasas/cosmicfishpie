@@ -378,25 +378,25 @@ class Nuisance:
         return bb
 
     def IM_THI_noise(self):
-        """Get the system noise temperature interpolation function for Intensity Mapping.
+        """Create interpolation function for HI intensity mapping system noise temperature.
 
-        This function creates an interpolation of the system noise temperature (T_sys)
-        as a function of redshift for HI intensity mapping observations.
+        Creates a spline interpolation of the system noise temperature (T_sys) as a
+        function of redshift for HI intensity mapping observations. The noise temperature
+        data is read from the survey specifications.
 
         Returns
         -------
-        scipy.interpolate.UnivariateSpline
+        UnivariateSpline
             Interpolation function that takes redshift as input and returns the
-            corresponding system noise temperature value.
+            corresponding system noise temperature in Kelvin.
 
         Notes
         -----
-        The function reads the system noise data from the survey specifications,
-        which should contain:
-        - z_vals_THI : array-like
-            Redshift values where the noise temperature is defined
-        - THI_sys_noise : array-like
-            System noise temperature values corresponding to the redshift points
+        The survey specifications must contain a 'THI_sys_noise' dictionary with:
+            - 'z_vals_THI' : array-like
+                Redshift values where noise temperature is defined
+            - 'THI_sys_noise' : array-like
+                System noise temperature values in Kelvin corresponding to each redshift
         """
         THI_sys = self.specs["THI_sys_noise"]
         z_vals_THI = THI_sys["z_vals_THI"]

@@ -380,6 +380,7 @@ def init(
 
     # Add additional surveys here
     available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
+    available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
@@ -479,6 +480,9 @@ def init(
     spectroTaken = False
     photoTaken = False
     specificationsf = dict()
+    spectroTaken = False
+    photoTaken = False
+    specificationsf = dict()
 
     if "Euclid" in surveyName:
         surveyNameSpectro = settings.get("survey_name_spectro")
@@ -550,6 +554,12 @@ def init(
             "Survey name not found in available survey names.",
             "Please pass your full custom specifications as a dictionary.",
         )
+    upt.debug_print("Files specifications: ", specificationsf)
+    upt.debug_print("Default specifications: ", specs)
+    # ums.deepupdate(specs, specificationsf)  # deep update keys if present in files
+    # no more deepupdate because it causes problems with duplicated keys in bias parameters when using different bias samples
+    specs.update(specificationsf)
+    upt.debug_print("Updated specifications: ", specs)
     upt.debug_print("Files specifications: ", specificationsf)
     upt.debug_print("Default specifications: ", specs)
     # ums.deepupdate(specs, specificationsf)  # deep update keys if present in files
@@ -749,6 +759,12 @@ def init(
         IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
+            bias_model = specs["IM_bias_model"]
+            bias_sample = specs["IM_bias_sample"]
+            bias_prtz = specs["IM_bias_parametrization"]
+            bias_prmod = deepcopy(bias_prtz[bias_model])
+            for key in bias_prmod.keys():
+                IMbiasparams[key] = bias_prmod[key]
             bias_model = specs["IM_bias_model"]
             bias_sample = specs["IM_bias_sample"]
             bias_prtz = specs["IM_bias_parametrization"]

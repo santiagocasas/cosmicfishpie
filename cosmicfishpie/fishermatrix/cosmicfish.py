@@ -282,6 +282,7 @@ class FisherMatrix:
                 configuration=self,
             )
             self.zmids = self.pk_cov.inter_z_bin_mids
+            self.zmids = self.pk_cov.inter_z_bin_mids
             nbins = len(self.zmids)
             if max_z_bins is not None and isinstance(max_z_bins, int):
                 cutnbins = max_z_bins
@@ -323,6 +324,7 @@ class FisherMatrix:
                 instance=self,
             )
             self.allparams = self.pk_deriv.fiducial_allpars
+            pk_Fish = self.pk_LSS_Fisher(nbins=nbins)
             pk_Fish = self.pk_LSS_Fisher(nbins=nbins)
             specFM = np.sum(pk_Fish, axis=0)
             finalFisher = deepcopy(specFM)

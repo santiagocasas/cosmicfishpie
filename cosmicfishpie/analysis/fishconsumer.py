@@ -775,3 +775,82 @@ def chainfishplot(
         fig.savefig(plotfilename, dpi=save_dpi, bbox_inches="tight")
         print("Plot saved to: ", plotfilename)
     return fig
+
+
+def simple_fisher_plot(
+    fisher_list,
+    params_to_plot,
+    labels=None,
+    colors=None,
+    save_plot=False,
+    legend=True,
+    n_samples=10000,
+    output_file="fisher_plot.pdf",
+):
+    """Create a triangle plot from Fisher matrices using ChainConsumer.
+
+    Parameters
+    ----------
+    fisher_list : list
+        List of CosmicFish_FisherMatrix objects to plot
+    params_to_plot : list
+        List of parameter names to include in the plot
+    labels : list, optional
+        Labels for each Fisher matrix in the legend
+    colors : list, optional
+        Colors for each Fisher matrix. Defaults to built-in colors
+    save_plot : bool, optional
+        Whether to save the plot to file (default: False)
+    output_file : str, optional
+        Filename for saving the plot (default: 'fisher_plot.pdf')
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The generated triangle plot figure
+    """
+    # Initialize ChainConsumer
+    c = ChainConsumer()
+
+    # Default colors if none provided
+    if colors is None:
+        colors = ["#3a86ff", "#fb5607", "#8338ec", "#ffbe0b", "#d11149"]
+        colors = colors[: len(fisher_list)]  # Truncate to needed length
+
+    # Default labels if none provided
+    if labels is None:
+        labels = [f"Fisher {i+1}" for i in range(len(fisher_list))]
+
+    # Generate samples for each Fisher matrix
+    n_samples = 100000
+    for i, fisher in enumerate(fisher_list):
+        # Get samples from multivariate normal using Fisher matrix
+        samples = multivariate_normal(
+            fisher.param_fiducial, fisher.inverse_fisher_matrix(), size=n_samples
+        )
+
+        # Add chain to plot
+        c.add_chain(samples, parameters=fisher.get_param_names(), name=labels[i], color=colors[i])
+
+    # Configure plot settings
+    c.configure(
+        plot_hists=True,
+        sigma2d=False,
+        smooth=3,
+        colors=colors,
+        shade=True,
+        shade_alpha=0.3,
+        bar_shade=True,
+        linewidths=2,
+        legend_kwargs={"fontsize": 12},
+    )
+
+    # Create the plot
+    fig = c.plotter.plot(parameters=params_to_plot, legend=legend)
+
+    # Save if requested
+    if save_plot:
+        fig.savefig(output_file, bbox_inches="tight", dpi=200)
+        print(f"Plot saved to: {output_file}")
+
+    return fig

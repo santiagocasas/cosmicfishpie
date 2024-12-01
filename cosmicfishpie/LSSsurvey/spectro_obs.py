@@ -25,96 +25,97 @@ class ComputeGalSpectro:
         cosmopars,
         fiducial_cosmopars=None,
         spectrobiaspars=None,
+        IMbiaspars=None,
         spectrononlinearpars=None,
         PShotpars=None,
         fiducial_cosmo=None,
-        bias_samples=["g", "g"],
+        bias_samples=None,
         use_bias_funcs=False,
         configuration=None,
     ):
-        """class to compute the observed power spectrum of a spectroscopic galaxy clustering experiment
+        """Class to compute the observed power spectrum for spectroscopic galaxy clustering and intensity mapping experiments.
 
         Parameters
         ----------
         cosmopars            : dict
-                               A dictionary containing the cosmological parameters of the sample cosmology
+                              A dictionary containing the cosmological parameters of the sample cosmology
         fiducial_cosmopars   : dict, optional
-                               A dictionary containing the cosmological parameters of the fiducial/reference cosmology
-        spectro_biaspars     : dict, optional
-                               A dictionary containing the specifications for the galaxy biases
+                              A dictionary containing the cosmological parameters of the fiducial/reference cosmology
+        spectrobiaspars      : dict, optional
+                              A dictionary containing the specifications for the galaxy biases
+        IMbiaspars          : dict, optional
+                              A dictionary containing the specifications for the intensity mapping biases
         spectrononlinearpars : dict, optional
-                               A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
-        PShotpar             : dict, optional
-                               A dictionary containing the values of the additional shot noise per bin
-        fiducial_cosmo       : cosmicfishpie.cosmology.cosmology.cosmo_functions, optional
-                               An instance of `cosmo_functions` of the fiducial cosmology.
-        bias_samples         : list
-                               A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping. (default ['g', 'g'])
-        use_bias_func        : bool
-                               If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
+                              A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
+        PShotpars           : dict, optional
+                              A dictionary containing the values of the additional shot noise per bin
+        fiducial_cosmo      : cosmicfishpie.cosmology.cosmology.cosmo_functions, optional
+                              An instance of `cosmo_functions` of the fiducial cosmology
+        bias_samples        : list, optional
+                              A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed.
+                              Use "g" for galaxy and "I" for intensity mapping. Default: ["g", "g"]
+        use_bias_funcs     : bool, optional
+                              If True will compute the bias function by constructing it from the specification file.
+                              If False it will be recomputed from bias parameters. Default: False
+        configuration      : object, optional
+                              Configuration object containing settings and parameters. If None, uses default config
 
         Attributes
         ----------
         feed_lvl                      : int
-                                        Number indicating the verbosity of the output. Higher numbers mean more output
+                                       Number indicating the verbosity of the output. Higher numbers mean more output
         observables                   : list
-                                        A list of the observables that the observed power spectrum is computed for
+                                       A list of the observables that the observed power spectrum is computed for
         s8terms                       : bool
-                                        If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
+                                       If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
         tracer                        : str
-                                        What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering. Either "matter" or "clustering"
-        fiducial_cosmopars            : dict
-                                        A dictionary containing the cosmological parameters of the fiducial/reference cosmology
-        fiducial_cosmo                : cosmicfishpie.cosmology.cosmology.cosmo_functions
-                                        An instance of `cosmo_functions` of the fiducial cosmology.
+                                       What Power spectrum should be used when calculating the power spectrum. Either "matter" or "clustering"
         cosmo                         : cosmicfishpie.cosmology.cosmology.cosmo_functions
-                                        An instance of `cosmo_functions` of the sample cosmology.
+                                       An instance of `cosmo_functions` of the sample cosmology
         nuisance                      : cosmicfishpie.cosmology.Nuisance.Nuisance
-                                        An instance of `nuisance` that contains the relevant modeling of nuisance parameters
-        gcsp_bias_of_z                : callable
-                                        Function that when passed a numpy.ndarray of redshifts will return the spectroscopic galaxy bias
+                                       An instance of `nuisance` that contains the relevant modeling of nuisance parameters
         extraPshot                    : dict
-                                        A dictionary containing the values of the additional shot noise per bin
-        bias_samples                  : list
-                                        A list of two strings specifying if galaxy clustering, intensity mapping or cross correlation power spectrum should be computed. Use "g" for galaxy and "I" for intensity mapping.
-        gcsp_z_bin_mids               : numpy.ndarray
-                                        Lists the redshift bin centers
-        fiducial_spectrobiaspars      : dict
-                                        A dictionary containing the fiducial values for the galaxy biases
-        use_bias_funcs                : bool
-                                        If True will compute the bias function by constructing it from the specification file. If False it will be recomputed from spectro_biaspars
-        spectrobiaspars               : dict
-                                        A dictionary containing the specifications for the galaxy biases
-        fiducial_PShotpars            : dict
-                                        A dictionary containing the fiducial values of the additional shot noise per bin
-        PShotpars                     : dict
-                                        A dictionary containing the values of the additional shot noise per bin
-        fiducial_spectrononlinearpars : dict
-                                        A dictionary containing the fiducial values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
-        spectrononlinearpars          : dict
-                                        A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin
-        sigmap_inter                  : callable
-                                        A callable function that when given a numpy.ndarray of redshifts will give the interpolated value of the non linear modeling parameters entering FOG
-        sigmav_inter                  : callable
-                                        A callable function that when given a numpy.ndarray of redshifts will give the interpolated value of the non linear modeling parameters entering the dewiggling weight
-        allpars                       : dict
-                                        Dictionary containing all relevant parameters to compute the observed power spectrum
-        fiducial_allpars              : dict
-                                        Dictionary containing all relevant fiducial parameters to compute the observed power spectrum
+                                       A dictionary containing the values of the additional shot noise per bin
+        gcsp_z_bin_mids              : numpy.ndarray
+                                       Lists the redshift bin centers for galaxy clustering
+        IM_z_bin_mids                : numpy.ndarray
+                                       Lists the redshift bin centers for intensity mapping
         k_grid                        : numpy.ndarray
-                                        Lists all wavenumbers used in the internal calculations
+                                       Lists all wavenumbers used in the internal calculations
         dk_grid                       : numpy.ndarray
-                                        Lists the numerical distance between all wavenumbers used in the internal calculations
+                                       Lists the numerical distance between all wavenumbers used in the internal calculations
         linear_switch                 : bool
-                                        If False all nonlinear effects will neglected in the computation of the observed power spectrum
+                                       If False all nonlinear effects will be included in the computation
         FoG_switch                    : bool
-                                        If True and `linear_switch` is True, then the finger of god effect will be modelled in the observed power spectrum.
+                                       If True and `linear_switch` is True, then the finger of god effect will be modelled
         APbool                        : bool
-                                        If True and `linear_switch` is True, then the Alcock-Paczynsk effect be considered
+                                       If True and `linear_switch` is True, then the Alcock-Paczynski effect will be considered
         fix_cosmo_nl_terms            : bool
-                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology
+                                       If True and the nonlinear modeling parameters are not varied, then they will be fixed to the fiducial cosmology values
         dz_err                        : float
-                                        Value of the spectroscopic redshift error
+                                       Value of the spectroscopic redshift error
+        Dd                            : float
+                                       Dish diameter for intensity mapping in meters
+        lambda_21                     : float
+                                       21cm wavelength in meters
+        fsky_IM                       : float
+                                       Sky fraction for intensity mapping
+        t_tot                         : float
+                                       Total observation time in seconds
+        N_d                           : int
+                                       Number of dishes for intensity mapping
+
+        Notes
+        -----
+        This class can compute:
+        - Galaxy clustering power spectrum
+        - HI intensity mapping power spectrum
+        - Cross-correlation between galaxy clustering and intensity mapping
+
+        The type of power spectrum is determined by the `bias_samples` parameter:
+        - ["g", "g"]: Galaxy auto-correlation
+        - ["I", "I"]: Intensity mapping auto-correlation
+        - ["g", "I"] or ["I", "g"]: Cross-correlation
         """
         tini = time()
         if configuration is None:
@@ -160,10 +161,17 @@ class ComputeGalSpectro:
             spectrononlinearpars = self.fiducial_spectrononlinearpars
         self.spectrononlinearpars = spectrononlinearpars
 
+        self.fiducial_IMbiaspars = deepcopy(self.config.IMbiasparams)
+        if IMbiaspars is None:
+            self.IMbiaspars = self.fiducial_IMbiaspars
+        else:
+            self.IMbiaspars = IMbiaspars
+
         self.nuisance = nuisance.Nuisance(
             configuration=self.config,
             spectrobiasparams=self.spectrobiaspars,
             spectrononlinearpars=self.spectrononlinearpars,
+            IMbiasparams=self.IMbiaspars,
         )
         self.extraPshot = self.nuisance.extra_Pshot_noise()
         self.gcsp_z_bin_mids = self.nuisance.gcsp_zbins_mids()
@@ -176,22 +184,34 @@ class ComputeGalSpectro:
         self.allpars = {
             **self.cosmopars,
             **self.spectrobiaspars,
+            **self.IMbiaspars,
             **self.PShotpars,
             **self.spectrononlinearpars,
         }
         self.fiducial_allpars = {
             **self.fiducial_cosmopars,
             **self.fiducial_spectrobiaspars,
+            **self.fiducial_IMbiaspars,
             **self.fiducial_PShotpars,
             **self.fiducial_spectrononlinearpars,
         }
 
+        if "IM" in self.observables and "GCsp" in self.observables:
+            self.obs_spectrum = ["I", "g"]
+        elif "IM" in self.observables:  # compute  in the case of IM only
+            self.obs_spectrum = ["I", "I"]
+        elif "GCsp" in self.observables:
+            self.obs_spectrum = ["g", "g"]
         self.set_internal_kgrid()
         self.activate_terms()
         self.set_spectro_dz_specs()
         self.bias_samples = bias_samples
         self.use_bias_funcs = use_bias_funcs
         self.set_spectro_bias_specs()
+        if "IM" in self.observables:
+            self.set_IM_specs()
+            self.set_IM_bias_specs()
+
         tend = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -497,21 +517,29 @@ class ComputeGalSpectro:
             bias_sample : str, optional
                       Specifies whether to compute the galaxy ('g') or intensity mapping ('I') bias term. (default='g')
 
-        Returns:
+        Returns
         --------
         float
         The value of the bias term at `z` and `k`, if provided.
         """
-        if bias_sample != self.sp_bias_sample:
-            raise ValueError(
-                f"Bias sample {bias_sample} not found. "
-                f"Please use {self.sp_bias_sample} bias sample."
-            )
-        if self.use_bias_funcs:
-            bfunc_of_z = self.nuisance.gcsp_bias_interp()
-            bterm_z = bfunc_of_z(z)
-        else:
-            bterm_z = self.nuisance.vectorized_gcsp_bias_at_z(z)
+        if bias_sample == "g":
+            if bias_sample != self.sp_bias_sample:
+                raise ValueError(
+                    f"Bias sample {bias_sample} not found. "
+                    f"Please use {self.sp_bias_sample} bias sample."
+                )
+            if self.use_bias_funcs:
+                bfunc_of_z = self.nuisance.gcsp_bias_interp()
+                bterm_z = bfunc_of_z(z)
+            else:
+                bterm_z = self.nuisance.vectorized_gcsp_bias_at_z(z)
+        elif bias_sample == "I":
+            if bias_sample != self.IM_bias_sample:
+                raise ValueError(
+                    f"Bias sample {bias_sample} not found. "
+                    f"Please use {self.IM_bias_sample} bias sample."
+                )
+            bterm_z = self.nuisance.IM_bias_at_z(z)
         bterm_k = self.nuisance.gcsp_bias_kscale(k)
         bterm_zk = bterm_z * bterm_k
         return bterm_zk
@@ -867,74 +895,13 @@ class ComputeGalSpectro:
         pobs = self.observed_Pgg(z, k, mu, b_i=b_i)
         return np.log(pobs)
 
-
-class ComputeGalIM(ComputeGalSpectro):
-    def __init__(
-        self,
-        cosmopars,
-        fiducial_cosmopars=None,
-        spectrobiaspars=None,
-        IMbiaspars=None,
-        PShotpars=None,
-        fiducial_cosmo=None,
-        use_bias_funcs=True,
-        bias_samples=["I", "I"],
-        configuration=None,
-    ):
-        super().__init__(
-            cosmopars,
-            fiducial_cosmopars=fiducial_cosmopars,
-            spectrobiaspars=spectrobiaspars,
-            PShotpars=PShotpars,
-            fiducial_cosmo=fiducial_cosmo,
-            use_bias_funcs=True,
-            bias_samples=bias_samples,
-            configuration=configuration,
-        )
-
-        tini = time()
-        self.feed_lvl = self.config.settings["feedback"]
-        upt.time_print(
-            feedback_level=self.feed_lvl, min_level=2, text="Entered ComputeGalIM", instance=self
-        )
-
-        if "IM" not in self.observables:
-            raise AttributeError("Observables list not defined properly")
-        self.fiducial_IMbiaspars = self.config.IMbiasparams
-        self.use_bias_funcs = use_bias_funcs
-        if IMbiaspars is None:
-            IMbiaspars = self.fiducial_IMbiaspars
-        else:
-            # If IMbiaspars are not passed explicitly, use interpolated bias
-            # funcs
-            self.use_bias_funcs = False
-        self.IMbiaspars = IMbiaspars
-        self.set_IM_specs()
-        self.IM_bias_of_z = self.nuisance.IM_bias
-        self.IM_z_bin_mids = self.nuisance.IM_zbins_mids()
-        print("Bias samples", self.bias_samples)
-        self.allpars = {
-            **self.cosmopars,
-            **self.spectrobiaspars,
-            **self.IMbiaspars,
-            **self.PShotpars,
-        }
-        self.fiducial_allpars = {
-            **self.fiducial_cosmopars,
-            **self.fiducial_spectrobiaspars,
-            **self.fiducial_IMbiaspars,
-            **self.fiducial_PShotpars,
-        }
-
-        tend = time()
-        upt.time_print(
-            feedback_level=self.feed_lvl,
-            min_level=2,
-            text="GalIM initialization done in: ",
-            time_ini=tini,
-            time_fin=tend,
-            instance=self,
-        )
+    def set_IM_bias_specs(self):
+        """Updates the IM bias choices"""
+        self.IM_bias_model = self.specs["IM_bias_model"]
+        self.IM_bias_root = self.specs["IM_bias_root"]
+        self.IM_bias_sample = self.specs["IM_bias_sample"]
+        self.IM_bias_of_z = self.nuisance.IM_bias_at_z
+        self.IM_z_bin_mids = self.nuisance.IM_zbins_mids
 
     def set_IM_specs(self):
         self.Dd = self.config.specs["D_dish"]  # Dish diameter in m
@@ -946,22 +913,19 @@ class ComputeGalIM(ComputeGalSpectro):
         # HZ, for MHz: MHz /1e6
         self.f_21 = (self.cosmo.c * 1000) / self.lambda_21
 
-    # def IM_bias(self, z):
-    #     """
-    #         b(z) for HI 21cm IM from nuisance module
-    #     """
-    #     bb = self.nuisance.IM_bias(z)
-    #     return bb
-
     def Omega_HI(self, z):
         o = 4 * np.power((1 + z), 0.6) * 1e-4
         return o
 
-    def Temperature(self, z):
+    def Temperature(self, z, fixed_cosmo=True):
         """obtaining the temperature (T^2(z)) for the Power Spectrum (PHI(z))"""
-        h = self.cosmopars["h"]
-        H0 = self.cosmo.Hubble(0.0)
-        temp = 189 * h * (1 + z) ** 2 * (H0 / self.cosmo.Hubble(z)) * self.Omega_HI(z)
+        if fixed_cosmo:
+            cocosmo = self.fiducialcosmo
+        else:
+            cocosmo = self.cosmo
+        h = cocosmo.cosmopars["h"]
+        H0 = cocosmo.Hubble(0.0)
+        temp = 189 * h * (1 + z) ** 2 * (H0 / cocosmo.Hubble(z)) * self.Omega_HI(z)
         # temperature in mK
         return temp
 
@@ -981,23 +945,24 @@ class ComputeGalIM(ComputeGalSpectro):
         bet[np.abs(bet) < tol] = tol
         return bet
 
-    def observed_P_HI(self, z, k, mu, bsi_z=None, bsj_z=None, si="I", sj="I"):
-        k = self.k_units_change(k)  # has to be done before spec_err and AP
-        error_z = self.spec_err_z(z, k, mu)  # before rescaling of k,mu by AP
+    def observed_P_ij(self, z, k, mu, bsi_z=None, bsj_z=None, si="I", sj="g"):
+        error_z = self.spec_err_z(z, k, mu)
+        beam_damping_term_si = self.beta_SD(z, k, mu) if si == "I" else 1
+        beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == "I" else 1
+        k = self.k_units_change(
+            k
+        )  # h-bug set to False by default, leaving here for cross-check of old cases
         k, mu = self.kmu_alc_pac(z, k, mu)
-        if self.bias_samples is not None:
-            si = self.bias_samples[0]
-            sj = self.bias_samples[1]
+        # if self.bias_samples is not None:
+        #    si = self.bias_samples[0]
+        #    sj = self.bias_samples[1]
         baoterm = self.BAO_term(z)
         kaiser_bsi = self.kaiserTerm(z, k, mu, bsi_z, bias_sample=si)
         kaiser_bsj = self.kaiserTerm(z, k, mu, bsj_z, bias_sample=sj)
-
         T_HI = self.Temperature(z)
         extra_shotnoise = 0.0  # Set to identically zero for the moment, otherwise self.extraPshot
         lorentzFoG = self.FingersOfGod(z, k, mu, mode="Lorentz")
         p_dd_DW = self.dewiggled_pdd(z, k, mu)
-        beam_damping_term_si = self.beta_SD(z, k, mu) if si == "I" else 1
-        beam_damping_term_sj = self.beta_SD(z, k, mu) if sj == "I" else 1
         extra_shotnoise_si = np.sqrt(extra_shotnoise) if si == "g" else 0
         extra_shotnoise_sj = np.sqrt(extra_shotnoise) if sj == "g" else 0
         error_z_si = error_z if si == "g" else 1
@@ -1016,6 +981,6 @@ class ComputeGalIM(ComputeGalSpectro):
 
         return p_obs
 
-    def lnpobs_IM(self, z, k, mu, bsi_z=None, bsj_z=None):
-        pobs = self.observed_P_HI(z, k, mu, bsi_z=bsi_z, bsj_z=bsj_z)
+    def lnpobs_ij(self, z, k, mu, bsi_z=None, bsj_z=None, si="I", sj="g"):
+        pobs = self.observed_P_ij(z, k, mu, bsi_z=bsi_z, bsj_z=bsj_z, si=si, sj=sj)
         return np.log(pobs)

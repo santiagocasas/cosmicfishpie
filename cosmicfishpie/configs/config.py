@@ -84,10 +84,6 @@ def init(
                                   Name of the survey specifications file for a photometric probe
     survey_name_spectro         : str
                                   Name of the survey specifications file for a spectrocopic probe
-    survey_name_radio_photo     : str
-                                  Name of the survey specifications file for a photometric radio probe
-    survey_name_radio_spectro   : str
-                                  Name of the survey specifications file for a spectrocopic radio probe
     survey_name_radio_IM        : str
                                   Name of the survey specifications file for a line intensity mapping probe
     derivatives                 : str
@@ -222,8 +218,8 @@ def init(
     settings.setdefault("survey_specs", "ISTF-Optimistic")
     settings.setdefault("survey_name_photo", "Euclid-Photometric-ISTF-Pessimistic")
     settings.setdefault("survey_name_spectro", "Euclid-Spectroscopic-ISTF-Pessimistic")
-    settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
-    settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
+    # settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
+    # settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
     settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
     settings.setdefault("fail_on_specs_not_found", False)
     settings.setdefault("derivatives", "3PT")
@@ -238,6 +234,8 @@ def init(
     settings.setdefault("Pshot_nuisance_fiducial", 0.0)
     settings.setdefault("pivot_z_IA", 0.0)
     settings.setdefault("accuracy", 1)
+    settings.setdefault("spectro_Pk_k_samples", 1025)
+    settings.setdefault("spectro_Pk_mu_samples", 17)
     settings.setdefault("feedback", 2)
     settings.setdefault("activateMG", False)
     settings.setdefault("external_activateMG", False)
@@ -369,11 +367,17 @@ def init(
     ##############################
 
     # Add additional surveys here
-    available_survey_names = ["Euclid", "SKA1", "DESI", "Planck", "Rubin"]
+    available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
-
+        if not filename:
+            upt.time_print(
+                feedback_level=feed_lvl,
+                min_level=1,
+                text="-> No photo survey passed, returning empty dict",
+            )
+            return photo_dict
         try:
             ph_file_path = os.path.join(foldername, filename + ".yaml")
             if not os.path.isfile(ph_file_path):
@@ -404,8 +408,15 @@ def init(
 
         return photo_dict
 
-    def create_sp_dict(foldername, filename):
+    def create_sp_dict(foldername, filename, type="spectro"):
         spec_dict = dict()
+        if not filename:
+            upt.time_print(
+                feedback_level=feed_lvl,
+                min_level=1,
+                text=f"-> No {type} survey passed, returning empty dict",
+            )
+            return spec_dict
         try:
             sp_file_path = os.path.join(foldername, filename + ".yaml")
             if not os.path.isfile(sp_file_path):
@@ -437,74 +448,86 @@ def init(
 
     global specs
     specs = specs_defaults.copy()  # Start with default dict
+    spectroTaken = False
+    photoTaken = False
+    specificationsf = dict()
 
     if "Euclid" in surveyName:
-        specificationsf = dict()
         surveyNameSpectro = settings.get("survey_name_spectro")
         if surveyNameSpectro:
             specificationsf1 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
             specificationsf.update(specificationsf1)
+            spectroTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameSpectro}"
+            )
         surveyNamePhoto = settings.get("survey_name_photo")
         if surveyNamePhoto:
             specificationsf2 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
             specificationsf.update(specificationsf2)
-    if "SKA1" in surveyName:
-        surveyNameRadio = settings.get("survey_name_radio")
-        ## TODO: Fix this and check this for radio, sp, ph and IM
-        yaml_file = open(os.path.join(settings["specs_dir"], surveyNameRadio + ".yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
-        z_bins = specificationsf["z_bins_ph"]
-        specificationsf["z_bins_ph"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins_ph"]
+            photoTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNamePhoto}"
+            )
+    if "SKA" in surveyName:
+        surveyNameRadioIM = settings.get("survey_name_radio_IM")
+        specificationsf3 = create_sp_dict(settings["specs_dir"], surveyNameRadioIM, type="IM")
+        specificationsf.update(specificationsf3)
+        upt.time_print(
+            feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameRadioIM}"
         )
-        specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-        specificationsf["z0_p"] = 1.0
-        specificationsf["IM_bins_file"] = "SKA1_IM_MDB1_Redbook.dat"
-        specificationsf["IM_THI_noise_file"] = "SKA1_THI_sys_noise.txt"
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins_ph"]))
-        specificationsf["survey_name"] = surveyName
-
+        if not spectroTaken:
+            surveyNameSpectro = settings.get("survey_name_spectro")
+            specificationsf4 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
+            specificationsf.update(specificationsf4)
+            spectroTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameSpectro}"
+            )
+        if not photoTaken:
+            surveyNamePhoto = settings.get("survey_name_photo")
+            specificationsf5 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
+            specificationsf.update(specificationsf5)
+            photoTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNamePhoto}"
+            )
     if "Rubin" in surveyName:
-        ## TODO: Fix this and check this for Rubin ph
-        if surveyName == "Rubin":
-            surveyName = "Rubin-Optimistic"
-        yaml_file = open(os.path.join(settings["specs_dir"], surveyName + ".yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
-        z_bins = specificationsf["z_bins"]
-        specificationsf["z_bins"] = np.array(z_bins)
-        specificationsf["ngalbin"] = ngal_per_bin(
-            specificationsf["ngal_sqarmin"], specificationsf["z_bins"]
-        )
-        specificationsf["z0"] = specificationsf["zm"] / np.sqrt(2)
-        specificationsf["z0_p"] = 1.0
-        specificationsf["binrange"] = range(1, len(specificationsf["z_bins"]))
-        specificationsf["survey_name"] = surveyName
-        print("Survey loaded:  ", surveyName)
-
+        if not photoTaken:
+            surveyNamePhoto = settings.get("survey_name_photo")
+            specificationsf6 = create_ph_dict(settings["specs_dir"], surveyNamePhoto)
+            specificationsf.update(specificationsf6)
+            photoTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNamePhoto}"
+            )
     if "DESI" in surveyName:
-        ## TODO: Fix this and check this for DESI sp
-        yaml_file = open(os.path.join(settings["specs_dir"], "DESI-Optimistic.yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
-        # Only needed specs are loaded in nuisance.py
-        specificationsf["survey_name"] = surveyName
-
+        if not spectroTaken:
+            surveyNameSpectro = settings.get("survey_name_spectro")
+            specificationsf7 = create_sp_dict(settings["specs_dir"], surveyNameSpectro)
+            specificationsf.update(specificationsf7)
+            spectroTaken = True
+            upt.time_print(
+                feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameSpectro}"
+            )
     if "Planck" in surveyName:
         yaml_file = open(os.path.join(settings["specs_dir"], "Planck.yaml"))
         parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        specificationsf = parsed_yaml_file["specifications"]
-
+        specificationsfPlanck = parsed_yaml_file["specifications"]
+        specificationsf.update(specificationsfPlanck)
+        upt.time_print(feedback_level=feed_lvl, min_level=1, text="-> Survey loaded:  Planck")
     if surveyName not in available_survey_names:
         print("Survey name passed: ", surveyName)
         print(
             "Survey name not found in available survey names.",
             "Please pass your full custom specifications as a dictionary.",
         )
-
-    ums.deepupdate(specs, specificationsf)  # deep update keys if present in files
+    upt.debug_print("Files specifications: ", specificationsf)
+    upt.debug_print("Default specifications: ", specs)
+    # ums.deepupdate(specs, specificationsf)  # deep update keys if present in files
+    # no more deepupdate because it causes problems with duplicated keys in bias parameters when using different bias samples
+    specs.update(specificationsf)
+    upt.debug_print("Updated specifications: ", specs)
     specs["fsky_GCph"] = specificationsf.get(
         "fsky_GCph", upm.sqdegtofsky(specificationsf.get("area_survey_GCph", 0.0))
     )
@@ -514,7 +537,11 @@ def init(
     specs["fsky_spectro"] = specificationsf.get(
         "fsky_spectro", upm.sqdegtofsky(specificationsf.get("area_survey_spectro", 0.0))
     )
-    ums.deepupdate(specs, specifications)  # deep update keys if passed by users
+    specs["fsky_IM"] = specificationsf.get(
+        "fsky_IM", upm.sqdegtofsky(specificationsf.get("area_survey_IM", 0.0))
+    )
+    # ums.deepupdate(specs, specifications)  # deep update keys if passed by users
+    specs.update(specifications)
     specs["survey_name"] = surveyName
     specs["specs_dir"] = settings["specs_dir"]  # Path for additional files like luminosity
 
@@ -650,7 +677,7 @@ def init(
 
     global Spectrononlinearparams
     Spectrononlinearparams = dict()
-    if "GCsp" in obs:
+    if "GCsp" in obs or "IM" in obs:
         gscp_nonlin_model = specs.get("nonlinear_model", "default")
         if gscp_nonlin_model == "default":
             Spectrononlinearparams = {}
@@ -669,7 +696,7 @@ def init(
     if PShotpars is not None:
         PShotparams = deepcopy(PShotpars)
     else:
-        if "GCsp" in obs:
+        if "GCsp" in obs or "IM" in obs:
             bias_model = specs["sp_bias_model"]
             bias_sample = specs["sp_bias_sample"]
             bias_prtz = specs["sp_bias_parametrization"]
@@ -681,7 +708,11 @@ def init(
                 print("Warning: bias_sample not found in bias_parameter keys")
             shot_noise_model = specs["shot_noise_model"]
             shot_noise_prtz = specs["shot_noise_parametrization"]
-            for key in shot_noise_prtz[shot_noise_model].keys():
+            try:
+                Pskeys = shot_noise_prtz[shot_noise_model].keys()
+            except AttributeError:
+                Pskeys = []
+            for key in Pskeys:
                 PShotparams[key] = shot_noise_prtz[shot_noise_model][key]
 
     global IMbiasparams
@@ -690,27 +721,30 @@ def init(
         IMbiasparams = deepcopy(IMbiaspars)
     else:
         if "IM" in obs:
-            bias_model = specs["im_bias_model"]
-            bias_prtz = specs["im_bias_parametrization"]
-            for key in bias_prtz[bias_model].keys():
-                IMbiasparams[key] = bias_prtz[bias_model][key]
+            bias_model = specs["IM_bias_model"]
+            bias_sample = specs["IM_bias_sample"]
+            bias_prtz = specs["IM_bias_parametrization"]
+            bias_prmod = deepcopy(bias_prtz[bias_model])
+            for key in bias_prmod.keys():
+                IMbiasparams[key] = bias_prmod[key]
 
     # Set the default free parameters for the spectro nuisance parameters
+    default_eps_gc_nuis = settings["eps_gal_nuispars"]
+    default_eps_gc_nonlin = settings["eps_gal_nonlinpars"]
     if "GCsp" in obs:
-        default_eps_gc_nuis = settings["eps_gal_nuispars"]
-        default_eps_gc_nonlin = settings["eps_gal_nonlinpars"]
-        # Only add the free parameters that are not already in the dictionary
         for key in Spectrobiasparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
-            upt.debug_print(freeparams)
-        # if "IM" not in obs:
+    if "IM" in obs:
+        for key in IMbiasparams:
+            freeparams.setdefault(key, default_eps_gc_nuis)
+    if "GCsp" in obs or "IM" in obs:
         for key in PShotparams:
             freeparams.setdefault(key, default_eps_gc_nuis)
         for key in Spectrononlinearparams:
             freeparams.setdefault(key, default_eps_gc_nonlin)
-    if "IM" in obs:
-        for key in IMbiasparams:
-            freeparams.setdefault(key, default_eps_gc_nuis)
+        # Only add the free parameters that are not already in the dictionary
+    upt.debug_print("Final dict of free parameters in config.py:")
+    upt.debug_print(freeparams)
 
     global latex_names
     latex_names_def = {

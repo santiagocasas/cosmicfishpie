@@ -67,13 +67,17 @@ class Nuisance:
         if "IM" in self.observables:
             filename_THI_noise = self.specs["IM_THI_noise_file"]
             self.Tsys_arr = np.loadtxt(os.path.join(self.specsdir, filename_THI_noise))
+            filename_IM = self.specs["IM_bins_file"]
+            self.im_table = np.loadtxt(os.path.join(self.specsdir, filename_IM))
+
+        if "WL" in self.observables or "GCph" in self.observables:
+            self.z = np.linspace(
+                min(self.specs["z_bins_WL"][0], self.specs["z_bins_GCph"][0]),
+                max(self.specs["z_bins_WL"][-1], self.specs["z_bins_GCph"][-1]) + 1,
+                50 * self.settings["accuracy"],
+            )
         if "WL" in self.observables:
             self.lumratio = self.luminosity_ratio()
-        if "GCph" in self.observables or "WL" in self.observables:
-            self.z_bins_ph = self.specs["z_bins_ph"]
-            self.z_ph = np.linspace(
-                self.z_bins_ph[0], self.z_bins_ph[-1] + 1, 50 * self.settings["accuracy"]
-            )
 
     def gcph_bias(self, biaspars, ibin=1):
         """Galaxy bias
@@ -91,7 +95,7 @@ class Nuisance:
         """
         self.biaspars = biaspars
 
-        z = self.z_ph
+        z = self.z
 
         # TBA: NEED TO INCLUDE CHECK OF THE BIASPARS PASSED
 
@@ -100,9 +104,9 @@ class Nuisance:
             return interp1d(z, b, kind="linear")
 
         elif self.biaspars["bias_model"] == "binned":
-            zb = self.z_bins_ph
+            zb = self.specs["z_bins_GCph"]
             zba = np.array(zb)
-            brang = self.specs["binrange"]
+            brang = self.specs["binrange_GCph"]
             last_bin_num = brang[-1]
 
             def binbis(zz):
@@ -156,7 +160,7 @@ class Nuisance:
         self.cosmo = cosmo
         self.Omegam = self.cosmo.Omegam_of_z(0.0)
         pivot_z_IA = self.settings["pivot_z_IA"]
-        z = self.z_ph
+        z = self.z
         if self.IApars["IA_model"] == "eNLA":
             CIA = 0.0134 * (1 + pivot_z_IA)
             fac = -self.IApars["AIA"] * CIA * self.Omegam
@@ -179,21 +183,29 @@ class Nuisance:
         ----------
         Returns
         -------
-        float
-            Value of the luminosity ratio
+        callable
+            Function that returns the luminosity ratio value. Returns 1.0 if file not found.
 
         Note
         -----
         Reads from file and interpolates the following quantity:
-
         .. math::
             \\frac{<L(z)>}{L_*(z)}
+        If the file is not found, returns a function that always returns 1.0
         """
+        try:
+            # Lumratio file for IA
+            lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
+            lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
+            logger.info("Successfully loaded luminosity ratio file")
+        except (FileNotFoundError, OSError) as e:
+            logger.warning(f"Could not load luminosity ratio file: {e}. Using default value of 1.0")
 
-        # Lumratio file for IA
-        lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
-        # ,fill_value='extrapolate')
-        lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
+            def default_lumratio(z):
+                return np.ones_like(z) if hasattr(z, "__len__") else 1.0
+
+            lumratio = default_lumratio
+
         return lumratio
 
     def gcsp_zbins(self):

@@ -330,7 +330,6 @@ prior = Prior()
 prior_withnuis = Prior()
 
 
-
 prior_dict = {
     "Omegam": [0.24, 0.4],
     "Omegab": [0.04, 0.06],

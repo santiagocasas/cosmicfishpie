@@ -270,7 +270,6 @@ def loglike(param_vec, prior=None):
     if isinstance(param_vec, dict):
         param_dict = deepcopy(param_vec)
     elif is_indexable_iterable(param_vec) and prior is not None:
-        # print(f'Loading prior with keys: {prior.keys}')
         param_dict = {key: param_vec[i] for i, key in enumerate(prior.keys)}
 
     photopars = deepcopy(cosmoFM_fid.photopars)
@@ -324,29 +323,12 @@ samp1dic = {
 print("Sample likelihood", loglike(samp1dic))
 
 
-# In[ ]:
-
-
 loglike(photo_cov_fid.allparsfid)
-
-
-# In[ ]:
-
-
-photo_cov_fid.allparsfid
-
-
-# In[28]:
-
-
-# In[27]:
 
 
 prior = Prior()
 prior_withnuis = Prior()
 
-
-# In[26]:
 
 
 prior_dict = {

@@ -973,7 +973,7 @@ class boltzmann_code:
                         print("As to sigma8 conversion failed")
                         raise ValueError
                 else:
-                    print("10^9As value not found")
+                    upr.debug_print("DEBUG: 10^9As value not found in passed parameters")
                     upr.debug_print("DEBUG: symbpars = ", symbpars)
             except KeyError:
                 pass
@@ -996,7 +996,7 @@ class boltzmann_code:
                         print("sigma8 to As conversion failed")
                         raise ValueError
                 else:
-                    print("sigma8 value not found")
+                    upr.debug_print("DEBUG: sigma8 value not found in passed parameters")
                     upr.debug_print("DEBUG: symbpars = ", symbpars)
             except KeyError:
                 print("sigma8 or 10^9As not in symbpars")
@@ -1028,6 +1028,7 @@ class boltzmann_code:
             raise ValueError("Cosmo model not supported by cosmo code")
         self.symbcosmopars = dict()
         self.symbcosmopars.update(self.changebasis_symb(self.cosmopars))
+        self.h_now = self.symbcosmopars["h"]
         self.kmax_pk = self.boltzmann_symbolicpars["NUMERICS"]["kmax_pk"]
         self.kmin_pk = self.boltzmann_symbolicpars["NUMERICS"]["kmin_pk"]
         self.zmax_pk = self.boltzmann_symbolicpars["NUMERICS"]["zmax_pk"]
@@ -1036,7 +1037,8 @@ class boltzmann_code:
         self.zgrid = np.linspace(self.zmin_pk, self.zmax_pk, self.z_samples)
         self.k_samples = self.boltzmann_symbolicpars["NUMERICS"]["k_samples"]
         self.kgrid_1Mpc = np.logspace(
-            np.log10(self.kmin_pk), np.log10(self.kmax_pk), self.k_samples
+            np.log10(self.kmin_pk*self.h_now), np.log10(self.kmax_pk*self.h_now), 
+            self.k_samples
         )
         tend_basis = time()
         if self.feed_lvl > 2:
@@ -1098,6 +1100,8 @@ class boltzmann_code:
             self.symbcosmopars["ns"],
             emulator=self.emulator_precision,
             extrapolate=self.extrapolate,
+            kmin=self.kmin_pk,
+            kmax=self.kmax_pk,
         )
         # symbfit plin_emulated returns P_l(k,z=0) in 1/Mpc^3, requests kgrid in h/Mpc
         Pk_at_z = (D_kz**2) * self.results.Pk_l_0

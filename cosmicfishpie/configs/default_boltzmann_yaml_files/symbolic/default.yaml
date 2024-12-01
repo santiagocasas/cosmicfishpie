@@ -1,13 +1,13 @@
 ACCURACY:
   'emulator_precision' : 'max_precision' # 'max_precision' or 'fiducial'
 NUMERICS:
-  'kmax_pk' : 9
-  'kmin_pk' : 1.0e-3
+  'kmax_pk' : 9      ##h/Mpc
+  'kmin_pk' : 1.0e-3 ##h/Mpc
   'zmax_pk' : 3.
   'zmin_pk' : 0.
   'z_samples' : 100
   'k_samples' : 400
-  'extrapolate' : True
+  'extrapolate' : False
 COSMO_SETTINGS: 
   'halofit_version' : 'takahashi' # 'syren' or 'halofit+' or 'takahashi'
   'dark_energy_model' : 'fluid'

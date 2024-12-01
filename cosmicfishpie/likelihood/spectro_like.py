@@ -232,7 +232,8 @@ def loglike(param_vec=None,
     if leg_flag == 'wedges':
         chi2 = compute_wedge_chi2(
                                   P_obs_data=data_obsPgg,  
-                                  P_obs_theory=theory_obsPgg
+                                  P_obs_theory=theory_obsPgg,
+                                  cosmoFM_data=cosmoFM_data
                                 )
     elif leg_flag == 'legendre':
         P_ell_data = legendre_Pgg(data_obsPgg, cosmoFM_data)

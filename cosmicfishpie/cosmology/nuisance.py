@@ -86,13 +86,14 @@ class Nuisance:
             self._vectorized_gcsp_rescale_sigmapv_at_z = np.vectorize(
                 self.gcsp_rescale_sigmapv_at_z, excluded=["sigma_key"]
             )
+        if "WL" in self.observables or "GCph" in self.observables:
+            self.z = np.linspace(
+                min(self.specs["z_bins_WL"][0], self.specs["z_bins_GCph"][0]),
+                max(self.specs["z_bins_WL"][-1], self.specs["z_bins_GCph"][-1]) + 1,
+                50 * self.settings["accuracy"],
+            )
         if "WL" in self.observables:
             self.lumratio = self.luminosity_ratio()
-        if "GCph" in self.observables or "WL" in self.observables:
-            self.z_bins_ph = self.specs["z_bins_ph"]
-            self.z_ph = np.linspace(
-                self.z_bins_ph[0], self.z_bins_ph[-1] + 1, 50 * self.settings["accuracy"]
-            )
 
     def gcph_bias(self, biaspars, ibin=1):
         """Galaxy bias
@@ -110,7 +111,7 @@ class Nuisance:
         """
         self.biaspars = biaspars
 
-        z = self.z_ph
+        z = self.z
 
         # TBA: NEED TO INCLUDE CHECK OF THE BIASPARS PASSED
 
@@ -119,9 +120,9 @@ class Nuisance:
             return interp1d(z, b, kind="linear")
 
         elif self.biaspars["bias_model"] == "binned":
-            zb = self.z_bins_ph
+            zb = self.specs["z_bins_GCph"]
             zba = np.array(zb)
-            brang = self.specs["binrange"]
+            brang = self.specs["binrange_GCph"]
             last_bin_num = brang[-1]
 
             def binbis(zz):
@@ -175,7 +176,7 @@ class Nuisance:
         self.cosmo = cosmo
         self.Omegam = self.cosmo.Omegam_of_z(0.0)
         pivot_z_IA = self.settings["pivot_z_IA"]
-        z = self.z_ph
+        z = self.z
         if self.IApars["IA_model"] == "eNLA":
             CIA = 0.0134 * (1 + pivot_z_IA)
             fac = -self.IApars["AIA"] * CIA * self.Omegam
@@ -194,25 +195,42 @@ class Nuisance:
 
     def luminosity_ratio(self):
         """Luminosity ratio function used for Intrinsic Alignment eNLA model.
+
+        This function reads and interpolates the luminosity ratio <L(z)>/L*(z) from a file.
+        The ratio is used in the extended nonlinear alignment (eNLA) model for intrinsic alignments.
+
         Parameters
         ----------
+        None
+
         Returns
         -------
-        float
-            Value of the luminosity ratio
+        callable
+            An interpolation function that takes redshift z as input and returns the luminosity ratio.
+            If the luminosity ratio file cannot be loaded, returns a function that always returns 1.0.
 
-        Note
+        Notes
         -----
-        Reads from file and interpolates the following quantity:
-
-        .. math::
-            \\frac{<L(z)>}{L_*(z)}
+        - Attempts to read the luminosity ratio from 'lumratio_file.dat' in the specs directory
+        - The file should contain two columns: redshift and luminosity ratio values
+        - The luminosity ratio represents <L(z)>/L*(z), where:
+            - <L(z)> is the mean luminosity at redshift z
+            - L*(z) is the characteristic luminosity at redshift z
+        - Uses linear interpolation between data points
         """
+        try:
+            # Lumratio file for IA
+            lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
+            lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
+            logger.info("Successfully loaded luminosity ratio file")
+        except (FileNotFoundError, OSError) as e:
+            logger.warning(f"Could not load luminosity ratio file: {e}. Using default value of 1.0")
 
-        # Lumratio file for IA
-        lum = np.loadtxt(os.path.join(self.specsdir, "lumratio_file.dat"))
-        # ,fill_value='extrapolate')
-        lumratio = interp1d(lum[:, 0], lum[:, 1], kind="linear")
+            def default_lumratio(z):
+                return np.ones_like(z) if hasattr(z, "__len__") else 1.0
+
+            lumratio = default_lumratio
+
         return lumratio
 
     def gcsp_zbins(self):

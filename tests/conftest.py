@@ -5,6 +5,7 @@ from cosmicfishpie.utilities.utils import printing as upt
 
 upt.debug = True
 code_to_use = "symbolic"
+upt.debug = True
 
 
 @pytest.fixture(scope="module")

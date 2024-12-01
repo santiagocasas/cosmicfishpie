@@ -70,15 +70,24 @@ class PhotoCov:
         self.allparsfid.update(self.photopars)
         self.fiducial_Cls = fiducial_Cls
         self.observables = []
+        self.binrange = {}
         for key in cfg.obs:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
-        self.binrange = cfg.specs["binrange"]
+                if key == "GCph":
+                    self.binrange[key] = cfg.specs["binrange_GCph"]
+                elif key == "WL":
+                    self.binrange[key] = cfg.specs["binrange_WL"]
+
+        self.binrange_WL = cfg.specs["binrange_WL"]
+        self.binrange_GCph = cfg.specs["binrange_GCph"]
         self.feed_lvl = cfg.settings["feedback"]
         self.fsky_WL = cfg.specs.get("fsky_WL")
         self.fsky_GCph = cfg.specs.get("fsky_GCph")
-        self.ngalbin = np.array(cfg.specs["ngalbin"])
-        self.numbins = len(cfg.specs["z_bins_ph"]) - 1
+        self.ngalbin_WL = np.array(cfg.specs["ngalbin_WL"])
+        self.ngalbin_GCph = np.array(cfg.specs["ngalbin_GCph"])
+        self.numbins_WL = len(cfg.specs["z_bins_WL"]) - 1
+        self.numbins_GCph = len(cfg.specs["z_bins_GCph"]) - 1
         self.ellipt_error = cfg.specs["ellipt_error"]
 
     def getcls(self, allpars):
@@ -134,16 +143,17 @@ class PhotoCov:
         """
         noisy_cls = copy.deepcopy(cls)
 
-        for ind in self.binrange:
-            for obs in self.observables:
-                if obs == "GCph":
+        for obs in self.observables:
+            if obs == "GCph":
+                for ind in self.binrange_GCph:
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
-                        1.0 / self.ngalbin[ind - 1]
+                        1.0 / self.ngalbin_GCph[ind - 1]
                     )
-                elif obs == "WL":
+            elif obs == "WL":
+                for ind in self.binrange_WL:
                     noisy_cls[obs + " " + str(ind) + "x" + obs + " " + str(ind)] += (
                         self.ellipt_error**2.0
-                    ) / self.ngalbin[ind - 1]
+                    ) / self.ngalbin_WL[ind - 1]
 
         return noisy_cls
 
@@ -169,21 +179,26 @@ class PhotoCov:
         # Create indexes for data frame
         cols = []
         for o in self.observables:
-            for ind in range(self.numbins):
-                cols.append(o + " " + str(ind + 1))
+            if o == "WL":
+                for ind in range(self.numbins_WL):
+                    cols.append(o + " " + str(ind + 1))
+            elif o == "GCph":
+                for ind in range(self.numbins_GCph):
+                    cols.append(o + " " + str(ind + 1))
 
         for ind, ell in enumerate(noisy_cls["ells"]):
             covdf = pd.DataFrame(index=cols, columns=cols)
             covdf = covdf.fillna(0.0)
 
-            for obs1, obs2, bin1, bin2 in product(
-                self.observables, self.observables, self.binrange, self.binrange
-            ):
-                covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
-                    obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
-                ][ind] / np.sqrt(
-                    np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1))
-                )
+            for obs1, obs2 in product(self.observables, self.observables):
+                for bin1, bin2 in product(
+                    self.binrange[obs1], self.binrange[obs2]
+                ):  # MMmod: BEWARE!!! THIS IS VERY UGLY!
+                    covdf.at[obs1 + " " + str(bin1), obs2 + " " + str(bin2)] = noisy_cls[
+                        obs1 + " " + str(bin1) + "x" + obs2 + " " + str(bin2)
+                    ][ind] / np.sqrt(
+                        np.sqrt(getattr(self, "fsky_" + obs1) * getattr(self, "fsky_" + obs1))
+                    )
 
             covvec.append(covdf)
 

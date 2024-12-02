@@ -114,6 +114,7 @@ class numerics:
             factor = 10**decimals
             rounded_number = np.ceil(number * factor) / factor
         else:
+            printing.debug_print(f"number: {number}")
             exponent = math.floor(math.log10(number))
             mantissa = number / (10**exponent)
             rounded_mantissa = math.ceil(mantissa * 10) / 10

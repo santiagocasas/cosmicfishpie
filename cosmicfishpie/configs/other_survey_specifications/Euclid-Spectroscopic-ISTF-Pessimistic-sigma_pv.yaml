@@ -34,7 +34,7 @@ specifications:
       bg_4: 1.8988660
       A1: 0.02
       A2: -2.0
-  shot_noise_model: 'fixed' #'constant'
+  shot_noise_model: 'constant' #fixed
   shot_noise_parametrization:
     fixed:
     constant:
@@ -42,10 +42,10 @@ specifications:
       Ps_2: 0.0
       Ps_3: 0.0
       Ps_4: 0.0
-  nonlinear_model: default #'rescale_sigma_pv' # 'default' or 'rescale_sigma_pv'
+  nonlinear_model: 'rescale_sigma_pv' # 'default' or 'rescale_sigma_pv'
   nonlinear_parametrization:
-    vary_sigmap: False #True
-    vary_sigmav: False #True
+    vary_sigmap: True
+    vary_sigmav: True
     rescale_sigma_pv:
       sigmap_1: 1.0
       sigmap_2: 1.0

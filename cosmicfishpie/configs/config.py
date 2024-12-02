@@ -222,7 +222,7 @@ def init(
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
     settings.setdefault("nonlinear_photo", True)
-    settings.setdefault("bfs8terms", True)
+    settings.setdefault("bfs8terms", False)
     settings.setdefault("vary_bias_str", "lnb")
     settings.setdefault("AP_effect", True)
     settings.setdefault("FoG_switch", True)

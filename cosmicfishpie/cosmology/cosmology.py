@@ -1342,6 +1342,7 @@ class external_input:
             Parameter string representing the input cosmological parameters.
         """
         rel_tol = 1e-5
+        upr.debug_print(f"cosmopars: {cosmopars}")
         for parname in self.param_names:
             if not np.isclose(cosmopars[parname], self.fiducialpars[parname], rtol=rel_tol):
                 if self.fiducialpars[parname] != 0:
@@ -1350,11 +1351,14 @@ class external_input:
                     delta_eps = cosmopars[parname] - self.fiducialpars[parname]
                 eps_sign = np.sign(delta_eps)
                 sign_string = self.signstrings[eps_sign]
+                upr.debug_print(f"delta_eps: {delta_eps}")
                 # print('delta_eps before = {:.16f}'.format(delta_eps))
                 eps_vals = np.array(self.external["eps_values"])
                 allowed_eps_vals = np.concatenate((eps_vals, -eps_vals, np.array([0])))
                 # print('delta_eps before = {:.6f}'.format(delta_eps))
                 delta_eps = unu.closest(allowed_eps_vals, delta_eps)
+                upr.debug_print(f"delta_eps closest: {delta_eps}")
+                delta_eps = abs(delta_eps)
                 delta_eps = unu.round_decimals_up(delta_eps)
                 # print('delta_eps after = {:.6f}'.format(delta_eps))
                 eps_string = "{:.1E}".format(abs(delta_eps))
@@ -1365,6 +1369,7 @@ class external_input:
                 param_folder_string = (
                     folder_parname + "_" + sign_string + "_" + "eps" + "_" + eps_string
                 )
+                upr.debug_print(f"param_folder_string: {param_folder_string}")
                 break
             else:
                 param_folder_string = "fiducial_eps_0"

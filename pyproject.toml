@@ -39,7 +39,7 @@ dev = [
     "build",
     "setuptools",
     "wheel",
-    "Sphinx>=4.3.0,<8.1.0",
+    "Sphinx>=4.3.0,<8.3.0",
     "furo==2024.1.29",
     "myst-parser>=1.0,<4.1",
     "myst_parser",

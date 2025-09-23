@@ -237,9 +237,11 @@ def loglike(
             # print(f'Loading prior with keys: {prior.keys}')
             param_dict = {key: param_vec[i] for i, key in enumerate(prior.keys)}
         theory_obsPgg = compute_theory_spectro(param_dict, cosmoFM_theory, leg_flag)
+    elif theory_obsPgg is not None:
+        pass
     else:
         upr.debug_print("No theory_obsPgg provided and no param_vec provided")
-        return -np.inf
+        return 1e23
     if leg_flag == "wedges":
         chi2 = compute_wedge_chi2(
             P_obs_data=data_obsPgg, P_obs_theory=theory_obsPgg, cosmoFM_data=cosmoFM_data

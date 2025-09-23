@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: Please cite this project if you use it.
+title: CosmicJellyFish
+version: 0.1.0
+repository-code: https://github.com/santiagocasas/cosmicfishpie
+authors:
+  - family-names: Casas Castro
+    given-names: Santiago
+    affiliation: RWTH Aachen University, DLR
+    orcid: https://orcid.org/0000-0002-4751-5138
+  - family-names: Pamuk
+    given-names: Sefa
+    affiliation: Universidad de Cantabria
+    orcid: https://orcid.org/0009-0004-0852-8624
+keywords:
+  - cosmology
+  - fishermatrix
+  - monte carlo markov chain
+contact:
+  - email: s.casas@protonmail.com
+

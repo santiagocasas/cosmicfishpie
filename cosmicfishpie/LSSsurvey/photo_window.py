@@ -82,7 +82,7 @@ class GalaxyPhotoDist:
 
         return pref**2 * np.exp(-(expo**self.ngamma))
 
-    def n_i(self, z, i):
+    def n_i(self, z, i, obs="GCph"):
         """Function to compute the unnormalized dN/dz(z) with a window picking function applied to it
 
         Parameters
@@ -98,6 +98,8 @@ class GalaxyPhotoDist:
             binned distribution without photometric redshift errors
 
         """
+        self.n_bins = self.n_bins_WL if obs == "WL" else self.n_bins_GCph
+        self.z_bins = self.z_bins_WL if obs == "WL" else self.z_bins_GCph
         z = np.atleast_1d(z)
         dNdz_at_z = self.dNdz(z)
         if i == 0 or i > self.n_bins:
@@ -134,6 +136,8 @@ class GalaxyPhotoDist:
             z_bins = self.z_bins_GCph
         elif obs == "WL":
             z_bins = self.z_bins_WL
+        else:
+            raise ValueError("obs must be either 'GCph' or 'WL'")
 
         # if i == 0 or i >= 11:
         #    return None

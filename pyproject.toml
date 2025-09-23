@@ -12,12 +12,15 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Cosmology",
 ]
 authors = [
     {name = "Santiago Casas, Matteo Martinelli, Sefa Pamuk, Sabarish V.M.", email = "s.casas@protonmail.com"}
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {file = "LICENSE"}
 
 [project.urls]

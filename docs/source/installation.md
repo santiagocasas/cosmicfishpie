@@ -1,7 +1,7 @@
 Installation
 ============
 
-**cosmicfishpie** supports Python >= 3.8.
+**cosmicfishpie** supports Python >= 3.10.
 
 ## Requirements
 

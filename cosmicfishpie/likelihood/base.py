@@ -15,6 +15,7 @@ import numpy as np
 
 from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 
+
 def is_indexable_iterable(var: Any) -> bool:
     """Check if a variable is an indexable iterable.
 
@@ -26,6 +27,7 @@ def is_indexable_iterable(var: Any) -> bool:
               and not a string or bytes object, False otherwise.
     """
     return isinstance(var, (list, np.ndarray, Sequence)) and not isinstance(var, (str, bytes))
+
 
 class Likelihood(ABC):
     """Common interface for likelihood evaluations used in Cosmicfishpie.
@@ -126,14 +128,20 @@ class Likelihood(ABC):
             return dict(param_dict)
 
         if param_vec is None or prior is None:
-            raise ValueError("Provide either param_dict or (param_vec and prior) to build the parameter mapping")
+            raise ValueError(
+                "Provide either param_dict or (param_vec and prior) to build the parameter mapping"
+            )
 
         if not is_indexable_iterable(param_vec):
-            raise TypeError("param_vec must be an indexable iterable when no param_dict is supplied")
+            raise TypeError(
+                "param_vec must be an indexable iterable when no param_dict is supplied"
+            )
 
         prior_keys = getattr(prior, "keys", None)
         if prior_keys is None:
-            raise AttributeError("prior object must expose an ordered 'keys' attribute to map the vector to parameters")
+            raise AttributeError(
+                "prior object must expose an ordered 'keys' attribute to map the vector to parameters"
+            )
 
         return {key: param_vec[i] for i, key in enumerate(prior_keys)}
 

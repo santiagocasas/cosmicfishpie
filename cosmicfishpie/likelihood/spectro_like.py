@@ -246,7 +246,9 @@ class SpectroLikelihood(Likelihood):
         nuisance_shot: Optional[Iterable[float]] = None,
     ) -> None:
         self._preloaded_data = None if data_obs is None else np.array(data_obs)
-        self._nuisance_shot = None if nuisance_shot is None else np.array(nuisance_shot, dtype=float)
+        self._nuisance_shot = (
+            None if nuisance_shot is None else np.array(nuisance_shot, dtype=float)
+        )
         self._inv_cov_legendre = None
         self._data_wedges = None
         super().__init__(cosmo_data=cosmoFM_data, cosmo_theory=cosmoFM_theory, leg_flag=leg_flag)
@@ -291,7 +293,9 @@ class SpectroLikelihood(Likelihood):
             return compute_wedge_chi2(self.data_obs, theory_obs, self.cosmoFM_data)
 
         if self._inv_cov_legendre is None:
-            _, self._inv_cov_legendre = compute_covariance_legendre(self.data_obs, self.cosmoFM_data)
+            _, self._inv_cov_legendre = compute_covariance_legendre(
+                self.data_obs, self.cosmoFM_data
+            )
         return compute_chi2_legendre(self.data_obs, theory_obs, self._inv_cov_legendre)
 
 

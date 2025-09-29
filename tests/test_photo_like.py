@@ -8,7 +8,12 @@ from cosmicfishpie.fishermatrix import cosmicfish
 from cosmicfishpie.likelihood import PhotometricLikelihood
 
 
-SPEC_DIR = Path(__file__).resolve().parents[1] / "cosmicfishpie" / "configs" / "default_survey_specifications"
+SPEC_DIR = (
+    Path(__file__).resolve().parents[1]
+    / "cosmicfishpie"
+    / "configs"
+    / "default_survey_specifications"
+)
 
 
 @pytest.fixture(scope="module")
@@ -22,7 +27,7 @@ def photometric_fiducial_obs():
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "survey_name_spectro": False,
         "specs_dir": "../cosmicfishpie/configs/default_survey_specifications/",
-        #"specs_dir": str(SPEC_DIR) + "/",
+        # "specs_dir": str(SPEC_DIR) + "/",
         "cosmo_model": "LCDM",
     }
 
@@ -68,8 +73,8 @@ def test_photometric_cells_have_expected_shape(photometric_likelihood):
     cells = photometric_likelihood.data_obs
     assert "ells" in cells
     assert "Cell_GG" in cells
-    #assert "Cell_LL" in cells
-    #assert "Cell_GL" in cells
+    # assert "Cell_LL" in cells
+    # assert "Cell_GL" in cells
     assert cells["Cell_GG"].shape[0] == len(cells["ells"])
 
 

@@ -46,10 +46,7 @@ def _cells_from_cls(
             noise = 0.0
             if hasattr(photo_cov, "ellipt_error") and hasattr(photo_cov, "ngalbin_WL"):
                 noise = (
-                    (photo_cov.ellipt_error**2.0)
-                    / photo_cov.ngalbin_WL[i - 1]
-                    if i == j
-                    else 0.0
+                    (photo_cov.ellipt_error**2.0) / photo_cov.ngalbin_WL[i - 1] if i == j else 0.0
                 )
             cell_ll[:, i - 1, j - 1] = base + noise
         data["Cell_LL"] = cell_ll
@@ -79,7 +76,9 @@ def _cells_from_cls(
     return data
 
 
-def _chi2_per_obs(cell_fid: np.ndarray, cell_th: np.ndarray, ells: np.ndarray, dells: np.ndarray) -> float:
+def _chi2_per_obs(
+    cell_fid: np.ndarray, cell_th: np.ndarray, ells: np.ndarray, dells: np.ndarray
+) -> float:
     dfid = np.linalg.det(cell_fid)
     dth = np.linalg.det(cell_th)
 
@@ -91,7 +90,11 @@ def _chi2_per_obs(cell_fid: np.ndarray, cell_th: np.ndarray, ells: np.ndarray, d
 
     integrand = (2 * ells + 1) * (dmix / dth + np.log(dth / dfid) - cell_fid.shape[-1])
     integrand = np.array(integrand, copy=False)
-    result = np.sum(np.concatenate([((integrand[1:] + integrand[:-1]) / 2) * dells[:-1], integrand[-1:] * dells[-1:]]))
+    result = np.sum(
+        np.concatenate(
+            [((integrand[1:] + integrand[:-1]) / 2) * dells[:-1], integrand[-1:] * dells[-1:]]
+        )
+    )
     return float(result)
 
 
@@ -107,7 +110,9 @@ class PhotometricLikelihood(Likelihood):
         data_cells: Optional[Dict[str, np.ndarray]] = None,
     ) -> None:
         self.observables = tuple(observables or cosmo_data.observables)
-        self._preloaded_cells = None if data_cells is None else {k: np.array(v) for k, v in data_cells.items()}
+        self._preloaded_cells = (
+            None if data_cells is None else {k: np.array(v) for k, v in data_cells.items()}
+        )
         self.photo_cov_data: Optional[pcov.PhotoCov] = None
         self._ells = None
         self._ellmax_WL = None
@@ -242,9 +247,9 @@ class PhotometricLikelihood(Likelihood):
                     ],
                 ]
             )
-            chi2 += np.sqrt(self.photo_cov_data.fsky_WL * self.photo_cov_data.fsky_GCph) * _chi2_per_obs(
-                big_fid, big_th, ell_xc, d_ell_xc
-            )
+            chi2 += np.sqrt(
+                self.photo_cov_data.fsky_WL * self.photo_cov_data.fsky_GCph
+            ) * _chi2_per_obs(big_fid, big_th, ell_xc, d_ell_xc)
             chi2 += fsky_wl * _chi2_per_obs(
                 self.data_obs["Cell_LL"][:n_xc], theory_obs["Cell_LL"][:n_xc], ell_xc, d_ell_xc
             )

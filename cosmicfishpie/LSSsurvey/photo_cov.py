@@ -12,7 +12,7 @@ from time import time
 import numpy as np
 import pandas as pd
 
-pd.set_option('future.no_silent_downcasting', True) # to avoid future pandas warning   
+pd.set_option("future.no_silent_downcasting", True)  # to avoid future pandas warning
 
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv

@@ -204,7 +204,7 @@ def fishtable_to_pandas(
             if ff.name in filter_names:
                 newname = ff.name.split(" ")[0]
                 # print(newname)
-                ltxname = "$\\mathrm{" + str(newname).replace(" ", "\ ") + "}$"
+                ltxname = "$\\mathrm{" + str(newname).replace(" ", "\\ ") + "}$"
                 barplot_data[ltxname] = rel_err
     if return_data_bar:
         return barplot_data
@@ -586,7 +586,7 @@ def prepare_settings_plot(
             .replace(r"\,", "-")
             .replace("$", "")
             .replace(r"\\", "")
-            .replace("\mathrm", "")
+            .replace("\\mathrm", "")
             .replace("___", "_")
             .replace("__", "_")
             .replace("----", "-")

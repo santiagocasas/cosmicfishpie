@@ -1,6 +1,7 @@
 # cosmicfishpie
 
 [![Documentation Status](https://readthedocs.org/projects/cosmicfishpie/badge/?version=latest)](https://cosmicfishpie.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/github/santiagocasas/cosmicfishpie/graph/badge.svg?token=BXTVDPXPUO)](https://codecov.io/github/santiagocasas/cosmicfishpie)
 
 See [`CITATION.cff`](CITATION.cff) for citation metadata or click on the "Cite this repository" button on the sidebar.
 

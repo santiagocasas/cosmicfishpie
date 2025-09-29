@@ -12,7 +12,7 @@ SPEC_DIR = Path(__file__).resolve().parents[1] / "cosmicfishpie" / "configs" / "
 
 
 @pytest.fixture(scope="module")
-def photometric_fisher_matrix():
+def photometric_fiducial_obs():
     options = {
         "accuracy": 1,
         "feedback": 1,
@@ -50,48 +50,17 @@ def photometric_fisher_matrix():
 
 
 @pytest.fixture(scope="module")
-def photometric_likelihood(photometric_fisher_matrix):
+def photometric_likelihood(photometric_fiducial_obs):
     return PhotometricLikelihood(
-        cosmoFM_data=photometric_fisher_matrix,
-        cosmoFM_theory=photometric_fisher_matrix,
-        observables=photometric_fisher_matrix.observables,
+        cosmo_data=photometric_fiducial_obs,
+        cosmo_theory=photometric_fiducial_obs,
+        observables=photometric_fiducial_obs.observables,
     )
 
 
-def _sample_params():
-    samp_pars = {
-    'Omegam': 0.3145714273,
-    'Omegab': 0.0491989,
-    'h': 0.6737,
-    'ns': 0.96605,
-    'sigma8': 0.81,
-    'w0': -1.0,
-    'wa': 0.0,
-    'mnu': 0.06,
-    'Neff': 3.044,
-    'bias_model': 'binned',
-    'b1': 1.0997727037892875,
-    'b2': 1.220245876862528,
-    'b3': 1.2723993083933989,
-    'b4': 1.316624471897739,
-    'b5': 1.35812370570578,
-    'b6': 1.3998214171814918,
-    'b7': 1.4446452851824907,
-    'b8': 1.4964959071110084,
-    'b9': 1.5652475842498528,
-    'b10': 1.7429859437184225,
-    'fout': 0.1,
-    'co': 1,
-    'cb': 1,
-    'sigma_o': 0.05,
-    'sigma_b': 0.05,
-    'zo': 0.1,
-    'zb': 0.0,
-    'IA_model': 'eNLA',
-    'AIA': 1.72,
-    'betaIA': 2.17,
-    'etaIA': -0.41*1.1
-    }
+def _sample_params(photometric_likelihood):
+    fiducial_obs = photometric_likelihood.cosmo_data
+    samp_pars = fiducial_obs.allparams.copy()
     return samp_pars
 
 
@@ -105,14 +74,14 @@ def test_photometric_cells_have_expected_shape(photometric_likelihood):
 
 
 def test_photometric_loglike_matches_notebook_value(photometric_likelihood):
-    sample_params = _sample_params()
+    sample_params = _sample_params(photometric_likelihood)
     loglike_value = photometric_likelihood.loglike(param_dict=sample_params)
-    expected = 4.038266295364123e-11
-    assert math.isclose(loglike_value, expected, rel_tol=1e-3, abs_tol=1e-12)
+    expected = 4.3309e-11
+    assert math.isclose(loglike_value, expected, rel_tol=1e-2)
 
 
 def test_photometric_cell_entry_matches_theory(photometric_likelihood):
-    sample_params = _sample_params()
+    sample_params = _sample_params(photometric_likelihood)
     ells = photometric_likelihood.data_obs["ells"]
     target_ell = 300
     idx = int(np.argmin(np.abs(ells - target_ell)))

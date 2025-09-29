@@ -249,7 +249,7 @@ class SpectroLikelihood(Likelihood):
         self._nuisance_shot = None if nuisance_shot is None else np.array(nuisance_shot, dtype=float)
         self._inv_cov_legendre = None
         self._data_wedges = None
-        super().__init__(cosmoFM_data=cosmoFM_data, cosmoFM_theory=cosmoFM_theory, leg_flag=leg_flag)
+        super().__init__(cosmo_data=cosmoFM_data, cosmo_theory=cosmoFM_theory, leg_flag=leg_flag)
 
     @property
     def data_wedges(self) -> Optional[np.ndarray]:

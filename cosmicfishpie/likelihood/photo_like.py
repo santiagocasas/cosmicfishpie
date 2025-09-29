@@ -101,49 +101,49 @@ class PhotometricLikelihood(Likelihood):
     def __init__(
         self,
         *,
-        cosmoFM_data,
-        cosmoFM_theory=None,
+        cosmo_data,
+        cosmo_theory=None,
         observables: Optional[Iterable[str]] = None,
         data_cells: Optional[Dict[str, np.ndarray]] = None,
     ) -> None:
-        self.observables = tuple(observables or cosmoFM_data.observables)
+        self.observables = tuple(observables or cosmo_data.observables)
         self._preloaded_cells = None if data_cells is None else {k: np.array(v) for k, v in data_cells.items()}
         self.photo_cov_data: Optional[pcov.PhotoCov] = None
         self._ells = None
         self._ellmax_WL = None
         self._ellmax_GC = None
         self._ellmax_XC = None
-        super().__init__(cosmoFM_data=cosmoFM_data, cosmoFM_theory=cosmoFM_theory, leg_flag="cells")
+        super().__init__(cosmo_data=cosmo_data, cosmo_theory=cosmo_theory, leg_flag="cells")
 
     def compute_data(self) -> Dict[str, np.ndarray]:
         if self._preloaded_cells is not None:
             self._ells = np.array(self._preloaded_cells.get("ells"), copy=True)
             return self._preloaded_cells
 
-        photo_cls = getattr(self.cosmoFM_data, "photo_obs_fid", None)
+        photo_cls = getattr(self.cosmo_data, "photo_obs_fid", None)
         if photo_cls is None:
             photo_cls = pobs.ComputeCls(
-                cosmopars=self.cosmoFM_data.fiducialcosmopars,
-                photopars=self.cosmoFM_data.photopars,
-                IApars=self.cosmoFM_data.IApars,
-                biaspars=self.cosmoFM_data.photobiaspars,
-                fiducial_cosmo=self.cosmoFM_data.fiducialcosmo,
+                cosmopars=self.cosmo_data.fiducialcosmopars,
+                photopars=self.cosmo_data.photopars,
+                IApars=self.cosmo_data.IApars,
+                biaspars=self.cosmo_data.photobiaspars,
+                fiducial_cosmo=self.cosmo_data.fiducialcosmo,
             )
 
-        self.photo_cov_data = getattr(self.cosmoFM_data, "photo_LSS", None)
+        self.photo_cov_data = getattr(self.cosmo_data, "photo_LSS", None)
         if self.photo_cov_data is None:
             self.photo_cov_data = pcov.PhotoCov(
-                cosmopars=self.cosmoFM_data.fiducialcosmopars,
-                photopars=self.cosmoFM_data.photopars,
-                IApars=self.cosmoFM_data.IApars,
-                biaspars=self.cosmoFM_data.photobiaspars,
+                cosmopars=self.cosmo_data.fiducialcosmopars,
+                photopars=self.cosmo_data.photopars,
+                IApars=self.cosmo_data.IApars,
+                biaspars=self.cosmo_data.photobiaspars,
                 fiducial_Cls=photo_cls,
             )
 
         cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
         self._ells = cells["ells"]
-        self._ellmax_WL = self.cosmoFM_data.specs.get("lmax_WL")
-        self._ellmax_GC = self.cosmoFM_data.specs.get("lmax_GCph")
+        self._ellmax_WL = self.cosmo_data.specs.get("lmax_WL")
+        self._ellmax_GC = self.cosmo_data.specs.get("lmax_GCph")
         if self._ellmax_WL is not None and self._ellmax_GC is not None:
             self._ellmax_XC = min(self._ellmax_WL, self._ellmax_GC)
         else:
@@ -153,10 +153,10 @@ class PhotometricLikelihood(Likelihood):
     def compute_theory(self, param_dict: Dict[str, Any]) -> Dict[str, np.ndarray]:
         params = deepcopy(param_dict)
 
-        cosmopars = _dict_with_updates(self.cosmoFM_theory.fiducialcosmopars, params)
-        photopars = _dict_with_updates(self.cosmoFM_theory.photopars, params)
-        IApars = _dict_with_updates(self.cosmoFM_theory.IApars, params)
-        photobias = _dict_with_updates(self.cosmoFM_theory.photobiaspars, params)
+        cosmopars = _dict_with_updates(self.cosmo_theory.fiducialcosmopars, params)
+        photopars = _dict_with_updates(self.cosmo_theory.photopars, params)
+        IApars = _dict_with_updates(self.cosmo_theory.IApars, params)
+        photobias = _dict_with_updates(self.cosmo_theory.photobiaspars, params)
 
         if params:
             logger.debug(

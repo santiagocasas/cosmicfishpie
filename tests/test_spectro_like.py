@@ -1,25 +1,12 @@
-import sys
-import types
 import numpy as np
 import pytest
 
 from cosmicfishpie.likelihood.spectro_like import (
-    is_indexable_iterable,
     legendre_Pgg,
     compute_chi2_legendre,
     compute_wedge_chi2,
     loglike,
 )
-
-
-def test_is_indexable_iterable():
-    # True for list, tuple, numpy array; False for string, bytes, int
-    assert is_indexable_iterable([1, 2, 3])
-    assert is_indexable_iterable((1, 2))
-    assert is_indexable_iterable(np.array([1, 2, 3]))
-    assert not is_indexable_iterable("string")
-    assert not is_indexable_iterable(b"bytes")
-    assert not is_indexable_iterable(123)
 
 
 class DummyFMLegendre:

@@ -1,19 +1,10 @@
 import math
-from pathlib import Path
 
 import numpy as np
 import pytest
 
 from cosmicfishpie.fishermatrix import cosmicfish
 from cosmicfishpie.likelihood import PhotometricLikelihood
-
-
-SPEC_DIR = (
-    Path(__file__).resolve().parents[1]
-    / "cosmicfishpie"
-    / "configs"
-    / "default_survey_specifications"
-)
 
 
 @pytest.fixture(scope="module")
@@ -27,7 +18,6 @@ def photometric_fiducial_obs():
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "survey_name_spectro": False,
         "specs_dir": "../cosmicfishpie/configs/default_survey_specifications/",
-        # "specs_dir": str(SPEC_DIR) + "/",
         "cosmo_model": "LCDM",
     }
 
@@ -95,4 +85,5 @@ def test_photometric_cell_entry_matches_theory(photometric_likelihood):
     theory_cells = photometric_likelihood.compute_theory(dict(sample_params))
     theory_val = theory_cells["Cell_GG"][idx, 1, 8]
     nb_val = 9.974414863747675e-14
+    assert theory_val == data_val
     assert theory_val == pytest.approx(nb_val, rel=1e-12, abs=1e-18)

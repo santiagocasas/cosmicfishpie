@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from typing import Any, Dict, Iterable, Optional
 
 import numpy as np
+from nautilus import Sampler
 
 from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 
@@ -177,7 +178,7 @@ class Likelihood(ABC):
         prior: Any,
         sampler_kwargs: Optional[Dict[str, Any]] = None,
         run_kwargs: Optional[Dict[str, Any]] = None,
-    ) -> "Sampler":
+    ) -> Sampler:
         """Convenience wrapper to launch a Nautilus sampler using this likelihood.
 
         This method provides a convenient interface to run Nautilus samplers

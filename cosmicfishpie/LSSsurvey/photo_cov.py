@@ -12,13 +12,12 @@ from time import time
 import numpy as np
 import pandas as pd
 
-pd.set_option("future.no_silent_downcasting", True)  # to avoid future pandas warning
-
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
 from cosmicfishpie.utilities.utils import printing as upt
 
+pd.set_option("future.no_silent_downcasting", True)  # to avoid future pandas warning
 pd.set_option("display.float_format", "{:.9E}".format)
 
 

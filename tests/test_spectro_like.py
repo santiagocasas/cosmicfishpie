@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 
 from cosmicfishpie.likelihood.spectro_like import (
-    legendre_Pgg,
     compute_chi2_legendre,
     compute_wedge_chi2,
+    legendre_Pgg,
     loglike,
 )
 

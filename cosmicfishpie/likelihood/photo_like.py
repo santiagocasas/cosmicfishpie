@@ -14,7 +14,6 @@ from cosmicfishpie.LSSsurvey import photo_obs as pobs
 
 from .base import Likelihood
 
-
 logger = logging.getLogger("cosmicfishpie.likelihood.photo")
 
 

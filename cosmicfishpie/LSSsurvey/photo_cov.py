@@ -12,6 +12,8 @@ from time import time
 import numpy as np
 import pandas as pd
 
+pd.set_option('future.no_silent_downcasting', True) # to avoid future pandas warning   
+
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
@@ -188,7 +190,7 @@ class PhotoCov:
 
         for ind, ell in enumerate(noisy_cls["ells"]):
             covdf = pd.DataFrame(index=cols, columns=cols)
-            covdf = covdf.fillna(0.0)
+            covdf = covdf.fillna(0.0).infer_objects(copy=False)
 
             for obs1, obs2 in product(self.observables, self.observables):
                 for bin1, bin2 in product(

@@ -16,6 +16,16 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "santiagocasas",
+      "name": "Santiago Casas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6987716?v=4",
+      "profile": "http://www.santicasas.xyz",
+      "contributions": [
+        "code",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,

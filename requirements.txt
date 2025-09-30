@@ -6,7 +6,7 @@ h5py==3.12.1
 ipython==8.30.0
 joblib==1.4.2
 jupyter==1.1.1
-matplotlib==3.9.3
+matplotlib==3.10.6
 nautilus-sampler==1.0.5
 numpy
 pandas

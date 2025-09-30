@@ -233,7 +233,7 @@ def compute_theory_spectro(
     raise ValueError(f"Unknown leg_flag '{leg_flag}'. Use 'wedges' or 'legendre'.")
 
 
-class SpectroLikelihood(Likelihood):
+class SpectroLikelihood(Likelihood, NautilusMixin):
     """Likelihood for spectroscopic clustering using CosmicFish Fisher matrices."""
 
     def __init__(

@@ -12,7 +12,7 @@ import numpy as np
 from cosmicfishpie.LSSsurvey import photo_cov as pcov
 from cosmicfishpie.LSSsurvey import photo_obs as pobs
 
-from .base import Likelihood
+from .base import Likelihood, NautilusMixin
 
 logger = logging.getLogger("cosmicfishpie.likelihood.photo")
 
@@ -97,7 +97,7 @@ def _chi2_per_obs(
     return float(result)
 
 
-class PhotometricLikelihood(Likelihood):
+class PhotometricLikelihood(Likelihood, NautilusMixin):
     """Likelihood built from photometric clusterings (WL / GCph)."""
 
     def __init__(

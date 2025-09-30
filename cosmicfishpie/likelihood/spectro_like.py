@@ -15,7 +15,7 @@ from cosmicfishpie.LSSsurvey import spectro_obs as spobs
 from cosmicfishpie.utilities import legendre_tools as lgt
 from cosmicfishpie.utilities.utils import printing as upr
 
-from .base import Likelihood
+from .base import Likelihood, NautilusMixin
 
 logger = logging.getLogger("cosmicfishpie.cosmology.nuisance")
 logger.setLevel(logging.INFO)

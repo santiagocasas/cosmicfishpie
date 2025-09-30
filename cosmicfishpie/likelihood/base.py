@@ -12,7 +12,7 @@ from collections.abc import Sequence
 from typing import Any, Dict, Iterable, Optional
 
 import numpy as np
-from nautilus import Sampler
+from nautilus import Sampler, Prior
 
 from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 
@@ -172,6 +172,24 @@ class Likelihood(ABC):
         chi2 = self.compute_chi2(theory_obs)
         return -0.5 * chi2
 
+class NautilusMixin:
+    """Mixin class for running Nautilus samplers."""
+
+    def create_nautilus_prior(self, prior_dict: Dict[str, Any]) -> Prior:
+        """Create a Nautilus prior object from a dictionary of parameter names and their prior ranges.
+
+        Args:
+            prior_dict: Dictionary of parameter names and their prior ranges
+
+        Returns:
+            Nautilus Prior object
+        """
+
+        prior = Prior()
+        for par, (lower, upper) in prior_dict.items():
+            prior.add_parameter(par, (lower, upper))
+        return prior
+    
     def run_nautilus(
         self,
         *,
@@ -192,14 +210,15 @@ class Likelihood(ABC):
         Returns:
             The Nautilus Sampler object
         """
-        from nautilus import Sampler
 
         sampler_kwargs = dict(sampler_kwargs or {})
         run_kwargs = dict(run_kwargs or {})
 
-        def wrapper(theta: Iterable[float]) -> float:
-            return self.loglike(param_vec=theta, prior=prior)
-
-        sampler = Sampler(prior, wrapper, **sampler_kwargs)
+        sampler = Sampler(
+            prior,
+            self.loglike,
+            **sampler_kwargs,
+            likelihood_kwargs={'prior': prior}
+        )
         sampler.run(**run_kwargs)
         return sampler

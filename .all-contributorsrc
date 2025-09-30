@@ -26,6 +26,16 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "matmartinelli",
+      "name": "Matteo Martinelli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17426508?v=4",
+      "profile": "https://github.com/matmartinelli",
+      "contributions": [
+        "code",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -488,8 +488,8 @@ class ComputeCls:
         Implements the following equation:
 
         .. math::
-         W_i^{WL} = W_i^{IA}+\\frac{3}{2}\left(\\frac{H_0}{c}\\right)^2\Omega_{m,0}(1+z)r(z)
-         \int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\left[1-\\frac{r(z)}{r(z')}\\right]}
+         W_i^{WL} = W_i^{IA}+\\frac{3}{2}\\left(\\frac{H_0}{c}\\right)^2\\Omega_{m,0}(1+z)r(z)
+         \\int_z^{z_{\\rm max}}{dz' \\frac{n_i(z')}{\\bar{n}(z)}\\left[1-\\frac{r(z)}{r(z')}\\right]}
         """
 
         twlstart = time()

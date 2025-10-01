@@ -17,6 +17,7 @@ import cosmicfishpie.fishermatrix.derivatives as fishderiv
 import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
 from cosmicfishpie.utilities.utils import printing as upt
 
+pd.set_option("future.no_silent_downcasting", True)  # to avoid future pandas warning
 pd.set_option("display.float_format", "{:.9E}".format)
 
 
@@ -188,7 +189,7 @@ class PhotoCov:
 
         for ind, ell in enumerate(noisy_cls["ells"]):
             covdf = pd.DataFrame(index=cols, columns=cols)
-            covdf = covdf.fillna(0.0)
+            covdf = covdf.fillna(0.0).infer_objects(copy=False)
 
             for obs1, obs2 in product(self.observables, self.observables):
                 for bin1, bin2 in product(

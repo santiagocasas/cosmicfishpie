@@ -204,7 +204,7 @@ def fishtable_to_pandas(
             if ff.name in filter_names:
                 newname = ff.name.split(" ")[0]
                 # print(newname)
-                ltxname = "$\\mathrm{" + str(newname).replace(" ", "\ ") + "}$"
+                ltxname = "$\\mathrm{" + str(newname).replace(" ", "\\ ") + "}$"
                 barplot_data[ltxname] = rel_err
     if return_data_bar:
         return barplot_data
@@ -586,7 +586,7 @@ def prepare_settings_plot(
             .replace(r"\,", "-")
             .replace("$", "")
             .replace(r"\\", "")
-            .replace("\mathrm", "")
+            .replace("\\mathrm", "")
             .replace("___", "_")
             .replace("__", "_")
             .replace("----", "-")
@@ -874,6 +874,7 @@ def make_triangle_plot(
     smooth=3,
     kde=False,
     bins=None,
+    savefile=None
 ):
     """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
 
@@ -1006,6 +1007,8 @@ def make_triangle_plot(
 
     # Create and return the plot
     fig = c.plotter.plot(columns=params)
+    if savefile is not None and type(savefile)==str:
+        fig.savefig(savefile)
     return fig
 
 

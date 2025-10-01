@@ -1,0 +1,47 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "Sefa76",
+      "name": "Sefa Pamuk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19888927?v=4",
+      "profile": "https://github.com/Sefa76",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "santiagocasas",
+      "name": "Santiago Casas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6987716?v=4",
+      "profile": "http://www.santicasas.xyz",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "matmartinelli",
+      "name": "Matteo Martinelli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17426508?v=4",
+      "profile": "https://github.com/matmartinelli",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "cosmicfishpie",
+  "projectOwner": "santiagocasas"
+}

@@ -299,6 +299,10 @@ class fisher_plotting:
         dpi = options.get("dpi", 400)
         figsize = options.get("figsize", (20, 10))
         savefig = options.get("savefig", True)
+        if savefig:
+            outpathfile = os.path.join(self.outpath, self.options["outroot"] + errstr + imgformat_)
+        else:
+            outpathfile = os.path.join(self.outpath, "dummy" + errstr + imgformat_)
         transform_latex_dict = options.get("transform_latex_dict", dict())
         compare_to_index = options.get("compare_to_index", False)
         figure_title = options.get("figure_title", "")
@@ -308,7 +312,7 @@ class fisher_plotting:
             parstoplot=self.plot_pars,
             plot_style=plot_style,
             marginalize_pars=marginalze_remaining_pars,
-            outpathfile=os.path.join(self.outpath, self.options["outroot"] + errstr + imgformat_),
+            outpathfile=outpathfile,
             plot_marg=plot_marg,
             plot_unmarg=plot_unmarg,
             yrang=yrang,

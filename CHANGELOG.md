@@ -35,4 +35,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.2.2 : Galaxy sample split for sources and lenses. Feedback prints more consistent.
 1.2.3 : Added a new likelihood function for photometric and spectroscopic surveys.
 1.2.4 : Discontinued support for python3.8. Fixed the style for likelihood scripts.
-1.2.5 : Likelihood modules tested for photo and spectro
+1.2.5 : Likelihood modules tested for photo and spectro. New Tests for the Analysis module

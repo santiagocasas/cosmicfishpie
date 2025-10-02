@@ -899,7 +899,6 @@ def make_triangle_plot(
                 param_names[idx] = new_param
                 
                 # Create transformed covariance matrix
-                import numpy as np
                 cov = fisher.inverse_fisher_matrix()
                 
                 fishchain = Chain.from_covariance(

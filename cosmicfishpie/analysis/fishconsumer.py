@@ -51,6 +51,7 @@ colors = [
 ]
 
 allnicecolors = usercolors_barplot + usercolors_darker + colarray + colors
+allnicecolors = [tuple(item) for item in allnicecolors]
 allnicecolors_dict = dict(allnicecolors)
 allnicecolors_list = list(allnicecolors_dict.values())
 allnicecolors_namelist = list(allnicecolors_dict.keys())
@@ -66,13 +67,26 @@ barplot_filter_names = [
 
 def display_colors(colors, figsize=(6, 6)):
     """
-    Display a pie chart of colors with their names.
-
+    Display a pie chart of colors with their names and hex codes.
+    
+    This function creates a visual representation of a color palette by generating
+    a pie chart where each slice represents a color. Each color is labeled with its
+    name and hex code. The labels are positioned around the pie chart for clear visibility.
+    
     Parameters:
-        colors (list of tuples): A list of tuples containing the name and hex code for each color.
-
+        colors (list of tuples): A list of tuples containing the name and hex code 
+                                for each color. Each tuple should be in the format 
+                                (name, hex_code), where name is a string and hex_code 
+                                is a string representing a valid hex color (e.g., "#FF0000").
+        figsize (tuple, optional): The figure size in inches as (width, height). 
+                                  Defaults to (6, 6).
+    
     Returns:
-        None
+        None: The function displays the pie chart but does not return any value.
+    
+    Example:
+        >>> colors = [("Red", "#FF0000"), ("Green", "#00FF00"), ("Blue", "#0000FF")]
+        >>> display_colors(colors)
     """
 
     # Create a list of color hex codes
@@ -124,14 +138,43 @@ def display_colors(colors, figsize=(6, 6)):
 
 
 def clamp(x):
+    """
+    Clamp a value between 0 and 255.
+    
+    This function ensures a value is within the valid range for RGB color components.
+    
+    Parameters:
+        x (int or float): The value to clamp
+    
+    Returns:
+        int: The clamped value between 0 and 255
+    """
     return max(0, min(x, 255))
 
 
 def hex2rgb(hexcode):
+    """
+    Convert a hexadecimal color code to RGB tuple.
+    
+    Parameters:
+        hexcode (str): A hexadecimal color code string (e.g., "#FF0000")
+    
+    Returns:
+        tuple: An RGB tuple with values from 0-255 (e.g., (255, 0, 0))
+    """
     return tuple(map(ord, hexcode[1:].decode("hex")))
 
 
 def rgb2hex(rgb_tuple):
+    """
+    Convert an RGB tuple to a hexadecimal color code.
+    
+    Parameters:
+        rgb_tuple (tuple): An RGB tuple with values typically between 0-1 or 0-255
+    
+    Returns:
+        str: A hexadecimal color code string (e.g., "#FF0000")
+    """
     return mcolors.to_hex(rgb_tuple)
     # r, g, b = rgb_tuple
     # return "#{:02x}{:02x}{:02x}".format(clamp(r),clamp(g), clamp(b))
@@ -180,6 +223,36 @@ def fishtable_to_pandas(
     filter_names=None,
     return_data_bar=False,
 ):
+    """
+    Converts a fisher matrix table to pandas DataFrames.
+    This function takes a list of parameters and a FisherAnalysis object, and returns two pandas DataFrames:
+    one for relative errors (as percentages) and one for absolute errors. It can also return data for bar plots.
+    Parameters
+    ----------
+    paramstab : list
+        List of parameter names to include in the table.
+    fishAnalysis : FisherAnalysis
+        The FisherAnalysis object containing the fisher matrices.
+    default_titles : list, optional
+        Default titles for the tables. Default is ["Relative 1sigma errors: ", "Absolute 1sigma errors: "].
+    title : str, optional
+        Additional title to append to the default titles. Default is "".
+    set_titles : bool, optional
+        If True, set captions for the DataFrames. Default is False.
+    apply_formats : list or False, optional
+        If provided, should be a list of two format strings to apply to the relative and absolute DataFrames.
+        Default is False.
+    filter_names : list or None, optional
+        List of fisher matrix names to filter when returning bar plot data. Default is None.
+    return_data_bar : bool, optional
+        If True, return data formatted for bar plots instead of DataFrames. Default is False.
+    Returns
+    -------
+    tuple or dict
+        If return_data_bar is False, returns a tuple of two pandas DataFrames (fish_df, fish_df_abs).
+        If return_data_bar is True, returns a dictionary with keys as formatted fisher names and values as relative errors.
+    """
+    
     fishers_totable_marg = fishAnalysis.marginalise(paramstab, update_names=False)
     fishers_totable_marg_list = fishers_totable_marg.get_fisher_list()
     table_data = collections.OrderedDict()
@@ -443,7 +516,6 @@ parnames_style = [
     "\\sigma_{8}",
 ]
 dictreplace_tex = dict(zip(param_latex_names, parnames_style))
-dictreplace_tex
 
 
 def choose_fish_toplot(
@@ -506,7 +578,7 @@ def choose_fish_toplot(
             fishers_toplot.add_fisher_matrix(ff)
             if colors_toplot is None:
                 cols_toplot.append(list(cols_dict.values())[ii])
-                colnames_toplot.append(list(cols_dict.keys())[ii])
+                colnames_toplot.append(list(colsDict.keys())[ii])
             else:
                 cols_toplot.append(colors_toplot[ii])
                 colnames_toplot.append(str(colors_toplot[ii]))
@@ -627,236 +699,6 @@ def prepare_settings_plot(
     return retdic
 
 
-def chainfishplot(
-    return_dictionary,
-    **cckwargs,
-):
-    """
-    Chain fish plot function
-
-    Parameters:
-
-    return_dic: Dictionary containing quantities and settings to plot
-
-    cckwargs:  Arguments for ChainConsumer and other optional arguments
-
-        transform_chains: Dictionary to transform a single parameter in the chains
-               Keys:
-                    'param' : parameter name to transform
-                    'transform_param_latex' : latex name of transformed parameter
-                    'transform_param' : name of transformed parameter
-                    'transform_func' : function (must be broadcastable) to be applied to the samples of that parameter
-                    'transformed_extents': 'automatic'|[list]  New bounds for the transformed parameter range
-
-
-    """
-    c = ChainConsumer()
-    return_dic = copy.deepcopy(return_dictionary)
-    fishers_toplot_list = return_dic["fishers_toplot_group"].get_fisher_list()
-    Nfishes = len(fishers_toplot_list)
-    fisher_labels = return_dic["fisher_labels"]
-    colors = return_dic["cols_toplot"]
-    extents = return_dic["extents"]
-    def_plotname = return_dic["plot_filename"]
-
-    gaussian_samples = cckwargs.get("gaussian_samples", 100000)
-    zorder_list = cckwargs.get("zorder_list", [None] * Nfishes)
-
-    transform_chains = cckwargs.get("transform_chains", {})
-    std_str = "Std."
-
-    if transform_chains != {}:
-        tr_func = transform_chains["transform_func"]
-        par_tr = transform_chains["param"]
-        tex_tr_par = transform_chains["transform_param_latex"]
-        tr_par = transform_chains["transform_param"]
-        p_ind = return_dic["pars_toplot"].index(par_tr)
-        if transform_chains["transformed_extents"] == "automatic":
-            extents[p_ind] = [
-                tr_func(ee) for ee in extents[p_ind]
-            ]  # due to chainconsumer bug, needs to be list, not np array
-        else:
-            extents[p_ind] = transform_chains["transformed_extents"]
-        return_dic["pars_toplot"][p_ind] = tr_par
-        return_dic["parnames_to_tex"][tr_par] = tex_tr_par
-        std_str = "Trans."
-        def_plotname = "transformed_" + str(tr_par) + "_" + return_dic["plot_filename"]
-        print(f"{std_str} params to plot: ")
-        print(return_dic["pars_toplot"])
-        print(return_dic["parnames_to_tex"])
-
-    for ii, ff in enumerate(fishers_toplot_list):
-        print(ff.param_fiducial, ff.inverse_fisher_matrix())
-        data = multivariate_normal(
-            ff.param_fiducial, ff.inverse_fisher_matrix(), size=gaussian_samples
-        )
-        data_tr = np.copy(data)
-        texpars = ff.get_param_names_latex()
-        if transform_chains != {}:
-            if par_tr in ff.get_param_names():
-                par_ind = ff.get_param_index(par_tr)
-                data_tr[:, par_ind] = tr_func(data_tr[:, par_ind])
-                texpars[par_ind] = tex_tr_par
-            else:
-                print(f"Warning: transformed {par_tr} not in Fisher matrix")
-        c.add_chain(data_tr, name=fisher_labels[ii], parameters=texpars, zorder=zorder_list[ii])
-        print("-- Fisher name  |  Paramnames tex   |   {:s} Confidence Bounds --".format(std_str))
-        print(ff.name, ff.get_param_names_latex(), ff.get_confidence_bounds())
-
-    smooth = cckwargs.get("smooth", 3)
-    shade_alpha = cckwargs.get("shade_alpha", 0.4)
-    kde = cckwargs.get("kde", False)
-    diagonal_tick_labels = cckwargs.get("diagonal_tick_labels", True)
-    def_gradient = cckwargs.get("default_gradient", 0.2)
-    shade_gradient = cckwargs.get("shade_gradient", [def_gradient] * Nfishes)
-    def_leg_kw = {"loc": (1.5, 1), "fontsize": 20}
-    legend_kwargs = cckwargs.get("legend_kwargs", def_leg_kw)
-    def_shade = [True] * Nfishes
-    shade = cckwargs.get("shade", def_shade)
-    def_ls = Nfishes * ["-"]
-    linestyles = cckwargs.get("linestyles", def_ls)
-    linewidths = cckwargs.get("linewidths", 2.5)
-    max_ticks = cckwargs.get("max_ticks", 2)
-    tick_font_size = cckwargs.get("tick_font_size", 16)
-    label_font_size = cckwargs.get("label_font_size", 20)
-    c.configure(
-        plot_hists=True,
-        sigma2d=False,
-        smooth=smooth,
-        kde=kde,
-        colors=colors,
-        linewidths=linewidths,
-        shade_gradient=shade_gradient,
-        legend_kwargs=legend_kwargs,
-        shade=shade,
-        shade_alpha=shade_alpha,
-        legend_color_text=True,
-        legend_location=(1, 0),
-        diagonal_tick_labels=diagonal_tick_labels,
-        tick_font_size=tick_font_size,
-        label_font_size=label_font_size,
-        max_ticks=max_ticks,
-        bar_shade=True,
-        linestyles=linestyles,
-    )
-
-    plot_pars_names_in = cckwargs.get("plot_pars_names", return_dic["pars_toplot"])
-    plot_pars_names = [return_dic["parnames_to_tex"].get(pp, pp) for pp in plot_pars_names_in]
-
-    figsize = cckwargs.get("figsize", "page")
-    legend = cckwargs.get("legend", True)
-    print(plot_pars_names)
-    fig = c.plotter.plot(
-        parameters=plot_pars_names, figsize=figsize, legend=legend, extents=extents
-    )
-
-    # fig2 = c.plotter.plot_distributions(parameters=[r'$f_{R0}$'], display=True)
-
-    special_axes = cckwargs.get("special_axes", dict())
-    if special_axes != {}:
-        print(fig.get_axes())
-        axx = fig.get_axes()[special_axes["xindex"]]
-        axy = fig.get_axes()[special_axes["yindex"]]
-        lims = special_axes["lims"]
-        axx.ticklabel_format(axis="x", style="sci", scilimits=(lims[0], lims[1]))
-        axy.ticklabel_format(axis="y", style="sci", scilimits=(lims[0], lims[1]))
-        xlabel = special_axes["xlabel"]
-        ylabel = special_axes["ylabel"]
-        axx.set_xlabel(xlabel)
-        axy.set_ylabel(ylabel)
-
-    savepath = cckwargs.get("savepath", "./")
-    plot_filename = cckwargs.get("plot_filename", def_plotname)
-    file_format = cckwargs.get("file_format", ".pdf")
-    save_dpi = cckwargs.get("save_dpi", 200)
-    save_plot = cckwargs.get("save_plot", True)
-
-    plotfilename = savepath + plot_filename + file_format
-    if save_plot:
-        fig.savefig(plotfilename, dpi=save_dpi, bbox_inches="tight")
-        print("Plot saved to: ", plotfilename)
-    return fig
-
-
-def simple_fisher_plot(
-    fisher_list,
-    params_to_plot,
-    labels=None,
-    colors=None,
-    save_plot=False,
-    legend=True,
-    n_samples=10000,
-    output_file="fisher_plot.pdf",
-):
-    """Create a triangle plot from Fisher matrices using ChainConsumer.
-
-    Parameters
-    ----------
-    fisher_list : list
-        List of CosmicFish_FisherMatrix objects to plot
-    params_to_plot : list
-        List of parameter names to include in the plot
-    labels : list, optional
-        Labels for each Fisher matrix in the legend
-    colors : list, optional
-        Colors for each Fisher matrix. Defaults to built-in colors
-    save_plot : bool, optional
-        Whether to save the plot to file (default: False)
-    output_file : str, optional
-        Filename for saving the plot (default: 'fisher_plot.pdf')
-
-    Returns
-    -------
-    matplotlib.figure.Figure
-        The generated triangle plot figure
-    """
-    # Initialize ChainConsumer
-    c = ChainConsumer()
-
-    # Default colors if none provided
-    if colors is None:
-        colors = ["#3a86ff", "#fb5607", "#8338ec", "#ffbe0b", "#d11149"]
-        colors = colors[: len(fisher_list)]  # Truncate to needed length
-
-    # Default labels if none provided
-    if labels is None:
-        labels = [f"Fisher {i+1}" for i in range(len(fisher_list))]
-
-    # Generate samples for each Fisher matrix
-    n_samples = 100000
-    for i, fisher in enumerate(fisher_list):
-        # Get samples from multivariate normal using Fisher matrix
-        samples = multivariate_normal(
-            fisher.param_fiducial, fisher.inverse_fisher_matrix(), size=n_samples
-        )
-
-        # Add chain to plot
-        c.add_chain(samples, parameters=fisher.get_param_names(), name=labels[i], color=colors[i])
-
-    # Configure plot settings
-    c.configure(
-        plot_hists=True,
-        sigma2d=False,
-        smooth=3,
-        colors=colors,
-        shade=True,
-        shade_alpha=0.3,
-        bar_shade=True,
-        linewidths=2,
-        legend_kwargs={"fontsize": 12},
-    )
-
-    # Create the plot
-    fig = c.plotter.plot(parameters=params_to_plot, legend=legend)
-
-    # Save if requested
-    if save_plot:
-        fig.savefig(output_file, bbox_inches="tight", dpi=200)
-        print(f"Plot saved to: {output_file}")
-
-    return fig
-
-
 def make_triangle_plot(
     fishers=None,
     chains=None,
@@ -869,12 +711,23 @@ def make_triangle_plot(
     shade_chains=True,
     ls_fisher="-",
     lw_fisher=2.5,
-    fontsize=16,
-    param_labels=None,
+    legend_kwargs={"fontsize": 20, "loc": "upper right"},
+    param_labels: dict = {},
+    label_font_size=20,
+    tick_font_size=16,
     smooth=3,
     kde=False,
     bins=None,
-    savefile=None,
+    extents: dict = {},
+    figsize=None,
+    transform_params: dict = None,
+    shade_alpha=0.4,
+    save_plot=False,
+    savepath="./",
+    plot_filename=None,
+    file_format=".pdf",
+    save_dpi=200,
+    savefile=None
 ):
     """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
 
@@ -898,10 +751,45 @@ def make_triangle_plot(
         Whether to shade Fisher contours. Can be single bool or list for each Fisher
     shade_chains : bool or list, optional
         Whether to shade chain contours. Can be single bool or list for each chain
+    ls_fisher : str or list, optional
+        Line style for Fisher contours. Can be single str or list for each Fisher
+    lw_fisher : float or list, optional
+        Line width for Fisher contours. Can be single float or list for each Fisher
     fontsize : int, optional
         Font size for legend and labels
     param_labels : dict, optional
         Dictionary mapping parameter names to LaTeX labels. Default provides common cosmological parameters
+    smooth : int, optional
+        Smoothing factor for contours
+    kde : bool, optional
+        Whether to use KDE for histograms
+    bins : int, optional
+        Number of bins for histograms
+    extents : list or dict, optional
+        Parameter ranges to plot, as [min, max] for each parameter
+    figsize : tuple, optional
+        Figure size as (width, height) in inches
+    transform_params : dict, optional
+        Dictionary to transform parameters, with required keys:
+            'param': parameter name to transform
+            'transform_param': name of transformed parameter
+            'transform_func': function to apply to parameter samples
+        And optional keys:
+            'transform_param_latex': latex name of transformed parameter
+    shade_alpha : float, optional
+        Alpha (transparency) for contour shading
+    save_plot : bool, optional
+        Whether to save the plot
+    savepath : str, optional
+        Directory to save plot
+    plot_filename : str, optional
+        Filename for saved plot (without extension)
+    file_format : str, optional
+        File format for saved plot (default: '.pdf')
+    save_dpi : int, optional
+        DPI for saved plot
+    savefile : str, optional
+        Complete filepath to save plot (overrides savepath, plot_filename, and file_format)
 
     Returns
     -------
@@ -924,6 +812,18 @@ def make_triangle_plot(
     ...     chain_labels=['MCMC'],
     ...     truth_values={'Omegam': 0.3, 'h': 0.7}
     ... )
+    
+    >>> # Plot with parameter transformation
+    >>> fig = make_triangle_plot(
+    ...     fishers=[fisher1],
+    ...     fisher_labels=['Fisher'],
+    ...     transform_params={
+    ...         'param': 'sigma8', 
+    ...         'transform_param': 'S8',
+    ...         'transform_param_latex': r'$S_8$',
+    ...         'transform_func': lambda x: x * np.sqrt(0.3/x),
+    ...     }
+    ... )
     """
     # Initialize ChainConsumer
     c = ChainConsumer()
@@ -943,8 +843,24 @@ def make_triangle_plot(
         "bI_c1": r"$bI_{{\rm c}, 1}$",
         "bI_c2": r"$bI_{{\rm c}, 2}$",
     }
-    if param_labels is None:
+    if param_labels is {}:
         param_labels = default_param_labels
+        
+    # Manage parameters to transform
+    transform_func = lambda x: x  # Identity by default
+    orig_param = None
+    new_param = None
+    
+    if transform_params is not None:
+        if not all(k in transform_params for k in ['param', 'transform_param', 'transform_func']):
+            raise ValueError("transform_params must contain 'param', 'transform_param', and 'transform_func' keys")
+            
+        transform_func = transform_params['transform_func']
+        orig_param = transform_params['param']
+        new_param = transform_params['transform_param']
+        new_param_latex = transform_params.get('transform_param_latex')
+        if new_param_latex and new_param not in param_labels:
+            param_labels[new_param] = new_param_latex
 
     # Process Fisher matrices
     if fishers is not None:
@@ -954,18 +870,59 @@ def make_triangle_plot(
         # Convert shade_fisher to list if needed
         if isinstance(shade_fisher, bool):
             shade_fisher = [shade_fisher] * len(fishers)
+            
+        # Convert ls_fisher to list if needed
+        if isinstance(ls_fisher, str):
+            ls_fisher = [ls_fisher] * len(fishers)
+            
+        # Convert lw_fisher to list if needed
+        if isinstance(lw_fisher, (int, float)):
+            lw_fisher = [lw_fisher] * len(fishers)
 
         for i, fisher in enumerate(fishers):
-            fishchain = Chain.from_covariance(
-                mean=fisher.param_fiducial,
-                covariance=fisher.fisher_matrix_inv,
-                columns=fisher.param_names,
-                color=colors[i],
-                linestyle=ls_fisher,
-                linewidth=lw_fisher,
-                shade=shade_fisher[i],
-                name=fisher_labels[i],
-            )
+            # Get parameter names and possibly transform them
+            param_names = fisher.param_names
+            
+            # Handle parameter transformation if requested
+            if transform_params is not None and orig_param in param_names:
+                # Create a copy of parameter names and fiducials
+                param_names = list(param_names)
+                fiducial_values = list(fisher.param_fiducial)
+                
+                # Find index of parameter to transform
+                idx = param_names.index(orig_param)
+                
+                # Transform fiducial value
+                fiducial_values[idx] = transform_func(fiducial_values[idx])
+                
+                # Replace parameter name
+                param_names[idx] = new_param
+                
+                # Create transformed covariance matrix
+                cov = fisher.inverse_fisher_matrix()
+                
+                fishchain = Chain.from_covariance(
+                    mean=fiducial_values,
+                    covariance=cov,
+                    columns=param_names,
+                    color=colors[i % len(colors)],
+                    linestyle=ls_fisher[i] if isinstance(ls_fisher, list) else ls_fisher,
+                    linewidth=lw_fisher[i] if isinstance(lw_fisher, list) else lw_fisher,
+                    shade=shade_fisher[i],
+                    name=fisher_labels[i],
+                )
+            else:
+                # Use standard Chain.from_covariance without transformation
+                fishchain = Chain.from_covariance(
+                    mean=fisher.param_fiducial,
+                    covariance=fisher.inverse_fisher_matrix(),
+                    columns=fisher.param_names,
+                    color=colors[i % len(colors)],
+                    linestyle=ls_fisher[i] if isinstance(ls_fisher, list) else ls_fisher,
+                    linewidth=lw_fisher[i] if isinstance(lw_fisher, list) else lw_fisher,
+                    shade=shade_fisher[i],
+                    name=fisher_labels[i],
+                )
             c.add_chain(fishchain)
 
     # Process MCMC chains
@@ -979,38 +936,165 @@ def make_triangle_plot(
 
         start_color = len(fishers) if fishers is not None else 0
         for j, chain in enumerate(chains):
-            chain_nonzero = chain[chain["weight"] > 0]
+            # Filter chains with zero weight if weight column exists
+            if "weight" in chain.columns:
+                chain_nonzero = chain[chain["weight"] > 0]
+            else:
+                chain_nonzero = chain
+            
+            # Transform parameter if requested
+            if transform_params is not None and orig_param in chain_nonzero.columns:
+                chain_nonzero = chain_nonzero.copy()
+                chain_nonzero[new_param] = transform_func(chain_nonzero[orig_param])
+            
             c.add_chain(
                 Chain(
                     samples=chain_nonzero,
                     name=chain_labels[j],
-                    color=colors[start_color + j],
+                    color=colors[(start_color + j) % len(colors)],
                     shade=shade_chains[j],
                 )
             )
 
     # Add truth values if provided
     if truth_values is not None:
-        c.add_truth(Truth(location=truth_values))
+        # Transform truth value if needed
+        if transform_params is not None and orig_param in truth_values:
+            truth_copy = truth_values.copy()
+            truth_copy[new_param] = transform_func(truth_values[orig_param])
+            c.add_truth(Truth(location=truth_copy))
+        else:
+            c.add_truth(Truth(location=truth_values))
 
     # Configure plot settings
+    
     c.set_plot_config(
         PlotConfig(
             sigma2d=False,
             summary=True,
             plot_point=True,
-            legend_kwargs={"fontsize": fontsize},
+            legend_kwargs=legend_kwargs,
             labels=param_labels,
+            label_font_size=label_font_size,
+            tick_font_size=tick_font_size,
+            figsize=figsize,
+            extents=extents
         )
     )
-    c.set_override(ChainConfig(smooth=smooth, kde=kde, bins=bins))
+    
+    c.set_override(
+        ChainConfig(
+            smooth=smooth, 
+            kde=kde, 
+            bins=bins,
+            shade_alpha=shade_alpha
+        )
+    )
 
-    # Create and return the plot
+    # Transform parameters list if needed
+    if params is not None and transform_params is not None and orig_param in params:
+        params = list(params)
+        idx = params.index(orig_param)
+        params[idx] = new_param
+
+    # Create the plot
     fig = c.plotter.plot(columns=params)
-    if savefile is not None and isinstance(savefile, str):
-        fig.savefig(savefile)
+
+    # Save the plot if requested
+    if savefile is not None:
+        fig.savefig(savefile, bbox_inches="tight", dpi=save_dpi)
+        print(f"Plot saved to: {savefile}")
+    elif save_plot:
+        if plot_filename is None:
+            plot_filename = "triangle_plot"
+        full_path = f"{savepath}{plot_filename}{file_format}"
+        fig.savefig(full_path, bbox_inches="tight", dpi=save_dpi)
+        print(f"Plot saved to: {full_path}")
+
     return fig
 
+def plot_chain_summary(chains, chain_names=None, truth_values=None, output_file=None, 
+                       show_errorbars=True, linestyle='--', linecolor='black', 
+                       blind_params=None, plot_config_kwargs={}):
+    """
+    Create a summary plot of MCMC chains using ChainConsumer.
+    
+    This function provides a simpler interface for creating summary plots of chains,
+    useful for visualizing parameter constraints in a compact format.
+    
+    Parameters
+    ----------
+    chains : list
+        List of pandas DataFrames containing MCMC chains
+    chain_names : list, optional
+        List of names for each chain to display in the legend
+    truth_values : dict, optional
+        Dictionary of true parameter values to plot as vertical lines
+    output_file : str, optional
+        Path to save the output figure. If None, the figure is not saved
+    show_errorbars : bool, optional
+        Whether to show error bars on the summary plot (default: True)
+    linestyle : str, optional
+        Line style for truth values (default: '--')
+    linecolor : str, optional
+        Color for truth value lines (default: 'black')
+    blind_params : list, optional
+        List of parameter names to blind (exclude) from the plot
+    
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The generated summary plot figure
+    
+    Examples
+    --------
+    >>> fig = plot_chain_summary(
+    ...     chains=[chain1, chain2],
+    ...     chain_names=['MCMC Run 1', 'MCMC Run 2'],
+    ...     truth_values=fiducial_values,
+    ...     output_file='./results/chain_summary.png'
+    ... )
+    """
+    # Initialize ChainConsumer
+    c = ChainConsumer()
+    
+    # Add chains to ChainConsumer
+    if not isinstance(chains, list):
+        chains = [chains]
+        
+    # Set default chain names if not provided
+    if chain_names is None:
+        chain_names = [f'Chain {i+1}' for i in range(len(chains))]
+    elif not isinstance(chain_names, list):
+        chain_names = [chain_names]
+    
+    # Add each chain
+    for i, chain in enumerate(chains):
+        c.add_chain(Chain(samples=chain, name=chain_names[i]))
+    
+    # Add truth values if provided
+    if truth_values is not None:
+        c.add_truth(Truth(location=truth_values, linestyle=linestyle, color=linecolor))
+    
+    # Configure plot settings
+    plot_config = PlotConfig(**plot_config_kwargs)
+    
+    # Handle blind parameters
+    if blind_params:
+        plot_config.blind = blind_params
+    
+    # Set the plot configuration
+    c.set_plot_config(plot_config)
+    
+    # Create the plot
+    fig = c.plotter.plot_summary(errorbar=show_errorbars)
+    
+    # Save the figure if output path is provided
+    if output_file is not None:
+        fig.savefig(output_file, bbox_inches="tight")
+        print(f"Plot saved to: {output_file}")
+    
+    return c, fig
 
 def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
     """Load Nautilus chains from a text file."""
@@ -1110,7 +1194,7 @@ def load_montepython_chains(
     chain_path = os.path.join(base_path, chain_root)
     param_file = os.path.join(base_path, chain_root + ".paramnames")
     log_param_file = os.path.join(base_path, "log.param")
-
+    original_param_names = param_names
     # Read parameter names if not provided
     if param_names is None:
         try:
@@ -1124,7 +1208,7 @@ def load_montepython_chains(
         truth_values = parse_log_param(log_param_file)
         print(f"Successfully read truth values for {len(truth_values)} parameters")
     except Exception as e:
-        print(f"Warning: Could not read truth values: {str(e)}")
+        print(f"Warning: could not read truth values: {str(e)}")
         truth_values = None
 
     # Convert parameter names if dictionary provided
@@ -1198,3 +1282,98 @@ def load_montepython_chains(
                 print(f"Warning: Failed to compute derived parameter {new_param}: {str(e)}")
 
     return combined_chain
+
+
+class FishConsumer:
+    """Convenience wrapper that exposes the fishconsumer helpers as instance methods."""
+
+    def __init__(self, named_colors=None, barplot_colors=None):
+        self.named_colors = copy.deepcopy(named_colors or allnicecolors)
+        self.barplot_colors = copy.deepcopy(barplot_colors or usercolors_barplot)
+
+    def display_colors(self, colors=None, figsize=(6, 6)):
+        color_list = colors if colors is not None else self.named_colors
+        return display_colors(color_list, figsize=figsize)
+
+    def clamp(self, x):
+        return clamp(x)
+
+    def hex2rgb(self, hexcode):
+        return hex2rgb(hexcode)
+
+    def rgb2hex(self, rgb_tuple):
+        return rgb2hex(rgb_tuple)
+
+    def add_mathrm(self, s):
+        return add_mathrm(s)
+
+    def replace_latex_name(self, fisher_matrix, old_str, new_str):
+        return replace_latex_name(fisher_matrix, old_str, new_str)
+
+    def replace_latex_style(self, fmat, replace_dict):
+        return replace_latex_style(fmat, replace_dict)
+
+    def fishtable_to_pandas(self, *args, **kwargs):
+        return fishtable_to_pandas(*args, **kwargs)
+
+    def customize_barh(self, data, **kwargs):
+        if "cols_dict" not in kwargs or kwargs["cols_dict"] is None:
+            kwargs["cols_dict"] = dict(self.barplot_colors)
+        return customize_barh(data, **kwargs)
+
+    def perc_to_abs(self, perc_sig, fid):
+        return perc_to_abs(perc_sig, fid)
+
+    def log_fidu_to_fidu(self, logfid):
+        return log_fidu_to_fidu(logfid)
+
+    def sigma_fidu(self, log_fidu, sigma_perc_log, sign):
+        return sigma_fidu(log_fidu, sigma_perc_log, sign)
+
+    def gaussian(self, x, mu, sigma):
+        return gaussian(x, mu, sigma)
+
+    def n_sigmas(self, log_fidu, sigma_log, nsigmas=1):
+        return n_sigmas(log_fidu, sigma_log, nsigmas=nsigmas)
+
+    def arrays_gaussian(self, log_fidu, perc_sigma, nsigmas=1):
+        return arrays_gaussian(log_fidu, perc_sigma, nsigmas=nsigmas)
+
+    def prepare_fishers(
+        self,
+        tupcases,
+        fishers_database_dict,
+        colors_todisplay=None,
+        display_namedcolors=False,
+    ):
+        palette = colors_todisplay if colors_todisplay is not None else copy.deepcopy(self.barplot_colors)
+        return prepare_fishers(
+            tupcases,
+            fishers_database_dict,
+            colors_todisplay=palette,
+            display_namedcolors=display_namedcolors,
+        )
+
+    def choose_fish_toplot(self, *args, **kwargs):
+        if "named_colors_list" not in kwargs or kwargs["named_colors_list"] is None:
+            kwargs["named_colors_list"] = copy.deepcopy(self.named_colors)
+        return choose_fish_toplot(*args, **kwargs)
+
+    def prepare_settings_plot(self, *args, **kwargs):
+        return prepare_settings_plot(*args, **kwargs)
+
+    def make_triangle_plot(self, *args, **kwargs):
+        return make_triangle_plot(*args, **kwargs)
+
+    def load_Nautilus_chains_from_txt(self, filename, param_cols, log_weights=False):
+        return load_Nautilus_chains_from_txt(filename, param_cols, log_weights=log_weights)
+
+    def parse_log_param(self, log_file_path):
+        return parse_log_param(log_file_path)
+
+    def load_montepython_chains(self, *args, **kwargs):
+        return load_montepython_chains(*args, **kwargs)
+
+
+DEFAULT_FISH_CONSUMER = FishConsumer()
+

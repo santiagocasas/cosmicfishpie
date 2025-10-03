@@ -727,6 +727,8 @@ def init(
             nonlin_prmod = nonlin_prtz[gscp_nonlin_model]
             for key in nonlin_prmod.keys():
                 Spectrononlinearparams[key] = nonlin_prmod[key]
+    if spectrononlinearpars is not None:
+        Spectrononlinearparams.update(spectrononlinearpars)
 
     global Spectrobiasparams
     Spectrobiasparams = dict()

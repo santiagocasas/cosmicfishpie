@@ -10,7 +10,6 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 from chainconsumer import Chain, ChainConfig, ChainConsumer, PlotConfig, Truth
-from numpy.random import multivariate_normal
 
 import cosmicfishpie.analysis.colors as fc
 import cosmicfishpie.analysis.fisher_plot_analysis as fpa
@@ -68,22 +67,22 @@ barplot_filter_names = [
 def display_colors(colors, figsize=(6, 6)):
     """
     Display a pie chart of colors with their names and hex codes.
-    
+
     This function creates a visual representation of a color palette by generating
     a pie chart where each slice represents a color. Each color is labeled with its
     name and hex code. The labels are positioned around the pie chart for clear visibility.
-    
+
     Parameters:
-        colors (list of tuples): A list of tuples containing the name and hex code 
-                                for each color. Each tuple should be in the format 
-                                (name, hex_code), where name is a string and hex_code 
+        colors (list of tuples): A list of tuples containing the name and hex code
+                                for each color. Each tuple should be in the format
+                                (name, hex_code), where name is a string and hex_code
                                 is a string representing a valid hex color (e.g., "#FF0000").
-        figsize (tuple, optional): The figure size in inches as (width, height). 
+        figsize (tuple, optional): The figure size in inches as (width, height).
                                   Defaults to (6, 6).
-    
+
     Returns:
         None: The function displays the pie chart but does not return any value.
-    
+
     Example:
         >>> colors = [("Red", "#FF0000"), ("Green", "#00FF00"), ("Blue", "#0000FF")]
         >>> display_colors(colors)
@@ -140,12 +139,12 @@ def display_colors(colors, figsize=(6, 6)):
 def clamp(x):
     """
     Clamp a value between 0 and 255.
-    
+
     This function ensures a value is within the valid range for RGB color components.
-    
+
     Parameters:
         x (int or float): The value to clamp
-    
+
     Returns:
         int: The clamped value between 0 and 255
     """
@@ -155,10 +154,10 @@ def clamp(x):
 def hex2rgb(hexcode):
     """
     Convert a hexadecimal color code to RGB tuple.
-    
+
     Parameters:
         hexcode (str): A hexadecimal color code string (e.g., "#FF0000")
-    
+
     Returns:
         tuple: An RGB tuple with values from 0-255 (e.g., (255, 0, 0))
     """
@@ -168,10 +167,10 @@ def hex2rgb(hexcode):
 def rgb2hex(rgb_tuple):
     """
     Convert an RGB tuple to a hexadecimal color code.
-    
+
     Parameters:
         rgb_tuple (tuple): An RGB tuple with values typically between 0-1 or 0-255
-    
+
     Returns:
         str: A hexadecimal color code string (e.g., "#FF0000")
     """
@@ -252,7 +251,7 @@ def fishtable_to_pandas(
         If return_data_bar is False, returns a tuple of two pandas DataFrames (fish_df, fish_df_abs).
         If return_data_bar is True, returns a dictionary with keys as formatted fisher names and values as relative errors.
     """
-    
+
     fishers_totable_marg = fishAnalysis.marginalise(paramstab, update_names=False)
     fishers_totable_marg_list = fishers_totable_marg.get_fisher_list()
     table_data = collections.OrderedDict()
@@ -578,7 +577,7 @@ def choose_fish_toplot(
             fishers_toplot.add_fisher_matrix(ff)
             if colors_toplot is None:
                 cols_toplot.append(list(cols_dict.values())[ii])
-                colnames_toplot.append(list(colsDict.keys())[ii])
+                colnames_toplot.append(list(cols_dict.keys())[ii])
             else:
                 cols_toplot.append(colors_toplot[ii])
                 colnames_toplot.append(str(colors_toplot[ii]))
@@ -727,7 +726,7 @@ def make_triangle_plot(
     plot_filename=None,
     file_format=".pdf",
     save_dpi=200,
-    savefile=None
+    savefile=None,
 ):
     """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
 
@@ -812,13 +811,13 @@ def make_triangle_plot(
     ...     chain_labels=['MCMC'],
     ...     truth_values={'Omegam': 0.3, 'h': 0.7}
     ... )
-    
+
     >>> # Plot with parameter transformation
     >>> fig = make_triangle_plot(
     ...     fishers=[fisher1],
     ...     fisher_labels=['Fisher'],
     ...     transform_params={
-    ...         'param': 'sigma8', 
+    ...         'param': 'sigma8',
     ...         'transform_param': 'S8',
     ...         'transform_param_latex': r'$S_8$',
     ...         'transform_func': lambda x: x * np.sqrt(0.3/x),
@@ -843,22 +842,27 @@ def make_triangle_plot(
         "bI_c1": r"$bI_{{\rm c}, 1}$",
         "bI_c2": r"$bI_{{\rm c}, 2}$",
     }
-    if param_labels is {}:
+    if param_labels == {}:
         param_labels = default_param_labels
-        
+
     # Manage parameters to transform
-    transform_func = lambda x: x  # Identity by default
+    def identity(x):
+        return x
+
+    transform_func = identity
     orig_param = None
     new_param = None
-    
+
     if transform_params is not None:
-        if not all(k in transform_params for k in ['param', 'transform_param', 'transform_func']):
-            raise ValueError("transform_params must contain 'param', 'transform_param', and 'transform_func' keys")
-            
-        transform_func = transform_params['transform_func']
-        orig_param = transform_params['param']
-        new_param = transform_params['transform_param']
-        new_param_latex = transform_params.get('transform_param_latex')
+        if not all(k in transform_params for k in ["param", "transform_param", "transform_func"]):
+            raise ValueError(
+                "transform_params must contain 'param', 'transform_param', and 'transform_func' keys"
+            )
+
+        transform_func = transform_params["transform_func"]
+        orig_param = transform_params["param"]
+        new_param = transform_params["transform_param"]
+        new_param_latex = transform_params.get("transform_param_latex")
         if new_param_latex and new_param not in param_labels:
             param_labels[new_param] = new_param_latex
 
@@ -870,11 +874,11 @@ def make_triangle_plot(
         # Convert shade_fisher to list if needed
         if isinstance(shade_fisher, bool):
             shade_fisher = [shade_fisher] * len(fishers)
-            
+
         # Convert ls_fisher to list if needed
         if isinstance(ls_fisher, str):
             ls_fisher = [ls_fisher] * len(fishers)
-            
+
         # Convert lw_fisher to list if needed
         if isinstance(lw_fisher, (int, float)):
             lw_fisher = [lw_fisher] * len(fishers)
@@ -882,25 +886,25 @@ def make_triangle_plot(
         for i, fisher in enumerate(fishers):
             # Get parameter names and possibly transform them
             param_names = fisher.param_names
-            
+
             # Handle parameter transformation if requested
             if transform_params is not None and orig_param in param_names:
                 # Create a copy of parameter names and fiducials
                 param_names = list(param_names)
                 fiducial_values = list(fisher.param_fiducial)
-                
+
                 # Find index of parameter to transform
                 idx = param_names.index(orig_param)
-                
+
                 # Transform fiducial value
                 fiducial_values[idx] = transform_func(fiducial_values[idx])
-                
+
                 # Replace parameter name
                 param_names[idx] = new_param
-                
+
                 # Create transformed covariance matrix
                 cov = fisher.inverse_fisher_matrix()
-                
+
                 fishchain = Chain.from_covariance(
                     mean=fiducial_values,
                     covariance=cov,
@@ -941,12 +945,12 @@ def make_triangle_plot(
                 chain_nonzero = chain[chain["weight"] > 0]
             else:
                 chain_nonzero = chain
-            
+
             # Transform parameter if requested
             if transform_params is not None and orig_param in chain_nonzero.columns:
                 chain_nonzero = chain_nonzero.copy()
                 chain_nonzero[new_param] = transform_func(chain_nonzero[orig_param])
-            
+
             c.add_chain(
                 Chain(
                     samples=chain_nonzero,
@@ -967,7 +971,7 @@ def make_triangle_plot(
             c.add_truth(Truth(location=truth_values))
 
     # Configure plot settings
-    
+
     c.set_plot_config(
         PlotConfig(
             sigma2d=False,
@@ -978,18 +982,11 @@ def make_triangle_plot(
             label_font_size=label_font_size,
             tick_font_size=tick_font_size,
             figsize=figsize,
-            extents=extents
+            extents=extents,
         )
     )
-    
-    c.set_override(
-        ChainConfig(
-            smooth=smooth, 
-            kde=kde, 
-            bins=bins,
-            shade_alpha=shade_alpha
-        )
-    )
+
+    c.set_override(ChainConfig(smooth=smooth, kde=kde, bins=bins, shade_alpha=shade_alpha))
 
     # Transform parameters list if needed
     if params is not None and transform_params is not None and orig_param in params:
@@ -1013,15 +1010,24 @@ def make_triangle_plot(
 
     return fig
 
-def plot_chain_summary(chains, chain_names=None, truth_values=None, output_file=None, 
-                       show_errorbars=True, linestyle='--', linecolor='black', 
-                       blind_params=None, plot_config_kwargs={}):
+
+def plot_chain_summary(
+    chains,
+    chain_names=None,
+    truth_values=None,
+    output_file=None,
+    show_errorbars=True,
+    linestyle="--",
+    linecolor="black",
+    blind_params=None,
+    plot_config_kwargs={},
+):
     """
     Create a summary plot of MCMC chains using ChainConsumer.
-    
+
     This function provides a simpler interface for creating summary plots of chains,
     useful for visualizing parameter constraints in a compact format.
-    
+
     Parameters
     ----------
     chains : list
@@ -1040,12 +1046,12 @@ def plot_chain_summary(chains, chain_names=None, truth_values=None, output_file=
         Color for truth value lines (default: 'black')
     blind_params : list, optional
         List of parameter names to blind (exclude) from the plot
-    
+
     Returns
     -------
     matplotlib.figure.Figure
         The generated summary plot figure
-    
+
     Examples
     --------
     >>> fig = plot_chain_summary(
@@ -1057,44 +1063,45 @@ def plot_chain_summary(chains, chain_names=None, truth_values=None, output_file=
     """
     # Initialize ChainConsumer
     c = ChainConsumer()
-    
+
     # Add chains to ChainConsumer
     if not isinstance(chains, list):
         chains = [chains]
-        
+
     # Set default chain names if not provided
     if chain_names is None:
-        chain_names = [f'Chain {i+1}' for i in range(len(chains))]
+        chain_names = [f"Chain {i+1}" for i in range(len(chains))]
     elif not isinstance(chain_names, list):
         chain_names = [chain_names]
-    
+
     # Add each chain
     for i, chain in enumerate(chains):
         c.add_chain(Chain(samples=chain, name=chain_names[i]))
-    
+
     # Add truth values if provided
     if truth_values is not None:
         c.add_truth(Truth(location=truth_values, linestyle=linestyle, color=linecolor))
-    
+
     # Configure plot settings
     plot_config = PlotConfig(**plot_config_kwargs)
-    
+
     # Handle blind parameters
     if blind_params:
         plot_config.blind = blind_params
-    
+
     # Set the plot configuration
     c.set_plot_config(plot_config)
-    
+
     # Create the plot
     fig = c.plotter.plot_summary(errorbar=show_errorbars)
-    
+
     # Save the figure if output path is provided
     if output_file is not None:
         fig.savefig(output_file, bbox_inches="tight")
         print(f"Plot saved to: {output_file}")
-    
+
     return c, fig
+
 
 def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
     """Load Nautilus chains from a text file."""
@@ -1346,7 +1353,9 @@ class FishConsumer:
         colors_todisplay=None,
         display_namedcolors=False,
     ):
-        palette = colors_todisplay if colors_todisplay is not None else copy.deepcopy(self.barplot_colors)
+        palette = (
+            colors_todisplay if colors_todisplay is not None else copy.deepcopy(self.barplot_colors)
+        )
         return prepare_fishers(
             tupcases,
             fishers_database_dict,
@@ -1376,4 +1385,3 @@ class FishConsumer:
 
 
 DEFAULT_FISH_CONSUMER = FishConsumer()
-

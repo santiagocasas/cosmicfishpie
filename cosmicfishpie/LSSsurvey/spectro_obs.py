@@ -107,11 +107,11 @@ class ComputeGalSpectro:
                                        If False all nonlinear effects will be included in the computation
                                        If False all nonlinear effects will be included in the computation
         FoG_switch                    : bool
-                                       If True and `linear_switch` is True, then the finger of god effect will be modelled
-                                       If True and `linear_switch` is True, then the finger of god effect will be modelled
+                                       If True and `linear_switch` is False, then the finger of god effect will be modelled
+                                       If True and `linear_switch` is False, then the finger of god effect will be modelled
         APbool                        : bool
-                                       If True and `linear_switch` is True, then the Alcock-Paczynski effect will be considered
-                                       If True and `linear_switch` is True, then the Alcock-Paczynski effect will be considered
+                                       If True, the Alcock-Paczynski effect will be considered
+                                       If True, the Alcock-Paczynski effect will be considered
         fix_cosmo_nl_terms            : bool
                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the fiducial cosmology values
                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the fiducial cosmology values
@@ -181,8 +181,9 @@ class ComputeGalSpectro:
         # Load the Non Linear Nuisance Parameters
         self.fiducial_spectrononlinearpars = deepcopy(self.config.Spectrononlinearparams)
         if spectrononlinearpars is None:
-            spectrononlinearpars = self.fiducial_spectrononlinearpars
-        self.spectrononlinearpars = spectrononlinearpars
+            self.spectrononlinearpars = self.fiducial_spectrononlinearpars
+        else:
+            self.spectrononlinearpars = spectrononlinearpars
 
         self.fiducial_IMbiaspars = deepcopy(self.config.IMbiasparams)
         if IMbiaspars is None:
@@ -272,8 +273,8 @@ class ComputeGalSpectro:
         self.nonlinear_parametrization = deepcopy(
             self.specs.get("nonlinear_parametrization", {"default": ""})
         )
-        self.vary_sigmap = self.nonlinear_parametrization.get("vary_sigmap", False)
-        self.vary_sigmav = self.nonlinear_parametrization.get("vary_sigmav", False)
+        self.rescale_sigmap = self.nonlinear_parametrization.get("rescale_sigmap", False)
+        self.rescale_sigmav = self.nonlinear_parametrization.get("rescale_sigmav", False)
 
     def set_spectro_dz_specs(self):
         """Updates the spectroscopic redshift error"""
@@ -691,7 +692,7 @@ class ComputeGalSpectro:
             sp = 0
         else:
             sp = np.sqrt(self.P_ThetaTheta_Moments(zz, 2))
-            if self.vary_sigmap:
+            if self.rescale_sigmap:
                 sp *= self.nuisance.vectorized_gcsp_rescale_sigmapv_at_z(zz, sigma_key="sigmap")
         return sp
 
@@ -716,7 +717,7 @@ class ComputeGalSpectro:
             f1 = self.P_ThetaTheta_Moments(zz, 1)
             f2 = self.P_ThetaTheta_Moments(zz, 2)
             sv = np.sqrt(f0 + 2 * mu**2 * f1 + mu**2 * f2)
-            if self.vary_sigmav:
+            if self.rescale_sigmav:
                 sv *= self.nuisance.vectorized_gcsp_rescale_sigmapv_at_z(zz, sigma_key="sigmav")
         return sv
 

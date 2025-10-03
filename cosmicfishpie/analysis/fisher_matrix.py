@@ -94,6 +94,7 @@ class fisher_matrix:
     def get_param_names_fiducial_dict(self):
         """:returns: a dictionary with parameter names as keys and fiducial values as values."""
         return dict(zip(self.param_names, self.param_fiducial))
+
     # -----------------------------------------------------------------------------------
 
     # advanced class getters:

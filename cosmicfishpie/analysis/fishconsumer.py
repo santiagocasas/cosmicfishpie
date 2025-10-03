@@ -874,7 +874,7 @@ def make_triangle_plot(
     smooth=3,
     kde=False,
     bins=None,
-    savefile=None,
+    savefile=None
 ):
     """Create a triangle plot from Fisher matrices and/or MCMC chains using ChainConsumer.
 
@@ -1007,7 +1007,7 @@ def make_triangle_plot(
 
     # Create and return the plot
     fig = c.plotter.plot(columns=params)
-    if savefile is not None and isinstance(savefile, str):
+    if savefile is not None and type(savefile)==str:
         fig.savefig(savefile)
     return fig
 

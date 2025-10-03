@@ -8,12 +8,12 @@ joblib==1.4.2
 jupyter==1.1.1
 matplotlib==3.10.6
 nautilus-sampler==1.0.5
-chainconsumer
+chainconsumer>=1.2.0,<2.0.0
 numpy
 pandas
 PyYAML==6.0.2
 scikit-learn==1.5.2
-SciPy
+SciPy>=1.8.0
 seaborn
 uv==0.8.22
 colossus

@@ -20,7 +20,7 @@ classifiers = [
 authors = [
     {name = "Santiago Casas, Matteo Martinelli, Sefa Pamuk, Sabarish V.M.", email = "s.casas@protonmail.com"}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"
 license = {file = "LICENSE"}
 
 [project.urls]

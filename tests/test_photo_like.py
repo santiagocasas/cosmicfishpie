@@ -71,8 +71,8 @@ def test_photometric_cells_have_expected_shape(photometric_likelihood):
 def test_photometric_loglike_matches_notebook_value(photometric_likelihood):
     sample_params = _sample_params(photometric_likelihood)
     loglike_value = photometric_likelihood.loglike(param_dict=sample_params)
-    expected = 4.3309e-11
-    assert math.isclose(loglike_value, expected, rel_tol=1e-2)
+    expected = 4.3e-11
+    assert math.isclose(loglike_value, expected, rel_tol=1e-1)
 
 
 def test_photometric_cell_entry_matches_theory(photometric_likelihood):

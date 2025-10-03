@@ -19,10 +19,11 @@ This module contains tests for boundary conditions, numerical edge cases,
 and performance characteristics.
 """
 
+import time
+import warnings
+
 import numpy as np
 import pytest
-import warnings
-import time
 
 from cosmicfishpie.LSSsurvey.spectro_obs import ComputeGalSpectro
 

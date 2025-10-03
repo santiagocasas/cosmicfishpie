@@ -125,7 +125,7 @@ class TestNumericalStability:
 
     def test_AP_effect_limits(self, spectro_obs):
         """Test AP effect in limiting cases."""
-        z, k, mu = 1.0, 0.1, 0.5
+        z, _, _ = 1.0, 0.1, 0.5
 
         # With identical cosmologies, AP effects should be minimal
         if spectro_obs.cosmopars == spectro_obs.fiducial_cosmopars:
@@ -236,7 +236,7 @@ class TestArrayHandling:
 
     def test_empty_arrays(self, spectro_obs):
         """Test with empty arrays."""
-        z, k, mu = 1.0, 0.1, 0.5
+        _, k, mu = 1.0, 0.1, 0.5
         empty_array = np.array([])
 
         # This should either work or raise a clear error

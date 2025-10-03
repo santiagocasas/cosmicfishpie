@@ -10,7 +10,6 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 from chainconsumer import Chain, ChainConfig, ChainConsumer, PlotConfig, Truth
-from numpy.random import multivariate_normal
 
 import cosmicfishpie.analysis.colors as fc
 import cosmicfishpie.analysis.fisher_plot_analysis as fpa
@@ -578,7 +577,7 @@ def choose_fish_toplot(
             fishers_toplot.add_fisher_matrix(ff)
             if colors_toplot is None:
                 cols_toplot.append(list(cols_dict.values())[ii])
-                colnames_toplot.append(list(colsDict.keys())[ii])
+                colnames_toplot.append(list(cols_dict.keys())[ii])
             else:
                 cols_toplot.append(colors_toplot[ii])
                 colnames_toplot.append(str(colors_toplot[ii]))
@@ -843,11 +842,12 @@ def make_triangle_plot(
         "bI_c1": r"$bI_{{\rm c}, 1}$",
         "bI_c2": r"$bI_{{\rm c}, 2}$",
     }
-    if param_labels is {}:
+    if param_labels == {}:
         param_labels = default_param_labels
         
     # Manage parameters to transform
-    transform_func = lambda x: x  # Identity by default
+    def identity(x):  return x
+    transform_func = identity
     orig_param = None
     new_param = None
     

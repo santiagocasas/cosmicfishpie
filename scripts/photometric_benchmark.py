@@ -7,13 +7,11 @@ import json
 import os
 import subprocess
 import time
-
-import seaborn as sns
+from pathlib import Path
 
 from cosmicfishpie.analysis import fisher_plot_analysis as fpa
 from cosmicfishpie.fishermatrix import cosmicfish
 
-snscolors = sns.color_palette("colorblind")
 envkey = "OMP_NUM_THREADS"
 print("The value of {:s} is: ".format(envkey), os.environ.get(envkey))
 os.environ[envkey] = str(8)
@@ -28,8 +26,6 @@ fiducial = {
     "h": 0.67,
     "ns": 0.96,
     "sigma8": 0.815584,
-    "w0": -1.0,
-    "wa": 0.0,
     "mnu": 0.06,
     "Neff": 3.044,
 }
@@ -37,21 +33,86 @@ fiducial = {
 
 # Define the observables you are interested in
 observables = [["GCph"], ["WL"], ["GCph", "WL"]]
-codes = ["symbolic", "camb", "class"]
+codes = ["class", "symbolic", "camb"]
 # Input options for CosmicFish (global options)
 BASE_OUTROOT = "Euclid-Photo-ISTF-Pess-Benchmark_"
+
+###############################################
+# Path Resolution Helpers
+###############################################
+
+
+def _resolve_repo_root():
+    """Attempt to find the repository root by looking for pyproject.toml upward."""
+    start = Path(__file__).resolve()
+    for parent in [start.parent] + list(start.parents):
+        if (parent / "pyproject.toml").is_file():
+            return parent
+    # Fallback: assume scripts/.. is root
+    return start.parent.parent
+
+
+def _resolve_configs_dir(repo_root: Path):
+    """Return the configs directory (cosmicfishpie/configs)."""
+    candidate = repo_root / "cosmicfishpie" / "configs"
+    if candidate.is_dir():
+        return candidate
+    # fallback to package install
+    try:
+        import cosmicfishpie as _cfp_pkg  # type: ignore
+
+        pkg_dir = Path(_cfp_pkg.__file__).resolve().parent
+        candidate_pkg = pkg_dir / "configs"
+        if candidate_pkg.is_dir():
+            return candidate_pkg
+    except Exception:
+        pass
+    return candidate  # even if missing
+
+
+def _resolve_survey_specs_dir(configs_dir: Path):
+    d = configs_dir / "default_survey_specifications"
+    return d
+
+
+def _resolve_boltzmann_dirs(repo_root: Path):
+    boltz_root = repo_root / "default_boltzmann_yaml_files"
+    return boltz_root
+
+
+_repo_root = _resolve_repo_root()
+_configs_dir = _resolve_configs_dir(_repo_root)
+_survey_specs_dir = _resolve_survey_specs_dir(_configs_dir)
+_boltz_root = _resolve_boltzmann_dirs(_configs_dir)
+
+print(f"[benchmark] repo_root:        {_repo_root}", "is dir:", _repo_root.is_dir())
+print(f"[benchmark] configs_dir:      {_configs_dir}", "is dir:", _configs_dir.is_dir())
+print(f"[benchmark] survey_specs_dir: {_survey_specs_dir}", "is dir:", _survey_specs_dir.is_dir())
+print(f"[benchmark] boltzmann_dir:    {_boltz_root}", "is dir:", _boltz_root.is_dir())
+
+
 options = {
     "accuracy": 1,
     "outroot": BASE_OUTROOT,
-    "results_dir": "results/",
+    "results_dir": "scripts/benchmark_results/",
     "derivatives": "3PT",
     "feedback": 1,
     "survey_name": "Euclid",
-    "specs_dir": "../cosmicfishpie/configs/default_survey_specifications/",
+    "specs_dir": str(_survey_specs_dir) + os.sep,
     "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
+    "camb_config_yaml": str(_boltz_root / "camb" / "default.yaml"),
+    "class_config_yaml": str(_boltz_root / "class" / "fast_photo.yaml"),
+    "symbolic_config_yaml": str(_boltz_root / "symbolic" / "default.yaml"),
     "cosmo_model": "LCDM",
     "code": "dummy",
 }
+
+# Sanity check: confirm target photometric YAML exists (informational only)
+_photo_yaml = _survey_specs_dir / "Euclid-Photometric-ISTF-Pessimistic.yaml"
+if not _photo_yaml.is_file():
+    print(f"[benchmark][WARNING] Expected photometric spec file missing: {_photo_yaml}")
+else:
+    print(f"[benchmark] Found photometric spec file: {_photo_yaml}")
 
 freepars = {
     "Omegam": 0.01,
@@ -137,8 +198,12 @@ extra_meta = {
     "derivatives": options.get("derivatives"),
     "cosmo_model": options.get("cosmo_model"),
     "survey_name": options.get("survey_name"),
-    "specs_dir": options.get("specs_dir"),
     "survey_name_photo": options.get("survey_name_photo"),
+    "specs_dir": options.get("specs_dir"),
+    "configs_dir": str(_configs_dir),
+    "camb_config_yaml": options.get("camb_config_yaml"),
+    "class_config_yaml": options.get("class_config_yaml"),
+    "symbolic_config_yaml": options.get("symbolic_config_yaml"),
     "fiducial_parameters": list(fiducial.keys()),
     "free_parameters": list(freepars.keys()),
     "num_fishers": len(fisher_list),

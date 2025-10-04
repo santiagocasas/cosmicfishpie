@@ -2,7 +2,7 @@
 Test suite for cosmicfishpie.configs.config module.
 
 This module tests configuration utilities, YAML loading,
-and parameter validation functions to improve coverage from 46% to 60%.
+and parameter validation functions to improve coverage from ~30% to 48%.
 """
 
 import os

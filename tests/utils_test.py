@@ -2,7 +2,7 @@
 Test suite for cosmicfishpie.utilities.utils module.
 
 This module tests utility classes (misc, printing, numerics, filesystem)
-to improve coverage from 46% to 60%.
+to improve coverage from ~30% to 48%.
 """
 
 import os

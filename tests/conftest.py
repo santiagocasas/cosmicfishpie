@@ -8,7 +8,7 @@ code_to_use = "symbolic"
 upt.debug = True
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def photo_fisher_matrix():
     # These are typical options that you can pass to Cosmicfishpie
     options = {
@@ -52,7 +52,7 @@ def photo_fisher_matrix():
     return cosmoFM
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def computecls_fid(photo_fisher_matrix):
     """Module-scoped fiducial ComputeCls instance reused across photo tests to avoid recomputation."""
     from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
@@ -62,6 +62,27 @@ def computecls_fid(photo_fisher_matrix):
     cls = ComputeCls(cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars)
     cls.compute_all()
     return cosmopars, cls, cosmoFM
+
+
+@pytest.fixture(scope="session")
+def photo_cov_cached(computecls_fid):
+    """Session-scoped PhotoCov object with precomputed covariance to avoid recomputation across tests.
+
+    Derivatives are intentionally not precomputed here (and will be stubbed in the derivative test).
+    """
+    from cosmicfishpie.LSSsurvey.photo_cov import PhotoCov
+
+    cosmopars, fid_cls, cosmoFM = computecls_fid
+    pc = PhotoCov(
+        cosmopars,
+        cosmoFM.photopars,
+        cosmoFM.IApars,
+        cosmoFM.photobiaspars,
+        fiducial_Cls=fid_cls,
+    )
+    # Precompute covariance once (counts toward coverage while saving later duplication)
+    pc.compute_covmat()
+    return pc
 
 
 @pytest.fixture(scope="module")

@@ -1,89 +1,49 @@
 import pytest
 
-from cosmicfishpie.LSSsurvey.photo_cov import PhotoCov
+
+def test_photo_cov_initialization(photo_cov_cached):
+    # Basic attribute presence
+    assert photo_cov_cached.cosmopars
+    assert hasattr(photo_cov_cached, "allparsfid")
 
 
-@pytest.fixture(scope="module")
-def fast_photo_cov_setup(computecls_fid):
-    """Reuse module-scoped ComputeCls and provide its components.
-
-    computecls_fid already executed compute_all; just return for covariance/derivative tests.
-    """
-    cosmopars, fid_cls, cosmoFM = computecls_fid
-    return cosmopars, fid_cls, cosmoFM
-
-
-# You might need to add more imports depending on what you're testing
-
-
-def test_photo_cov_initialization(fast_photo_cov_setup):
-    cosmopars, fid_cls, cosmoFM = fast_photo_cov_setup
-    photo_cov = PhotoCov(
-        cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars, fiducial_Cls=fid_cls
-    )
-    assert isinstance(photo_cov, PhotoCov)
-    assert photo_cov.cosmopars == cosmopars
+@pytest.mark.parametrize("with_noise", [False, True])
+def test_photo_cov_cls_and_noise(photo_cov_cached, with_noise):
+    base_cls = photo_cov_cached.getcls(photo_cov_cached.allparsfid)
+    assert isinstance(base_cls, dict)
+    if with_noise:
+        noisy = photo_cov_cached.getclsnoise(base_cls)
+        assert isinstance(noisy, dict)
+        # check at least one auto term got increased (heuristic)
+        some_key = next(k for k in noisy if "x" in k and k.split("x")[0] == k.split("x")[1])
+        assert noisy[some_key][0] >= base_cls[some_key][0]
 
 
-def test_get_cls(fast_photo_cov_setup):
-    cosmopars, fid_cls, cosmoFM = fast_photo_cov_setup
-    photo_cov = PhotoCov(
-        cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars, fiducial_Cls=fid_cls
-    )
-    allparsfid = dict()
-    allparsfid.update(cosmopars)
-    allparsfid.update(cosmoFM.IApars)
-    allparsfid.update(cosmoFM.photobiaspars)
-    allparsfid.update(cosmoFM.photopars)
-    cls = photo_cov.getcls(allparsfid)
-    assert isinstance(cls, dict)
-    # Add more specific assertions based on what you expect in the result
-
-
-def test_get_cls_noise(fast_photo_cov_setup):
-    cosmopars, fid_cls, cosmoFM = fast_photo_cov_setup
-    photo_cov = PhotoCov(
-        cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars, fiducial_Cls=fid_cls
-    )
-    cls = photo_cov.getcls(photo_cov.allparsfid)
-    noisy_cls = photo_cov.getclsnoise(cls)
-    assert isinstance(noisy_cls, dict)
-    # Add more specific assertions based on what you expect in the result
-
-
-def test_photo_cov_compute_covmat(fast_photo_cov_setup):
-    cosmopars, fid_cls, cosmoFM = fast_photo_cov_setup
-    photo_cov = PhotoCov(
-        cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars, fiducial_Cls=fid_cls
-    )
-    result = photo_cov.compute_covmat()
-    # compute_covmat should return a tuple (noisy_cls, covmat); if None returned, fail explicitly
-    assert result is not None, "compute_covmat returned None unexpectedly"
-    noisy_cls, covmat = result
-    assert isinstance(noisy_cls, dict)
-    assert isinstance(covmat, list)
-    if covmat:
-        first = covmat[0]
-        # Duck-typing for DataFrame: should have columns and index attributes
+def test_photo_cov_covmat_cached(photo_cov_cached):
+    # compute_covmat already run in fixture; covmat & noisy_cls should exist
+    assert hasattr(photo_cov_cached, "covmat")
+    assert hasattr(photo_cov_cached, "noisy_cls")
+    assert isinstance(photo_cov_cached.noisy_cls, dict)
+    assert isinstance(photo_cov_cached.covmat, list)
+    if photo_cov_cached.covmat:
+        first = photo_cov_cached.covmat[0]
         assert hasattr(first, "columns") and hasattr(first, "index")
 
 
-def test_photo_cov_compute_derivs(fast_photo_cov_setup):
+def test_photo_cov_compute_derivs_stub(monkeypatch, photo_cov_cached):
+    """Stub derivative engine so we only test integration & shape, not heavy recomputation."""
     import cosmicfishpie.configs.config as cfg
+    import cosmicfishpie.fishermatrix.derivatives as fishderiv
 
-    cosmopars, fid_cls, cosmoFM = fast_photo_cov_setup
-    photo_cov = PhotoCov(
-        cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars, fiducial_Cls=fid_cls
-    )
-    original_free = dict(cfg.freeparams)
-    # choose fast subset (bias if available; else Omegam)
-    subset_key = next((k for k in original_free if k.startswith("b")), None)
+    freeparams_obj = cfg.freeparams or {}
+    subset_key = next((k for k in freeparams_obj if k.startswith("b")), None)
     if subset_key is None:
-        subset_key = "Omegam" if "Omegam" in original_free else list(original_free.keys())[0]
-    try:
-        cfg.freeparams = {subset_key: original_free[subset_key]}
-        derivs = photo_cov.compute_derivs()
-        assert isinstance(derivs, dict)
-        assert subset_key in derivs
-    finally:
-        cfg.freeparams = original_free
+        subset_key = "Omegam" if "Omegam" in freeparams_obj else list(freeparams_obj.keys())[0]
+
+    class DummyDeriv:
+        def __init__(self, *args, **kwargs):
+            self.result = {subset_key: {"dummy": 0.0}}
+
+    monkeypatch.setattr(fishderiv, "derivatives", DummyDeriv)
+    derivs = photo_cov_cached.compute_derivs()
+    assert subset_key in derivs

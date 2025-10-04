@@ -53,6 +53,18 @@ def photo_fisher_matrix():
 
 
 @pytest.fixture(scope="module")
+def computecls_fid(photo_fisher_matrix):
+    """Module-scoped fiducial ComputeCls instance reused across photo tests to avoid recomputation."""
+    from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
+
+    cosmoFM = photo_fisher_matrix
+    cosmopars = {"Omegam": 0.3, "h": 0.7}
+    cls = ComputeCls(cosmopars, cosmoFM.photopars, cosmoFM.IApars, cosmoFM.photobiaspars)
+    cls.compute_all()
+    return cosmopars, cls, cosmoFM
+
+
+@pytest.fixture(scope="module")
 def spectro_fisher_matrix():
     # These are typical options that you can pass to Cosmicfishpie
     options = {

@@ -435,7 +435,15 @@ class CosmicFish_FisherAnalysis:
 
         return latex_names
 
-    def compare_fisher_results(self, parstomarg=None, fisher_list=None):
+    def compare_fisher_results(
+        self,
+        parstomarg=None,
+        fisher_list=None,
+        export_json_path=None,
+        append=False,
+        overwrite=False,
+        extra_metadata=None,
+    ):
         """
         Compare and print results from Fisher matrices.
 
@@ -445,49 +453,158 @@ class CosmicFish_FisherAnalysis:
         Parameters
         ----------
         parstomarg : list of str, optional
-            List of parameter names to marginalize over. If None, the first two
-            parameters of each Fisher matrix are used.
+            List of parameter names to marginalize over when computing the FoM. If None,
+            the first two parameters of each Fisher matrix are used (independently per matrix).
         fisher_list : list of FisherMatrix objects, optional
             List of Fisher matrices to analyze. If None, uses the instance's fisher_list.
+        export_json_path : str, optional
+            If provided, a JSON file with the collected statistics is written here.
+        append : bool, default False
+            If True and export_json_path exists, merge/append current run results to the
+            existing JSON (keyed by Fisher name, overwriting duplicates for that name only).
+        overwrite : bool, default False
+            If True and export_json_path exists, the file is overwritten (takes precedence
+            over append). Ignored if append=True.
+        extra_metadata : dict, optional
+            Additional metadata to store at top-level of JSON output.
 
-        Prints
-        ------
-        For each Fisher matrix:
-            - Fisher matrix name
-            - Figure of Merit (FoM) for marginalized parameters
-            - For each parameter:
-                - Fiducial value
-                - 1-sigma error
-                - Percent error
+                Prints
+                ------
+                For each Fisher matrix:
+                        - Fisher matrix name
+                        - Figure of Merit (FoM) for chosen marginalized parameters
+                        - Per-parameter: fiducial, 1-sigma error, percent error
+
+                JSON Schema (export_json_path)
+                --------------------------------
+                {
+                    "metadata": {
+                         "timestamp": ISO-8601 str,
+                         "parstomarg_user_provided": bool,
+                         "n_fishers": int,
+                         ...extra_metadata
+                    },
+                    "results": [
+                         {
+                             "name": str,
+                             "FoM": {"parameters": [p1,p2,...], "value": float},
+                             "parameters": [
+                                     {"name": str, "fiducial": float, "sigma": float, "percent_error": float}
+                             ]
+                         }, ...
+                    ]
+                }
 
         Note
         ----
         This method modifies the instance's fisher_list if a new list is provided.
+        Returns the structured results list (same objects written to JSON when requested).
         """
+        # Lazy imports to avoid adding module-level dependencies if unused
+        import datetime as _dt
+        import json
+        import os
+
         if fisher_list is not None:
             self.fisher_list = fisher_list
-        for ii, fish in enumerate(self.fisher_list):
+
+        results_struct = []
+
+        for _, fish in enumerate(self.fisher_list):
             print("----")
             print("Fisher Name: ", fish.name)
-            if parstomarg is None:
-                parstomarg = fish.get_param_names()[:2]
-            fiww = fo.marginalise(fish, parstomarg)
-            deFoM = np.sqrt(fiww.determinant())
-            parstomarg_str = ",".join(parstomarg)
+            # Use a fresh list per Fisher to avoid mutating the caller-supplied list across iterations
+            local_pars_to_marg = (
+                list(parstomarg) if parstomarg is not None else fish.get_param_names()[:2]
+            )
+            fiww = fo.marginalise(fish, local_pars_to_marg)
+            try:
+                det_val = fiww.determinant()
+                deFoM = float(math.sqrt(det_val)) if det_val >= 0 else float("nan")
+            except Exception:
+                deFoM = float("nan")
+            parstomarg_str = ",".join(local_pars_to_marg)
             print(f"Fisher FoM in {parstomarg_str}: {deFoM:.3f}")
             sigmas = fish.get_confidence_bounds()
             fidus = fish.get_param_fiducial()
             parnames = fish.get_param_names()
-            for ii, par in enumerate(parnames):
-                fidu = fidus[ii]
-                abs_sig = abs(sigmas[ii])
-                perc_err = 100 * abs(sigmas[ii] / fidus[ii])
+            param_entries = []
+            for jj, par in enumerate(parnames):
+                fidu = float(fidus[jj])
+                abs_sig = float(abs(sigmas[jj]))
+                perc_err = (
+                    float(100 * abs(sigmas[jj] / fidus[jj])) if fidus[jj] != 0 else float("inf")
+                )
                 print(
                     f"Parameter {par:<10s}, "
                     f"fiducial: {fidu:>8.3f}, "
                     f"1-sigma error: {abs_sig:>8.4f}, "
                     f"percent error: {perc_err:>8.1f}%"
                 )
+                param_entries.append(
+                    {
+                        "name": par,
+                        "fiducial": fidu,
+                        "sigma": abs_sig,
+                        "percent_error": perc_err,
+                    }
+                )
+            results_struct.append(
+                {
+                    "name": fish.name,
+                    "FoM": {"parameters": local_pars_to_marg, "value": deFoM},
+                    "parameters": param_entries,
+                }
+            )
+
+        if export_json_path is not None:
+            # Prepare metadata
+            meta = {
+                # Timezone-aware UTC timestamp (avoid deprecated utcnow); normalized to trailing Z
+                "timestamp": _dt.datetime.now(_dt.timezone.utc)
+                .replace(microsecond=0)
+                .isoformat()
+                .replace("+00:00", "Z"),
+                "n_fishers": len(results_struct),
+            }
+            if extra_metadata:
+                try:
+                    meta.update({k: v for k, v in extra_metadata.items()})
+                except Exception:
+                    pass
+            out_obj = {"metadata": meta, "results": results_struct}
+
+            # Merge logic if append
+            if append and not overwrite and os.path.isfile(export_json_path):
+                try:
+                    with open(export_json_path, "r") as f:
+                        existing = json.load(f)
+                except Exception:
+                    existing = {"metadata": {}, "results": []}
+                # Index by name for merging
+                existing_index = {r.get("name"): r for r in existing.get("results", [])}
+                for r in results_struct:
+                    existing_index[r["name"]] = r  # overwrite / add
+                merged_results = list(existing_index.values())
+                # Update metadata (keep history in a list if present)
+                history = existing.get("metadata", {}).get("history", [])
+                history.append(existing.get("metadata", {}))
+                out_obj["metadata"]["history"] = history[-10:]  # keep last 10 entries
+                out_obj["results"] = merged_results
+            # Overwrite if requested or default behavior
+            if not append or overwrite or not os.path.isfile(export_json_path):
+                try:
+                    os.makedirs(os.path.dirname(export_json_path), exist_ok=True)
+                except Exception:
+                    pass
+            try:
+                with open(export_json_path, "w") as f:
+                    json.dump(out_obj, f, indent=2)
+                print(f"[compare_fisher_results] JSON exported to: {export_json_path}")
+            except Exception as e:  # pragma: no cover - best effort
+                print(f"[compare_fisher_results] Failed to write JSON: {e}")
+
+        return results_struct
 
     # -----------------------------------------------------------------------------------
 
@@ -663,14 +780,14 @@ class CosmicFish_FisherAnalysis:
                 if normalized:
                     y_points = np.array(
                         [
-                            np.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2))
-                            / (sigma * np.sqrt(2.0 * math.pi))
+                            math.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2))
+                            / (sigma * math.sqrt(2.0 * math.pi))
                             for x in x_points
                         ]
                     )
                 else:
                     y_points = np.array(
-                        [np.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2)) for x in x_points]
+                        [math.exp(-((x - fiducial) ** 2) / (2.0 * sigma**2)) for x in x_points]
                     )
 
                 dict_names[name] = [x_points, y_points, [fiducial, sigma]]

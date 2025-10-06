@@ -38,3 +38,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1.2.5 : Likelihood modules tested for photo and spectro
 1.2.6 : New demo notebook GCsp
 1.2.7 : Added test for analysis module
+1.2.8 : Added compehensive test catalogue. 

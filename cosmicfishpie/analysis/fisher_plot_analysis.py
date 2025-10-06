@@ -468,38 +468,51 @@ class CosmicFish_FisherAnalysis:
         extra_metadata : dict, optional
             Additional metadata to store at top-level of JSON output.
 
-                Prints
-                ------
-                For each Fisher matrix:
-                        - Fisher matrix name
-                        - Figure of Merit (FoM) for chosen marginalized parameters
-                        - Per-parameter: fiducial, 1-sigma error, percent error
-
-                JSON Schema (export_json_path)
-                --------------------------------
-                {
-                    "metadata": {
-                         "timestamp": ISO-8601 str,
-                         "parstomarg_user_provided": bool,
-                         "n_fishers": int,
-                         ...extra_metadata
-                    },
-                    "results": [
-                         {
-                             "name": str,
-                             "FoM": {"parameters": [p1,p2,...], "value": float},
-                             "parameters": [
-                                     {"name": str, "fiducial": float, "sigma": float, "percent_error": float}
-                             ]
-                         }, ...
-                    ]
-                }
-
-        Note
-        ----
+        Notes
+        -----
         This method modifies the instance's fisher_list if a new list is provided.
         Returns the structured results list (same objects written to JSON when requested).
+
+        Prints
+        ------
+            - Fisher matrix name
+            - Figure of Merit (FoM) for chosen marginalized parameters
+            - Per-parameter: fiducial, 1-sigma error, percent error
+
+        JSON Schema (export_json_path)
+        ------------------------------
+
+        The JSON output has the following structure::
+
+            {
+                "metadata": {
+                    "timestamp": "ISO-8601 str",
+                    "parstomarg_user_provided": true,
+                    "n_fishers": 3,
+                    ...extra_metadata
+                },
+                "results": [
+                    {
+                        "name": "FisherName",
+                        "FoM": {
+                            "parameters": ["p1", "p2", ...],
+                            "value": 123.45
+                        },
+                        "parameters": [
+                            {
+                                "name": "param1",
+                                "fiducial": 1.0,
+                                "sigma": 0.1,
+                                "percent_error": 10.0
+                            },
+                            ...
+                        ]
+                    },
+                    ...
+                ]
+            }
         """
+
         # Lazy imports to avoid adding module-level dependencies if unused
         import datetime as _dt
         import json

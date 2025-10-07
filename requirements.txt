@@ -15,6 +15,6 @@ PyYAML==6.0.3
 scikit-learn==1.7.2
 SciPy>=1.8.0
 seaborn
-uv==0.8.22
+uv==0.8.24
 colossus
 symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git

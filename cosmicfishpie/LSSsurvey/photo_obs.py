@@ -22,10 +22,18 @@ from cosmicfishpie.utilities.utils import printing as upt
 cachedir = "./cache"
 memory = Memory(cachedir, verbose=0)
 
-# Experimental optimization toggles (disabled by default for reproducibility)
-_USE_FAST_EFF = os.environ.get("COSMICFISH_FAST_EFF", "0") not in ("0", "false", "False")
-_USE_FAST_P = os.environ.get("COSMICFISH_FAST_P", "0") not in ("0", "false", "False")
-_USE_FAST_KERNEL = os.environ.get("COSMICFISH_FAST_KERNEL", "0") not in ("0", "false", "False")
+
+# Experimental optimization toggles (default: enabled). Users can disable via env.
+def _env_flag(name: str, default: bool = True) -> bool:
+    val = os.environ.get(name)
+    if val is None:
+        return default
+    return val not in ("0", "false", "False")
+
+
+_USE_FAST_EFF = _env_flag("COSMICFISH_FAST_EFF", True)
+_USE_FAST_P = _env_flag("COSMICFISH_FAST_P", True)
+_USE_FAST_KERNEL = _env_flag("COSMICFISH_FAST_KERNEL", True)
 
 
 # @memory.cache

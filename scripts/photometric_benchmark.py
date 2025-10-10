@@ -354,6 +354,12 @@ def main():
         help="Run a single FAST Fisher (all fast flags on by default)",
     )
     parser.add_argument(
+        "--compare-ref",
+        type=str,
+        default=None,
+        help="Path to a reference Fisher matrix .txt to compare against (single current run)",
+    )
+    parser.add_argument(
         "--code",
         type=str,
         choices=["symbolic", "class", "camb"],
@@ -408,9 +414,12 @@ def main():
 
     selected_obs_list = _parse_obs_arg(args.observables)
 
-    # If --flags-benchmark or --fast-only is requested, skip the regular Fisher run
+    # If any specialized mode is requested, skip the regular Fisher run
     run_regular_fisher = (
-        (not args.skip_fisher) and (not args.flags_benchmark) and (not args.fast_only)
+        (not args.skip_fisher)
+        and (not args.flags_benchmark)
+        and (not args.fast_only)
+        and (not args.compare_ref)
     )
 
     if run_regular_fisher:
@@ -429,6 +438,9 @@ def main():
 
     if args.fast_only:
         run_fast_only(options, args, selected_obs_list)
+
+    if args.compare_ref:
+        run_compare_ref(options, args, selected_obs_list)
 
 
 def run_fast_flags_fisher_benchmark(options, args, obs_list):
@@ -665,6 +677,129 @@ def run_fast_only(options, args, obs_list):
             indent=2,
         )
     print("[fast-only] Summary written to", outpath)
+
+
+def run_compare_ref(options, args, obs_list):
+    """Run a single Fisher with current settings and compare to a reference matrix.
+
+    Honors --code, --observables and FAST toggles (defaults to FAST on).
+    Writes a JSON report with alignment info and difference metrics.
+    """
+    import importlib
+
+    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+
+    def _set_flags(eff: bool, P: bool, kernel: bool):
+        os.environ["COSMICFISH_FAST_EFF"] = "1" if eff else "0"
+        os.environ["COSMICFISH_FAST_P"] = "1" if P else "0"
+        os.environ["COSMICFISH_FAST_KERNEL"] = "1" if kernel else "0"
+        import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+
+        importlib.reload(photo_obs)
+        import cosmicfishpie.fishermatrix.cosmicfish as _cf
+
+        importlib.reload(_cf)
+
+    # Determine FAST toggles for the current run
+    fast_eff = args.fast_eff != "off"
+    fast_P = args.fast_p != "off"
+    fast_kernel = args.fast_kernel != "off"
+    _set_flags(fast_eff, fast_P, fast_kernel)
+
+    # Compute current Fisher
+    local_opts = dict(options)
+    local_opts["code"] = args.code
+    local_opts["outroot"] = f"{BASE_OUTROOT}COMPARE_"
+    start_t = time.time()
+    fm_cur = cosmicfish.FisherMatrix(
+        fiducialpars=fiducial,
+        freepars=freepars,
+        options=local_opts,
+        observables=obs_list,
+        cosmoModel=local_opts["cosmo_model"],
+    ).compute()
+    t_cur = time.time() - start_t
+
+    # Load reference Fisher
+    ref_path = args.compare_ref
+    fm_ref = fm_mod.fisher_matrix(file_name=ref_path)
+
+    # Align parameter order: create mapping from ref names to cur indices
+    ref_names = list(fm_ref.param_names)
+    cur_names = list(fm_cur.param_names)
+    name_to_idx = {n: i for i, n in enumerate(cur_names)}
+    missing = [n for n in ref_names if n not in name_to_idx]
+    if missing:
+        print("[compare-ref] WARNING: parameters missing in current run:", missing)
+    order = [name_to_idx[n] for n in ref_names if n in name_to_idx]
+
+    F_ref = np.array(fm_ref.fisher_matrix)
+    F_cur_full = np.array(fm_cur.fisher_matrix)
+    F_cur = F_cur_full[np.ix_(order, order)]
+
+    # Compute metrics
+    def metrics(A, B, thresh=1e-12):
+        D = A - B
+        mask = np.abs(B) > thresh
+        rel = np.zeros_like(A)
+        rel[mask] = (A[mask] / B[mask]) - 1.0
+        out = {
+            "rel_max": float(np.max(np.abs(rel[mask]))) if np.any(mask) else 0.0,
+            "abs_max_near0": float(np.max(np.abs(D[~mask]))) if np.any(~mask) else 0.0,
+            "fro_rel": float(np.linalg.norm(D) / (np.linalg.norm(B) + 1e-30)),
+        }
+        # diag ratio stats
+        dA = np.diag(A)
+        dB = np.diag(B)
+        dmask = np.abs(dB) > thresh
+        if np.any(dmask):
+            ratios = dA[dmask] / dB[dmask]
+            out["diag_ratio"] = {
+                "min": float(np.min(ratios)),
+                "median": float(np.median(ratios)),
+                "max": float(np.max(ratios)),
+            }
+        else:
+            out["diag_ratio"] = {}
+        return out
+
+    cmp = metrics(F_cur, F_ref)
+    print("[compare-ref] Current run time:", f"{t_cur:.3f}s")
+    print(
+        "[compare-ref] rel_max=",
+        f"{cmp['rel_max']:.3e}",
+        "abs_max_near0=",
+        f"{cmp['abs_max_near0']:.3e}",
+        "fro_rel=",
+        f"{cmp['fro_rel']:.3e}",
+    )
+
+    # Write JSON report
+    results_dir = options.get("results_dir", "results/")
+    os.makedirs(results_dir, exist_ok=True)
+    out_json = os.path.join(results_dir, BASE_OUTROOT + "compare_ref.json")
+    with open(out_json, "w") as f:
+        json.dump(
+            {
+                "code": args.code,
+                "observables": obs_list,
+                "seconds_current": t_cur,
+                "current_matrix_path": getattr(fm_cur, "file_name", None),
+                "reference_matrix_path": ref_path,
+                "param_order_reference": ref_names,
+                "param_order_current": cur_names,
+                "aligned_order_indices": order,
+                "env_flags": {
+                    "COSMICFISH_FAST_EFF": fast_eff,
+                    "COSMICFISH_FAST_P": fast_P,
+                    "COSMICFISH_FAST_KERNEL": fast_kernel,
+                },
+                "metrics": cmp,
+            },
+            f,
+            indent=2,
+        )
+    print("[compare-ref] Report written to", out_json)
 
 
 if __name__ == "__main__":

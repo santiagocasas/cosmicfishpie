@@ -4,6 +4,7 @@
 This module contains cls calculations (only LSS atm).
 
 """
+import os
 from itertools import product
 from time import time
 
@@ -21,49 +22,57 @@ from cosmicfishpie.utilities.utils import printing as upt
 cachedir = "./cache"
 memory = Memory(cachedir, verbose=0)
 
+# Experimental optimization toggles (disabled by default for reproducibility)
+_USE_FAST_EFF = os.environ.get("COSMICFISH_FAST_EFF", "0") not in ("0", "false", "False")
+_USE_FAST_P = os.environ.get("COSMICFISH_FAST_P", "0") not in ("0", "false", "False")
+_USE_FAST_KERNEL = os.environ.get("COSMICFISH_FAST_KERNEL", "0") not in ("0", "false", "False")
+
 
 # @memory.cache
 
 
 def memo_integral_efficiency(i, ngal_func, comoving_func, z, zint_mat, diffz):
-    """function to do the integration over redshift that shows up in the lensing kernel
+    """Legacy O(N^2) implementation of the efficiency integral.
+
+    Notes
+    -----
+    - Deprecated: prefer `faster_integral_efficiency` (vectorized) or
+      `much_faster_integral_efficiency` (O(N)).
+    - This version performs a per-row trapezoidal integration on the original
+      redshift grid to ensure numerically correct spacing. The `zint_mat` and
+      `diffz` arguments are ignored for correctness (they were prone to
+      inconsistent spacing per row).
 
     Parameters
     ----------
-    i             : int
-                    index of the redshift bin for which the lensing kernel should be computed
-    ngal_func     : callable
-                    callable function that returns the number density distribution of galaxies. Should be a function of the redshift bin index i as an int and the redshift z as a numpy.ndarray
+    i : int
+        Bin index.
+    ngal_func : callable
+        Function returning n(z') given (z', i, kind).
     comoving_func : callable
-                    callable function that returns the comoving distance. Should be a function of the redshift z as a numpy.ndarray
-    z             : numpy.ndarray
-                    1d array of all redshifts z that the result of the integral should use as interpolated over.
-    zint_mat      : numpy.ndarray
-                    2d array of redshifts z that the integral should use as integration points. The first row must coincide with z.
-    diffz         : numpy.ndarray
-                    2d array of the separation of integration points
+        Function returning r(z).
+    z : numpy.ndarray
+        1D redshift grid.
+    zint_mat : numpy.ndarray
+        Ignored (kept for backward compatibility).
+    diffz : numpy.ndarray or float
+        Ignored (kept for backward compatibility).
 
     Returns
     -------
     callable
-        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray
-
-    Note
-    ----
-    This function is deprecated. Use `faster_integral_efficiency` instead.
+        Interpolating function over z for the efficiency.
     """
-    intg_mat = np.array(
-        [
-            (
-                ngal_func(zint_mat[zii], i, "WL")
-                * (1 - comoving_func(zint_mat[zii, 0]) / comoving_func(zint_mat[zii]))
-            )
-            for zii in range(len(zint_mat))
-        ]
-    )
-    integral_really = integrate.trapezoid(intg_mat, dx=diffz, axis=1)
-    intp = interp1d(z, integral_really, kind="cubic")
-    return intp
+    chi = comoving_func(z)
+    integral = np.empty_like(z)
+    # For each z_k integrate from z_k to z_max on the native grid
+    for k in range(z.size):
+        z_row = z[k:]
+        # integrand: n(z') * (1 - r(z_k)/r(z'))
+        y_row = ngal_func(z_row, i, "WL") * (1.0 - chi[k] / comoving_func(z_row))
+        # integrate with correct x per row
+        integral[k] = integrate.trapezoid(y_row, x=z_row)
+    return interp1d(z, integral, kind="cubic")
 
 
 def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
@@ -91,6 +100,56 @@ def faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     wint = integrate.trapezoid(witri, zarr, axis=0)
     intp = interp1d(zarr, wint, kind="cubic")
     return intp
+
+
+def much_faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
+    """O(N) algorithm for the lensing efficiency integral using backward
+    cumulative trapezoid integrals.
+
+    Parameters
+    ----------
+    i             : int
+                    index of the redshift bin for which the lensing kernel should be computed
+    ngal_func     : callable
+                    callable function that returns the number density distribution of galaxies. Should be a
+                    function of the redshift bin index i as an int and the redshift z as a numpy.ndarray
+    comoving_func : callable
+                    callable function that returns the comoving distance. Should be a function of the redshift z
+                    as a numpy.ndarray
+    zarr          : numpy.ndarray
+                    1d array of all redshifts z that should be used as integration points.
+
+    Returns
+    -------
+    callable
+        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency
+        for the i-th bin as a numpy.ndarray
+    """
+    # Grid and step
+    z = zarr
+    if z.size < 2:
+        return interp1d(z, np.zeros_like(z), kind="cubic", fill_value="extrapolate")
+    dz = float(np.mean(np.diff(z)))
+
+    # Required functions on grid
+    chi = comoving_func(z)
+    ngal = ngal_func(z, i, "WL")
+    ngal_over_chi = ngal / chi
+
+    # Backward trapezoid cumulative integral: I[k] = ∫_{z_k}^{z_max} f(z') dz'
+    def backward_trapz(y, dx):
+        if y.size < 2:
+            return np.zeros_like(y)
+        yr = y[::-1]
+        seg = 0.5 * (yr[:-1] + yr[1:]) * dx
+        cumsum = np.concatenate([[0.0], np.cumsum(seg)])
+        return cumsum[::-1]
+
+    I1 = backward_trapz(ngal, dz)
+    I2 = backward_trapz(ngal_over_chi, dz)
+    eff = I1 - chi * I2
+
+    return interp1d(z, eff, kind="cubic")
 
 
 class ComputeCls:
@@ -246,7 +305,12 @@ class ComputeCls:
         self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
         self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
-        self.dz = np.mean(np.diff(self.z))
+        self.dz = float(np.mean(np.diff(self.z)))
+        # Precompute comoving distance (major hotspot) once; reuse everywhere
+        self._chi_z = self.cosmo.comoving(self.z)
+        # Lazy caches for other frequently used cosmological functions (filled on demand)
+        self._hubble_z = None
+        self._IA_z = None
 
         if print_info_specs:
             self.print_numerical_specs()
@@ -347,21 +411,39 @@ class ComputeCls:
         This does not return the power spectra. The results are stored in the attribute `Pell`
         """
         self.Pell = np.zeros((self.zsamp, self.ellsamp))
-        # TO BE PYTHONIZED
-        chi = self.cosmo.comoving(self.z)
-        # PYTHONIZE THIS HORRIBLE THING
-        for ell, zin in product(range(self.ellsamp), range(self.zsamp)):
-            kappa = (self.ell[ell] + 0.5) / chi[zin]
-            if kappa <= cfg.specs["kmax"]:
-                self.Pell[zin, ell] = (
-                    (self.cosmo.SigmaMG(self.z[zin], kappa) ** 2)
-                    * self.cosmo.matpow(
-                        self.z[zin], kappa, nonlinear=cfg.settings["nonlinear_photo"]
+        if _USE_FAST_P:
+            chi = self._chi_z  # reuse precomputed
+            ell_grid = self.ell[None, :] + 0.5
+            kappa = ell_grid / chi[:, None]
+            mask = kappa <= cfg.specs["kmax"]
+            if np.any(mask):
+                for iz, chi_val in enumerate(chi):
+                    row_mask = mask[iz]
+                    if not np.any(row_mask):
+                        continue
+                    kappas_row = kappa[iz, row_mask]
+                    zval = self.z[iz]
+                    self.Pell[iz, row_mask] = (
+                        (self.cosmo.SigmaMG(zval, kappas_row) ** 2)
+                        * self.cosmo.matpow(
+                            zval, kappas_row, nonlinear=cfg.settings["nonlinear_photo"]
+                        )
+                        / (chi_val**2.0)
                     )
-                    / (chi[zin] ** 2.0)
-                )
-            else:
-                self.Pell[zin, ell] = 0.0
+        else:
+            chi = self.cosmo.comoving(self.z)
+            for ell, zin in product(range(self.ellsamp), range(self.zsamp)):
+                kappa = (self.ell[ell] + 0.5) / chi[zin]
+                if kappa <= cfg.specs["kmax"]:
+                    self.Pell[zin, ell] = (
+                        (self.cosmo.SigmaMG(self.z[zin], kappa) ** 2)
+                        * self.cosmo.matpow(
+                            self.z[zin], kappa, nonlinear=cfg.settings["nonlinear_photo"]
+                        )
+                        / (chi[zin] ** 2.0)
+                    )
+                else:
+                    self.Pell[zin, ell] = 0.0
         return None
 
     def sqrtP_limber(self):
@@ -387,8 +469,7 @@ class ComputeCls:
             "GCph": np.zeros((self.zsamp, self.ellsamp)),
             "GCph_IA": np.zeros((self.zsamp, self.ellsamp)),
         }
-
-        chi = self.cosmo.comoving(self.z)
+        chi = self._chi_z  # reuse cached
         kappa = (self.ell[:, None] + 1 / 2) / chi
         index_pknn = np.array(np.where(kappa < cfg.specs["kmax"])).T
 
@@ -401,10 +482,8 @@ class ComputeCls:
                     )
                 )
             ) / chi[zin]
-            # Sakr Fix June 2023
             self.sqrtPell["WL_IA"][zin, ell] = (
-                1.0
-                * np.sqrt(
+                np.sqrt(
                     self.cosmo.matpow(
                         self.z[zin], kappa[ell, zin], nonlinear=cfg.settings["nonlinear"]
                     )
@@ -493,17 +572,22 @@ class ComputeCls:
         """
 
         twlstart = time()
-        # computing lensing kernel integral
-        prefac = (3.0 / 2.0) * self.cosmo.Hubble(0.0) ** 2.0 * self.cosmo.Omegam_of_z(0.0)
-        # WARNING! this prefactor needs to be generalized (Sigma, non CDM...)
-        Wwl = np.array(
-            [prefac * (1 + zi) * self.cosmo.comoving(zi) * self.efficiency[i](zi) for zi in z]
-        )
-
-        # Adding Intrinsic alignment
-        WIA = self.window.norm_ngal_photoz(z, i, "WL") * np.array(
-            [self.IAvalue(zi) * self.cosmo.Hubble(zi) for zi in z]
-        )
+        if _USE_FAST_KERNEL:
+            prefac = (3.0 / 2.0) * self.cosmo.Hubble(0.0) ** 2.0 * self.cosmo.Omegam_of_z(0.0)
+            chi_z = self.cosmo.comoving(z) if z is not self.z else self._chi_z
+            eff_z = self.efficiency[i](z)
+            Wwl = prefac * (1.0 + z) * chi_z * eff_z
+            IA_val = self.IAvalue(z)
+            hub_z = self.cosmo.Hubble(z)
+            WIA = self.window.norm_ngal_photoz(z, i, "WL") * IA_val * hub_z
+        else:
+            prefac = (3.0 / 2.0) * self.cosmo.Hubble(0.0) ** 2.0 * self.cosmo.Omegam_of_z(0.0)
+            Wwl = np.array(
+                [prefac * (1 + zi) * self.cosmo.comoving(zi) * self.efficiency[i](zi) for zi in z]
+            )
+            WIA = self.window.norm_ngal_photoz(z, i, "WL") * np.array(
+                [self.IAvalue(zi) * self.cosmo.Hubble(zi) for zi in z]
+            )
         # Sakr Fix June 2023
         # kernel = Wwl+WIA
 
@@ -537,13 +621,14 @@ class ComputeCls:
         """
         # expensive calculation doesn't need to
         # be performed if cosmopars and photopars are the same
-        zint_mat = np.linspace(self.z, self.z[-1], self.zsamp)
-        zint_mat = zint_mat.T
         z = self.z
         ngal_func = self.window.norm_ngal_photoz
         comoving_func = self.cosmo.comoving
-        intp = faster_integral_efficiency(i, ngal_func, comoving_func, z)
-        return intp
+        if not _USE_FAST_EFF:
+            # Fallback to vectorized O(N^2) implementation
+            return faster_integral_efficiency(i, ngal_func, comoving_func, z)
+        # New O(N) implementation outsourced to helper
+        return much_faster_integral_efficiency(i, ngal_func, comoving_func, z)
 
     def lensing_efficiency(self):
         """computes the integral that enters the lensing kernel for all redshift bins

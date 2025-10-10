@@ -4,7 +4,7 @@ Cython==3.0.11
 getdist==1.7.3
 h5py==3.14.0
 ipython==8.37.0
-joblib==1.4.2
+joblib==1.5.2
 jupyter==1.1.1
 matplotlib==3.10.6
 nautilus-sampler==1.0.5

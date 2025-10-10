@@ -43,7 +43,7 @@ dev = [
     "setuptools",
     "wheel",
     "Sphinx>=4.3.0,<8.2.0",
-    "furo==2024.1.29",
+    "furo==2025.9.25",
     "myst-parser>=1.0,<4.1",
     "myst_parser",
     "sphinx-copybutton==0.5.2",

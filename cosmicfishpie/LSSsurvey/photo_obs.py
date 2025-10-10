@@ -137,7 +137,7 @@ def much_faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
     z = zarr
     if z.size < 2:
         return interp1d(z, np.zeros_like(z), kind="cubic", fill_value="extrapolate")
-    dz = float(np.mean(np.diff(z)))
+    dz = np.mean(np.diff(z))
 
     # Required functions on grid
     chi = comoving_func(z)

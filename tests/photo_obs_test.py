@@ -2,18 +2,15 @@ import numpy as np
 
 from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
 
-
 def test_compute_cls_initialization(computecls_fid):
     cosmopars, photo_Cls, _ = computecls_fid
     assert isinstance(photo_Cls, ComputeCls)
     assert photo_Cls.cosmopars == cosmopars
 
-
 def test_getcls(computecls_fid):
     _, photo_Cls, _ = computecls_fid
     # compute_all already called in fixture
     assert isinstance(photo_Cls.result, dict)
-
 
 def test_wl_kernel_fast_kernel_equivalence(computecls_fid, monkeypatch):
     """Check that enabling/disabling _USE_FAST_KERNEL yields the same WL kernel.

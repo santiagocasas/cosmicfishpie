@@ -313,7 +313,7 @@ class ComputeCls:
         self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
         self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
-        self.dz = float(np.mean(np.diff(self.z)))
+        self.dz = np.mean(np.diff(self.z))
         # Precompute comoving distance (major hotspot) once; reuse everywhere
         self._chi_z = self.cosmo.comoving(self.z)
         # Lazy caches for other frequently used cosmological functions (filled on demand)

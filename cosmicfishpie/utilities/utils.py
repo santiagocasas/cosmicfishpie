@@ -161,6 +161,55 @@ class numerics:
         return idx
 
 
+# -----------------------------------------------------------------------------
+# Reproducibility helpers
+# -----------------------------------------------------------------------------
+
+
+def load_fisher_from_json(json_path):
+    """Load a FisherMatrix configuration snapshot JSON and construct a FisherMatrix.
+
+    Parameters
+    ----------
+    json_path : str
+        Path to a JSON produced by FisherMatrix.export_fisher ("*_specifications.json").
+
+    Returns
+    -------
+    tuple
+        (fisher_matrix_instance, snapshot_dict)
+
+    Notes
+    -----
+    - This only reconstructs the object with the same options/specifications/parameters.
+      You still need to call `.compute()` on the returned FisherMatrix to perform the run.
+    """
+    import json as _json
+
+    from cosmicfishpie.fishermatrix import cosmicfish as _cff
+
+    with open(json_path, "r") as jf:
+        snap = _json.load(jf)
+
+    options = snap.get("options", {})
+    specifications = snap.get("specifications", {})
+    fiducialpars = snap.get("fiducialpars", {})
+    freepars = snap.get("freepars", {})
+    meta = snap.get("metadata", {})
+    observables = meta.get("observables", ["GCph", "WL"])  # sane default
+
+    fm = _cff.FisherMatrix(
+        fiducialpars=fiducialpars,
+        freepars=freepars,
+        options=options,
+        specifications=specifications,
+        observables=observables,
+        cosmoModel=options.get("cosmo_model", "LCDM"),
+        surveyName=options.get("survey_name", "Euclid"),
+    )
+    return fm, snap
+
+
 class filesystem:
     @staticmethod
     def mkdirp(dirpath):

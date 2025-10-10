@@ -357,7 +357,13 @@ def main():
         "--compare-ref",
         type=str,
         default=None,
-        help="Path to a reference Fisher matrix .txt to compare against (single current run)",
+        help="Reference Fisher root or file (.txt/.json). If root, expects '<root>_FM.txt' and '<root>_FM_specs.json'",
+    )
+    parser.add_argument(
+        "--replay-json",
+        type=str,
+        default=None,
+        help="Path to a *_specifications.json to replay settings, run, and compare to its referenced matrix if present",
     )
     parser.add_argument(
         "--code",
@@ -420,6 +426,7 @@ def main():
         and (not args.flags_benchmark)
         and (not args.fast_only)
         and (not args.compare_ref)
+        and (not args.replay_json)
     )
 
     if run_regular_fisher:
@@ -441,6 +448,9 @@ def main():
 
     if args.compare_ref:
         run_compare_ref(options, args, selected_obs_list)
+
+    if args.replay_json:
+        run_replay_json(args.replay_json)
 
 
 def run_fast_flags_fisher_benchmark(options, args, obs_list):
@@ -686,6 +696,7 @@ def run_compare_ref(options, args, obs_list):
     Writes a JSON report with alignment info and difference metrics.
     """
     import importlib
+    import sys
 
     from cosmicfishpie.analysis import fisher_matrix as fm_mod
 
@@ -699,6 +710,18 @@ def run_compare_ref(options, args, obs_list):
         import cosmicfishpie.fishermatrix.cosmicfish as _cf
 
         importlib.reload(_cf)
+
+    # Pre-check reference path(s) exist before doing any heavy compute
+    ref_arg = args.compare_ref
+    candidates = []
+    if os.path.isfile(ref_arg):
+        candidates = [ref_arg]
+    else:
+        candidates = [ref_arg + "_FM.txt", ref_arg + "_fishermatrix.txt"]
+    if not any(os.path.isfile(p) for p in candidates):
+        msg = "[compare-ref] Reference not found. Checked: " + ", ".join(candidates)
+        print(msg)
+        sys.exit(1)
 
     # Determine FAST toggles for the current run
     fast_eff = args.fast_eff != "off"
@@ -720,9 +743,62 @@ def run_compare_ref(options, args, obs_list):
     ).compute()
     t_cur = time.time() - start_t
 
-    # Load reference Fisher
-    ref_path = args.compare_ref
-    fm_ref = fm_mod.fisher_matrix(file_name=ref_path)
+    # Resolve reference root and files
+    ref_arg = args.compare_ref
+    # If an explicit file path exists, honor it directly for the TXT
+    if os.path.isfile(ref_arg):
+        if ref_arg.endswith("_FM.txt"):
+            ref_txt = ref_arg
+            ref_root = ref_arg[: -len("_FM.txt")]
+        elif ref_arg.endswith("_fishermatrix.txt"):
+            # Legacy file naming
+            ref_txt = ref_arg
+            ref_root = ref_arg[: -len("_fishermatrix.txt")]
+        elif ref_arg.endswith(".txt"):
+            # Unknown TXT suffix; treat as literal file and derive root by dropping extension
+            ref_txt = ref_arg
+            ref_root = ref_arg[:-4]
+        elif (
+            ref_arg.endswith("_FM_specs.json")
+            or ref_arg.endswith("_specifications.json")
+            or ref_arg.endswith(".json")
+        ):
+            # JSON reference provided; derive root from it
+            if ref_arg.endswith("_FM_specs.json"):
+                ref_root = ref_arg[: -len("_FM_specs.json")]
+            elif ref_arg.endswith("_specifications.json"):
+                ref_root = ref_arg[: -len("_specifications.json")]
+            else:
+                ref_root = ref_arg[: -len(".json")]
+            # Prefer new TXT; fallback to legacy
+            ref_txt = ref_root + "_FM.txt"
+            if not os.path.isfile(ref_txt):
+                legacy_txt = ref_root + "_fishermatrix.txt"
+                if os.path.isfile(legacy_txt):
+                    ref_txt = legacy_txt
+        else:
+            # Treat as root without known suffix
+            ref_root = ref_arg
+            ref_txt = ref_root + "_FM.txt"
+            if not os.path.isfile(ref_txt):
+                legacy_txt = ref_root + "_fishermatrix.txt"
+                if os.path.isfile(legacy_txt):
+                    ref_txt = legacy_txt
+    else:
+        # Not a file; treat as root and compose expected names
+        ref_root = ref_arg
+        ref_txt = ref_root + "_FM.txt"
+        if not os.path.isfile(ref_txt):
+            legacy_txt = ref_root + "_fishermatrix.txt"
+            if os.path.isfile(legacy_txt):
+                ref_txt = legacy_txt
+    # Prefer new JSON name, fallback to legacy
+    ref_json = ref_root + "_FM_specs.json"
+    if not os.path.isfile(ref_json):
+        legacy = ref_root + "_specifications.json"
+        ref_json = legacy if os.path.isfile(legacy) else None
+
+    fm_ref = fm_mod.fisher_matrix(file_name=ref_txt)
 
     # Align parameter order: create mapping from ref names to cur indices
     ref_names = list(fm_ref.param_names)
@@ -777,7 +853,58 @@ def run_compare_ref(options, args, obs_list):
     # Write JSON report
     results_dir = options.get("results_dir", "results/")
     os.makedirs(results_dir, exist_ok=True)
-    out_json = os.path.join(results_dir, BASE_OUTROOT + "compare_ref.json")
+    # Write a per-comparison JSON (include observables and backend to avoid overwrite)
+    obs_tag = "-".join(obs_list)
+    out_json = os.path.join(results_dir, f"{BASE_OUTROOT}compare_ref_{obs_tag}_{args.code}.json")
+    # Option-diff if JSON available
+    ref_snapshot = None
+    cur_snapshot = None
+    try:
+        import json as _json
+
+        # load current json if present
+        cur_json = snap_path_from_matrix(getattr(fm_cur, "file_name", None))
+        if cur_json and os.path.isfile(cur_json):
+            with open(cur_json, "r") as jf:
+                cur_snapshot = _json.load(jf)
+        if ref_json and os.path.isfile(ref_json):
+            with open(ref_json, "r") as jf:
+                ref_snapshot = _json.load(jf)
+    except Exception:
+        pass
+
+    def _shallow_diff(a: dict, b: dict):
+        dif = {"changed": {}, "only_in_a": [], "only_in_b": []}
+        if a is None or b is None:
+            return dif
+        ka = set(a.keys())
+        kb = set(b.keys())
+        for k in sorted(ka - kb):
+            dif["only_in_a"].append(k)
+        for k in sorted(kb - ka):
+            dif["only_in_b"].append(k)
+        for k in sorted(ka & kb):
+            va, vb = a.get(k), b.get(k)
+            if va != vb:
+                dif["changed"][k] = {"a": va, "b": vb}
+        return dif
+
+    json_diff = None
+    if ref_snapshot and cur_snapshot:
+        json_diff = {
+            "options": _shallow_diff(
+                ref_snapshot.get("options", {}), cur_snapshot.get("options", {})
+            ),
+            "specifications": _shallow_diff(
+                ref_snapshot.get("specifications", {}), cur_snapshot.get("specifications", {})
+            ),
+            "fiducialpars": _shallow_diff(
+                ref_snapshot.get("fiducialpars", {}), cur_snapshot.get("fiducialpars", {})
+            ),
+            "freepars": _shallow_diff(
+                ref_snapshot.get("freepars", {}), cur_snapshot.get("freepars", {})
+            ),
+        }
     with open(out_json, "w") as f:
         json.dump(
             {
@@ -785,7 +912,7 @@ def run_compare_ref(options, args, obs_list):
                 "observables": obs_list,
                 "seconds_current": t_cur,
                 "current_matrix_path": getattr(fm_cur, "file_name", None),
-                "reference_matrix_path": ref_path,
+                "reference_matrix_path": ref_txt,
                 "param_order_reference": ref_names,
                 "param_order_current": cur_names,
                 "aligned_order_indices": order,
@@ -795,11 +922,83 @@ def run_compare_ref(options, args, obs_list):
                     "COSMICFISH_FAST_KERNEL": fast_kernel,
                 },
                 "metrics": cmp,
+                "json_paths": {"ref": ref_json, "current": cur_json},
+                "json_diff": json_diff,
             },
             f,
             indent=2,
         )
     print("[compare-ref] Report written to", out_json)
+
+
+def snap_path_from_matrix(matrix_txt_path: str):
+    if not matrix_txt_path:
+        return None
+    if matrix_txt_path.endswith("_FM.txt"):
+        return matrix_txt_path[:-7] + "_FM_specs.json"
+    # legacy fallback
+    if matrix_txt_path.endswith("_fishermatrix.txt"):
+        return matrix_txt_path[:-16] + "_specifications.json"
+    return None
+
+
+def run_replay_json(json_path):
+    """Replay a run from a JSON snapshot and compare to its referenced matrix if available."""
+    import os
+    import sys
+
+    import numpy as np
+
+    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+    from cosmicfishpie.utilities import utils as _u
+
+    # Resolve to a JSON file if a root was provided
+    def _resolve_json(p: str) -> str:
+        if os.path.isfile(p):
+            return p
+        # If user passed a root ending with '_FM', assume new naming
+        if p.endswith("_FM") and os.path.isfile(p + "_specs.json"):
+            return p + "_specs.json"
+        cand = p + "_FM_specs.json"
+        if os.path.isfile(cand):
+            return cand
+        # Legacy fallback
+        cand2 = p + "_specifications.json"
+        if os.path.isfile(cand2):
+            return cand2
+        return p
+
+    json_path = _resolve_json(json_path)
+    if not os.path.isfile(json_path):
+        print(f"[replay-json] JSON snapshot not found: {json_path}")
+        sys.exit(1)
+
+    fm, snap = _u.load_fisher_from_json(json_path)
+    # Compute
+    import time as _time
+
+    t0 = _time.time()
+    res = fm.compute()
+    t1 = _time.time()
+    print(f"[replay-json] Run time: {t1 - t0:.3f}s")
+
+    # If reference txt exists, compare
+    ref_txt = snap.get("metadata", {}).get("matrix_files", {}).get("txt")
+    if ref_txt and os.path.isfile(ref_txt):
+        fm_ref = fm_mod.fisher_matrix(file_name=ref_txt)
+        F_ref = np.array(fm_ref.fisher_matrix)
+        F_cur = np.array(res.fisher_matrix)
+        # Align by parameter names
+        ref_names = list(fm_ref.param_names)
+        cur_names = list(res.param_names)
+        idx = {n: i for i, n in enumerate(cur_names)}
+        order = [idx[n] for n in ref_names if n in idx]
+        F_cur = F_cur[np.ix_(order, order)]
+        D = F_cur - F_ref
+        fro_rel = float(np.linalg.norm(D) / (np.linalg.norm(F_ref) + 1e-30))
+        print(f"[replay-json] frob rel diff vs reference: {fro_rel:.3e}")
+    else:
+        print("[replay-json] Reference TXT not found; skipped matrix comparison.")
 
 
 if __name__ == "__main__":

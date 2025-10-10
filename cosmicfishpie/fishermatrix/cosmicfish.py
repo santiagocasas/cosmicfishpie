@@ -872,17 +872,14 @@ class FisherMatrix:
         """
         # If an output root is provided, we write the Fisher matrix on file
         if self.settings["outroot"] != "":
-            obstring = ""
-            for obs in self.observables:
-                obstring = obstring + obs
+            obstring = "".join(self.observables)
             cols = [key for key in self.freeparams]
-            header = "#"
-            for col in cols:
-                header = header + " " + col
+            header = "#" + " ".join(["", *cols])
             FM = pd.DataFrame(fishmat, columns=cols, index=cols)
             if not os.path.exists(self.settings["results_dir"]):
                 os.makedirs(self.settings["results_dir"])
-            filename = (
+            # Root naming (without extension): <results>/<cf_version>_<outroot>_<obstring>_FM
+            root = (
                 self.settings["results_dir"]
                 + "/"
                 + self.cf_version
@@ -890,19 +887,22 @@ class FisherMatrix:
                 + self.settings["outroot"]
                 + "_"
                 + obstring
+                + "_FM"
             )
-            filename = filename + "_fishermatrix"
             extension = self.settings["fishermatrix_file_extension"]
-            FM.to_csv(filename + ".csv")
-            with open(filename + extension, "w") as f:
+            # Optional CSV export (disabled by default)
+            if self.settings.get("export_csv_fisher", False):
+                FM.to_csv(root + ".csv")
+            # Primary TXT matrix
+            with open(root + extension, "w") as f:
                 f.write(header + "\n")
                 f.write(FM.to_csv(header=False, index=False, sep="\t"))
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=0,
-                text="Fisher matrix exported: {:s}".format(filename + extension),
+                text="Fisher matrix exported: {:s}".format(root + extension),
             )
-            with open(filename + ".paramnames", "w") as f:
+            with open(root + ".paramnames", "w") as f:
                 f.write("#\n")
                 f.write("#\n")
                 f.write("# This file contains the parameter names for a derived Fisher matrix.\n")
@@ -916,9 +916,9 @@ class FisherMatrix:
                         + "{:.6f}".format(self.allparams[par])
                     )
                     f.write("\n")
-            fishMat_obj = fm.fisher_matrix(file_name=filename + ".txt")
-            # Write specifications to file:
-            specs_name = filename + "_specifications.dat"
+            fishMat_obj = fm.fisher_matrix(file_name=root + ".txt")
+            # Write specifications to file (legacy .dat, and JSON below):
+            specs_name = root + "_specs.dat"
             with open(specs_name, "w") as f:
                 f.write("**Git version commit: %s \n" % (ufs.git_version()))
                 if totaltime is not None:
@@ -949,6 +949,73 @@ class FisherMatrix:
                 ),
                 instance=self,
             )
+
+            # Also export a structured JSON snapshot for reproducibility/comparison
+            try:
+                import json
+                from datetime import datetime, timezone
+
+                def _jsonify(obj):
+                    import numpy as _np
+
+                    if isinstance(obj, dict):
+                        return {k: _jsonify(v) for k, v in obj.items()}
+                    if isinstance(obj, (list, tuple)):
+                        return [_jsonify(v) for v in obj]
+                    if isinstance(obj, range):
+                        return list(obj)
+                    if isinstance(obj, _np.ndarray):
+                        return obj.tolist()
+                    if isinstance(obj, (_np.floating, _np.integer)):
+                        return obj.item()
+                    return obj
+
+                json_name = root + "_specs.json"
+                snapshot = {
+                    "metadata": {
+                        "cf_version": self.cf_version,
+                        "git_commit": ufs.git_version(),
+                        "timestamp": datetime.now(timezone.utc)
+                        .replace(microsecond=0)
+                        .isoformat()
+                        .replace("+00:00", "Z"),
+                        "observables": list(self.observables),
+                        "totaltime_sec": float(totaltime) if totaltime is not None else None,
+                        "matrix_files": {
+                            "txt": root + ".txt",
+                            "paramnames": root + ".paramnames",
+                            "dat_specs": specs_name,
+                            "json_specs": json_name,
+                        },
+                        "env_flags": {
+                            "COSMICFISH_FAST_EFF": os.environ.get("COSMICFISH_FAST_EFF"),
+                            "COSMICFISH_FAST_P": os.environ.get("COSMICFISH_FAST_P"),
+                            "COSMICFISH_FAST_KERNEL": os.environ.get("COSMICFISH_FAST_KERNEL"),
+                        },
+                    },
+                    # Exact constructor-compatible payload to replay the run
+                    "options": _jsonify(self.settings),
+                    "specifications": _jsonify(self.specs),
+                    "fiducialpars": _jsonify(self.fiducialcosmopars),
+                    "freepars": _jsonify(self.freeparams),
+                    # Convenience extras
+                    "allparams": _jsonify(self.allparams),
+                }
+                with open(json_name, "w") as jf:
+                    json.dump(snapshot, jf, indent=2)
+                upt.time_print(
+                    feedback_level=self.feed_lvl,
+                    min_level=1,
+                    text="CosmicFish JSON specifications exported: {:s}".format(json_name),
+                    instance=self,
+                )
+            except Exception as _e:  # pragma: no cover (best-effort JSON export)
+                upt.time_print(
+                    feedback_level=self.feed_lvl,
+                    min_level=2,
+                    text="Warning: failed to export JSON specifications",
+                    instance=self,
+                )
             return fishMat_obj
 
     def recap_options(self):

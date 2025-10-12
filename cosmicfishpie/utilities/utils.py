@@ -172,7 +172,7 @@ def load_fisher_from_json(json_path):
     Parameters
     ----------
     json_path : str
-        Path to a JSON produced by FisherMatrix.export_fisher ("*_specifications.json").
+        Path to a JSON produced by FisherMatrix.export_fisher (``*_specifications.json``).
 
     Returns
     -------
@@ -182,7 +182,7 @@ def load_fisher_from_json(json_path):
     Notes
     -----
     - This only reconstructs the object with the same options/specifications/parameters.
-      You still need to call `.compute()` on the returned FisherMatrix to perform the run.
+      You still need to call ``.compute()`` on the returned FisherMatrix to perform the run.
     """
     import json as _json
 

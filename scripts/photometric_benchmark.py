@@ -23,12 +23,6 @@ from cosmicfishpie.LSSsurvey.photo_obs import (
     much_faster_integral_efficiency,
 )
 
-envkey = "OMP_NUM_THREADS"
-print("The value of {:s} is: ".format(envkey), os.environ.get(envkey))
-os.environ[envkey] = str(8)
-print("The value of {:s} is: ".format(envkey), os.environ.get(envkey))
-
-
 # # Cosmological parameters
 
 fiducial = {
@@ -332,7 +326,8 @@ def run_efficiency_benchmark(options):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Photometric benchmarks: Fisher and lensing-efficiency."
+        description="Photometric benchmarks: Fisher and lensing-efficiency.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "--accuracy", type=int, default=1, help="Accuracy level (affects grid sizes)"
@@ -397,8 +392,15 @@ def main():
         default="auto",
         help="FAST run: COSMICFISH_FAST_KERNEL toggle (auto=on)",
     )
+    parser.add_argument(
+        "--omp-threads",
+        type=int,
+        default=8,
+        help="Set OMP_NUM_THREADS for the run",
+    )
     args = parser.parse_args()
 
+    os.environ["OMP_NUM_THREADS"] = str(args.omp_threads)
     options = build_default_options(args.accuracy)
 
     def _parse_obs_arg(arg: str):

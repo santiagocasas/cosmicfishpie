@@ -401,6 +401,21 @@ def compare_ref_replay(ref_specs, results_dir, ref_dir, ref_prefix):
     for spec_path in ref_specs:
         print(f"[compare-ref]   using specs: {spec_path}")
 
+    observables_sets = []
+    for spec_path in ref_specs:
+        try:
+            _, snap = _u.load_fisher_from_json(spec_path)
+            obs = snap.get("metadata", {}).get("observables")
+            if obs is not None:
+                observables_sets.append(tuple(obs))
+        except Exception:
+            continue
+    if observables_sets and len(set(observables_sets)) > 1:
+        raise SystemExit(
+            "[compare-ref] Reference specs contain multiple observables sets; "
+            "please compare runs with matching observables only."
+        )
+
     summary = {
         "reference": {"dir": ref_dir, "prefix": ref_prefix},
         "current_prefix": BASE_OUTROOT,
@@ -559,6 +574,12 @@ def main():
         help="Cosmology backend to use (default: symbolic)",
     )
     parser.add_argument(
+        "--codes",
+        type=str,
+        default=None,
+        help="Comma-separated list of backends or 'all' (overrides --code)",
+    )
+    parser.add_argument(
         "--observables",
         type=str,
         default="GCph,WL",
@@ -676,6 +697,29 @@ def main():
 
     selected_obs_list = _parse_obs_arg(args.observables)
 
+    def _parse_codes_arg(arg: str | None) -> list[str]:
+        valid = ["symbolic", "class", "camb"]
+        if not arg:
+            return [args.code]
+        if arg.strip().lower() == "all":
+            return valid
+        parts = [p.strip() for p in arg.split(",") if p.strip()]
+        if not parts:
+            return [args.code]
+        for p in parts:
+            if p not in valid:
+                raise SystemExit(f"Invalid code '{p}'. Valid options: {valid} or 'all'")
+        # preserve order and uniqueness
+        seen = set()
+        out = []
+        for p in parts:
+            if p not in seen:
+                out.append(p)
+                seen.add(p)
+        return out
+
+    selected_codes = _parse_codes_arg(args.codes)
+
     run_regular_fisher = (
         (not args.skip_fisher) and (not args.fast_benchmark) and (not args.compare_ref)
     )
@@ -686,8 +730,7 @@ def main():
         compare_ref_replay(ref_specs, results_dir, compare_ref_dir, compare_ref_prefix)
 
     if run_regular_fisher:
-        # Override default codes with the selected backend
-        selected_codes = [args.code]
+        # Override default codes with the selected backend(s)
         fishanalysis, results_dir, fish_photo, strings_obses, timings = run_fisher_benchmark(
             options, selected_codes, [selected_obs_list]
         )

@@ -4,10 +4,12 @@
 # # CosmicFishPie
 
 import argparse
+import hashlib
 import importlib
 import json
 import os
 import subprocess
+import sys
 import time
 from pathlib import Path
 from time import perf_counter
@@ -42,7 +44,8 @@ observables = [["GCph", "WL"]]
 # Default to the fastest cosmology backend for benchmarks in this script
 codes = ["symbolic"]
 # Input options for CosmicFish (global options)
-BASE_OUTROOT = "Euclid-Photo-ISTF-Pess-Benchmark_"
+BASE_OUTROOT_BASE = "Euclid-Photo-ISTF-Pess-Benchmark"
+BASE_OUTROOT = BASE_OUTROOT_BASE + "_"
 
 ###############################################
 # Path Resolution Helpers
@@ -182,7 +185,7 @@ def run_fisher_benchmark(options, codes, observables):
 
     fisher_list = [fish_photo[key] for key in strings_obses]
     fishanalysis = fpa.CosmicFish_FisherAnalysis(fisher_list=fisher_list)
-    return fishanalysis, results_dir
+    return fishanalysis, results_dir, fish_photo, strings_obses, timings
 
 
 def _git_commit():
@@ -240,6 +243,211 @@ def export_fisher_comparison(fishanalysis, results_dir, options, codes, observab
         extra_metadata=extra_meta,
     )
     print(f"Fisher comparison JSON written to {fisher_comparison_json}")
+
+
+def _normalize_prefix(prefix: str) -> str:
+    return prefix if prefix.endswith("_") else prefix + "_"
+
+
+def _prefix_from_summary_file(filename: str) -> str:
+    if filename.endswith("timings.json"):
+        return filename[: -len("timings.json")]
+    if filename.endswith("fisher_comparison.json"):
+        return filename[: -len("fisher_comparison.json")]
+    return ""
+
+
+def _resolve_compare_ref(arg: str, default_results_dir: str):
+    if not arg:
+        return None, None
+    if os.path.isdir(arg):
+        candidates = []
+        for name in os.listdir(arg):
+            if name.endswith("timings.json") or name.endswith("fisher_comparison.json"):
+                candidates.append(name)
+        if not candidates:
+            print(f"[compare-ref] No summary JSON found in {arg}")
+            sys.exit(1)
+        candidates.sort(key=lambda n: os.path.getmtime(os.path.join(arg, n)), reverse=True)
+        chosen = candidates[0]
+        prefix = _prefix_from_summary_file(chosen)
+        return arg, _normalize_prefix(prefix)
+    if os.path.isfile(arg):
+        prefix = _prefix_from_summary_file(os.path.basename(arg))
+        if not prefix:
+            print(f"[compare-ref] Unsupported reference file: {arg}")
+            sys.exit(1)
+        return os.path.dirname(arg), _normalize_prefix(prefix)
+    ref_dir = default_results_dir
+    ref_prefix = arg
+    if os.sep in arg:
+        ref_dir = os.path.dirname(arg)
+        ref_prefix = os.path.basename(arg)
+    return ref_dir, _normalize_prefix(ref_prefix)
+
+
+def _find_ref_specs(ref_dir: str, ref_prefix: str):
+    if not ref_dir or not os.path.isdir(ref_dir):
+        return []
+    specs = []
+    for name in os.listdir(ref_dir):
+        if ref_prefix and not name.startswith(ref_prefix):
+            continue
+        if name.endswith("_FM_specs.json") or name.endswith("_specifications.json"):
+            specs.append(os.path.join(ref_dir, name))
+    return sorted(specs)
+
+
+def _compare_matrices(fm_cur, fm_ref):
+    ref_names = list(fm_ref.param_names)
+    cur_names = list(fm_cur.param_names)
+    name_to_idx = {n: i for i, n in enumerate(cur_names)}
+    common = [n for n in ref_names if n in name_to_idx]
+    missing = [n for n in ref_names if n not in name_to_idx]
+    if not common:
+        return {"error": "no_common_params", "missing_in_current": missing}
+    ref_indices = [ref_names.index(n) for n in common]
+    cur_indices = [name_to_idx[n] for n in common]
+    F_ref = np.array(fm_ref.fisher_matrix)[np.ix_(ref_indices, ref_indices)]
+    F_cur = np.array(fm_cur.fisher_matrix)[np.ix_(cur_indices, cur_indices)]
+
+    def metrics(A, B, thresh=1e-12):
+        D = A - B
+        mask = np.abs(B) > thresh
+        rel = np.zeros_like(A)
+        rel[mask] = (A[mask] / B[mask]) - 1.0
+        out = {
+            "rel_max": float(np.max(np.abs(rel[mask]))) if np.any(mask) else 0.0,
+            "abs_max_near0": float(np.max(np.abs(D[~mask]))) if np.any(~mask) else 0.0,
+            "fro_rel": float(np.linalg.norm(D) / (np.linalg.norm(B) + 1e-30)),
+        }
+        dA = np.diag(A)
+        dB = np.diag(B)
+        dmask = np.abs(dB) > thresh
+        if np.any(dmask):
+            ratios = dA[dmask] / dB[dmask]
+            out["diag_ratio"] = {
+                "min": float(np.min(ratios)),
+                "median": float(np.median(ratios)),
+                "max": float(np.max(ratios)),
+            }
+        else:
+            out["diag_ratio"] = {}
+        return out
+
+    out = metrics(F_cur, F_ref)
+    out["missing_in_current"] = missing
+    return out
+
+
+def compare_run_to_ref(fish_photo, strings_obses, results_dir, ref_dir, ref_prefix, timings):
+    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+
+    ref_timings_path = os.path.join(ref_dir, ref_prefix + "timings.json")
+    ref_timings = {}
+    if os.path.isfile(ref_timings_path):
+        try:
+            with open(ref_timings_path, "r") as f:
+                ref_timings = json.load(f).get("timings", {})
+        except Exception:
+            ref_timings = {}
+
+    summary = {
+        "reference": {"dir": ref_dir, "prefix": ref_prefix},
+        "current_prefix": BASE_OUTROOT,
+        "entries": [],
+    }
+    for key in strings_obses:
+        res = fish_photo.get(key)
+        cur_txt = getattr(res, "file_name", None) if res else None
+        entry = {"name": key, "current_matrix_path": cur_txt}
+        if key in timings:
+            entry["timing_current_seconds"] = timings[key].get("seconds")
+        if key in ref_timings:
+            entry["timing_reference_seconds"] = ref_timings[key].get("seconds")
+        if not cur_txt:
+            entry["error"] = "missing_current_matrix"
+            summary["entries"].append(entry)
+            continue
+        cur_base = os.path.basename(cur_txt)
+        if BASE_OUTROOT in cur_base:
+            ref_base = cur_base.replace(BASE_OUTROOT, ref_prefix, 1)
+            ref_txt = os.path.join(ref_dir, ref_base)
+        else:
+            ref_txt = os.path.join(ref_dir, ref_prefix + cur_base)
+        entry["reference_matrix_path"] = ref_txt
+        if not os.path.isfile(ref_txt):
+            entry["error"] = "missing_reference_matrix"
+            summary["entries"].append(entry)
+            continue
+        fm_ref = fm_mod.fisher_matrix(file_name=ref_txt)
+        entry["metrics"] = _compare_matrices(res, fm_ref)
+        summary["entries"].append(entry)
+
+    out_json = os.path.join(results_dir, BASE_OUTROOT + "compare_ref.json")
+    with open(out_json, "w") as f:
+        json.dump(summary, f, indent=2)
+    print("[compare-ref] Report written to", out_json)
+
+
+def compare_ref_replay(ref_specs, results_dir, ref_dir, ref_prefix):
+    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+    from cosmicfishpie.utilities import utils as _u
+
+    print(
+        f"[compare-ref] Replaying {len(ref_specs)} run(s) from {ref_dir} "
+        f"(prefix='{ref_prefix or '*'}')"
+    )
+    for spec_path in ref_specs:
+        print(f"[compare-ref]   using specs: {spec_path}")
+
+    summary = {
+        "reference": {"dir": ref_dir, "prefix": ref_prefix},
+        "current_prefix": BASE_OUTROOT,
+        "mode": "replay_specs",
+        "entries": [],
+    }
+    for spec_path in ref_specs:
+        fm, snap = _u.load_fisher_from_json(spec_path)
+        ref_outroot = fm.settings.get("outroot", "")
+        if ref_prefix in ref_outroot:
+            new_outroot = ref_outroot.replace(ref_prefix, BASE_OUTROOT, 1)
+        else:
+            base = os.path.basename(ref_outroot.rstrip("_")) or "RUN"
+            new_outroot = BASE_OUTROOT + base + "_"
+        fm.settings["outroot"] = new_outroot
+        fm.settings["results_dir"] = results_dir
+
+        t0 = time.time()
+        res = fm.compute()
+        t1 = time.time()
+
+        ref_txt = (
+            snap.get("metadata", {}).get("matrix_files", {}).get("txt")
+            if isinstance(snap.get("metadata", {}), dict)
+            else None
+        )
+        if ref_txt and not os.path.isfile(ref_txt):
+            ref_txt = os.path.join(ref_dir, os.path.basename(ref_txt))
+        entry = {
+            "ref_specs_json": spec_path,
+            "current_matrix_path": getattr(res, "file_name", None),
+            "reference_matrix_path": ref_txt,
+            "observables": snap.get("metadata", {}).get("observables"),
+            "timing_current_seconds": t1 - t0,
+            "timing_reference_seconds": snap.get("metadata", {}).get("totaltime_sec"),
+        }
+        if ref_txt and os.path.isfile(ref_txt):
+            fm_ref = fm_mod.fisher_matrix(file_name=ref_txt)
+            entry["metrics"] = _compare_matrices(res, fm_ref)
+        else:
+            entry["error"] = "missing_reference_matrix"
+        summary["entries"].append(entry)
+
+    out_json = os.path.join(results_dir, BASE_OUTROOT + "compare_ref.json")
+    with open(out_json, "w") as f:
+        json.dump(summary, f, indent=2)
+    print("[compare-ref] Report written to", out_json)
 
 
 def compare_vectors(a, b, name_a="A", name_b="B", thresh=1e-12):
@@ -339,26 +547,9 @@ def main():
         "--efficiency", action="store_true", help="Run the lensing efficiency benchmark"
     )
     parser.add_argument(
-        "--flags-benchmark",
+        "--fast-benchmark",
         action="store_true",
-        help="Benchmark full Fisher with fast flags ON vs OFF",
-    )
-    parser.add_argument(
-        "--fast-only",
-        action="store_true",
-        help="Run a single FAST Fisher (all fast flags on by default)",
-    )
-    parser.add_argument(
-        "--compare-ref",
-        type=str,
-        default=None,
-        help="Reference Fisher root or file (.txt/.json). If root, expects '<root>_FM.txt' and '<root>_FM_specs.json'",
-    )
-    parser.add_argument(
-        "--replay-json",
-        type=str,
-        default=None,
-        help="Path to a *_specifications.json to replay settings, run, and compare to its referenced matrix if present",
+        help="Benchmark full Fisher with FAST flags ON vs OFF",
     )
     parser.add_argument(
         "--code",
@@ -372,6 +563,18 @@ def main():
         type=str,
         default="GCph,WL",
         help="Comma-separated list among {GCph, WL}; e.g. 'WL' or 'GCph,WL'",
+    )
+    parser.add_argument(
+        "--compare-ref",
+        type=str,
+        default=None,
+        help="Compare against a previous run prefix or summary JSON (replays settings if specs are found)",
+    )
+    parser.add_argument(
+        "--fast",
+        choices=["auto", "on", "off"],
+        default="auto",
+        help="Set all FAST toggles at once (auto=use individual flags)",
     )
     # Granular control for FAST run flags (SLOW always disables all)
     parser.add_argument(
@@ -400,8 +603,59 @@ def main():
     )
     args = parser.parse_args()
 
+    def _make_run_id() -> str:
+        arg_text = " ".join(sys.argv[1:]).strip() or "defaults"
+        digest = hashlib.sha1(arg_text.encode("utf-8")).hexdigest()[:8]
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        return f"{timestamp}_{digest}"
+
+    global BASE_OUTROOT
+    run_id = _make_run_id()
+    BASE_OUTROOT = f"{BASE_OUTROOT_BASE}_{run_id}_"
+
+    # Default FAST flags for runs that don't explicitly toggle them later.
+    if args.fast == "on":
+        fast_eff = True
+        fast_P = True
+        fast_kernel = True
+    elif args.fast == "off":
+        fast_eff = False
+        fast_P = False
+        fast_kernel = False
+    else:
+        fast_eff = args.fast_eff != "off"
+        fast_P = args.fast_p != "off"
+        fast_kernel = args.fast_kernel != "off"
+    os.environ["COSMICFISH_FAST_EFF"] = "1" if fast_eff else "0"
+    os.environ["COSMICFISH_FAST_P"] = "1" if fast_P else "0"
+    os.environ["COSMICFISH_FAST_KERNEL"] = "1" if fast_kernel else "0"
+    # Ensure photo_obs picks up env toggles set here.
+    import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+
+    importlib.reload(photo_obs)
+    global ComputeCls, faster_integral_efficiency, memo_integral_efficiency
+    global much_faster_integral_efficiency
+    ComputeCls = photo_obs.ComputeCls
+    faster_integral_efficiency = photo_obs.faster_integral_efficiency
+    memo_integral_efficiency = photo_obs.memo_integral_efficiency
+    much_faster_integral_efficiency = photo_obs.much_faster_integral_efficiency
+
     os.environ["OMP_NUM_THREADS"] = str(args.omp_threads)
     options = build_default_options(args.accuracy)
+    compare_ref_dir, compare_ref_prefix = _resolve_compare_ref(
+        args.compare_ref, options.get("results_dir", "results/")
+    )
+    ref_specs = _find_ref_specs(compare_ref_dir, compare_ref_prefix)
+    if args.compare_ref and not ref_specs and compare_ref_dir and os.path.isdir(compare_ref_dir):
+        # Fall back to any specs in the directory if prefix was derived from summary files.
+        ref_specs = _find_ref_specs(compare_ref_dir, "")
+        if ref_specs:
+            compare_ref_prefix = ""
+    if args.compare_ref and not ref_specs:
+        raise SystemExit(
+            "[compare-ref] No reference *_FM_specs.json found for prefix: "
+            f"{compare_ref_prefix} in {compare_ref_dir}"
+        )
 
     def _parse_obs_arg(arg: str):
         valid = {"GCph", "WL"}
@@ -422,37 +676,37 @@ def main():
 
     selected_obs_list = _parse_obs_arg(args.observables)
 
-    # If any specialized mode is requested, skip the regular Fisher run
     run_regular_fisher = (
-        (not args.skip_fisher)
-        and (not args.flags_benchmark)
-        and (not args.fast_only)
-        and (not args.compare_ref)
-        and (not args.replay_json)
+        (not args.skip_fisher) and (not args.fast_benchmark) and (not args.compare_ref)
     )
+
+    if args.compare_ref and ref_specs:
+        results_dir = options.get("results_dir", "results/")
+        os.makedirs(results_dir, exist_ok=True)
+        compare_ref_replay(ref_specs, results_dir, compare_ref_dir, compare_ref_prefix)
 
     if run_regular_fisher:
         # Override default codes with the selected backend
         selected_codes = [args.code]
-        fishanalysis, results_dir = run_fisher_benchmark(
+        fishanalysis, results_dir, fish_photo, strings_obses, timings = run_fisher_benchmark(
             options, selected_codes, [selected_obs_list]
         )
         export_fisher_comparison(fishanalysis, results_dir, options, codes, observables)
+        if compare_ref_prefix:
+            compare_run_to_ref(
+                fish_photo,
+                strings_obses,
+                results_dir,
+                compare_ref_dir,
+                compare_ref_prefix,
+                timings,
+            )
 
     if args.efficiency:
         run_efficiency_benchmark(options)
 
-    if args.flags_benchmark:
+    if args.fast_benchmark:
         run_fast_flags_fisher_benchmark(options, args, selected_obs_list)
-
-    if args.fast_only:
-        run_fast_only(options, args, selected_obs_list)
-
-    if args.compare_ref:
-        run_compare_ref(options, args, selected_obs_list)
-
-    if args.replay_json:
-        run_replay_json(args.replay_json)
 
 
 def run_fast_flags_fisher_benchmark(options, args, obs_list):

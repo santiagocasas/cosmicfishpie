@@ -1079,6 +1079,9 @@ class boltzmann_code:
             "H0": self.symbcosmopars["h"] * 100,
             "ns": self.symbcosmopars["ns"],
         }
+        colossus_persistence = cfg.settings.get("colossus_persistence")
+        if colossus_persistence is not None:
+            symb_colmo_pars["persistence"] = colossus_persistence
         self.results.zgrid = self.zgrid
         self.h_now = self.symbcosmopars["h"]
         self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now

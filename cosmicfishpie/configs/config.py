@@ -273,6 +273,11 @@ def init(
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
+    colossus_base_dir_default = os.path.realpath(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+    )
+    settings.setdefault("colossus_base_dir", colossus_base_dir_default)
+    settings.setdefault("colossus_persistence", "")
 
     feed_lvl = settings["feedback"]
 

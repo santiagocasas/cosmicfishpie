@@ -128,12 +128,29 @@ class boltzmann_code:
         elif code == "symbolic":
             try:
                 import colossus.cosmology as colmo
+                import colossus.settings as colossus_settings
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 
                 self.colmo = colmo
                 self.symblin = symblin
                 self.symbfit = symbfit
+                colossus_base_dir = cfg.settings.get("colossus_base_dir")
+                if colossus_base_dir is not None:
+                    colossus_settings.BASE_DIR = colossus_base_dir
+                colossus_persistence = cfg.settings.get("colossus_persistence")
+                if colossus_persistence is not None:
+                    colossus_settings.PERSISTENCE = colossus_persistence
+                if not hasattr(colmo.cosmology, "_cfp_wrapped_setCosmology"):
+                    orig_setCosmology = colmo.cosmology.setCosmology
+
+                    def _setCosmology_with_persistence(cosmo_name, params=None, **kwargs):
+                        if "persistence" not in kwargs and colossus_persistence is not None:
+                            kwargs["persistence"] = colossus_persistence
+                        return orig_setCosmology(cosmo_name, params=params, **kwargs)
+
+                    colmo.cosmology.setCosmology = _setCosmology_with_persistence
+                    colmo.cosmology._cfp_wrapped_setCosmology = True
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
@@ -1072,6 +1089,9 @@ class boltzmann_code:
             "H0": self.symbcosmopars["h"] * 100,
             "ns": self.symbcosmopars["ns"],
         }
+        colossus_persistence = cfg.settings.get("colossus_persistence")
+        if colossus_persistence is not None:
+            symb_colmo_pars["persistence"] = colossus_persistence
         self.results.zgrid = self.zgrid
         self.h_now = self.symbcosmopars["h"]
         self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now

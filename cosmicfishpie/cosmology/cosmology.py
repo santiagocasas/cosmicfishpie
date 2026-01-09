@@ -128,12 +128,19 @@ class boltzmann_code:
         elif code == "symbolic":
             try:
                 import colossus.cosmology as colmo
+                import colossus.settings as colossus_settings
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 
                 self.colmo = colmo
                 self.symblin = symblin
                 self.symbfit = symbfit
+                colossus_base_dir = cfg.settings.get("colossus_base_dir")
+                if colossus_base_dir is not None:
+                    colossus_settings.BASE_DIR = colossus_base_dir
+                colossus_persistence = cfg.settings.get("colossus_persistence")
+                if colossus_persistence is not None:
+                    colossus_settings.PERSISTENCE = colossus_persistence
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()

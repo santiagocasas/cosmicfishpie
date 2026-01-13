@@ -1105,6 +1105,10 @@ def plot_chain_summary(
 
 def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
     """Load Nautilus chains from a text file."""
+    if isinstance(param_cols, dict):
+        param_cols = list(param_cols.keys())
+    elif not isinstance(param_cols, list):
+        raise TypeError("param_cols must be a list or dict")
     chain_arr = np.loadtxt(filename)
     chain_df = pd.DataFrame(chain_arr, columns=param_cols + ["weight", "posterior"])
     if log_weights:

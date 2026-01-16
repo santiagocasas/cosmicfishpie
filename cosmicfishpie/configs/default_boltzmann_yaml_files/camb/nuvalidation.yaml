@@ -1,0 +1,32 @@
+ACCURACY:
+  'kmax' : 50
+  'k_per_logint' : 50
+  'AccuracyBoost' : 3
+  'lAccuracyBoost' : 3
+  'lSampleBoost' : 1
+  'accurate_massive_neutrino_transfers' : True
+NUMERICS:
+  'zmax' : 5
+  'zsamples': 100
+COSMO_SETTINGS:   ## Massive neutrino baseline model
+  'halofit_version' : 9
+  'dark_energy_model' : 'ppf'
+  'num_nu_massive' : 1
+  'TCMB': 2.7255
+  'WantTensors' : False
+  'WantVectors' : False
+  'Reion.Reionization' : False
+  'WantCls' : False
+  'Want_CMB' : False
+  'Want_CMB_lensing': False
+  'Want_cl_2D_array' : False
+  'DoLateRadTruncation': True
+  'DoLensing': False
+LCDM:
+  'Omegak' : 0.
+  'tau' : 0.058
+  'YHe': 0.24
+w0waCDM:
+  'Omegak' : 0.
+  'tau' : 0.058
+  'YHe': 0.24

@@ -12,6 +12,7 @@ def test_packaged_config_files_exist_and_parse():
         cfg_dir / "default_boltzmann_yaml_files" / "camb" / "default.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "class" / "default.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "symbolic" / "default.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "nuvalidation_photo.yaml",
     ]
 
     for path in yaml_paths:
@@ -22,3 +23,6 @@ def test_packaged_config_files_exist_and_parse():
 
     dat_path = cfg_dir / "external_data" / "lumratio_file.dat"
     assert dat_path.is_file(), f"missing packaged data file: {dat_path}"
+
+    readme_path = cfg_dir / "default_boltzmann_yaml_files" / "README.md"
+    assert readme_path.is_file(), f"missing packaged readme file: {readme_path}"

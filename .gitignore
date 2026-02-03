@@ -1,6 +1,10 @@
 # heavy data
 *.hdf5
 *.pdf
+*.png
+*.zip
+*.tar.gz
+chains/
 # build artifacts
 
 .eggs/
@@ -49,6 +53,7 @@ __pycache__
 .coverage
 .pytest_cache/
 .benchmarks
+coverage.xml
 
 # documentation build artifacts
 

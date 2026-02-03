@@ -16,10 +16,10 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - shell: bash
-      run: |
-        # Install prerequisites.
-        pip install --upgrade pip setuptools wheel virtualenv
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
 
     - shell: bash
       run: |
@@ -30,27 +30,23 @@ runs:
       id: virtualenv-cache
       with:
         path: .venv
-        key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml') }}
+        key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
 
     - if: steps.virtualenv-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         # Set up virtual environment without cache hit.
-        test -d .venv || virtualenv -p $(which python) --copies --reset-app-data .venv
-        . .venv/bin/activate
-        pip install -e .[dev]
+        uv sync --extra dev
 
     - if: steps.virtualenv-cache.outputs.cache-hit == 'true'
       shell: bash
       run: |
         # Set up virtual environment from cache hit.
-        . .venv/bin/activate
-        pip install --no-deps -e .[dev]
+        uv sync --extra dev
 
     - shell: bash
       run: |
         # Show environment info.
-        . .venv/bin/activate
-        echo "✓ Installed $(python --version) virtual environment to $(which python)"
+        uv run python --version
         echo "Packages:"
-        pip freeze
+        uv pip freeze

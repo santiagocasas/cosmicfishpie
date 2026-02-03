@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 # See https://setuptools.pypa.io/en/latest/userguide/quickstart.html for more project configuration options.
 name = "cosmicfishpie"
-dynamic = ["version", "dependencies"]
+dynamic = ["version"]
 readme = "README.md"
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -22,6 +22,28 @@ authors = [
 ]
 requires-python = ">=3.10,<3.13"
 license = {file = "LICENSE"}
+
+dependencies = [
+    "astropy==6.1.7",
+    "camb==1.6.4",
+    "Cython==3.1.4",
+    "getdist==1.7.3",
+    "h5py==3.14.0",
+    "ipython==8.37.0",
+    "joblib==1.5.2",
+    "jupyter==1.1.1",
+    "matplotlib==3.10.7",
+    "nautilus-sampler==1.0.5",
+    "chainconsumer>=1.2.0,<2.0.0",
+    "numpy",
+    "pandas",
+    "PyYAML==6.0.3",
+    "scikit-learn==1.7.2",
+    "SciPy>=1.8.0",
+    "seaborn",
+    "colossus",
+    "symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git",
+]
 
 [project.urls]
 Homepage = "https://github.com/santiagocasas/cosmicfishpie"
@@ -51,13 +73,7 @@ dev = [
     "sphinx-autodoc-typehints==1.23.3",
     "sphinx_rtd_theme>=1.0",
     "packaging",
-    "camb",
-    "colossus",
-    "symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git"
 ]
-
-[project.scripts]
-run-tests = "cosmicfishpie.tests.installation_test:main"  # Expose the test script as a CLI command
 
 [tool.setuptools.packages.find]
 exclude = [
@@ -73,11 +89,16 @@ exclude = [
 include-package-data = true
 
 [tool.setuptools.package-data]
-cosmicfishpie = ["py.typed", "configs/*"]
+cosmicfishpie = [
+    "py.typed",
+    "configs/default_boltzmann_yaml_files/*/*.yaml",
+    "configs/default_survey_specifications/*.yaml",
+    "configs/other_survey_specifications/*.yaml",
+    "configs/external_data/*.dat",
+]
 
 [tool.setuptools.dynamic]
 version = {attr = "cosmicfishpie.version.VERSION"}
-dependencies = {file = "requirements.txt"}
 
 [tool.black]
 line-length = 100
@@ -105,7 +126,7 @@ reportPrivateImportUsage = false
 
 [tool.ruff]
 line-length = 115
-target-version = "py39"
+target-version = "py310"
 exclude = ["**/*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]

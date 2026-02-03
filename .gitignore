@@ -58,3 +58,7 @@ site/
 # User Output
 plots/
 results/
+
+# local benchmark artifacts
+scripts/benchmark_results/
+scripts/benchmark_results.zip

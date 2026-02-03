@@ -47,7 +47,7 @@ class TestYAMLOperations:
 
         # Test that yaml operations work as expected by the module
         yaml_string = yaml.dump(test_yaml)
-        loaded_yaml = yaml.load(yaml_string, Loader=yaml.FullLoader)
+        loaded_yaml = yaml.safe_load(yaml_string)
 
         assert loaded_yaml["specifications"]["survey_name"] == "TestSurvey"
         assert len(loaded_yaml["specifications"]["z_bins"]) == 3
@@ -68,7 +68,6 @@ class TestConfigInitFunction:
             patch("os.path.isfile", return_value=False),
             patch("builtins.__import__", side_effect=ImportError("Mocked CAMB import error")),
         ):
-
             # Mock global variables that might be accessed
             mock_upt.time_print = MagicMock()
 
@@ -102,7 +101,6 @@ class TestConfigInitFunction:
             patch("cosmicfishpie.configs.config.ums"),
             patch("cosmicfishpie.configs.config.upm"),
         ):
-
             try:
                 config.init(options=custom_options)
                 assert True  # Coverage achieved
@@ -121,7 +119,6 @@ class TestConfigInitFunction:
                 patch("cosmicfishpie.configs.config.ums"),
                 patch("cosmicfishpie.configs.config.upm"),
             ):
-
                 try:
                     config.init(surveyName=survey)
                     assert True  # Coverage for each survey path
@@ -139,7 +136,6 @@ class TestConfigInitFunction:
                 patch("cosmicfishpie.configs.config.ums"),
                 patch("cosmicfishpie.configs.config.upm"),
             ):
-
                 try:
                     config.init(cosmoModel=model)
                     assert True  # Coverage for each model path
@@ -217,7 +213,7 @@ class TestConfigFileOperations:
         invalid_yaml = "invalid: yaml: content: ["
 
         try:
-            yaml.load(invalid_yaml, Loader=yaml.FullLoader)
+            yaml.safe_load(invalid_yaml)
         except yaml.YAMLError:
             # Expected behavior for invalid YAML
             assert True

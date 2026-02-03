@@ -117,8 +117,9 @@ jobs:
 
       - name: Install requirements
         run: |
-          pip install --upgrade pip setuptools wheel build
-          pip install -e .[dev]
+          pip install --upgrade pip
+          pip install uv
+          uv sync --extra dev
 
       - name: Prepare environment
         run: |

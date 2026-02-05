@@ -16,7 +16,7 @@ ACCURACY:
   'halofit_tol_sigma' : 1.e-8
 COSMO_SETTINGS:
   'P_k_max_1/Mpc': 50
-  'output' : 'mPk'
+  'output' : 'mPk,mTk'
   'non linear' : 'halofit'
   'z_max_pk' : 5.0
   'N_ncdm': 1

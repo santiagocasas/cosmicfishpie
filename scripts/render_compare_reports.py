@@ -12,14 +12,19 @@ It reads, per run folder:
 It writes:
   - REPORT.md and REPORT.html inside each run folder
   - index.md and index.html in a chosen index directory
+  - optional bundle directory with reports, plots, compare JSONs, and an index
+  - optional single-file HTML report with inline plots
 """
 
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
-from dataclasses import dataclass
+import shutil
+import zipfile
+from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -90,6 +95,45 @@ def _safe_relpath(target: Path, start: Path) -> str:
         return os.path.relpath(str(target), start=str(start))
     except Exception:
         return str(target)
+
+
+def _slugify(text: str) -> str:
+    if not text:
+        return "run"
+    out: list[str] = []
+    for ch in text.lower():
+        if ch.isalnum():
+            out.append(ch)
+        elif not out or out[-1] != "-":
+            out.append("-")
+    slug = "".join(out).strip("-")
+    return slug or "run"
+
+
+def _data_uri(path: Path, mime: str) -> str | None:
+    try:
+        data = path.read_bytes()
+    except Exception:
+        return None
+    b64 = base64.b64encode(data).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
+def _image_data_uri(path: Path) -> str | None:
+    ext = path.suffix.lower()
+    if ext == ".png":
+        mime = "image/png"
+    elif ext in (".jpg", ".jpeg"):
+        mime = "image/jpeg"
+    elif ext == ".svg":
+        mime = "image/svg+xml"
+    else:
+        mime = "application/octet-stream"
+    return _data_uri(path, mime)
+
+
+def _json_data_uri(path: Path) -> str | None:
+    return _data_uri(path, "application/json")
 
 
 def _pick_main_pair(compare: dict[str, Any]) -> dict[str, Any] | None:
@@ -352,6 +396,176 @@ def _fmt_seconds(x: float | None) -> str:
         return "n/a"
 
 
+def _report_css() -> str:
+    return (
+        "body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:1200px;margin:24px auto;padding:0 16px;line-height:1.5}"
+        "code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}"
+        "h1,h2,h3,h4{line-height:1.2}"
+        ".kv{display:grid;grid-template-columns:240px 1fr;gap:8px 16px;margin:12px 0}"
+        ".kv div{padding:2px 0}"
+        ".tag{display:inline-block;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:999px;padding:2px 10px;font-size:12px}"
+        ".warn{background:#fff7ed;border:1px solid #fed7aa;padding:10px;border-radius:10px}"
+        ".cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}"
+        ".card{border:1px solid #e5e7eb;border-radius:12px;padding:12px}"
+        "img{max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:10px}"
+        "table{border-collapse:collapse;width:100%}"
+        "th,td{border:1px solid #e5e7eb;padding:10px;vertical-align:top}"
+        "th{background:#f9fafb;text-align:left}"
+        "small{color:#6b7280}"
+        "section{margin:32px 0;padding-top:12px;border-top:1px solid #e5e7eb}"
+    )
+
+
+def _report_body_html(
+    summary: RunSummary,
+    *,
+    inline_images: bool,
+    inline_json: bool,
+    base_level: int = 1,
+    anchor_id: str | None = None,
+    include_back_to_top: bool = False,
+) -> str:
+    folder = summary.folder
+
+    def esc(s: str) -> str:
+        return (
+            s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+        )
+
+    def h(level: int, text: str, anchor: str | None = None) -> str:
+        if anchor:
+            return f"<h{level} id='{esc(anchor)}'>{text}</h{level}>"
+        return f"<h{level}>{text}</h{level}>"
+
+    parts: list[str] = []
+    if anchor_id:
+        parts.append("<section>")
+        parts.append(f"<a id='{esc(anchor_id)}' name='{esc(anchor_id)}'></a>")
+
+    parts.append(h(base_level, f"Fisher Compare Report: <code>{esc(folder.name)}</code>"))
+    parts.append(f"<p><span class='tag'>status: {esc(summary.status)}</span></p>")
+
+    parts.append(h(base_level + 1, "Run Definition"))
+    parts.append("<div class='kv'>")
+    parts.append(f"<div>Folder</div><div><code>{esc(str(folder))}</code></div>")
+    if summary.timestamp:
+        parts.append(f"<div>Timestamp</div><div><code>{esc(summary.timestamp)}</code></div>")
+    if summary.git_commit:
+        parts.append(f"<div>Git commit</div><div><code>{esc(summary.git_commit)}</code></div>")
+    if summary.omp_threads:
+        parts.append(
+            f"<div>OMP_NUM_THREADS</div><div><code>{esc(summary.omp_threads)}</code></div>"
+        )
+    parts.append(f"<div>Mode</div><div><code>{esc(summary.mode or 'n/a')}</code></div>")
+    parts.append(
+        f"<div>A</div><div>code=<code>{esc(summary.code_a or 'n/a')}</code> "
+        f"yaml_key=<code>{esc(summary.yaml_key_a or 'n/a')}</code><br>"
+        f"yaml=<code>{esc(summary.yaml_a or 'n/a')}</code></div>"
+    )
+    parts.append(
+        f"<div>B</div><div>code=<code>{esc(summary.code_b or 'n/a')}</code> "
+        f"yaml_key=<code>{esc(summary.yaml_key_b or 'n/a')}</code><br>"
+        f"yaml=<code>{esc(summary.yaml_b or 'n/a')}</code></div>"
+    )
+    parts.append("</div>")
+
+    parts.append(h(base_level + 1, "Results"))
+    if summary.compare_json:
+        if inline_json:
+            data_uri = _json_data_uri(summary.compare_json)
+            if data_uri:
+                name = summary.compare_json.name
+                parts.append(
+                    f"<p>Compare JSON: <a download='{esc(name)}' href='{data_uri}'>download</a></p>"
+                )
+            else:
+                parts.append("<p>Compare JSON: <code>n/a</code></p>")
+        else:
+            rel = _safe_relpath(summary.compare_json, folder)
+            parts.append(f"<p>Compare JSON: <code>{esc(rel)}</code></p>")
+    else:
+        parts.append("<p>Compare JSON: <code>n/a</code></p>")
+
+    parts.append("<div class='cards'>")
+    parts.append("<div class='card'>")
+    parts.append(h(base_level + 2, "Timing"))
+    parts.append("<div class='kv'>")
+    parts.append(f"<div>A</div><div><code>{esc(_fmt_seconds(summary.a_time_s))}</code></div>")
+    parts.append(f"<div>B</div><div><code>{esc(_fmt_seconds(summary.b_time_s))}</code></div>")
+    parts.append(
+        f"<div>Delta (B-A)</div><div><code>{esc(_fmt_seconds(summary.time_delta_s))}</code></div>"
+    )
+    parts.append(
+        f"<div>Ratio (B/A)</div><div><code>{esc(_fmt_float(summary.time_ratio_b_over_a, '.4f'))}</code></div>"
+    )
+    parts.append("</div>")
+    parts.append("</div>")
+
+    parts.append("<div class='card'>")
+    parts.append(h(base_level + 2, "Matrix Metrics"))
+    parts.append("<div class='kv'>")
+    parts.append(f"<div>rel_max</div><div><code>{esc(_fmt_float(summary.rel_max))}</code></div>")
+    parts.append(f"<div>fro_rel</div><div><code>{esc(_fmt_float(summary.fro_rel))}</code></div>")
+    parts.append(
+        f"<div>diag_ratio min/med/max</div><div><code>{esc(_fmt_float(summary.diag_ratio_min))}</code> / "
+        f"<code>{esc(_fmt_float(summary.diag_ratio_median))}</code> / <code>{esc(_fmt_float(summary.diag_ratio_max))}</code></div>"
+    )
+    if summary.max_sigma_dev_param and summary.max_sigma_dev_percent is not None:
+        parts.append(
+            f"<div>Max |sigma ratio-1|</div><div><code>{summary.max_sigma_dev_percent:.3f}%</code> "
+            f"(param <code>{esc(summary.max_sigma_dev_param)}</code>, ratio <code>{esc(_fmt_float(summary.max_sigma_dev_ratio))}</code>)</div>"
+        )
+    else:
+        parts.append("<div>Max |sigma ratio-1|</div><div><code>n/a</code></div>")
+    parts.append("</div>")
+    parts.append("</div>")
+    parts.append("</div>")
+
+    parts.append(h(base_level + 2, "YAML Diff Summary"))
+    if summary.yaml_top_changed is not None:
+        parts.append(
+            f"<p>Top-level keys: changed=<code>{summary.yaml_top_changed}</code> "
+            f"only_in_a=<code>{summary.yaml_top_only_a}</code> only_in_b=<code>{summary.yaml_top_only_b}</code></p>"
+        )
+        if summary.yaml_top_changed_keys:
+            shown = summary.yaml_top_changed_keys[:12]
+            rest = len(summary.yaml_top_changed_keys) - len(shown)
+            txt = ", ".join(f"<code>{esc(k)}</code>" for k in shown)
+            if rest > 0:
+                txt += f", ... (+{rest})"
+            parts.append(f"<p>Changed sections (top-level): {txt}</p>")
+    else:
+        parts.append("<div class='warn'>YAML diff summary not available yet.</div>")
+
+    parts.append(h(base_level + 1, "Plots"))
+    if summary.plots_dir and summary.plots_dir.is_dir():
+        pngs = sorted(summary.plots_dir.glob("*.png"))
+        if not pngs:
+            parts.append("<p>No PNG plots found.</p>")
+        else:
+            for p in pngs:
+                parts.append(h(base_level + 2, f"<code>{esc(p.name)}</code>"))
+                if inline_images:
+                    data_uri = _image_data_uri(p)
+                    if data_uri:
+                        parts.append(f"<p><img src='{data_uri}' alt='{esc(p.name)}'></p>")
+                    else:
+                        parts.append(f"<p><img src='{esc(str(p))}' alt='{esc(p.name)}'></p>")
+                else:
+                    rel = _safe_relpath(p, folder)
+                    parts.append(f"<p><img src='{esc(rel)}' alt='{esc(p.name)}'></p>")
+    else:
+        parts.append("<p>No plots directory found yet.</p>")
+
+    if include_back_to_top:
+        parts.append("<p><a href='#top'>Back to index</a></p>")
+
+    if anchor_id:
+        parts.append("</section>")
+
+    return "\n".join(parts)
+
+
 def write_report_md(summary: RunSummary) -> None:
     folder = summary.folder
     lines: list[str] = []
@@ -458,121 +672,17 @@ def write_report_html(summary: RunSummary) -> None:
     parts.append("<meta charset='utf-8'>")
     parts.append("<meta name='viewport' content='width=device-width, initial-scale=1'>")
     parts.append(f"<title>Fisher Compare Report: {esc(folder.name)}</title>")
-    parts.append(
-        "<style>"
-        "body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:1100px;margin:24px auto;padding:0 16px;line-height:1.5}"
-        "code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}"
-        "h1,h2,h3{line-height:1.2}"
-        ".kv{display:grid;grid-template-columns:240px 1fr;gap:8px 16px;margin:12px 0}"
-        ".kv div{padding:2px 0}"
-        ".tag{display:inline-block;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:999px;padding:2px 10px;font-size:12px}"
-        ".warn{background:#fff7ed;border:1px solid #fed7aa;padding:10px;border-radius:10px}"
-        ".cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}"
-        ".card{border:1px solid #e5e7eb;border-radius:12px;padding:12px}"
-        "img{max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:10px}"
-        "</style>"
-    )
+    parts.append(f"<style>{_report_css()}</style>")
     parts.append("</head>")
     parts.append("<body>")
-
-    parts.append(f"<h1>Fisher Compare Report: <code>{esc(folder.name)}</code></h1>")
-    parts.append(f"<p><span class='tag'>status: {esc(summary.status)}</span></p>")
-
-    parts.append("<h2>Run Definition</h2>")
-    parts.append("<div class='kv'>")
-    parts.append(f"<div>Folder</div><div><code>{esc(str(folder))}</code></div>")
-    if summary.timestamp:
-        parts.append(f"<div>Timestamp</div><div><code>{esc(summary.timestamp)}</code></div>")
-    if summary.git_commit:
-        parts.append(f"<div>Git commit</div><div><code>{esc(summary.git_commit)}</code></div>")
-    if summary.omp_threads:
-        parts.append(
-            f"<div>OMP_NUM_THREADS</div><div><code>{esc(summary.omp_threads)}</code></div>"
+    parts.append(
+        _report_body_html(
+            summary,
+            inline_images=False,
+            inline_json=False,
+            base_level=1,
         )
-    parts.append(f"<div>Mode</div><div><code>{esc(summary.mode or 'n/a')}</code></div>")
-    parts.append(
-        f"<div>A</div><div>code=<code>{esc(summary.code_a or 'n/a')}</code> "
-        f"yaml_key=<code>{esc(summary.yaml_key_a or 'n/a')}</code><br>"
-        f"yaml=<code>{esc(summary.yaml_a or 'n/a')}</code></div>"
     )
-    parts.append(
-        f"<div>B</div><div>code=<code>{esc(summary.code_b or 'n/a')}</code> "
-        f"yaml_key=<code>{esc(summary.yaml_key_b or 'n/a')}</code><br>"
-        f"yaml=<code>{esc(summary.yaml_b or 'n/a')}</code></div>"
-    )
-    parts.append("</div>")
-
-    parts.append("<h2>Results</h2>")
-    if summary.compare_json:
-        rel = _safe_relpath(summary.compare_json, folder)
-        parts.append(f"<p>Compare JSON: <code>{esc(rel)}</code></p>")
-    else:
-        parts.append("<p>Compare JSON: <code>n/a</code></p>")
-
-    parts.append("<div class='cards'>")
-    parts.append("<div class='card'>")
-    parts.append("<h3>Timing</h3>")
-    parts.append("<div class='kv'>")
-    parts.append(f"<div>A</div><div><code>{esc(_fmt_seconds(summary.a_time_s))}</code></div>")
-    parts.append(f"<div>B</div><div><code>{esc(_fmt_seconds(summary.b_time_s))}</code></div>")
-    parts.append(
-        f"<div>Delta (B-A)</div><div><code>{esc(_fmt_seconds(summary.time_delta_s))}</code></div>"
-    )
-    parts.append(
-        f"<div>Ratio (B/A)</div><div><code>{esc(_fmt_float(summary.time_ratio_b_over_a, '.4f'))}</code></div>"
-    )
-    parts.append("</div>")
-    parts.append("</div>")
-
-    parts.append("<div class='card'>")
-    parts.append("<h3>Matrix Metrics</h3>")
-    parts.append("<div class='kv'>")
-    parts.append(f"<div>rel_max</div><div><code>{esc(_fmt_float(summary.rel_max))}</code></div>")
-    parts.append(f"<div>fro_rel</div><div><code>{esc(_fmt_float(summary.fro_rel))}</code></div>")
-    parts.append(
-        f"<div>diag_ratio min/med/max</div><div><code>{esc(_fmt_float(summary.diag_ratio_min))}</code> / "
-        f"<code>{esc(_fmt_float(summary.diag_ratio_median))}</code> / <code>{esc(_fmt_float(summary.diag_ratio_max))}</code></div>"
-    )
-    if summary.max_sigma_dev_param and summary.max_sigma_dev_percent is not None:
-        parts.append(
-            f"<div>Max |sigma ratio-1|</div><div><code>{summary.max_sigma_dev_percent:.3f}%</code> "
-            f"(param <code>{esc(summary.max_sigma_dev_param)}</code>, ratio <code>{esc(_fmt_float(summary.max_sigma_dev_ratio))}</code>)</div>"
-        )
-    else:
-        parts.append("<div>Max |sigma ratio-1|</div><div><code>n/a</code></div>")
-    parts.append("</div>")
-    parts.append("</div>")
-    parts.append("</div>")
-
-    parts.append("<h3>YAML Diff Summary</h3>")
-    if summary.yaml_top_changed is not None:
-        parts.append(
-            f"<p>Top-level keys: changed=<code>{summary.yaml_top_changed}</code> "
-            f"only_in_a=<code>{summary.yaml_top_only_a}</code> only_in_b=<code>{summary.yaml_top_only_b}</code></p>"
-        )
-        if summary.yaml_top_changed_keys:
-            shown = summary.yaml_top_changed_keys[:12]
-            rest = len(summary.yaml_top_changed_keys) - len(shown)
-            txt = ", ".join(f"<code>{esc(k)}</code>" for k in shown)
-            if rest > 0:
-                txt += f", … (+{rest})"
-            parts.append(f"<p>Changed sections (top-level): {txt}</p>")
-    else:
-        parts.append("<div class='warn'>YAML diff summary not available yet.</div>")
-
-    parts.append("<h2>Plots</h2>")
-    if summary.plots_dir and summary.plots_dir.is_dir():
-        pngs = sorted(summary.plots_dir.glob("*.png"))
-        if not pngs:
-            parts.append("<p>No PNG plots found.</p>")
-        else:
-            for p in pngs:
-                rel = _safe_relpath(p, folder)
-                parts.append(f"<h3><code>{esc(p.name)}</code></h3>")
-                parts.append(f"<p><img src='{esc(rel)}' alt='{esc(p.name)}'></p>")
-    else:
-        parts.append("<p>No plots directory found yet.</p>")
-
     parts.append("</body></html>")
     (folder / "REPORT.html").write_text("\n".join(parts) + "\n", encoding="utf-8")
 
@@ -719,6 +829,172 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
     (index_dir / "index.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
 
 
+def _copy_file(src: Path, dst: Path) -> None:
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+
+
+def _copy_tree(src: Path, dst: Path) -> None:
+    if not src.is_dir():
+        return
+    shutil.copytree(src, dst, dirs_exist_ok=True)
+
+
+def _bundle_run_folder(summary: RunSummary, bundle_dir: Path) -> RunSummary:
+    dest = bundle_dir / summary.folder.name
+    dest.mkdir(parents=True, exist_ok=True)
+
+    report_html = summary.folder / "REPORT.html"
+    report_md = summary.folder / "REPORT.md"
+    if report_html.is_file():
+        _copy_file(report_html, dest / report_html.name)
+    if report_md.is_file():
+        _copy_file(report_md, dest / report_md.name)
+
+    for json_path in sorted(summary.folder.glob("compare_fishers_*.json")):
+        if json_path.is_file():
+            _copy_file(json_path, dest / json_path.name)
+
+    if summary.plots_dir and summary.plots_dir.is_dir():
+        _copy_tree(summary.plots_dir, dest / summary.plots_dir.name)
+
+    compare_json = None
+    if summary.compare_json:
+        compare_json = dest / summary.compare_json.name
+    plots_dir = None
+    if summary.plots_dir:
+        plots_dir = dest / summary.plots_dir.name
+
+    return replace(summary, folder=dest, compare_json=compare_json, plots_dir=plots_dir)
+
+
+def bundle_reports(bundle_dir: Path, summaries: list[RunSummary]) -> list[RunSummary]:
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+    bundled: list[RunSummary] = []
+    for summary in summaries:
+        bundled.append(_bundle_run_folder(summary, bundle_dir))
+    write_index(bundle_dir, bundled)
+    return bundled
+
+
+def _zip_bundle(bundle_dir: Path) -> Path:
+    zip_path = bundle_dir.with_suffix(".zip")
+    base = bundle_dir.parent
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for path in bundle_dir.rglob("*"):
+            if not path.is_file():
+                continue
+            zf.write(path, path.relative_to(base))
+    return zip_path
+
+
+def write_single_file(path: Path, summaries: list[RunSummary]) -> None:
+    ordered = sorted(summaries, key=_sort_key, reverse=True)
+
+    seen: dict[str, int] = {}
+    entries: list[tuple[RunSummary, str]] = []
+    for summary in ordered:
+        slug = _slugify(summary.folder.name)
+        count = seen.get(slug, 0)
+        seen[slug] = count + 1
+        anchor = slug if count == 0 else f"{slug}-{count + 1}"
+        entries.append((summary, anchor))
+
+    def esc(s: str) -> str:
+        return (
+            s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+        )
+
+    rows_html: list[str] = []
+    for summary, anchor in entries:
+        label = summary.folder.name
+        a_code = summary.code_a or "n/a"
+        b_code = summary.code_b or "n/a"
+        codes_html = f"<code>A: {esc(a_code)}</code><br><code>B: {esc(b_code)}</code>"
+        yaml_a_bn = Path(summary.yaml_a).name if summary.yaml_a else "n/a"
+        yaml_b_bn = Path(summary.yaml_b).name if summary.yaml_b else "n/a"
+        yamls_html = f"<code>A: {esc(yaml_a_bn)}</code><br><code>B: {esc(yaml_b_bn)}</code>"
+        timing = (
+            f"{_fmt_seconds(summary.a_time_s)} / {_fmt_seconds(summary.b_time_s)} (B/A {_fmt_float(summary.time_ratio_b_over_a, '.3f')})"
+            if summary.a_time_s is not None or summary.b_time_s is not None
+            else "n/a"
+        )
+        dev = (
+            f"{summary.max_sigma_dev_percent:.2f}% ({summary.max_sigma_dev_param})"
+            if summary.max_sigma_dev_percent is not None and summary.max_sigma_dev_param
+            else "n/a"
+        )
+        rows_html.append(
+            "<tr>"
+            f"<td><a href='#{esc(anchor)}'>{esc(label)}</a><br><small><code>{esc(str(summary.folder))}</code></small></td>"
+            f"<td><code>{summary.status}</code></td>"
+            f"<td><code>{summary.timestamp or 'n/a'}</code></td>"
+            f"<td><code>{summary.mode or 'n/a'}</code></td>"
+            f"<td>{codes_html}</td>"
+            f"<td>{yamls_html}</td>"
+            f"<td><code>{timing}</code></td>"
+            f"<td><code>{dev}</code></td>"
+            "</tr>"
+        )
+
+    parts: list[str] = []
+    parts.append("<!doctype html>")
+    parts.append("<html lang='en'>")
+    parts.append("<head>")
+    parts.append("<meta charset='utf-8'>")
+    parts.append("<meta name='viewport' content='width=device-width, initial-scale=1'>")
+    parts.append("<title>Fisher Compare Reports (Single File)</title>")
+    parts.append(f"<style>{_report_css()}</style>")
+    parts.append("</head>")
+    parts.append("<body>")
+    parts.append("<a id='top'></a>")
+    parts.append("<h1>Fisher Compare Reports</h1>")
+    parts.append("<p>Generated by <code>scripts/render_compare_reports.py</code></p>")
+    parts.append("<table>")
+    parts.append("<thead>")
+    parts.append(
+        "<tr><th>Run</th><th>Status</th><th>Timestamp</th><th>Mode</th><th>Codes</th><th>YAMLs</th><th>Timings (A/B)</th><th>Max sigma dev</th></tr>"
+    )
+    parts.append("</thead>")
+    parts.append("<tbody>")
+    parts.append("\n".join(rows_html))
+    parts.append("</tbody>")
+    parts.append("</table>")
+
+    for summary, anchor in entries:
+        parts.append(
+            _report_body_html(
+                summary,
+                inline_images=True,
+                inline_json=True,
+                base_level=2,
+                anchor_id=anchor,
+                include_back_to_top=True,
+            )
+        )
+
+    parts.append(
+        "<script>"
+        "document.addEventListener('click',function(e){"
+        "var link=e.target.closest('a[href^=\"#\"]');"
+        "if(!link){return;}"
+        "var href=link.getAttribute('href');"
+        "if(!href||href.length<2){return;}"
+        "var id=decodeURIComponent(href.slice(1));"
+        'var target=document.getElementById(id)||document.querySelector("a[name=\'"+id+"\']");'
+        "if(!target){return;}"
+        "e.preventDefault();"
+        "target.scrollIntoView({behavior:'smooth',block:'start'});"
+        "history.replaceState(null,'',href);"
+        "});"
+        "</script>"
+    )
+
+    parts.append("</body></html>")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Render REPORT.md/REPORT.html for compare_* folders and an index.",
@@ -746,9 +1022,33 @@ def main() -> int:
         default="both",
         help="Which report formats to generate per folder",
     )
+    parser.add_argument(
+        "--bundle-dir",
+        default=None,
+        help="Directory to write a shareable bundle (REPORTs, plots, compare JSONs, index)",
+    )
+    parser.add_argument(
+        "--zip",
+        action="store_true",
+        help="Create a zip file from the bundle directory",
+    )
+    parser.add_argument(
+        "--single-file",
+        default=None,
+        help="Write a single self-contained HTML report (index + all runs)",
+    )
     args = parser.parse_args()
 
     index_dir = Path(args.index_dir).expanduser().resolve()
+    bundle_dir = None
+    if args.bundle_dir or args.zip:
+        bundle_dir = (
+            Path(args.bundle_dir)
+            if args.bundle_dir
+            else index_dir.parent / f"{index_dir.name}_bundle"
+        )
+        bundle_dir = bundle_dir.expanduser().resolve()
+    single_file_path = Path(args.single_file).expanduser().resolve() if args.single_file else None
 
     folders = _discover_run_folders(args.glob, args.folders)
     if not folders:
@@ -758,18 +1058,40 @@ def main() -> int:
     folders = [f for f in folders if f.resolve() != index_dir]
 
     summaries: list[RunSummary] = []
+    want_md = args.formats in ("md", "both")
+    want_html = args.formats in ("html", "both") or bundle_dir is not None
     for f in folders:
         if not f.is_dir():
             continue
         s = summarize_folder(f)
         summaries.append(s)
-        if args.formats in ("md", "both"):
+        if want_md:
             write_report_md(s)
-        if args.formats in ("html", "both"):
+        if want_html:
             write_report_html(s)
 
     write_index(index_dir, summaries)
     print(f"Wrote index: {index_dir / 'index.html'}")
+
+    report_kinds: list[str] = []
+    if want_md:
+        report_kinds.append("REPORT.md")
+    if want_html:
+        report_kinds.append("REPORT.html")
+
+    if single_file_path:
+        write_single_file(single_file_path, summaries)
+        print(f"Wrote single-file report: {single_file_path}")
+        if report_kinds:
+            reports = ", ".join(report_kinds)
+            print(f"Note: per-run {reports} and index were also generated.")
+
+    if bundle_dir:
+        bundle_reports(bundle_dir, summaries)
+        print(f"Wrote bundle: {bundle_dir}")
+        if args.zip:
+            zip_path = _zip_bundle(bundle_dir)
+            print(f"Wrote zip: {zip_path}")
     return 0
 
 

@@ -39,6 +39,24 @@ from pathlib import Path
 
 from cosmicfishpie.fishermatrix import cosmicfish
 
+DEFAULT_FIDUCIAL = {
+    "Omegam": 0.32,
+    "Omegab": 0.05,
+    "h": 0.67,
+    "ns": 0.96,
+    "sigma8": 0.815584,
+    "mnu": 0.06,
+    "Neff": 3.044,
+}
+
+DEFAULT_FREEPARS = {
+    "Omegam": 0.01,
+    "Omegab": 0.01,
+    "h": 0.01,
+    "ns": 0.01,
+    "sigma8": 0.01,
+}
+
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
@@ -107,6 +125,13 @@ def _write_run_metadata(
     return outpath
 
 
+def _load_common_specs(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise SystemExit(f"Failed to read common specs JSON: {path} ({exc})")
+
+
 def _build_base_options(
     *,
     code: str,
@@ -133,24 +158,13 @@ def _build_base_options(
     }
 
 
-def _run_fisher(*, options: dict, observables: list[str]) -> str | None:
-    fiducial = {
-        "Omegam": 0.32,
-        "Omegab": 0.05,
-        "h": 0.67,
-        "ns": 0.96,
-        "sigma8": 0.815584,
-        "mnu": 0.06,
-        "Neff": 3.044,
-    }
-    freepars = {
-        "Omegam": 0.01,
-        "Omegab": 0.01,
-        "h": 0.01,
-        "ns": 0.01,
-        "sigma8": 0.01,
-    }
-
+def _run_fisher(
+    *,
+    options: dict,
+    observables: list[str],
+    fiducial: dict[str, float],
+    freepars: dict[str, float],
+) -> str | None:
     fm = cosmicfish.FisherMatrix(
         fiducialpars=fiducial,
         freepars=freepars,
@@ -232,6 +246,11 @@ def main() -> int:
         default="Omegam,sigma8",
         help="FoM parameters passed to compare_fishers_in_dir.py",
     )
+    parser.add_argument(
+        "--common-specs",
+        default=None,
+        help="Path to JSON with fiducialpars/freepars/options (e.g. *_FM_specs.json)",
+    )
     args = parser.parse_args()
 
     if args.omp_threads is not None:
@@ -247,6 +266,21 @@ def main() -> int:
         else repo_root / "scripts" / "benchmark_results" / f"compare_{args.mode}_{run_id}"
     )
     outdir.mkdir(parents=True, exist_ok=True)
+
+    common_specs_path = (
+        Path(args.common_specs).expanduser().resolve() if args.common_specs else None
+    )
+    common_specs = _load_common_specs(common_specs_path) if common_specs_path else None
+    common_fiducial = common_specs.get("fiducialpars") if isinstance(common_specs, dict) else None
+    common_freepars = common_specs.get("freepars") if isinstance(common_specs, dict) else None
+    common_options = common_specs.get("options") if isinstance(common_specs, dict) else None
+
+    fiducial = DEFAULT_FIDUCIAL.copy()
+    if isinstance(common_fiducial, dict):
+        fiducial.update(common_fiducial)
+    freepars = DEFAULT_FREEPARS.copy()
+    if isinstance(common_freepars, dict):
+        freepars.update(common_freepars)
 
     if args.mode == "photo":
         observables = ["GCph", "WL"]
@@ -310,6 +344,7 @@ def main() -> int:
         repo_root=repo_root,
         resolved={
             "specs_dir": paths["specs_dir"],
+            "common_specs_json": str(common_specs_path) if common_specs_path else None,
             "yaml_key_a": yaml_key_a,
             "yaml_key_b": yaml_key_b,
             "yaml_a": yaml_a,
@@ -334,8 +369,20 @@ def main() -> int:
         survey_name_spectro=survey_name_spectro,
         feedback=args.feedback,
     )
+    if isinstance(common_options, dict):
+        opts_a.update(common_options)
+    opts_a["accuracy"] = args.accuracy
+    opts_a["feedback"] = args.feedback
+    opts_a["code"] = args.code_a
+    opts_a["outroot"] = prefix + "A_"
+    opts_a["results_dir"] = str(outdir) + "/"
     opts_a[yaml_key_a] = yaml_a
-    a_txt = _run_fisher(options=opts_a, observables=observables)
+    a_txt = _run_fisher(
+        options=opts_a,
+        observables=observables,
+        fiducial=fiducial,
+        freepars=freepars,
+    )
     print("[compare] A matrix:", a_txt)
 
     print("[compare] Running Fisher B...")
@@ -349,8 +396,20 @@ def main() -> int:
         survey_name_spectro=survey_name_spectro,
         feedback=args.feedback,
     )
+    if isinstance(common_options, dict):
+        opts_b.update(common_options)
+    opts_b["accuracy"] = args.accuracy
+    opts_b["feedback"] = args.feedback
+    opts_b["code"] = args.code_b
+    opts_b["outroot"] = prefix + "B_"
+    opts_b["results_dir"] = str(outdir) + "/"
     opts_b[yaml_key_b] = yaml_b
-    b_txt = _run_fisher(options=opts_b, observables=observables)
+    b_txt = _run_fisher(
+        options=opts_b,
+        observables=observables,
+        fiducial=fiducial,
+        freepars=freepars,
+    )
     print("[compare] B matrix:", b_txt)
 
     if not args.compare:

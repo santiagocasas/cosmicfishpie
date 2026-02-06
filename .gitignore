@@ -18,6 +18,9 @@ pip-wheel-metadata/
 # dev tools
 
 .envrc
+scripts/compare_backends_report.env
+scripts/run_config.env
+scripts/validation_configs/compare_run_config.env
 .python-version
 .idea
 .venv/

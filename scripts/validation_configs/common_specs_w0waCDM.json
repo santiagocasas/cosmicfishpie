@@ -1,0 +1,43 @@
+{
+  "options": {
+    "accuracy": 1,
+    "feedback": 1,
+    "derivatives": "3PT",
+    "survey_name": "Euclid",
+    "cosmo_model": "w0waCDM",
+    "nonlinear": true,
+    "nonlinear_photo": true,
+    "bfs8terms": false,
+    "vary_bias_str": "lnb",
+    "AP_effect": true,
+    "FoG_switch": true,
+    "GCsp_linear": false,
+    "fix_cosmo_nl_terms": true,
+    "Pshot_nuisance_fiducial": 0.0,
+    "SUPPRESS_WARNINGS": true,
+    "GCsp_Tracer": "matter",
+    "GCph_Tracer": "matter",
+    "ell_sampling": "accuracy",
+    "ShareDeltaNeff": false
+  },
+  "fiducialpars": {
+    "Omegam": 0.32,
+    "Omegab": 0.05,
+    "h": 0.67,
+    "ns": 0.96,
+    "sigma8": 0.815584,
+    "mnu": 0.06,
+    "Neff": 3.044,
+    "w0": -1.0,
+    "wa": 0.0
+  },
+  "freepars": {
+    "Omegam": 0.01,
+    "Omegab": 0.01,
+    "h": 0.01,
+    "ns": 0.01,
+    "sigma8": 0.01,
+    "w0": 0.01,
+    "wa": 0.01
+  }
+}

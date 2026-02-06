@@ -209,5 +209,86 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
 
 ---
 
-Happy benchmarking!
+## 11) Backend comparisons and reports
 
+Use these scripts to run two backends, compare, plot, and render shareable reports.
+
+### One-off CLI workflow
+
+1) Run two backends and compare (writes to scripts/benchmark_results/compare_<mode>_<timestamp>/):
+
+```bash
+uv run python scripts/run_fisher_compare_backends.py \
+  --mode photo \
+  --code-a class --code-b camb \
+  --compare --plot \
+  --fom-params Omegam,sigma8
+```
+
+2) Render per-run reports, index, and a single-file HTML report:
+
+```bash
+uv run python scripts/render_compare_reports.py \
+  scripts/benchmark_results/compare_photo_YYYYMMDD_HHMMSS \
+  --single-file scripts/benchmark_results/compare_reports_single.html
+```
+
+For multiple runs, use a glob:
+
+```bash
+uv run python scripts/render_compare_reports.py \
+  --glob "scripts/benchmark_results/compare_*" \
+  --single-file scripts/benchmark_results/compare_reports_single.html
+```
+
+Optional bundle and zip:
+
+```bash
+uv run python scripts/render_compare_reports.py \
+  --glob "scripts/benchmark_results/compare_*" \
+  --bundle-dir scripts/benchmark_results/compare_reports_bundle \
+  --zip
+```
+
+### Helper script
+
+Create a local config file:
+
+```bash
+cp scripts/validation_configs/compare_run_config.env.example \
+  scripts/validation_configs/compare_run_config.env
+```
+
+Edit `scripts/validation_configs/compare_run_config.env`, then run:
+
+```bash
+bash scripts/compare_backends_report.sh --config scripts/validation_configs/compare_run_config.env
+```
+
+Notes:
+- `scripts/validation_configs/compare_run_config.env` is gitignored; commit only the example file.
+- Leave YAML_A/YAML_B empty to use defaults inferred from backend.
+- COMMON_SPECS_JSON can point to a *_FM_specs.json or a small JSON with fiducialpars/freepars/options.
+- Values in the env file override anything set in the JSON.
+- If COMMON_SPECS_JSON is a relative path, it is resolved relative to the config file.
+- Use REPORT_SINGLE=true/false to control the single-file output; REPORT_SINGLE_FILE is a path override.
+- The single-file report inlines plots and compare JSON for easy sharing.
+- The helper script always generates per-run REPORT.html and an index.html alongside the single-file output.
+- Outputs are stored under a run folder that includes the config hash; the single-file report
+  and index live inside that folder. A `run_config.env` file is written for provenance.
+- REPORT_SINGLE_FILE/INDEX_DIR/BUNDLE_DIR must resolve inside OUTDIR.
+- Relative REPORT_SINGLE_FILE/INDEX_DIR/BUNDLE_DIR values are resolved under OUTDIR.
+- The helper script defaults to deterministic names using a config hash. Set USE_TIMESTAMP=true
+  to append a timestamp and keep multiple runs with identical settings.
+- For pipelines, create multiple config files and run in a loop, e.g.:
+  `for cfg in scripts/compare_configs/*.env; do bash scripts/compare_backends_report.sh --config "$cfg"; done`
+
+Defaults:
+- class: `cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml`
+- camb: `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml`
+- symbolic: `cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml`
+- REPORT_SINGLE=true writes `OUTDIR/report_single.html`; override with REPORT_SINGLE_FILE.
+
+---
+
+Happy benchmarking!

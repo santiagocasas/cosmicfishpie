@@ -6,11 +6,47 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 
 # User-configurable settings
 RUN_LABEL="validate_many"
-RUN_ID="$(date +%Y%m%d_%H%M%S)"
-RUN_ROOT="${REPO_ROOT}/scripts/benchmark_results/${RUN_LABEL}_${RUN_ID}"
+RESUME="${RESUME:-true}"
+RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
+RUN_ROOT="${RUN_ROOT:-}"
+VALIDATION_CONFIGS_DIR="${SCRIPT_DIR}/validation_configs"
+OMP_NUM_THREADS="${OMP_NUM_THREADS:-8}"
+export OMP_NUM_THREADS
+PYTHONUNBUFFERED="${PYTHONUNBUFFERED:-1}"
+export PYTHONUNBUFFERED
+
+if [[ -z "${RUN_ROOT}" && "${RESUME}" == "true" ]]; then
+  RUN_ROOT=$(REPO_ROOT="${REPO_ROOT}" python - <<'PY'
+from pathlib import Path
+import os
+
+root = Path(os.environ["REPO_ROOT"]) / "scripts" / "benchmark_results"
+label = "validate_many_"
+if not root.exists():
+    print("")
+    raise SystemExit(0)
+candidates = [p for p in root.iterdir() if p.is_dir() and p.name.startswith(label)]
+if not candidates:
+    print("")
+    raise SystemExit(0)
+latest = max(candidates, key=lambda p: p.stat().st_mtime)
+print(str(latest))
+PY
+  )
+fi
+
+if [[ -z "${RUN_ROOT}" ]]; then
+  RUN_ROOT="${REPO_ROOT}/scripts/benchmark_results/${RUN_LABEL}_${RUN_ID}"
+  echo "[validate-many] Starting new run: ${RUN_ROOT}"
+else
+  echo "[validate-many] Resuming run: ${RUN_ROOT}"
+fi
+
 COMBINED_REPORT="${RUN_ROOT}/report_many_${RUN_ID}.html"
 INDEX_DIR="${RUN_ROOT}/index"
-VALIDATION_CONFIGS_DIR="${SCRIPT_DIR}/validation_configs"
+
+echo "[validate-many] OMP_NUM_THREADS=${OMP_NUM_THREADS}"
+echo "[validate-many] PYTHONUNBUFFERED=${PYTHONUNBUFFERED}"
 
 CONFIG_FILES=(
   "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_01_class_camb_photo_mpvalidation_w0waCDM"
@@ -87,8 +123,12 @@ done
 
 if [[ ${#successes[@]} -gt 0 || ${#skipped[@]} -gt 0 ]]; then
   echo "[validate-many] Building combined report"
+  report_folders=()
+  for label in "${RUN_LABELS[@]}"; do
+    report_folders+=("${RUN_ROOT}/${label}")
+  done
   uv run python "${SCRIPT_DIR}/render_compare_reports.py" \
-    --glob "${RUN_ROOT}/*" \
+    "${report_folders[@]}" \
     --index-dir "${INDEX_DIR}" \
     --single-file "${COMBINED_REPORT}"
 else

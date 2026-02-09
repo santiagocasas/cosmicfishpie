@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+ENV_OUTDIR="${OUTDIR:-}"
 
 CONFIG_FILE=""
 usage() {
@@ -69,6 +70,10 @@ if [[ -n "${CONFIG_FILE}" ]]; then
   fi
   # shellcheck disable=SC1090
   source "${CONFIG_FILE}"
+fi
+
+if [[ -n "${ENV_OUTDIR}" && -z "${OUTDIR}" ]]; then
+  OUTDIR="${ENV_OUTDIR}"
 fi
 
 if [[ "${REPORT_SINGLE_FILE}" == "true" || "${REPORT_SINGLE_FILE}" == "false" ]]; then

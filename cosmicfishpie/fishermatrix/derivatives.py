@@ -162,22 +162,35 @@ class derivatives:
 
             obs_bwd = self.observable(bwd)
 
-            if "GCph" in self.observables_type or "WL" in self.observables_type:
+            observables_type = self.observables_type or []
+
+            if "GCph" in observables_type or "WL" in observables_type:
                 dpar = {}
                 for key in obs_fwd:
                     if key == "ells":
                         dpar[key] = obs_fwd[key]
                     else:
                         dpar[key] = self.der_3pt_stencil(obs_fwd[key], obs_bwd[key], stepsize)
-            if "GCsp" in self.observables_type or "IM" in self.observables_type:
+            elif "GCsp" in observables_type or "IM" in observables_type:
                 dpar = {}
                 for key in obs_fwd:
                     if key == "z_bins":
                         dpar[key] = obs_fwd[key]
                     else:
                         dpar[key] = self.der_3pt_stencil(obs_fwd[key], obs_bwd[key], stepsize)
-            if "plain" in self.observables_type:
+            elif any(o in observables_type for o in ("CMB_T", "CMB_E", "CMB_B")):
+                dpar = {}
+                for key in obs_fwd:
+                    if key == "ells":
+                        dpar[key] = obs_fwd[key]
+                    else:
+                        dpar[key] = self.der_3pt_stencil(obs_fwd[key], obs_bwd[key], stepsize)
+            elif "plain" in observables_type:
                 dpar = self.der_3pt_stencil(obs_fwd, obs_bwd, stepsize)
+            else:
+                raise ValueError(
+                    f"Unable to compute derivatives: unsupported observables_type={observables_type!r}."
+                )
 
             tend = time()
             upt.time_print(

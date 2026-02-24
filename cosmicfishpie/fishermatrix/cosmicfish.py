@@ -4,6 +4,7 @@
 This is the main engine of CosmicFish.
 
 """
+
 import os
 import sys
 from copy import copy, deepcopy
@@ -686,9 +687,9 @@ class FisherMatrix:
         cols = []
         for o in self.observables:
             if o == "GCph":
-                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_GCph)])
+                cols.extend([f"{o} {ind + 1}" for ind in range(self.num_z_bins_GCph)])
             elif o == "WL":
-                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_WL)])
+                cols.extend([f"{o} {ind + 1}" for ind in range(self.num_z_bins_WL)])
 
         # Precompute covariance matrices and their inverses
         covarr = np.array(covmat)
@@ -745,7 +746,7 @@ class FisherMatrix:
 
     def CMB_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, cmb_obj=None):
         if covmat is None and cmb_obj is not None:
-            covmat, noisy_cls = cmb_obj.compute_covmat()
+            noisy_cls, covmat = cmb_obj.compute_covmat()
         if derivs is None and cmb_obj is not None:
             derivs = cmb_obj.compute_derivs()
 
@@ -755,6 +756,8 @@ class FisherMatrix:
         # compute fisher matrix
         lvec = noisy_cls["ells"]
         Fisher = np.zeros((len(self.freeparams), len(self.freeparams)))
+
+        cols = list(self.observables)
 
         # TBA: THIS MUST BE MADE MUCH NICER AND FASTER!!!
         tfishstart = time()
@@ -772,15 +775,8 @@ class FisherMatrix:
                     tparstart = time()
                     for i_ell in range(len(lvec)):
                         # Repacking derivatives as matrix
-                        cols = []
-                        for o in self.observables:
-                            cols.append(o)
-
-                        der1 = pd.DataFrame(index=cols, columns=cols)
-                        der1 = der1.fillna(0.0)  # with 0s rather than NaNs
-
-                        der2 = pd.DataFrame(index=cols, columns=cols)
-                        der2 = der2.fillna(0.0)  # with 0s rather than NaNs
+                        der1 = pd.DataFrame(0.0, index=cols, columns=cols, dtype=float)
+                        der2 = pd.DataFrame(0.0, index=cols, columns=cols, dtype=float)
 
                         for obs1, obs2 in product(self.observables, self.observables):
                             der1.at[obs1, obs2] = derivs[par1][obs1 + "x" + obs2][i_ell]
@@ -788,9 +784,8 @@ class FisherMatrix:
 
                         covdf = covmat[i_ell]
 
-                        invMat = pd.DataFrame(
-                            np.linalg.pinv(covdf.values), covdf.columns, covdf.index
-                        )
+                        inv_arr = np.linalg.pinv(covdf.to_numpy(dtype=float))
+                        invMat = pd.DataFrame(inv_arr, index=covdf.index, columns=covdf.columns)
                         mat1 = der1.dot(invMat)
                         mat2 = invMat.dot(mat1)
                         mat3 = der2.dot(mat2)

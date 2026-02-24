@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
-"""CLS
+"""CMB angular power spectra (C_ell).
 
-This module contains cls calculations (only LSS atm).
+This module provides a small wrapper that computes CMB angular power spectra
+(`CMB_T`, `CMB_E`, `CMB_B`) using the configured cosmology backend.
 
+The numerical settings are taken from `cosmicfishpie.configs.config`:
+
+- `cfg.specs["lmin_CMB"]`, `cfg.specs["lmax_CMB"]`
+- beam/noise settings are handled in `cosmicfishpie.CMBsurvey.CMB_cov`
 """
+
 from itertools import product
 from time import time
 
@@ -19,6 +25,25 @@ memory = Memory(cachedir, verbose=0)
 
 
 class ComputeCls:
+    """Compute CMB angular power spectra for the configured observables.
+
+    Parameters
+    ----------
+    cosmopars : dict
+        Cosmological parameters in CosmicFishPie basis (e.g. `Omegam`, `h`, ...).
+    print_info_specs : bool, optional
+        If True, print the numerical specifications currently stored in
+        `cfg.specs`.
+
+    Notes
+    -----
+    Results are stored in the `result` attribute after calling `compute_all()`.
+    The result is a dictionary with at least:
+
+    - `ells`: 1D array of multipoles
+    - `<obs1>x<obs2>` arrays for each requested combination (e.g. `CMB_TxCMB_T`)
+    """
+
     def __init__(self, cosmopars, print_info_specs=False):
         self.feed_lvl = cfg.settings["feedback"]
 
@@ -55,6 +80,7 @@ class ComputeCls:
             self.print_numerical_specs()
 
     def compute_all(self):
+        """Compute all requested CMB spectra and store them in `self.result`."""
         tini = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -77,6 +103,7 @@ class ComputeCls:
         )
 
     def print_numerical_specs(self):
+        """Print the contents of `cfg.specs` (debug helper)."""
         print("***")
         print("Numerical specifications: ")
         for key in cfg.specs:
@@ -84,32 +111,17 @@ class ComputeCls:
         print("***")
 
     def computecls(self):
-        """Cls computation
-
-        Parameters
-        ----------
-        ell   : float
-                multipole
-        X     : str
-                first observable
-        Y     : str
-                second observable
-        i     : int
-                first bin
-        j     : int
-                second bin
+        """Return a dictionary of CMB C_ell arrays.
 
         Returns
         -------
-        float
-            Value of Cl
-
-
+        dict
+            Dictionary with `ells` and `obs1xobs2` arrays.
         """
 
         cls = {"ells": np.arange(cfg.specs["ellmin"], cfg.specs["ellmax"])}
 
-        # PYTHONIZE THIS HORRIBLE THING
+        # Compute all spectra combinations requested by cfg.obs.
         for obs1, obs2 in product(self.observables, self.observables):
             cls[obs1 + "x" + obs2] = self.cosmo.cmb_power(
                 cfg.specs["ellmin"], cfg.specs["ellmax"], obs1, obs2

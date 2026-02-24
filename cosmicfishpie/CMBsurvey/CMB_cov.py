@@ -4,6 +4,7 @@
 This is the main engine for CMB Fisher Matrix.
 
 """
+
 import copy
 import datetime
 import os
@@ -22,6 +23,20 @@ pd.set_option("display.float_format", "{:.9E}".format)
 
 
 class CMBCov:
+    """CMB covariance and derivatives for Fisher forecasts.
+
+    This class:
+    - computes fiducial CMB spectra (via `CMB_obs.ComputeCls`)
+    - adds instrumental noise given `cfg.specs` beam/noise settings
+    - constructs a per-ell covariance matrix
+    - computes numerical derivatives w.r.t. `cfg.freeparams`
+
+    Notes
+    -----
+    The CMB implementation currently supports the observables `CMB_T`, `CMB_E`,
+    `CMB_B`. Lensing spectra (e.g. phi-phi) are not implemented yet.
+    """
+
     def __init__(self, cosmopars, print_info_specs=False):
         self.cosmopars = cosmopars
         self.observables = []
@@ -33,7 +48,7 @@ class CMBCov:
         self.feed_lvl = cfg.settings["feedback"]
 
     def getcls(self, allpars):
-        # Here call to functions getting windows and then do cls
+        """Compute (noise-free) CMB C_ell for a given parameter dictionary."""
 
         # Splitting the dictionary of full parameters
         pars = dict((k, allpars[k]) for k in self.cosmopars)
@@ -142,6 +157,7 @@ class CMBCov:
         return noisy_cls
 
     def sum_inv_squares(self, arr):
+        """Combine multiple channels by inverse-variance weighting."""
         res = np.sqrt(sum([i ** (-2) for i in arr]))
 
         return 1 / res
@@ -184,6 +200,14 @@ class CMBCov:
         return covvec
 
     def compute_covmat(self):
+        """Compute fiducial CMB spectra, add noise, and build covariance matrices.
+
+        Returns
+        -------
+        tuple
+            `(noisy_cls, covvec)` where `noisy_cls` is a dict of spectra arrays and
+            `covvec` is a list of per-ell pandas DataFrames.
+        """
         tini = datetime.datetime.now().timestamp()
         allpars = {}
         allpars.update(self.cosmopars)
@@ -274,6 +298,7 @@ class CMBCov:
         return self.noisy_cls, self.covmat
 
     def compute_derivs(self, print_info_specs=False):
+        """Compute numerical derivatives of CMB spectra w.r.t. free parameters."""
         # compute and save derivatives-----------------------------------------
         allpars = {}
         allpars.update(self.cosmopars)

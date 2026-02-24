@@ -5,6 +5,7 @@
 
 installation
 overview
+cmb_benchmarks
 cosmicfishpie
 ```
 

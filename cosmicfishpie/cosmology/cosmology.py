@@ -424,9 +424,7 @@ class boltzmann_code:
         if "mnu" in cambpars:
             if cambpars["mnu"] < minmassmnu and cambpars["num_nu_massive"] > 0:
                 raise ValueError(
-                    f"mnu is less than {minmassmnu} and "
-                    f"num_nu_massive is greater than 0. "
-                    f"Check your yaml file."
+                    f"mnu is less than {minmassmnu} and num_nu_massive is greater than 0. Check your yaml file."
                 )
         if "Neff" in cambpars:
             Neff = cambpars.pop("Neff")
@@ -2004,18 +2002,35 @@ class cosmo_functions:
         np.ndarray
             Array of CMB power spectrum values
         """
-        if self.code == "camb":
-            if self.cambcosmopars.Want_CMB:
-                print("CMB Spectrum not computed")
-                return
-        elif self.code == "class":
-            if "tCl" not in self.classcosmopars["output"]:
-                print("CMB Spectrum not computed")
-                return
-        else:
-            ells = np.arange(lmin, lmax)
 
-            norm_fac = 2 * np.pi / (ells * (ells + 1))
+        def _get_flag(container, key: str, default: bool = False) -> bool:
+            # CAMB params objects are not plain dicts; handle both styles.
+            if container is None:
+                return default
+            try:
+                val = container[key]
+            except Exception:
+                val = getattr(container, key, default)
+            try:
+                return bool(val)
+            except Exception:
+                return default
+
+        ells = np.arange(lmin, lmax)
+        norm_fac = 2 * np.pi / (ells * (ells + 1))
+
+        if self.code == "camb":
+            want = _get_flag(self.cambcosmopars, "Want_CMB", False) or _get_flag(
+                self.cambcosmopars, "WantCls", False
+            )
+            if not want and not hasattr(self.results, "camb_cmb"):
+                raise ValueError(
+                    "CMB spectrum not computed for CAMB. Enable WantCls/Want_CMB in the CAMB YAML."
+                )
+            if not hasattr(self.results, "camb_cmb"):
+                raise AttributeError(
+                    "CMB spectrum missing from CAMB results. Expected self.results.camb_cmb."
+                )
 
             if obs1 + obs2 == "CMB_TCMB_T":
                 cls = norm_fac * self.results.camb_cmb[lmin:lmax, 0]
@@ -2026,9 +2041,19 @@ class cosmo_functions:
             elif (obs1 + obs2 == "CMB_TCMB_E") or (obs1 + obs2 == "CMB_ECMB_T"):
                 cls = norm_fac * self.results.camb_cmb[lmin:lmax, 3]
             else:
-                cls = np.array([0.0] * len(ells))
-
+                cls = np.zeros_like(ells, dtype=float)
             return cls
+
+        if self.code == "class":
+            # CLASS CMB spectra plumbing is not yet implemented consistently.
+            # Fail fast with a clear message instead of returning None.
+            raise NotImplementedError(
+                "CMB spectra for CLASS backend are not supported yet. Use code='camb' for now."
+            )
+
+        raise NotImplementedError(
+            f"CMB spectra not supported for backend code={self.code!r}. Use code='camb'."
+        )
 
     @staticmethod
     def scale_factor(z):

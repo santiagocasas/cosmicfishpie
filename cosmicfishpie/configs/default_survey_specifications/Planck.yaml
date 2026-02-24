@@ -1,0 +1,13 @@
+specifications:
+  # CMB experiment specifications (single-channel approximation).
+  # Units: beam in arcmin; noises in uK-arcmin.
+  fsky_CMB_T: 0.7
+  fsky_CMB_E: 0.7
+  fsky_CMB_B: 0.7
+
+  CMB_fwhm: [7.0]
+  CMB_temp_sens: [23.0]
+  CMB_pol_sens: [42.0]
+
+  lmin_CMB: 2
+  lmax_CMB: 1500

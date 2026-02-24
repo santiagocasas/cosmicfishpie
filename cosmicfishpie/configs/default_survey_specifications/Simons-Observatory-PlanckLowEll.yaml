@@ -1,0 +1,16 @@
+specifications:
+  # CMB experiment specifications (single-channel approximation).
+  # Simons Observatory + Planck low-ell.
+  # Units: beam in arcmin; noises in uK-arcmin.
+  fsky_CMB_T: 0.4
+  fsky_CMB_E: 0.4
+  fsky_CMB_B: 0.4
+
+  CMB_fwhm: [2.0]
+  CMB_temp_sens: [3.0]
+  # 3*sqrt(2)
+  CMB_pol_sens: [4.242640687]
+
+  lmin_CMB: 2
+  # Conservative common ell-max (TT/TE/EE use different ranges in the paper)
+  lmax_CMB: 3000

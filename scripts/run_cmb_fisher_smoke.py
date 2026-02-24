@@ -122,6 +122,11 @@ def main() -> int:
         help="Path to backend YAML (default: package default for selected --code)",
     )
     parser.add_argument(
+        "--spec-yaml",
+        default=None,
+        help="Path to a survey specifications YAML (expects a top-level 'specifications' dict)",
+    )
+    parser.add_argument(
         "--write-enabled-yaml",
         action="store_true",
         help="Write a copy of the YAML with CMB outputs enabled into the output dir",
@@ -129,38 +134,38 @@ def main() -> int:
     parser.add_argument(
         "--lmin",
         type=int,
-        default=30,
-        help="Minimum ell",
+        default=None,
+        help="Minimum ell (default: from --spec-yaml or 30)",
     )
     parser.add_argument(
         "--lmax",
         type=int,
-        default=600,
-        help="Maximum ell (smaller = faster smoke)",
+        default=None,
+        help="Maximum ell (default: from --spec-yaml or 600)",
     )
     parser.add_argument(
         "--fsky",
         type=float,
-        default=0.65,
-        help="f_sky used for CMB_T/E/B",
+        default=None,
+        help="f_sky used for CMB_T/E/B (default: from --spec-yaml or 0.65)",
     )
     parser.add_argument(
         "--beam-arcmin",
         type=float,
-        default=7.1,
-        help="Gaussian beam FWHM in arcmin (single channel)",
+        default=None,
+        help="Gaussian beam FWHM in arcmin (single channel; default: from --spec-yaml or 7.1)",
     )
     parser.add_argument(
         "--temp-sens",
         type=float,
-        default=43.0,
-        help="Temperature sensitivity in uK-arcmin (single channel)",
+        default=None,
+        help="Temperature sensitivity in uK-arcmin (default: from --spec-yaml or 43.0)",
     )
     parser.add_argument(
         "--pol-sens",
         type=float,
-        default=66.0,
-        help="Polarization sensitivity in uK-arcmin (single channel)",
+        default=None,
+        help="Polarization sensitivity in uK-arcmin (default: from --spec-yaml or 66.0)",
     )
     parser.add_argument(
         "--observables",
@@ -212,16 +217,47 @@ def main() -> int:
     if bad:
         raise SystemExit(f"Invalid observables: {bad} (allowed: {sorted(allowed)})")
 
-    cmb_specs = {
-        "lmin_CMB": int(args.lmin),
-        "lmax_CMB": int(args.lmax),
-        "CMB_fwhm": [float(args.beam_arcmin)],
-        "CMB_temp_sens": [float(args.temp_sens)],
-        "CMB_pol_sens": [float(args.pol_sens)],
-        "fsky_CMB_T": float(args.fsky),
-        "fsky_CMB_E": float(args.fsky),
-        "fsky_CMB_B": float(args.fsky),
-    }
+    cmb_specs: dict[str, Any] = {}
+    if args.spec_yaml:
+        spec_path = Path(args.spec_yaml).expanduser().resolve()
+        if not spec_path.exists():
+            raise SystemExit(f"Spec YAML not found: {spec_path}")
+        loaded = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+        if not isinstance(loaded, dict):
+            raise SystemExit(f"Spec YAML must be a dict at top-level: {spec_path}")
+        cmb_specs = loaded.get("specifications", loaded)
+        if not isinstance(cmb_specs, dict):
+            raise SystemExit(f"Spec YAML must contain a dict 'specifications': {spec_path}")
+
+    # Apply conservative defaults if missing, and allow CLI overrides when provided.
+    if args.lmin is not None:
+        cmb_specs["lmin_CMB"] = int(args.lmin)
+    cmb_specs.setdefault("lmin_CMB", 30)
+
+    if args.lmax is not None:
+        cmb_specs["lmax_CMB"] = int(args.lmax)
+    cmb_specs.setdefault("lmax_CMB", 600)
+
+    if args.fsky is not None:
+        fsky = float(args.fsky)
+        cmb_specs["fsky_CMB_T"] = fsky
+        cmb_specs["fsky_CMB_E"] = fsky
+        cmb_specs["fsky_CMB_B"] = fsky
+    cmb_specs.setdefault("fsky_CMB_T", 0.65)
+    cmb_specs.setdefault("fsky_CMB_E", cmb_specs.get("fsky_CMB_T", 0.65))
+    cmb_specs.setdefault("fsky_CMB_B", cmb_specs.get("fsky_CMB_T", 0.65))
+
+    if args.beam_arcmin is not None:
+        cmb_specs["CMB_fwhm"] = [float(args.beam_arcmin)]
+    cmb_specs.setdefault("CMB_fwhm", [7.1])
+
+    if args.temp_sens is not None:
+        cmb_specs["CMB_temp_sens"] = [float(args.temp_sens)]
+    cmb_specs.setdefault("CMB_temp_sens", [43.0])
+
+    if args.pol_sens is not None:
+        cmb_specs["CMB_pol_sens"] = [float(args.pol_sens)]
+    cmb_specs.setdefault("CMB_pol_sens", [66.0])
 
     fiducial = {
         "Omegam": 0.32,
@@ -273,7 +309,7 @@ def main() -> int:
     print("[cmb] yaml_key:", yaml_key)
     print("[cmb] yaml_used:", yaml_path_to_use)
     print("[cmb] observables:", obs)
-    print("[cmb] ell range:", args.lmin, "..", args.lmax)
+    print("[cmb] ell range:", cmb_specs.get("lmin_CMB"), "..", cmb_specs.get("lmax_CMB"))
     print("[cmb] Wrote metadata:", outdir / "run_metadata.json")
     if args.write_enabled_yaml:
         print("[cmb] Wrote enabled YAML:", yaml_enabled_out)

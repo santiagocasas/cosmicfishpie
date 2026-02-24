@@ -9,6 +9,9 @@ def test_packaged_config_files_exist_and_parse():
     yaml_paths = [
         cfg_dir / "default_survey_specifications" / "Euclid-Photometric-ISTF-Pessimistic.yaml",
         cfg_dir / "default_survey_specifications" / "Euclid-Spectroscopic-ISTF-Pessimistic.yaml",
+        cfg_dir / "default_survey_specifications" / "Planck.yaml",
+        cfg_dir / "default_survey_specifications" / "Simons-Observatory-PlanckLowEll.yaml",
+        cfg_dir / "default_survey_specifications" / "CMB-Stage4-PlanckLowEll.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "camb" / "default.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "class" / "default.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "symbolic" / "default.yaml",

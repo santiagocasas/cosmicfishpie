@@ -291,4 +291,43 @@ Defaults:
 
 ---
 
+## 12) CMB Fisher smoke + benchmarks
+
+CosmicFishPie includes a basic CMB Fisher path for `CMB_T`, `CMB_E`, `CMB_B`.
+
+Notes/limitations:
+- The current CMB implementation uses a single `lmin_CMB`/`lmax_CMB` for all spectra.
+- The specs in Table form (separate TT/TE/EE ranges, and lensing spectra like `phi-phi`) are not yet implemented.
+
+### CMB survey spec YAMLs
+
+These live in `cosmicfishpie/configs/default_survey_specifications/`:
+- `Planck.yaml`
+- `Simons-Observatory-PlanckLowEll.yaml`
+- `CMB-Stage4-PlanckLowEll.yaml`
+
+The SO/S4 YAMLs use a conservative common `lmax_CMB=3000`.
+
+### Single run (smoke)
+
+```bash
+uv run python scripts/run_cmb_fisher_smoke.py \
+  --code camb \
+  --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
+  --observables CMB_T,CMB_E \
+  --lmax 120 \
+  --outdir tmp/cmb_planck_smoke \
+  --write-enabled-yaml
+```
+
+### Run the three presets
+
+```bash
+uv run python scripts/run_cmb_benchmarks.py \
+  --outdir tmp/cmb_bench \
+  --which planck,so,s4
+```
+
+---
+
 Happy benchmarking!

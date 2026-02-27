@@ -195,8 +195,10 @@ class boltzmann_code:
         ):
             self.cosmopars["Omegab"] = 0.05
 
-        # Set default value for h if neither H0 or h are passed
-        if not any(par in self.cosmopars for par in ["H0", "h"]):
+        # Set default value for h only if no h/H0/theta-like parameter is passed
+        if not any(
+            par in self.cosmopars for par in ["H0", "h", "theta", "cosmomc_theta", "thetastar"]
+        ):
             self.cosmopars["h"] = 0.67
 
         # Set default value for ns if it is not found in cosmopars
@@ -371,6 +373,8 @@ class boltzmann_code:
             self.cambcosmopars, feedback=self.feed_lvl, text="---CAMB parameters---"
         )
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
+        if hasattr(self.cambclasspars, "H0"):
+            self.h_now = self.cambclasspars.H0 / 100.0
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
         self.cambclasspars.set_matter_power(
@@ -403,11 +407,25 @@ class boltzmann_code:
         """
         cambpars = deepcopy(cosmopars)
 
+        # Support Planck-style theta parameterization (theta = 100 * theta_MC).
+        if "theta" in cambpars and "cosmomc_theta" not in cambpars:
+            cambpars["cosmomc_theta"] = cambpars.pop("theta") / 100.0
+
         if "h" in cambpars:
             cambpars["H0"] = cambpars.pop("h") * 100
+
+        # CAMB requires H0 to be unset when cosmomc_theta is used.
+        if "cosmomc_theta" in cambpars and "H0" in cambpars:
+            cambpars.pop("H0")
+
+        h_now = None
         if "H0" in cambpars:
-            self.h_now = cambpars["H0"] / 100
+            h_now = cambpars["H0"] / 100.0
+            self.h_now = h_now
+
         if "Omegab" in cambpars:
+            if "H0" not in cambpars:
+                raise ValueError("Cannot convert Omegab without H0/h. Pass ombh2 or provide h/H0.")
             cambpars["ombh2"] = cambpars.pop("Omegab") * (cambpars["H0"] / 100) ** 2
         if "Omegak" in cambpars:
             cambpars["omk"] = cambpars.pop("Omegak")
@@ -442,19 +460,28 @@ class boltzmann_code:
             g_factor = fidNeff / 3
 
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-        h2 = self.h_now**2
+        h2 = h_now**2 if h_now is not None else None
+        onuh2 = cambpars.get("omnuh2", 0.0)
 
         if "mnu" in cambpars:
-            Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
-            onuh2 = Onu * h2
-            cambpars["omnuh2"] = onuh2
+            # If h/H0 is not explicit (e.g. theta parameterization), keep mnu as-is.
+            if h2 is not None:
+                Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
+                onuh2 = Onu * h2
+                cambpars["omnuh2"] = onuh2
         elif "Omeganu" in cambpars:
+            if h2 is None:
+                raise ValueError("Cannot convert Omeganu without h/H0. Pass mnu or omnuh2.")
             cambpars["omnuh2"] = cambpars.pop("Omeganu") * h2
             onuh2 = cambpars["omnuh2"]
         elif "omnuh2" in cambpars:
             onuh2 = cambpars["omnuh2"]
 
         if "Omegam" in cambpars:  # TO BE GENERALIZED
+            if h2 is None:
+                raise ValueError(
+                    "Cannot convert Omegam to omch2 without h/H0. Pass omch2 directly or provide h/H0."
+                )
             cambpars["omch2"] = cambpars.pop("Omegam") * h2 - cambpars["ombh2"] - onuh2
 
         rescaleAs = False

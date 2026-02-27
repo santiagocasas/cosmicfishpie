@@ -330,4 +330,88 @@ uv run python scripts/run_cmb_benchmarks.py \
 
 ---
 
+## 13) Planck best-fit CMB Fisher (h/theta primary basis)
+
+To run a Planck-like CMB Fisher at the Planck chain best-fit point:
+
+- `--parameterization h`: `ombh2`, `omch2`, `h`, `tau`, `logAs`, `ns`
+- `--parameterization theta`: `ombh2`, `omch2`, `theta`, `tau`, `logAs`, `ns`
+- default CMB noise model in this runner: `knox`
+
+Example (`h`-based):
+
+```bash
+uv run python scripts/run_planck_bestfit_fisher.py \
+  --outdir tmp/planck_bestfit_h
+```
+
+Example (`theta`-based, for direct Planck covmat direction checks):
+
+```bash
+uv run python scripts/run_planck_bestfit_fisher.py \
+  --parameterization theta \
+  --outdir tmp/planck_bestfit_theta
+```
+
+To use the paper-consistent Knox noise model with low-ell EE noise boost:
+
+```bash
+uv run python scripts/run_planck_bestfit_fisher.py \
+  --parameterization theta \
+  --cmb-noise-model knox \
+  --ee-lowell-noise-boost 8 \
+  --ee-lowell-max-ell 29 \
+  --outdir tmp/planck_bestfit_theta_knox
+```
+
+What this script does:
+- reads the best-fit sample from
+  `Planck-Results/.../dist/base_plikHM_TTTEEE_lowl_lowE.likestats`
+- uses Planck-like ell coverage (`lmin=2`, `lmax=2508` inclusive)
+- writes a Planck-like CAMB YAML into the run folder for provenance
+- runs a CMB Fisher for `CMB_T,CMB_E`
+
+Then compare the resulting Fisher constraints against Planck published
+`.margestats`:
+
+```bash
+uv run python scripts/compare_planck_published.py \
+  tmp/planck_bestfit_h/<your_fisher_file>_CMB_TCMB_E_FM.txt
+```
+
+This comparison writes `compare_planck_published.json` next to the Fisher file
+and prints a compact sigma table in the terminal.
+
+To generate all Fisher products used by
+`notebooks/7-Planck-covmat-noise-diagnostics.ipynb` in one shot:
+
+```bash
+uv run bash scripts/run_planck_diagnostics_suite.sh
+```
+
+Optional positional argument: custom Planck chain directory.
+
+```bash
+uv run bash scripts/run_planck_diagnostics_suite.sh /path/to/plikHM_TTTEEE_lowl_lowE
+```
+
+For correlation-direction validation, overlay your theta-based Fisher against
+the published Planck Gaussian approximation from `.covmat`:
+
+```bash
+uv run python scripts/plot_planck_covmat_vs_fisher.py \
+  tmp/planck_bestfit_theta/<your_theta_fisher>_CMB_TCMB_E_FM.txt
+```
+
+This writes:
+- a converted Gaussian Fisher from Planck covmat,
+- a triangle plot with both contours,
+- a JSON report with correlation matrices and their differences.
+
+Compatibility note:
+- Deprecated flags `--ee-lowell-inflation` and `--ee-lowell-lmax` are still accepted,
+  but should be replaced by `--ee-lowell-noise-boost` and `--ee-lowell-max-ell`.
+
+---
+
 Happy benchmarking!

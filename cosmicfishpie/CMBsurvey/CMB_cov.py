@@ -8,6 +8,7 @@ This is the main engine for CMB Fisher Matrix.
 import copy
 import datetime
 import os
+import warnings
 from itertools import product
 from time import time
 
@@ -104,7 +105,16 @@ class CMBCov:
         #            elif obs == 'CMB_E' or obs == 'CMB_B':
         #                noisy_cls[obs+'x'+obs] += 1/pol_Noise
 
-        arcmin_to_rad = 0.000290888
+        noise_model = str(cfg.specs.get("CMB_noise_model", "legacy")).strip().lower()
+        if noise_model not in {"legacy", "knox"}:
+            warnings.warn(
+                f"Unknown CMB_noise_model={noise_model!r}; falling back to 'legacy'.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+            noise_model = "legacy"
+
+        arcmin_to_rad = np.pi / (180.0 * 60.0)
         # norm          = ls*(ls+1)/(2.*np.pi)
 
         thetab = [
@@ -115,43 +125,92 @@ class CMBCov:
             np.exp(ang**2.0 * noisy_cls["ells"] * (noisy_cls["ells"] + 1) / 2.0) for ang in thetab
         ]
 
-        wtemp = [
-            (arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_temp_sens"][ind]) ** (-2.0)
-            for ind in range(len(cfg.specs["CMB_fwhm"]))
-        ]
-        wpol = [
-            (arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_pol_sens"][ind]) ** (-2.0)
-            for ind in range(len(cfg.specs["CMB_fwhm"]))
-        ]
-
         TTnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
         polnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
 
         for ind in range(len(cfg.specs["CMB_fwhm"])):
-            TTnoise_chan[ind, :] = Bell[ind][:] / wtemp[ind]
-            polnoise_chan[ind, :] = Bell[ind][:] / wpol[ind]
+            if noise_model == "knox":
+                delta_t_rad = arcmin_to_rad * cfg.specs["CMB_temp_sens"][ind]
+                delta_p_rad = arcmin_to_rad * cfg.specs["CMB_pol_sens"][ind]
+                # Eq. N_ell = w^{-1} b_ell^{-2}, with w^{-1} = Delta^2.
+                TTnoise_chan[ind, :] = (delta_t_rad**2.0) * (Bell[ind][:] ** 2.0)
+                polnoise_chan[ind, :] = (delta_p_rad**2.0) * (Bell[ind][:] ** 2.0)
+            else:
+                wtemp = (
+                    arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_temp_sens"][ind]
+                ) ** (-2.0)
+                wpol = (
+                    arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_pol_sens"][ind]
+                ) ** (-2.0)
+                TTnoise_chan[ind, :] = Bell[ind][:] / wtemp
+                polnoise_chan[ind, :] = Bell[ind][:] / wpol
 
         if len(cfg.specs["CMB_fwhm"]) > 1:
-            TTnoise = np.array(
-                [
-                    self.sum_inv_squares(TTnoise_chan[:, ind])
-                    for ind in range(len(noisy_cls["ells"]))
-                ]
-            )
-            polnoise = np.array(
-                [
-                    self.sum_inv_squares(polnoise_chan[:, ind])
-                    for ind in range(len(noisy_cls["ells"]))
-                ]
-            )
+            if noise_model == "knox":
+                TTnoise = np.array(
+                    [
+                        self.sum_inv_linear(TTnoise_chan[:, ind])
+                        for ind in range(len(noisy_cls["ells"]))
+                    ]
+                )
+                polnoise = np.array(
+                    [
+                        self.sum_inv_linear(polnoise_chan[:, ind])
+                        for ind in range(len(noisy_cls["ells"]))
+                    ]
+                )
+            else:
+                TTnoise = np.array(
+                    [
+                        self.sum_inv_squares(TTnoise_chan[:, ind])
+                        for ind in range(len(noisy_cls["ells"]))
+                    ]
+                )
+                polnoise = np.array(
+                    [
+                        self.sum_inv_squares(polnoise_chan[:, ind])
+                        for ind in range(len(noisy_cls["ells"]))
+                    ]
+                )
         else:
             TTnoise = TTnoise_chan[0, :]
             polnoise = polnoise_chan[0, :]
 
+        polnoise_E = polnoise
+        if noise_model == "knox":
+            # Preferred naming ("boost") for low-ell EE noise scaling.
+            lowell_factor = cfg.specs.get("CMB_EE_noise_boost_lowell")
+            lowell_lmax = cfg.specs.get("CMB_EE_noise_boost_lmax")
+
+            # Backward compatibility with deprecated "inflation" keys.
+            if lowell_factor is None and "CMB_EE_noise_inflation_lowell" in cfg.specs:
+                lowell_factor = cfg.specs.get("CMB_EE_noise_inflation_lowell")
+                warnings.warn(
+                    "CMB_EE_noise_inflation_lowell is deprecated; use CMB_EE_noise_boost_lowell instead.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+            if lowell_lmax is None and "CMB_EE_noise_lmax_inflation" in cfg.specs:
+                lowell_lmax = cfg.specs.get("CMB_EE_noise_lmax_inflation")
+                warnings.warn(
+                    "CMB_EE_noise_lmax_inflation is deprecated; use CMB_EE_noise_boost_lmax instead.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+
+            lowell_factor = float(1.0 if lowell_factor is None else lowell_factor)
+            lowell_lmax = int(29 if lowell_lmax is None else lowell_lmax)
+
+            if lowell_factor > 0.0 and lowell_factor != 1.0:
+                polnoise_E = polnoise.copy()
+                polnoise_E[noisy_cls["ells"] <= lowell_lmax] *= lowell_factor
+
         for obs in self.observables:
             if obs == "CMB_T":
                 noisy_cls[obs + "x" + obs] += TTnoise
-            elif obs == "CMB_E" or obs == "CMB_B":
+            elif obs == "CMB_E":
+                noisy_cls[obs + "x" + obs] += polnoise_E
+            elif obs == "CMB_B":
                 noisy_cls[obs + "x" + obs] += polnoise
 
         return noisy_cls
@@ -161,6 +220,15 @@ class CMBCov:
         res = np.sqrt(sum([i ** (-2) for i in arr]))
 
         return 1 / res
+
+    def sum_inv_linear(self, arr):
+        """Combine channels as inverse-noise weighted sum."""
+        arr = np.asarray(arr, dtype=float)
+        inv = np.where(arr > 0.0, 1.0 / arr, 0.0)
+        inv_sum = np.sum(inv)
+        if inv_sum <= 0.0:
+            return np.inf
+        return 1.0 / inv_sum
 
     def get_covmat(self, noisy_cls):
         """Data covariance

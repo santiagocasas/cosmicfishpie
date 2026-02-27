@@ -8,7 +8,6 @@ This is the main engine of CosmicFish.
 import os
 import sys
 from copy import copy, deepcopy
-from itertools import product
 from time import time
 
 import numpy as np
@@ -755,52 +754,41 @@ class FisherMatrix:
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]
-        Fisher = np.zeros((len(self.freeparams), len(self.freeparams)))
+        freeparams = list(self.freeparams)
+        observables = list(self.observables)
+        npar = len(freeparams)
+        nobs = len(observables)
+        nell = len(lvec)
 
-        cols = list(self.observables)
-
-        # TBA: THIS MUST BE MADE MUCH NICER AND FASTER!!!
         tfishstart = time()
-        for ind1, par1 in enumerate(self.freeparams):
-            for ind2, par2 in enumerate(self.freeparams):
-                if ind1 > ind2:
-                    Fisher[ind1, ind2] = Fisher[ind2, ind1]
-                    upt.time_print(
-                        feedback_level=self.feed_lvl,
-                        min_level=2,
-                        text="symmetric Fisher matrix element, skipped",
-                    )
-                    continue
-                else:
-                    tparstart = time()
-                    for i_ell in range(len(lvec)):
-                        # Repacking derivatives as matrix
-                        der1 = pd.DataFrame(0.0, index=cols, columns=cols, dtype=float)
-                        der2 = pd.DataFrame(0.0, index=cols, columns=cols, dtype=float)
 
-                        for obs1, obs2 in product(self.observables, self.observables):
-                            der1.at[obs1, obs2] = derivs[par1][obs1 + "x" + obs2][i_ell]
-                            der2.at[obs1, obs2] = derivs[par2][obs1 + "x" + obs2][i_ell]
+        # Build derivative tensor D[e, p, i, j], with:
+        #   e: ell index, p: parameter index, i/j: observable indices
+        der = np.zeros((nell, npar, nobs, nobs), dtype=float)
+        for p_ind, par in enumerate(freeparams):
+            for i_ind, obs1 in enumerate(observables):
+                for j_ind, obs2 in enumerate(observables):
+                    key = obs1 + "x" + obs2
+                    der[:, p_ind, i_ind, j_ind] = np.asarray(derivs[par][key], dtype=float)
 
-                        covdf = covmat[i_ell]
+        # Covariance tensor C[e, i, j] and inverse per ell.
+        covarr = np.zeros((nell, nobs, nobs), dtype=float)
+        for e_ind in range(nell):
+            cov_e = covmat[e_ind]
+            if hasattr(cov_e, "to_numpy"):
+                covarr[e_ind] = cov_e.to_numpy(dtype=float)
+            else:
+                covarr[e_ind] = np.asarray(cov_e, dtype=float)
+        inv_covarr = np.linalg.pinv(covarr)
 
-                        inv_arr = np.linalg.pinv(covdf.to_numpy(dtype=float))
-                        invMat = pd.DataFrame(inv_arr, index=covdf.index, columns=covdf.columns)
-                        mat1 = der1.dot(invMat)
-                        mat2 = invMat.dot(mat1)
-                        mat3 = der2.dot(mat2)
-                        trace = np.trace(mat3.values)
+        # Per-ell Fisher contribution:
+        # F_e[p,q] = Tr(D_q C^-1 D_p C^-1)
+        #          = D_q[i,j] C^-1[j,k] D_p[k,l] C^-1[l,i]
+        fisher_per_ell = np.einsum("eqij,ejk,epkl,eli->epq", der, inv_covarr, der, inv_covarr)
 
-                        Fisher[ind1, ind2] = Fisher[ind1, ind2] + (trace * (lvec[i_ell] + 0.5))
-
-                    tparend = time()
-                    upt.time_print(
-                        feedback_level=self.feed_lvl,
-                        min_level=1,
-                        text="Fisher entry ({}, {}) done in ".format(par1, par2),
-                        time_ini=tparstart,
-                        time_fin=tparend,
-                    )
+        ell_weight = np.asarray(lvec, dtype=float) + 0.5
+        Fisher = np.einsum("e,epq->pq", ell_weight, fisher_per_ell)
+        Fisher = 0.5 * (Fisher + Fisher.T)
 
         tfishend = time()
 

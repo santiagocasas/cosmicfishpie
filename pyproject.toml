@@ -32,7 +32,7 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 [project.optional-dependencies]
 dev = [
     "ruff",
-    "mypy>=1.0,<1.19",
+    "mypy>=1.0,<1.20",
     "black>=24.4.2,<25.0",
     "isort>=5.12,<7.1",
     "pytest",

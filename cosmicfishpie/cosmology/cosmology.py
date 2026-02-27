@@ -128,12 +128,29 @@ class boltzmann_code:
         elif code == "symbolic":
             try:
                 import colossus.cosmology as colmo
+                import colossus.settings as colossus_settings
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 
                 self.colmo = colmo
                 self.symblin = symblin
                 self.symbfit = symbfit
+                colossus_base_dir = cfg.settings.get("colossus_base_dir")
+                if colossus_base_dir is not None:
+                    colossus_settings.BASE_DIR = colossus_base_dir
+                colossus_persistence = cfg.settings.get("colossus_persistence")
+                if colossus_persistence is not None:
+                    colossus_settings.PERSISTENCE = colossus_persistence
+                if not hasattr(colmo.cosmology, "_cfp_wrapped_setCosmology"):
+                    orig_setCosmology = colmo.cosmology.setCosmology
+
+                    def _setCosmology_with_persistence(cosmo_name, params=None, **kwargs):
+                        if "persistence" not in kwargs and colossus_persistence is not None:
+                            kwargs["persistence"] = colossus_persistence
+                        return orig_setCosmology(cosmo_name, params=params, **kwargs)
+
+                    colmo.cosmology.setCosmology = _setCosmology_with_persistence
+                    colmo.cosmology._cfp_wrapped_setCosmology = True
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
@@ -178,8 +195,10 @@ class boltzmann_code:
         ):
             self.cosmopars["Omegab"] = 0.05
 
-        # Set default value for h if neither H0 or h are passed
-        if not any(par in self.cosmopars for par in ["H0", "h"]):
+        # Set default value for h only if no h/H0/theta-like parameter is passed
+        if not any(
+            par in self.cosmopars for par in ["H0", "h", "theta", "cosmomc_theta", "thetastar"]
+        ):
             self.cosmopars["h"] = 0.67
 
         # Set default value for ns if it is not found in cosmopars
@@ -354,6 +373,8 @@ class boltzmann_code:
             self.cambcosmopars, feedback=self.feed_lvl, text="---CAMB parameters---"
         )
         self.cambclasspars = camb.set_params(**self.cambcosmopars)
+        if hasattr(self.cambclasspars, "H0"):
+            self.h_now = self.cambclasspars.H0 / 100.0
 
         self.camb_zarray = np.linspace(0.0, self.zmax_pk, self.z_samples)[::-1]
         self.cambclasspars.set_matter_power(
@@ -386,11 +407,25 @@ class boltzmann_code:
         """
         cambpars = deepcopy(cosmopars)
 
+        # Support Planck-style theta parameterization (theta = 100 * theta_MC).
+        if "theta" in cambpars and "cosmomc_theta" not in cambpars:
+            cambpars["cosmomc_theta"] = cambpars.pop("theta") / 100.0
+
         if "h" in cambpars:
             cambpars["H0"] = cambpars.pop("h") * 100
+
+        # CAMB requires H0 to be unset when cosmomc_theta is used.
+        if "cosmomc_theta" in cambpars and "H0" in cambpars:
+            cambpars.pop("H0")
+
+        h_now = None
         if "H0" in cambpars:
-            self.h_now = cambpars["H0"] / 100
+            h_now = cambpars["H0"] / 100.0
+            self.h_now = h_now
+
         if "Omegab" in cambpars:
+            if "H0" not in cambpars:
+                raise ValueError("Cannot convert Omegab without H0/h. Pass ombh2 or provide h/H0.")
             cambpars["ombh2"] = cambpars.pop("Omegab") * (cambpars["H0"] / 100) ** 2
         if "Omegak" in cambpars:
             cambpars["omk"] = cambpars.pop("Omegak")
@@ -407,9 +442,7 @@ class boltzmann_code:
         if "mnu" in cambpars:
             if cambpars["mnu"] < minmassmnu and cambpars["num_nu_massive"] > 0:
                 raise ValueError(
-                    f"mnu is less than {minmassmnu} and "
-                    f"num_nu_massive is greater than 0. "
-                    f"Check your yaml file."
+                    f"mnu is less than {minmassmnu} and num_nu_massive is greater than 0. Check your yaml file."
                 )
         if "Neff" in cambpars:
             Neff = cambpars.pop("Neff")
@@ -427,19 +460,28 @@ class boltzmann_code:
             g_factor = fidNeff / 3
 
         neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-        h2 = self.h_now**2
+        h2 = h_now**2 if h_now is not None else None
+        onuh2 = cambpars.get("omnuh2", 0.0)
 
         if "mnu" in cambpars:
-            Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
-            onuh2 = Onu * h2
-            cambpars["omnuh2"] = onuh2
+            # If h/H0 is not explicit (e.g. theta parameterization), keep mnu as-is.
+            if h2 is not None:
+                Onu = cambpars["mnu"] / neutrino_mass_fac * (g_factor) ** 0.75 / h2
+                onuh2 = Onu * h2
+                cambpars["omnuh2"] = onuh2
         elif "Omeganu" in cambpars:
+            if h2 is None:
+                raise ValueError("Cannot convert Omeganu without h/H0. Pass mnu or omnuh2.")
             cambpars["omnuh2"] = cambpars.pop("Omeganu") * h2
             onuh2 = cambpars["omnuh2"]
         elif "omnuh2" in cambpars:
             onuh2 = cambpars["omnuh2"]
 
         if "Omegam" in cambpars:  # TO BE GENERALIZED
+            if h2 is None:
+                raise ValueError(
+                    "Cannot convert Omegam to omch2 without h/H0. Pass omch2 directly or provide h/H0."
+                )
             cambpars["omch2"] = cambpars.pop("Omegam") * h2 - cambpars["ombh2"] - onuh2
 
         rescaleAs = False
@@ -1072,6 +1114,9 @@ class boltzmann_code:
             "H0": self.symbcosmopars["h"] * 100,
             "ns": self.symbcosmopars["ns"],
         }
+        colossus_persistence = cfg.settings.get("colossus_persistence")
+        if colossus_persistence is not None:
+            symb_colmo_pars["persistence"] = colossus_persistence
         self.results.zgrid = self.zgrid
         self.h_now = self.symbcosmopars["h"]
         self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now
@@ -1984,18 +2029,35 @@ class cosmo_functions:
         np.ndarray
             Array of CMB power spectrum values
         """
-        if self.code == "camb":
-            if self.cambcosmopars.Want_CMB:
-                print("CMB Spectrum not computed")
-                return
-        elif self.code == "class":
-            if "tCl" not in self.classcosmopars["output"]:
-                print("CMB Spectrum not computed")
-                return
-        else:
-            ells = np.arange(lmin, lmax)
 
-            norm_fac = 2 * np.pi / (ells * (ells + 1))
+        def _get_flag(container, key: str, default: bool = False) -> bool:
+            # CAMB params objects are not plain dicts; handle both styles.
+            if container is None:
+                return default
+            try:
+                val = container[key]
+            except Exception:
+                val = getattr(container, key, default)
+            try:
+                return bool(val)
+            except Exception:
+                return default
+
+        ells = np.arange(lmin, lmax)
+        norm_fac = 2 * np.pi / (ells * (ells + 1))
+
+        if self.code == "camb":
+            want = _get_flag(self.cambcosmopars, "Want_CMB", False) or _get_flag(
+                self.cambcosmopars, "WantCls", False
+            )
+            if not want and not hasattr(self.results, "camb_cmb"):
+                raise ValueError(
+                    "CMB spectrum not computed for CAMB. Enable WantCls/Want_CMB in the CAMB YAML."
+                )
+            if not hasattr(self.results, "camb_cmb"):
+                raise AttributeError(
+                    "CMB spectrum missing from CAMB results. Expected self.results.camb_cmb."
+                )
 
             if obs1 + obs2 == "CMB_TCMB_T":
                 cls = norm_fac * self.results.camb_cmb[lmin:lmax, 0]
@@ -2006,9 +2068,19 @@ class cosmo_functions:
             elif (obs1 + obs2 == "CMB_TCMB_E") or (obs1 + obs2 == "CMB_ECMB_T"):
                 cls = norm_fac * self.results.camb_cmb[lmin:lmax, 3]
             else:
-                cls = np.array([0.0] * len(ells))
-
+                cls = np.zeros_like(ells, dtype=float)
             return cls
+
+        if self.code == "class":
+            # CLASS CMB spectra plumbing is not yet implemented consistently.
+            # Fail fast with a clear message instead of returning None.
+            raise NotImplementedError(
+                "CMB spectra for CLASS backend are not supported yet. Use code='camb' for now."
+            )
+
+        raise NotImplementedError(
+            f"CMB spectra not supported for backend code={self.code!r}. Use code='camb'."
+        )
 
     @staticmethod
     def scale_factor(z):

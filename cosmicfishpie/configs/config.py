@@ -273,6 +273,11 @@ def init(
     settings.setdefault("ShareDeltaNeff", False)
     settings.setdefault("kh_rescaling_bug", False)
     settings.setdefault("kh_rescaling_beforespecerr_bug", False)
+    colossus_base_dir_default = os.path.realpath(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+    )
+    settings.setdefault("colossus_base_dir", colossus_base_dir_default)
+    settings.setdefault("colossus_persistence", "")
 
     feed_lvl = settings["feedback"]
 
@@ -337,8 +342,8 @@ def init(
     elif settings["code"] == "class":
         input_type = settings["code"]
         global boltzmann_classpars
-        boltzmann_yaml_file = open(settings["class_config_yaml"])
-        parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
+        with open(settings["class_config_yaml"], "r") as boltzmann_yaml_file:
+            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
@@ -349,15 +354,15 @@ def init(
             settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
-        boltzmann_yaml_file = open(settings["camb_config_yaml"])
-        parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
+        with open(settings["camb_config_yaml"], "r") as boltzmann_yaml_file:
+            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
         boltzmann_cambpars = parsed_boltzmann
         external = None
     elif settings["code"] == "symbolic":
         input_type = settings["code"]
         global boltzmann_symbolicpars
-        boltzmann_yaml_file = open(settings["symbolic_config_yaml"])
-        parsed_boltzmann = yaml.load(boltzmann_yaml_file, Loader=yaml.FullLoader)
+        with open(settings["symbolic_config_yaml"], "r") as boltzmann_yaml_file:
+            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
         boltzmann_symbolicpars = parsed_boltzmann
         external = None
     else:
@@ -410,9 +415,8 @@ def init(
                 )
                 print(f"Using default specifications for photo: {ph_file_path}")
 
-        ph_yaml_fs = open(ph_file_path, "r")
-        ph_yaml_content = yaml.load(ph_yaml_fs, Loader=yaml.FullLoader)
-        ph_yaml_fs.close()
+        with open(ph_file_path, "r") as ph_yaml_fs:
+            ph_yaml_content = yaml.safe_load(ph_yaml_fs)
 
         photo_dict = ph_yaml_content["specifications"]
         # Load WL bins and num galaxies per bin make it backwards compatible
@@ -465,9 +469,8 @@ def init(
                 )
                 print(f"Using default specifications for spectroscopic: {sp_file_path}")
 
-        sp_yaml_fs = open(sp_file_path, "r")
-        sp_yaml_content = yaml.load(sp_yaml_fs, Loader=yaml.FullLoader)
-        sp_yaml_fs.close()
+        with open(sp_file_path, "r") as sp_yaml_fs:
+            sp_yaml_content = yaml.safe_load(sp_yaml_fs)
         spec_dict = sp_yaml_content["specifications"]
         return spec_dict
 
@@ -546,8 +549,8 @@ def init(
                 feedback_level=feed_lvl, min_level=1, text=f"-> Survey loaded:  {surveyNameSpectro}"
             )
     if "Planck" in surveyName:
-        yaml_file = open(os.path.join(settings["specs_dir"], "Planck.yaml"))
-        parsed_yaml_file = yaml.load(yaml_file, Loader=yaml.FullLoader)
+        with open(os.path.join(settings["specs_dir"], "Planck.yaml"), "r") as yaml_file:
+            parsed_yaml_file = yaml.safe_load(yaml_file)
         specificationsfPlanck = parsed_yaml_file["specifications"]
         specificationsf.update(specificationsfPlanck)
         upt.time_print(feedback_level=feed_lvl, min_level=1, text="-> Survey loaded:  Planck")

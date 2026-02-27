@@ -5,13 +5,13 @@ docs :
 
 .PHONY : run-checks
 run-checks :
-	isort --check .
-	black --check --diff .
-	ruff check .
+	uv run isort --check .
+	uv run black --check --diff .
+	uv run ruff check .
 #mypy .
-	CUDA_VISIBLE_DEVICES='' pytest -v --color=yes --doctest-modules tests/ cosmicfishpie/
+	CUDA_VISIBLE_DEVICES='' uv run pytest -v --color=yes --doctest-modules tests/ cosmicfishpie/
 
 .PHONY : build
 build :
 	rm -rf *.egg-info/
-	python -m build
+	uv run python -m build

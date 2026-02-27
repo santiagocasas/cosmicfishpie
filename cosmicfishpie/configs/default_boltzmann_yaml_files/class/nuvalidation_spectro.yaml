@@ -1,0 +1,32 @@
+ACCURACY:
+  'k_per_decade_for_bao': 50
+  'k_per_decade_for_pk': 50
+  'l_max_g' : 20
+  'l_max_pol_g' : 15
+  'radiation_streaming_approximation' : 2
+  'radiation_streaming_trigger_tau_over_tau_k' : 240.
+  'radiation_streaming_trigger_tau_c_over_tau' : 100.
+  'tol_ncdm_synchronous' : 1.e-5
+  'l_max_ncdm' : 25
+  #'ncdm_fluid_trigger_tau_over_tau_k' : 100.
+  'ncdm_fluid_approximation': 3
+  'background_Nloga' : 6000
+  'thermo_Nz_log' : 20000
+  'thermo_Nz_lin' : 40000
+  'tol_perturbations_integration' : 1.e-6
+COSMO_SETTINGS:
+  'evolver' : 0
+  'P_k_max_1/Mpc': 20
+  'output' : 'mPk,mTk'
+  'non linear' : 'halofit'
+  'nonlinear_min_k_max' : 5.
+  'z_max_pk' : 2.0
+  'N_ncdm': 1
+  'k_pivot' : 0.05
+LCDM :
+  'Omega_k' : 0
+  'YHe' : 0.2454006
+w0waCDM :
+  'Omega_Lambda' : 0.0
+  'Omega_k' : 0
+  'YHe' : 0.2454006

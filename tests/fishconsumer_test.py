@@ -91,7 +91,12 @@ class TestUtilityFunctions:
         # Test normalization (integral should be 1)
         x = np.linspace(-10, 10, 1000)
         y = fc.gaussian(x, 0, 1)
-        integral = np.trapz(y, x)
+        # NumPy 2.0 removed np.trapz; prefer trapezoid and keep compatibility.
+        if hasattr(np, "trapezoid"):
+            trapz = np.trapezoid
+        else:
+            trapz = np.trapz
+        integral = trapz(y, x)
         assert np.isclose(integral, 1, rtol=1e-2)
 
     def test_arrays_gaussian(self):

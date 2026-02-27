@@ -14,7 +14,6 @@ from scipy.interpolate import InterpolatedUnivariateSpline, UnivariateSpline, in
 
 import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import numerics as unu
-from cosmicfishpie.utilities.utils import printing as upr
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -121,24 +120,21 @@ class Nuisance:
             return interp1d(z, b, kind="linear")
 
         elif self.biaspars["bias_model"] == "binned":
-            zb = self.specs["z_bins_GCph"]
-            zba = np.array(zb)
-            brang = self.specs["binrange_GCph"]
+            # Vectorized, branchless bin mapping using searchsorted
+            edges = np.asarray(self.specs["z_bins_GCph"])  # length = nbins+1
+            brang = self.specs["binrange_GCph"]  # 1..nbins
             last_bin_num = brang[-1]
+            # Pre-build bin biases as an array [b1, b2, ..., bN]
+            bin_bias = np.array([self.biaspars[f"b{k}"] for k in brang], dtype=float)
 
-            def binbis(zz):
-                lowi = np.where(zba <= zz)[0][-1]
-                upr.debug_print(zz)
-                upr.debug_print(lowi)
-                # iin[ind] = binrange[lowi]
-                if zz >= zba[-1] and lowi == last_bin_num:
-                    bii = self.biaspars["b" + str(last_bin_num)]
-                else:
-                    bii = self.biaspars["b" + str(lowi + 1)]
-                return bii
+            def binned_bias(z_arr):
+                z_arr = np.asarray(z_arr)
+                # idx in [0, nbins-1], where edges[idx] <= z < edges[idx+1]
+                idx = np.searchsorted(edges, z_arr, side="right") - 1
+                idx = np.clip(idx, 0, last_bin_num - 1)
+                return bin_bias[idx]
 
-            vbinbis = np.vectorize(binbis)
-            return vbinbis
+            return binned_bias
         elif self.biaspars["bias_model"] == "binned_constant":
 
             def binned_func(z):

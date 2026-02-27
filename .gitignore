@@ -1,6 +1,10 @@
 # heavy data
 *.hdf5
 *.pdf
+*.png
+*.zip
+*.tar.gz
+chains/
 # build artifacts
 
 .eggs/
@@ -14,6 +18,9 @@ pip-wheel-metadata/
 # dev tools
 
 .envrc
+scripts/compare_backends_report.env
+scripts/run_config.env
+scripts/validation_configs/compare_run_config.env
 .python-version
 .idea
 .venv/
@@ -49,6 +56,7 @@ __pycache__
 .coverage
 .pytest_cache/
 .benchmarks
+coverage.xml
 
 # documentation build artifacts
 
@@ -58,3 +66,7 @@ site/
 # User Output
 plots/
 results/
+
+# local benchmark artifacts
+scripts/benchmark_results/
+scripts/benchmark_results.zip

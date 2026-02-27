@@ -4,10 +4,10 @@
 This is the main engine of CosmicFish.
 
 """
+
 import os
 import sys
 from copy import copy, deepcopy
-from itertools import product
 from time import time
 
 import numpy as np
@@ -686,9 +686,9 @@ class FisherMatrix:
         cols = []
         for o in self.observables:
             if o == "GCph":
-                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_GCph)])
+                cols.extend([f"{o} {ind + 1}" for ind in range(self.num_z_bins_GCph)])
             elif o == "WL":
-                cols.extend([f"{o} {ind+1}" for ind in range(self.num_z_bins_WL)])
+                cols.extend([f"{o} {ind + 1}" for ind in range(self.num_z_bins_WL)])
 
         # Precompute covariance matrices and their inverses
         covarr = np.array(covmat)
@@ -745,7 +745,7 @@ class FisherMatrix:
 
     def CMB_fishermatrix(self, noisy_cls=None, covmat=None, derivs=None, cmb_obj=None):
         if covmat is None and cmb_obj is not None:
-            covmat, noisy_cls = cmb_obj.compute_covmat()
+            noisy_cls, covmat = cmb_obj.compute_covmat()
         if derivs is None and cmb_obj is not None:
             derivs = cmb_obj.compute_derivs()
 
@@ -754,58 +754,41 @@ class FisherMatrix:
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]
-        Fisher = np.zeros((len(self.freeparams), len(self.freeparams)))
+        freeparams = list(self.freeparams)
+        observables = list(self.observables)
+        npar = len(freeparams)
+        nobs = len(observables)
+        nell = len(lvec)
 
-        # TBA: THIS MUST BE MADE MUCH NICER AND FASTER!!!
         tfishstart = time()
-        for ind1, par1 in enumerate(self.freeparams):
-            for ind2, par2 in enumerate(self.freeparams):
-                if ind1 > ind2:
-                    Fisher[ind1, ind2] = Fisher[ind2, ind1]
-                    upt.time_print(
-                        feedback_level=self.feed_lvl,
-                        min_level=2,
-                        text="symmetric Fisher matrix element, skipped",
-                    )
-                    continue
-                else:
-                    tparstart = time()
-                    for i_ell in range(len(lvec)):
-                        # Repacking derivatives as matrix
-                        cols = []
-                        for o in self.observables:
-                            cols.append(o)
 
-                        der1 = pd.DataFrame(index=cols, columns=cols)
-                        der1 = der1.fillna(0.0)  # with 0s rather than NaNs
+        # Build derivative tensor D[e, p, i, j], with:
+        #   e: ell index, p: parameter index, i/j: observable indices
+        der = np.zeros((nell, npar, nobs, nobs), dtype=float)
+        for p_ind, par in enumerate(freeparams):
+            for i_ind, obs1 in enumerate(observables):
+                for j_ind, obs2 in enumerate(observables):
+                    key = obs1 + "x" + obs2
+                    der[:, p_ind, i_ind, j_ind] = np.asarray(derivs[par][key], dtype=float)
 
-                        der2 = pd.DataFrame(index=cols, columns=cols)
-                        der2 = der2.fillna(0.0)  # with 0s rather than NaNs
+        # Covariance tensor C[e, i, j] and inverse per ell.
+        covarr = np.zeros((nell, nobs, nobs), dtype=float)
+        for e_ind in range(nell):
+            cov_e = covmat[e_ind]
+            if hasattr(cov_e, "to_numpy"):
+                covarr[e_ind] = cov_e.to_numpy(dtype=float)
+            else:
+                covarr[e_ind] = np.asarray(cov_e, dtype=float)
+        inv_covarr = np.linalg.pinv(covarr)
 
-                        for obs1, obs2 in product(self.observables, self.observables):
-                            der1.at[obs1, obs2] = derivs[par1][obs1 + "x" + obs2][i_ell]
-                            der2.at[obs1, obs2] = derivs[par2][obs1 + "x" + obs2][i_ell]
+        # Per-ell Fisher contribution:
+        # F_e[p,q] = Tr(D_q C^-1 D_p C^-1)
+        #          = D_q[i,j] C^-1[j,k] D_p[k,l] C^-1[l,i]
+        fisher_per_ell = np.einsum("eqij,ejk,epkl,eli->epq", der, inv_covarr, der, inv_covarr)
 
-                        covdf = covmat[i_ell]
-
-                        invMat = pd.DataFrame(
-                            np.linalg.pinv(covdf.values), covdf.columns, covdf.index
-                        )
-                        mat1 = der1.dot(invMat)
-                        mat2 = invMat.dot(mat1)
-                        mat3 = der2.dot(mat2)
-                        trace = np.trace(mat3.values)
-
-                        Fisher[ind1, ind2] = Fisher[ind1, ind2] + (trace * (lvec[i_ell] + 0.5))
-
-                    tparend = time()
-                    upt.time_print(
-                        feedback_level=self.feed_lvl,
-                        min_level=1,
-                        text="Fisher entry ({}, {}) done in ".format(par1, par2),
-                        time_ini=tparstart,
-                        time_fin=tparend,
-                    )
+        ell_weight = np.asarray(lvec, dtype=float) + 0.5
+        Fisher = np.einsum("e,epq->pq", ell_weight, fisher_per_ell)
+        Fisher = 0.5 * (Fisher + Fisher.T)
 
         tfishend = time()
 
@@ -872,17 +855,14 @@ class FisherMatrix:
         """
         # If an output root is provided, we write the Fisher matrix on file
         if self.settings["outroot"] != "":
-            obstring = ""
-            for obs in self.observables:
-                obstring = obstring + obs
+            obstring = "".join(self.observables)
             cols = [key for key in self.freeparams]
-            header = "#"
-            for col in cols:
-                header = header + " " + col
+            header = "#" + " ".join(["", *cols])
             FM = pd.DataFrame(fishmat, columns=cols, index=cols)
             if not os.path.exists(self.settings["results_dir"]):
                 os.makedirs(self.settings["results_dir"])
-            filename = (
+            # Root naming (without extension): <results>/<cf_version>_<outroot>_<obstring>_FM
+            root = (
                 self.settings["results_dir"]
                 + "/"
                 + self.cf_version
@@ -890,19 +870,22 @@ class FisherMatrix:
                 + self.settings["outroot"]
                 + "_"
                 + obstring
+                + "_FM"
             )
-            filename = filename + "_fishermatrix"
             extension = self.settings["fishermatrix_file_extension"]
-            FM.to_csv(filename + ".csv")
-            with open(filename + extension, "w") as f:
+            # Optional CSV export (disabled by default)
+            if self.settings.get("export_csv_fisher", False):
+                FM.to_csv(root + ".csv")
+            # Primary TXT matrix
+            with open(root + extension, "w") as f:
                 f.write(header + "\n")
                 f.write(FM.to_csv(header=False, index=False, sep="\t"))
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=0,
-                text="Fisher matrix exported: {:s}".format(filename + extension),
+                text="Fisher matrix exported: {:s}".format(root + extension),
             )
-            with open(filename + ".paramnames", "w") as f:
+            with open(root + ".paramnames", "w") as f:
                 f.write("#\n")
                 f.write("#\n")
                 f.write("# This file contains the parameter names for a derived Fisher matrix.\n")
@@ -916,9 +899,9 @@ class FisherMatrix:
                         + "{:.6f}".format(self.allparams[par])
                     )
                     f.write("\n")
-            fishMat_obj = fm.fisher_matrix(file_name=filename + ".txt")
-            # Write specifications to file:
-            specs_name = filename + "_specifications.dat"
+            fishMat_obj = fm.fisher_matrix(file_name=root + ".txt")
+            # Write specifications to file (legacy .dat, and JSON below):
+            specs_name = root + "_specs.dat"
             with open(specs_name, "w") as f:
                 f.write("**Git version commit: %s \n" % (ufs.git_version()))
                 if totaltime is not None:
@@ -949,6 +932,73 @@ class FisherMatrix:
                 ),
                 instance=self,
             )
+
+            # Also export a structured JSON snapshot for reproducibility/comparison
+            try:
+                import json
+                from datetime import datetime, timezone
+
+                def _jsonify(obj):
+                    import numpy as _np
+
+                    if isinstance(obj, dict):
+                        return {k: _jsonify(v) for k, v in obj.items()}
+                    if isinstance(obj, (list, tuple)):
+                        return [_jsonify(v) for v in obj]
+                    if isinstance(obj, range):
+                        return list(obj)
+                    if isinstance(obj, _np.ndarray):
+                        return obj.tolist()
+                    if isinstance(obj, (_np.floating, _np.integer)):
+                        return obj.item()
+                    return obj
+
+                json_name = root + "_specs.json"
+                snapshot = {
+                    "metadata": {
+                        "cf_version": self.cf_version,
+                        "git_commit": ufs.git_version(),
+                        "timestamp": datetime.now(timezone.utc)
+                        .replace(microsecond=0)
+                        .isoformat()
+                        .replace("+00:00", "Z"),
+                        "observables": list(self.observables),
+                        "totaltime_sec": float(totaltime) if totaltime is not None else None,
+                        "matrix_files": {
+                            "txt": root + ".txt",
+                            "paramnames": root + ".paramnames",
+                            "dat_specs": specs_name,
+                            "json_specs": json_name,
+                        },
+                        "env_flags": {
+                            "COSMICFISH_FAST_EFF": os.environ.get("COSMICFISH_FAST_EFF"),
+                            "COSMICFISH_FAST_P": os.environ.get("COSMICFISH_FAST_P"),
+                            "COSMICFISH_FAST_KERNEL": os.environ.get("COSMICFISH_FAST_KERNEL"),
+                        },
+                    },
+                    # Exact constructor-compatible payload to replay the run
+                    "options": _jsonify(self.settings),
+                    "specifications": _jsonify(self.specs),
+                    "fiducialpars": _jsonify(self.fiducialcosmopars),
+                    "freepars": _jsonify(self.freeparams),
+                    # Convenience extras
+                    "allparams": _jsonify(self.allparams),
+                }
+                with open(json_name, "w") as jf:
+                    json.dump(snapshot, jf, indent=2)
+                upt.time_print(
+                    feedback_level=self.feed_lvl,
+                    min_level=1,
+                    text="CosmicFish JSON specifications exported: {:s}".format(json_name),
+                    instance=self,
+                )
+            except Exception as _e:  # pragma: no cover (best-effort JSON export)
+                upt.time_print(
+                    feedback_level=self.feed_lvl,
+                    min_level=2,
+                    text="Warning: failed to export JSON specifications",
+                    instance=self,
+                )
             return fishMat_obj
 
     def recap_options(self):

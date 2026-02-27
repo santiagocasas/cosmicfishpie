@@ -9,6 +9,8 @@
 [![CI](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/santiagocasas/cosmicfishpie)
+
 See [`CITATION.cff`](CITATION.cff) for citation metadata or click on the "Cite this repository" button on the sidebar.
 
 <div align="center">

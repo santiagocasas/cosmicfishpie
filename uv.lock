@@ -271,24 +271,12 @@ wheels = [
 
 [[package]]
 name = "camb"
-version = "1.6.4"
-source = { registry = "https://pypi.org/simple" }
+version = "1.3.7"
+source = { git = "https://github.com/santiagocasas/CAMB.git?rev=059c22842a3e72e6620c4fa90e8e350142ee8a19#059c22842a3e72e6620c4fa90e8e350142ee8a19" }
 dependencies = [
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "packaging" },
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sympy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/29/164fa69126587a09068815279d8c37548ec4f5a1db6fa0f946471e8a0049/camb-1.6.4.tar.gz", hash = "sha256:5103be105e3fe8ce2f0a9bb99d4d9919fa0db80700580d8a7e7fc46184462cd1", size = 762612, upload-time = "2025-08-26T08:15:18.999Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/2d/15f61dcec684ed2c0f35cc3c29279e277b8f5e30b8f471233e537073cb04/camb-1.6.4-py3-none-macosx_13_0_arm64.whl", hash = "sha256:83d62e22bb12737d0d10ce4c7d45a151524326e383ea4c3772010bf477241a35", size = 1291694, upload-time = "2025-08-26T08:15:02.849Z" },
-    { url = "https://files.pythonhosted.org/packages/0c/10/71973571e8536c5e5a01fd39b4ca6e989c2a94e214bcd7066203bb0e144e/camb-1.6.4-py3-none-macosx_13_0_x86_64.whl", hash = "sha256:6a1c31b987c2df605b58f382a22ade4a971a69b73c91aa79a4260f4e2cff0274", size = 1337709, upload-time = "2025-08-26T08:15:04.504Z" },
-    { url = "https://files.pythonhosted.org/packages/03/32/a2026657a2c8ce902793ae870e8296ba6ad399a988fdded9c01a6ee24bff/camb-1.6.4-py3-none-macosx_14_0_arm64.whl", hash = "sha256:a608ac502b9745993426b9437bf00ebacb7a3a31251f26d6bfc5a1f0ad92184f", size = 1291854, upload-time = "2025-08-26T08:15:06.38Z" },
-    { url = "https://files.pythonhosted.org/packages/41/31/e75b7a789a3bce8c850048bcb5e54b2e3573d44f654a43e348e2f4fa5003/camb-1.6.4-py3-none-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:d6479d738c0805dda2938d4adc30bd9239c351e2e986175fa82225bc1c9c4292", size = 1551489, upload-time = "2025-08-26T08:15:08.066Z" },
-    { url = "https://files.pythonhosted.org/packages/4b/e1/2a49e5de34697ae73cb8f9e7d22f893f636f8aea386c9f1f5c3a6effaf7c/camb-1.6.4-py3-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:67f3f63ac7a169e7037e02c7d7859396eccf22c54d90c6edeb7bc0d3f9b5251a", size = 2315175, upload-time = "2025-08-26T08:15:09.825Z" },
-    { url = "https://files.pythonhosted.org/packages/3c/3e/811ac6746e3d972aa2afea03be5b2c8002e2dc1997e0e4954fdf7636d02d/camb-1.6.4-py3-none-win_amd64.whl", hash = "sha256:d69c67d9ec15bfa71f9b7ec9b263b8b79065f7df81bada6280cffa3423b4b46d", size = 1394113, upload-time = "2025-08-26T08:15:11.654Z" },
 ]
 
 [[package]]
@@ -617,7 +605,7 @@ requires-dist = [
     { name = "astropy", specifier = "==6.1.7" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.4.2,<25.0" },
     { name = "build", marker = "extra == 'dev'" },
-    { name = "camb", specifier = "==1.6.4" },
+    { name = "camb", git = "https://github.com/santiagocasas/CAMB.git?rev=059c22842a3e72e6620c4fa90e8e350142ee8a19" },
     { name = "chainconsumer", specifier = ">=1.2.0,<2.0.0" },
     { name = "colossus" },
     { name = "cython", specifier = "==3.1.4" },
@@ -625,11 +613,11 @@ requires-dist = [
     { name = "getdist", specifier = "==1.7.3" },
     { name = "h5py", specifier = "==3.14.0" },
     { name = "ipython", specifier = "==8.37.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12,<5.14" },
+    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12,<7.1" },
     { name = "joblib", specifier = "==1.5.2" },
     { name = "jupyter", specifier = "==1.1.1" },
     { name = "matplotlib", specifier = "==3.10.7" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0,<1.19" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0,<1.20" },
     { name = "myst-parser", marker = "extra == 'dev'" },
     { name = "myst-parser", marker = "extra == 'dev'", specifier = ">=1.0,<4.1" },
     { name = "nautilus-sampler", specifier = "==1.0.5" },
@@ -847,7 +835,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [

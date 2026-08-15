@@ -1,0 +1,10 @@
+#
+#
+# This file contains the parameter names for a derived Fisher matrix.
+#
+omch2    omch2    0.112000
+ombh2    ombh2    0.022490
+h    h    0.673700
+ns    n_{\rm s}    0.966050
+10^9As    10^9As    2.420000
+b0    b0    1.000000

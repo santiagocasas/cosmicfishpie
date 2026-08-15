@@ -1,0 +1,80 @@
+{
+  "code": "symbolic",
+  "observables": [
+    "GCph"
+  ],
+  "seconds_current": 17.939029455184937,
+  "current_matrix_path": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__GCph_FM.txt",
+  "reference_matrix_path": "scripts/benchmark_results/CosmicFish_v1.2.6_Euclid-Photo-ISTF-Pess-Benchmark_SLOW__GCph_fishermatrix.txt",
+  "param_order_reference": [
+    "Omegam",
+    "Omegab",
+    "h",
+    "ns",
+    "sigma8",
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5",
+    "b6",
+    "b7",
+    "b8",
+    "b9",
+    "b10"
+  ],
+  "param_order_current": [
+    "Omegam",
+    "Omegab",
+    "h",
+    "ns",
+    "sigma8",
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5",
+    "b6",
+    "b7",
+    "b8",
+    "b9",
+    "b10"
+  ],
+  "aligned_order_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "env_flags": {
+    "COSMICFISH_FAST_EFF": true,
+    "COSMICFISH_FAST_P": true,
+    "COSMICFISH_FAST_KERNEL": true
+  },
+  "metrics": {
+    "rel_max": 0.0,
+    "abs_max_near0": 0.0,
+    "fro_rel": 0.0,
+    "diag_ratio": {
+      "min": 1.0,
+      "median": 1.0,
+      "max": 1.0
+    }
+  },
+  "json_paths": {
+    "ref": null,
+    "current": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__GCph_FM_specs.json"
+  },
+  "json_diff": null
+}

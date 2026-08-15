@@ -1,0 +1,96 @@
+#-----CLASS v3.2.3 (branch: master, hash: ae99bcea1cd94994228acdfaec70fa8628ae24c5)-----
+
+#------Experiments to test (separated with commas)-----
+# To see all the available ones, please look in the
+# montepython/likelihoods folder. Every folder there is a valid likelihood to test.
+#data.experiments = ['dark_sirens_alm_bbh', 'dark_sirens_alm_bns', 'dark_sirens_alm_bhns']
+#data.experiments = ['dark_sirens_cl_bbh']
+#data.experiments = ['dark_sirens_cl_bbh_ET_2CE','dark_sirens_cl_bns_ET_2CE']
+#data.experiments = ['dark_sirens_cl_bns_ET_2CE']
+data.experiments = ['dark_sirens_cl_bbh']
+
+#------ Parameter list -------
+# data.parameters[class name] = [mean, min, max, 1-sigma, scale, role]
+# - if min max irrelevant, put to -1 or None (if you want a boundary of -1, use -1.0)
+# - if fixed, put 1-sigma to 0
+# - if scale irrelevant, put to 1, otherwise to the appropriate factor
+# - role is either 'cosmo', 'nuisance' or 'derived'
+
+#Cosmological parameters list
+data.parameters['omega_b']   = [2.249, None, None, 0.016, 0.01, 'cosmo']
+data.parameters['omega_cdm'] = [0.112, None, None, 0.0016, 1.0, 'cosmo']
+data.parameters['n_s']       = [0.96605,0.8, 1.2, 4.21609630e-4, 1, 'cosmo']
+data.parameters['A_s']       = [2.42, None, None, 0.0029, 1e-09, 'cosmo']
+data.parameters['h']         = [0.6737, 0.1, 1.5, 1.65251623e-3, 1.0, 'cosmo']
+data.parameters['tau_reio']  = [0.054, None, None, 0., 1.0, 'cosmo']
+
+
+# Nuisance parameter list, same call, except the name does not have to be a class name
+data.parameters['bias_GC_1'] = [1.0, 0.5, 2, 1.00e-2, 1, 'nuisance']
+data.parameters['bias_GC_2'] = [0.5, 0.1, 2, 0, 1, 'nuisance']
+
+
+#data.parameters['bias_GW_1'] = [2.00, 0.0, 4.0, 2.0, 1, 'nuisance']
+#data.parameters['bias_GW_2'] = [0.00, -2.0, 7.0, 2.0, 1, 'nuisance']
+
+data.cosmo_arguments['non linear'] = 'halofit'
+
+# Derived parameter list
+#data.parameters['z_reio']       = [0,       -1, -1, 0,1,  'derived']
+#data.parameters['Omega_Lambda'] = [0,       -1, -1, 0,1,  'derived']
+
+#data.cosmo_arguments['YHe'] = 0.2454006
+
+#------ Mcmc parameters ----
+# Number of steps taken, by default (overwritten by the -N command)
+data.N = 10
+# Number of accepted steps before writing to file the chain. Larger means less
+# access to disc, but this is not so much time consuming.
+data.write_step = 5
+
+#-----Likelihood-dark_sirens_cl_bbh-----
+dark_sirens_cl_bbh.data_directory = '/rwthfs/rz/cluster/home/ch702054/code/montepython_git/data'
+dark_sirens_cl_bbh.fiducial_file = 'dark_sirens_HLVIK_bbh_fiducial-GC.npz'
+dark_sirens_cl_bbh.probe = ['GC']
+dark_sirens_cl_bbh.likelihood_type = 'Cl'
+dark_sirens_cl_bbh.lmin = 2
+dark_sirens_cl_bbh.lmax_GW = 170
+dark_sirens_cl_bbh.lmax_GC = 1000
+dark_sirens_cl_bbh.lbin = 1000
+dark_sirens_cl_bbh.a = 3.037993001675209e-06
+dark_sirens_cl_bbh.b = 2.2341309108864937
+dark_sirens_cl_bbh.c = 0.0017225046181331225
+dark_sirens_cl_bbh.d = 0.8037467711533078
+dark_sirens_cl_bbh.zmin = 1e-06
+dark_sirens_cl_bbh.zmax = 3.05
+dark_sirens_cl_bbh.d_L_min = 1e-06
+dark_sirens_cl_bbh.d_L_max = 45000
+dark_sirens_cl_bbh.norm_gc = 0.4227153203541678
+dark_sirens_cl_bbh.z_bin_edge = [1e-06, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9, 1.2, 1.5, 2.0, 3.0]
+dark_sirens_cl_bbh.d_L_bin_edge = [1e-06, 1649.6782570181988, 2499.478371068098, 3460.91572401251, 4886.801509853014, 15904.839459976089]
+dark_sirens_cl_bbh.sigma_DL = [0.2, 0.2, 0.2, 0.2, 0.2]
+dark_sirens_cl_bbh.sigma_GW = [0.015848599644575766, 0.025342383397669935, 0.03023603983049267, 0.035520349116912125, 0.05454297128248733]
+dark_sirens_cl_bbh.GW_noise_Cutoff = 1000
+dark_sirens_cl_bbh.nbinGC = 10
+dark_sirens_cl_bbh.nbinGW = 5
+dark_sirens_cl_bbh.fsky = 0.3636
+dark_sirens_cl_bbh.nzmax = 200
+dark_sirens_cl_bbh.n_d_Lmax = 200
+dark_sirens_cl_bbh.use_halofit = False
+dark_sirens_cl_bbh.k_min_h_by_Mpc = 0.001
+dark_sirens_cl_bbh.k_max_h_by_Mpc = 50.0
+dark_sirens_cl_bbh.scale_dependent_f = False
+dark_sirens_cl_bbh.bias_model = 'binned_constant'
+dark_sirens_cl_bbh.SNR = False
+
+
+#-----------Cosmological-arguments---------
+data.cosmo_arguments.update({'non linear': 'halofit', 'output': 'mPk', 'z_max_pk': 3.05, 'P_k_max_1/Mpc': 75.0})
+
+
+#--------Default-Configuration------
+data.path['root']	= '/rwthfs/rz/cluster/home/ch702054/code/montepython_git'
+data.path['MontePython']	= '/rwthfs/rz/cluster/home/ch702054/code/montepython_git/montepython'
+data.path['data']	= '/rwthfs/rz/cluster/home/ch702054/code/montepython_git/data'
+data.path['cosmo']	= '/rwthfs/rz/cluster/home/ch702054/code/class_public'
+data.path['clik']	= '/rwthfs/rz/cluster/home/ch702054/code/planck/code/plc_3.0/plc-3.01'

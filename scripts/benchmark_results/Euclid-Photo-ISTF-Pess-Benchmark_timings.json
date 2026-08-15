@@ -1,0 +1,19 @@
+{
+  "outroot": "Euclid-Photo-ISTF-Pess-Benchmark_",
+  "codes": [
+    "symbolic"
+  ],
+  "observables_combinations": [
+    "GCph-WL_symbolic"
+  ],
+  "timings": {
+    "GCph-WL_symbolic": {
+      "backend": "symbolic",
+      "observables": [
+        "GCph",
+        "WL"
+      ],
+      "seconds": 36.916168212890625
+    }
+  }
+}

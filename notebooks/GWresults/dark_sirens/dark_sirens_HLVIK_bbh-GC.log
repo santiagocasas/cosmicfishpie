@@ -1,0 +1,11 @@
+2025-08-04_5000000__1.txt	  Number of steps:145142	 Steps accepted:47279	 acc = 0.33	min(-loglike) = 0.05
+2025-08-04_5000000__2.txt	  Number of steps:142949	 Steps accepted:46142	 acc = 0.32	min(-loglike) = 0.04
+2025-08-04_5000000__3.txt	  Number of steps:144792	 Steps accepted:45802	 acc = 0.32	min(-loglike) = 0.06
+2025-08-04_5000000__4.txt	  Number of steps:146406	 Steps accepted:47432	 acc = 0.32	min(-loglike) = 0.05
+2025-08-04_5000000__5.txt	  Number of steps:146675	 Steps accepted:47527	 acc = 0.32	min(-loglike) = 0.05
+2025-08-04_5000000__6.txt	  Number of steps:140503	 Steps accepted:44677	 acc = 0.32	min(-loglike) = 0.02
+2025-08-04_5000000__7.txt	  Number of steps:145088	 Steps accepted:47222	 acc = 0.33	min(-loglike) = 0.03
+2025-08-04_5000000__8.txt	  Number of steps:142746	 Steps accepted:45582	 acc = 0.32	min(-loglike) = 0.04
+--> Total    number    of    steps: 1154301
+--> Total number of accepted steps: 371663
+--> Minimum of -logLike           : 0.02

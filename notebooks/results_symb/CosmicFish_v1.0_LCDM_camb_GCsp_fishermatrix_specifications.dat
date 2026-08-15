@@ -1,0 +1,118 @@
+**Git version commit: f68c86c53e5415a53bf734ed4931117181cce9bf 
+**Time needed for computation of Fisher matrix: 58.461 seconds 
+**Observables: GCsp 
+### CosmicFish settings ###
+AP_effect:True
+FoG_switch:True
+GCph_Tracer:matter
+GCsp_Tracer:matter
+GCsp_linear:False
+Pshot_nuisance_fiducial:0
+ShareDeltaNeff:False
+accuracy:1
+activateMG:False
+bfs8terms:True
+boltzmann_yaml_path:/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files
+camb_config_yaml:../cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml
+camb_path:/home/santiago/anaconda3/envs/cosmicfishpie/lib/python3.10/site-packages/camb
+class_config_yaml:/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml
+code:camb
+cosmo_model:LCDM
+derivatives:3PT
+eps_cosmopars:0.01
+eps_gal_nuispars:0.0001
+external_activateMG:False
+feedback:1
+fishermatrix_file_extension:.txt
+fix_cosmo_nl_terms:True
+kh_rescaling_beforespecerr_bug:False
+kh_rescaling_bug:False
+memorize_cosmo:False
+nonlinear:True
+nonlinear_photo:True
+outroot:LCDM_camb
+pivot_z_IA:0.0
+results_dir:results_symb/
+savgol_internalkmin:0.001
+savgol_internalsamples:800
+savgol_polyorder:3
+savgol_width:1.358528901113328
+savgol_window:101
+specs_dir:../cosmicfishpie/configs/default_survey_specifications/
+survey_name:Euclid
+survey_name_photo:
+survey_name_spectro:
+survey_specs:ISTF-Optimistic
+vary_bias_str:lnb
+### Fiducial parameters ###
+Omegab:0.04897
+Omegam:0.3111
+extrap_kmax:None
+h:0.6766
+kmax:10
+mnu:0.0
+ns:0.9665
+num_massive_neutrinos:0
+num_nu_massive:0
+num_nu_massless:3.044
+sigma8:0.815584
+tau:0.0561
+w0:-1.0
+wa:0.0
+### Free parameters ###
+Omegab:0.01
+Omegam:0.01
+Ps_1:0.0001
+Ps_2:0.0001
+Ps_3:0.0001
+Ps_4:0.0001
+h:0.01
+lnbgs8_1:0.0001
+lnbgs8_2:0.0001
+lnbgs8_3:0.0001
+lnbgs8_4:0.0001
+ns:0.01
+sigma8:0.01
+### Survey specifications ###
+area_survey_spectro:15000
+bias:[1.4614804, 1.6060949, 1.746479, 1.898866]
+bias_model:binned
+binrange:range(1, 11)
+cb:1
+co:1
+dn3:[1815.0, 1701.5, 1410.0, 940.97]
+ellipt_error:0.3
+fout:0.1
+fsky_GCph:0.35
+fsky_WL:0.35
+fsky_spectro:0.36361026083215203
+gc_specs_files_dict:{'default': 'Euclid_GCsp_IST.dat', 'Euclid': 'Euclid_GCsp_IST.dat', 'SKA1': 'SKA1_GCsp_MDB2_Redbook.dat', 'SKA2': 'SKA2_GCsp.dat', 'DESI_ELG': 'DESI_ELG_GCsp.dat', 'DESI_ELG_4bins': 'DESI_4bins_ELG_GCsp.dat', 'SKA1 x DESI_ELG': 'DESI_ELG_GCsp.dat', 'DESI_BGS': 'DESI_BGS_GCsp.dat', 'DESI_BGS_2bins': 'DESI_2bins_BGS_GCsp.dat'}
+kmax:0.25
+kmax_GCsp:0.25
+kmin:0.001
+kmin_GCsp:0.001
+lmax_GCph:750
+lmax_WL:1500
+lmin_GCph:10
+lmin_WL:10
+ngal_sqarmin:30
+ngalbin:[35454308.58012683 35454308.58012683 35454308.58012683 35454308.58012683
+ 35454308.58012683 35454308.58012683 35454308.58012683 35454308.58012683
+ 35454308.58012683 35454308.58012683]
+ngamma:1.5
+sigma_b:0.05
+sigma_o:0.05
+spec_sigma_dz:0.001
+spec_sigma_dz_type:constant
+specs_dir:../cosmicfishpie/configs/default_survey_specifications/
+survey_name:Euclid
+vary_IA_pars:0.035
+vary_ph_bias:0.06
+z0:0.6363961030678927
+z0_p:0.6363961030678927
+z_bins:[1.000e-03 4.180e-01 5.600e-01 6.780e-01 7.890e-01 9.000e-01 1.019e+00
+ 1.155e+00 1.324e+00 1.576e+00 2.500e+00]
+z_bins_spectro:[0.9, 1.1, 1.3, 1.5, 1.8]
+zb:0.0
+zm:0.9
+zo:0.1

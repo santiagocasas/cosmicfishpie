@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-10T15:22:00Z",
+    "n_fishers": 1,
+    "git_commit": "479e8c0",
+    "codes": [
+      "symbolic"
+    ],
+    "observables": [
+      [
+        "GCph",
+        "WL"
+      ]
+    ],
+    "derivatives": "3PT",
+    "cosmo_model": "LCDM",
+    "survey_name": "Euclid",
+    "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
+    "specs_dir": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_survey_specifications/",
+    "configs_dir": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs",
+    "camb_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml",
+    "class_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/class/fast_photo.yaml",
+    "symbolic_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml",
+    "fiducial_parameters": [
+      "Omegam",
+      "Omegab",
+      "h",
+      "ns",
+      "sigma8",
+      "mnu",
+      "Neff"
+    ],
+    "free_parameters": [
+      "Omegam",
+      "Omegab",
+      "h",
+      "ns",
+      "sigma8"
+    ],
+    "benchmark_script": "photometric_benchmark.py"
+  },
+  "results": [
+    {
+      "name": "CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_GCph-WL_symbolic__GCphWL_FM",
+      "FoM": {
+        "parameters": [
+          "Omegam",
+          "sigma8"
+        ],
+        "value": 478453.19004808686
+      },
+      "parameters": [
+        {
+          "name": "Omegam",
+          "fiducial": 0.32,
+          "sigma": 0.0027887786600963847,
+          "percent_error": 0.8714933312801203
+        },
+        {
+          "name": "Omegab",
+          "fiducial": 0.05,
+          "sigma": 0.0026200508500797623,
+          "percent_error": 5.240101700159524
+        },
+        {
+          "name": "h",
+          "fiducial": 0.67,
+          "sigma": 0.019790502311039362,
+          "percent_error": 2.953806315080502
+        },
+        {
+          "name": "ns",
+          "fiducial": 0.96,
+          "sigma": 0.008460604752996714,
+          "percent_error": 0.8813129951038244
+        },
+        {
+          "name": "sigma8",
+          "fiducial": 0.815584,
+          "sigma": 0.0034299356212406235,
+          "percent_error": 0.4205496455595774
+        },
+        {
+          "name": "b1",
+          "fiducial": 1.099773,
+          "sigma": 0.00685236916390617,
+          "percent_error": 0.6230712305090388
+        },
+        {
+          "name": "b2",
+          "fiducial": 1.220246,
+          "sigma": 0.0064025962254713395,
+          "percent_error": 0.5246971697076933
+        },
+        {
+          "name": "b3",
+          "fiducial": 1.272399,
+          "sigma": 0.006408680714009776,
+          "percent_error": 0.5036691096118258
+        },
+        {
+          "name": "b4",
+          "fiducial": 1.316624,
+          "sigma": 0.006441596137427543,
+          "percent_error": 0.4892510038877875
+        },
+        {
+          "name": "b5",
+          "fiducial": 1.358124,
+          "sigma": 0.006579292333724334,
+          "percent_error": 0.48443973699929704
+        },
+        {
+          "name": "b6",
+          "fiducial": 1.399821,
+          "sigma": 0.006655401677201023,
+          "percent_error": 0.4754466233326277
+        },
+        {
+          "name": "b7",
+          "fiducial": 1.444645,
+          "sigma": 0.0069157082172422064,
+          "percent_error": 0.4787133321502658
+        },
+        {
+          "name": "b8",
+          "fiducial": 1.496496,
+          "sigma": 0.0067693817432548835,
+          "percent_error": 0.45234880302084896
+        },
+        {
+          "name": "b9",
+          "fiducial": 1.565248,
+          "sigma": 0.006896337723163964,
+          "percent_error": 0.44059073853881076
+        },
+        {
+          "name": "b10",
+          "fiducial": 1.742986,
+          "sigma": 0.007477254085009682,
+          "percent_error": 0.4289910581616653
+        },
+        {
+          "name": "AIA",
+          "fiducial": 1.72,
+          "sigma": 1.4050918385789994,
+          "percent_error": 81.69138596389531
+        },
+        {
+          "name": "betaIA",
+          "fiducial": 2.17,
+          "sigma": 0.3403501645755886,
+          "percent_error": 15.684339381363529
+        },
+        {
+          "name": "etaIA",
+          "fiducial": -0.41,
+          "sigma": 0.9120384931626372,
+          "percent_error": 222.4484129664969
+        }
+      ]
+    }
+  ]
+}

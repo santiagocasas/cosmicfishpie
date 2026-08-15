@@ -1,0 +1,9 @@
+specifications:
+    'lmin_CMB': 2
+    'lmax_CMB': 2500
+    'fsky_CMB_T': 0.85
+    'fsky_CMB_E': 0.85
+    'fsky_CMB_B': 0.85
+    'CMB_temp_sens': [4.7,2.5,2.2]
+    'CMB_pol_sens': [6.6,3.5,3.1]
+    'CMB_fwhm': [14.0,10.,7.1]

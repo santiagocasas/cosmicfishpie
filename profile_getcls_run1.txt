@@ -1,0 +1,82 @@
+         199829150 function calls (199818625 primitive calls) in 142.799 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1049 to 20 due to restriction <'photo_obs'>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       31    0.008    0.000  134.447    4.337 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:254(compute_all)
+       31    0.000    0.000   91.372    2.947 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:570(compute_kernels)
+      620    0.011    0.000   63.627    0.103 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:471(lensing_kernel)
+      620    0.500    0.001   56.289    0.091 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:500(<listcomp>)
+       31    0.002    0.000   32.019    1.033 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:593(<listcomp>)
+       31    0.002    0.000   31.789    1.025 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:587(<listcomp>)
+       31    0.000    0.000   26.326    0.849 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:548(lensing_efficiency)
+       31    0.001    0.000   26.325    0.849 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:557(<listcomp>)
+      310    0.003    0.000   26.324    0.085 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:525(integral_efficiency)
+      310    0.043    0.000   26.286    0.085 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:69(faster_integral_efficiency)
+       31    0.128    0.004   22.881    0.738 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:705(computecls_vectorized)
+    12400    2.497    0.000   22.443    0.002 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:785(clsintegral)
+    49600    0.175    0.000   18.310    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:600(genwindow)
+       31    4.265    0.138   13.826    0.446 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:367(sqrtP_limber)
+       32    0.002    0.000    7.085    0.221 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:97(__init__)
+       31    2.021    0.065    6.358    0.205 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:339(P_limber)
+      620    0.215    0.000    6.037    0.010 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:505(<listcomp>)
+       31    0.001    0.000    1.238    0.040 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:578(<listcomp>)
+      310    0.002    0.000    1.169    0.004 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:427(galaxy_kernel)
+        1    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:322(print_numerical_specs)
+
+
+         199829150 function calls (199818625 primitive calls) in 142.799 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1049 to 11 due to restriction <'photo_cov'>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       31    0.001    0.000  141.166    4.554 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:116(getcls)
+        1    0.000    0.000  137.065  137.065 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:320(compute_derivs)
+        1    0.000    0.000    5.281    5.281 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:247(compute_covmat)
+        1    0.074    0.074    1.163    1.163 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:198(get_covmat)
+       31    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:129(<dictcomp>)
+       31    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:132(<dictcomp>)
+        1    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:164(getclsnoise)
+       31    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:130(<dictcomp>)
+        1    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:25(__init__)
+       31    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:131(<dictcomp>)
+        1    0.000    0.000    0.000    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:228(<dictcomp>)
+
+
+
+Top 25 cumulative (overall)
+         199829150 function calls (199818625 primitive calls) in 142.799 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1049 to 25 due to restriction <25>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000  142.800  142.800 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/fishermatrix/cosmicfish.py:209(compute)
+       31    0.001    0.000  141.166    4.554 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:116(getcls)
+        1    0.000    0.000  137.065  137.065 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_cov.py:320(compute_derivs)
+        1    0.000    0.000  137.065  137.065 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/fishermatrix/derivatives.py:18(__init__)
+        1    0.005    0.005  137.065  137.065 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/fishermatrix/derivatives.py:113(derivative_3pt)
+       31    0.008    0.000  134.447    4.337 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:254(compute_all)
+   274448    0.264    0.000   98.548    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:2517(__call__)
+   274448    0.392    0.000   98.283    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:2487(_call_as_normal)
+   274448    1.621    0.000   97.891    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:2593(_vectorize_call)
+       31    0.000    0.000   91.372    2.947 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:570(compute_kernels)
+   124682    0.092    0.000   78.646    0.001 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/cosmology/cosmology.py:1770(comoving)
+   385082    0.243    0.000   76.359    0.000 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/cosmology/cosmology.py:1087(<lambda>)
+   385082    0.305    0.000   76.116    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/colossus/cosmology/cosmology.py:1257(comovingDistance)
+   385082    0.197    0.000   75.811    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/colossus/cosmology/cosmology.py:1006(_integral_oneOverEz)
+   385082    0.479    0.000   75.614    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/colossus/cosmology/cosmology.py:975(_integral)
+   385082    0.609    0.000   74.673    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/scipy/integrate/_quadpack_py.py:20(quad)
+   385082    0.307    0.000   73.845    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/scipy/integrate/_quadpack_py.py:588(_quad)
+   385082    3.026    0.000   73.538    0.000 {built-in method scipy.integrate._quadpack._qagse}
+  8086722    3.370    0.000   70.512    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/colossus/cosmology/cosmology.py:1008(integrand)
+  8405155   25.802    0.000   70.312    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/colossus/cosmology/cosmology.py:872(Ez)
+      620    0.011    0.000   63.627    0.103 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:471(lensing_kernel)
+      620    0.500    0.001   56.289    0.091 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:500(<listcomp>)
+       31    0.002    0.000   32.019    1.033 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:593(<listcomp>)
+       31    0.002    0.000   31.789    1.025 /home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/LSSsurvey/photo_obs.py:587(<listcomp>)
+   274443    1.037    0.000   29.439    0.000 /home/santiago/miniforge3/envs/cosmicfishpie/lib/python3.10/site-packages/numpy/lib/_function_base_impl.py:2524(_get_ufunc_and_otypes)
+
+

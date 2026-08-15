@@ -1,0 +1,308 @@
+{
+  "metadata": {
+    "cf_version": "CosmicFish_v1.3.0",
+    "git_commit": "479e8c05cd806d2fd913cd7a1c97f77751e1ff38",
+    "timestamp": "2025-10-10T15:08:38Z",
+    "observables": [
+      "WL"
+    ],
+    "totaltime_sec": 14.328641891479492,
+    "matrix_files": {
+      "txt": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__WL_FM.txt",
+      "paramnames": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__WL_FM.paramnames",
+      "dat_specs": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__WL_FM_specs.dat",
+      "json_specs": "scripts/benchmark_results//CosmicFish_v1.3.0_Euclid-Photo-ISTF-Pess-Benchmark_COMPARE__WL_FM_specs.json"
+    },
+    "env_flags": {
+      "COSMICFISH_FAST_EFF": "1",
+      "COSMICFISH_FAST_P": "1",
+      "COSMICFISH_FAST_KERNEL": "1"
+    }
+  },
+  "options": {
+    "accuracy": 1,
+    "outroot": "Euclid-Photo-ISTF-Pess-Benchmark_COMPARE_",
+    "results_dir": "scripts/benchmark_results/",
+    "derivatives": "3PT",
+    "feedback": 1,
+    "survey_name": "Euclid",
+    "specs_dir": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_survey_specifications/",
+    "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
+    "camb_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml",
+    "class_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/class/fast_photo.yaml",
+    "symbolic_config_yaml": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml",
+    "cosmo_model": "LCDM",
+    "code": "symbolic",
+    "specs_dir_default": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_survey_specifications",
+    "external_data_dir": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/external_data",
+    "survey_specs": "ISTF-Optimistic",
+    "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
+    "survey_name_radio_IM": "SKA1-IM-Redbook-Optimistic",
+    "fail_on_specs_not_found": false,
+    "nonlinear": true,
+    "nonlinear_photo": true,
+    "bfs8terms": false,
+    "vary_bias_str": "lnb",
+    "AP_effect": true,
+    "FoG_switch": true,
+    "GCsp_linear": false,
+    "fix_cosmo_nl_terms": true,
+    "Pshot_nuisance_fiducial": 0.0,
+    "pivot_z_IA": 0.0,
+    "spectro_Pk_k_samples": 1025,
+    "spectro_Pk_mu_samples": 17,
+    "activateMG": false,
+    "external_activateMG": false,
+    "memorize_cosmo": false,
+    "SUPPRESS_WARNINGS": true,
+    "boltzmann_yaml_path": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files",
+    "fishermatrix_file_extension": ".txt",
+    "savgol_window": 101,
+    "savgol_polyorder": 3,
+    "savgol_width": 1.358528901113328,
+    "savgol_internalsamples": 800,
+    "savgol_internalkmin": 0.001,
+    "eps_cosmopars": 0.01,
+    "eps_gal_nuispars": 0.0001,
+    "eps_gal_nonlinpars": 0.01,
+    "GCsp_Tracer": "matter",
+    "GCph_Tracer": "matter",
+    "ell_sampling": "accuracy",
+    "ShareDeltaNeff": false,
+    "kh_rescaling_bug": false,
+    "kh_rescaling_beforespecerr_bug": false
+  },
+  "specifications": {
+    "z_bins_GCph": [
+      0.001,
+      0.418,
+      0.56,
+      0.678,
+      0.789,
+      0.9,
+      1.019,
+      1.155,
+      1.324,
+      1.576,
+      2.5
+    ],
+    "z_bins_WL": [
+      0.001,
+      0.418,
+      0.56,
+      0.678,
+      0.789,
+      0.9,
+      1.019,
+      1.155,
+      1.324,
+      1.576,
+      2.5
+    ],
+    "zm": 0.9,
+    "ngamma": 1.5,
+    "ngal_sqarmin_GCph": 30,
+    "ngal_sqarmin_WL": 30,
+    "photo_z_params": {
+      "fout": 0.1,
+      "co": 1,
+      "cb": 1,
+      "sigma_o": 0.05,
+      "sigma_b": 0.05,
+      "zo": 0.1,
+      "zb": 0.0
+    },
+    "fsky_GCph": 0.35,
+    "lmax_GCph": 750,
+    "lmin_GCph": 10,
+    "ellipt_error": 0.3,
+    "fsky_WL": 0.35,
+    "lmax_WL": 1500,
+    "lmin_WL": 10,
+    "kmax": 30.0,
+    "vary_ph_bias": 0.06,
+    "vary_IA_pars": 0.035,
+    "ph_bias_model": "binned",
+    "ph_bias_parametrization": {
+      "binned": {
+        "keystr": "b",
+        "generate_bias_keys": true
+      },
+      "binned_constant": {
+        "keystr": "b",
+        "generate_bias_keys": true
+      },
+      "sqrt": {
+        "b0": 1.0
+      },
+      "flagship": {
+        "A": 1.0,
+        "B": 2.5,
+        "C": 2.8,
+        "D": 1.6
+      }
+    },
+    "IA_params": {
+      "IA_model": "eNLA",
+      "AIA": 1.72,
+      "betaIA": 2.17,
+      "etaIA": -0.41
+    },
+    "ngalbin_WL": [
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684
+    ],
+    "binrange_WL": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "ngalbin_GCph": [
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684,
+      35454308.58012684
+    ],
+    "binrange_GCph": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "z0": 0.6363961030678927,
+    "z0_p": 0.6363961030678927,
+    "spec_sigma_dz": 0.002,
+    "spec_sigma_dz_type": "constant",
+    "area_survey_spectro": 15000,
+    "kmax_GCsp": 0.25,
+    "kmin_GCsp": 0.001,
+    "z_bins_sp": {
+      "1": [
+        0.9,
+        1.1
+      ],
+      "2": [
+        1.1,
+        1.3
+      ],
+      "3": [
+        1.3,
+        1.5
+      ],
+      "4": [
+        1.5,
+        1.8
+      ]
+    },
+    "dndOmegadz": {
+      "1": 1815.0,
+      "2": 1701.5,
+      "3": 1410.0,
+      "4": 940.97
+    },
+    "sp_bias_sample": "g",
+    "sp_bias_model": "linear_log",
+    "sp_bias_root": "lnb",
+    "sp_bias_parametrization": {
+      "linear": {
+        "bg_1": 1.4614804,
+        "bg_2": 1.6060949,
+        "bg_3": 1.746479,
+        "bg_4": 1.898866
+      },
+      "linear_log": {
+        "lnbg_1": 0.37944989,
+        "lnbg_2": 0.4738057,
+        "lnbg_3": 0.55760176,
+        "lnbg_4": 0.64125687
+      },
+      "linear_Qbias": {
+        "bg_1": 1.4614804,
+        "bg_2": 1.6060949,
+        "bg_3": 1.746479,
+        "bg_4": 1.898866,
+        "A1": 0.02,
+        "A2": -2.0
+      }
+    },
+    "shot_noise_model": "constant",
+    "shot_noise_parametrization": {
+      "constant": {
+        "Ps_1": 0.0,
+        "Ps_2": 0.0,
+        "Ps_3": 0.0,
+        "Ps_4": 0.0
+      }
+    },
+    "fsky_spectro": 0.3636102608321519,
+    "fsky_IM": 0.0,
+    "survey_name": "Euclid",
+    "specs_dir": "/home/santiago/CosmoProjects/cosmicfish_release/cosmicfishpie/cosmicfishpie/configs/default_survey_specifications/"
+  },
+  "fiducialpars": {
+    "Omegam": 0.32,
+    "Omegab": 0.05,
+    "h": 0.67,
+    "ns": 0.96,
+    "sigma8": 0.815584,
+    "mnu": 0.06,
+    "Neff": 3.044
+  },
+  "freepars": {
+    "Omegam": 0.01,
+    "Omegab": 0.01,
+    "h": 0.01,
+    "ns": 0.01,
+    "sigma8": 0.01,
+    "AIA": 0.035,
+    "betaIA": 0.035,
+    "etaIA": 0.035
+  },
+  "allparams": {
+    "Omegam": 0.32,
+    "Omegab": 0.05,
+    "h": 0.67,
+    "ns": 0.96,
+    "sigma8": 0.815584,
+    "mnu": 0.06,
+    "Neff": 3.044,
+    "fout": 0.1,
+    "co": 1,
+    "cb": 1,
+    "sigma_o": 0.05,
+    "sigma_b": 0.05,
+    "zo": 0.1,
+    "zb": 0.0,
+    "IA_model": "eNLA",
+    "AIA": 1.72,
+    "betaIA": 2.17,
+    "etaIA": -0.41
+  }
+}

@@ -1,0 +1,18 @@
+#
+#
+# This file contains the parameter names for a derived Fisher matrix.
+#
+Omegam    \Omega_{{\rm m}, 0}    0.320000
+Omegab    \Omega_{{\rm b}, 0}    0.050000
+h    h    0.670000
+ns    n_{\rm s}    0.960000
+sigma8    \sigma_8    0.815584
+A2    A2    -2.000000
+bg_1    b_{g1}    1.461480
+bg_2    b_{g2}    1.606095
+bg_3    b_{g3}    1.746479
+bg_4    b_{g4}    1.898866
+Ps_1    P_{S1}    0.000000
+Ps_2    P_{S2}    0.000000
+Ps_3    P_{S3}    0.000000
+Ps_4    P_{S4}    0.000000

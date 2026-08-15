@@ -58,3 +58,4 @@ site/
 # User Output
 plots/
 results/
+.aider*

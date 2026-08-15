@@ -1,0 +1,1 @@
+pytest -x --cache-clear .

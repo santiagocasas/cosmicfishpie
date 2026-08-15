@@ -8,7 +8,7 @@ joblib==1.4.2
 jupyter==1.1.1
 matplotlib==3.9.3
 nautilus-sampler==1.0.5
-numpy
+numpy>=1.23
 pandas
 PyYAML==6.0.2
 scikit-learn==1.5.2

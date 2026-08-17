@@ -9,7 +9,7 @@ NUMERICS:
   'zmax' : 5
   'zsamples': 100
 COSMO_SETTINGS:   ## Massive neutrino baseline model
-  'halofit_version' : 9
+  'halofit_version' : 'mead2020'
   'dark_energy_model' : 'ppf'
   'num_nu_massive' : 1
   'TCMB': 2.7255
@@ -25,8 +25,8 @@ COSMO_SETTINGS:   ## Massive neutrino baseline model
 LCDM:
   'Omegak' : 0.
   'tau' : 0.058
-  'YHe': 0.24
+  'YHe' : 0.2454006
 w0waCDM:
   'Omegak' : 0.
   'tau' : 0.058
-  'YHe': 0.24
+  'YHe' : 0.2454006

@@ -18,15 +18,17 @@ COSMO_SETTINGS:
   'P_k_max_1/Mpc': 50
   'output' : 'mPk,mTk'
   'non linear' : 'halofit'
+  'nonlinear_min_k_max' : 80.
   'z_max_pk' : 5.0
   'N_ncdm': 1
   'T_cmb' : 2.7255
-  'nonlinear_min_k_max' : 80.
   'k_pivot' : 0.05
 LCDM :
   'Omega_k' : 0
   'YHe' : 0.2454006
+  'tau_reio' : 0.058
 w0waCDM :
   'Omega_Lambda' : 0.0
   'Omega_k' : 0
   'YHe' : 0.2454006
+  'tau_reio' : 0.058

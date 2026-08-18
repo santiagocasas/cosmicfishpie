@@ -824,10 +824,18 @@ class boltzmann_code:
                 classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
             )
 
-        if "w0" in classpars:
-            classpars["w0_fld"] = classpars.pop("w0")
-        if "wa" in classpars:
-            classpars["wa_fld"] = classpars.pop("wa")
+        if self.settings["cosmo_model"] == "LCDM":
+            # CLASS rejects dark-energy evolution parameters in LCDM mode,
+            # even when CosmicFishPie carries fixed w0/wa in the fiducial.
+            classpars.pop("w0", None)
+            classpars.pop("wa", None)
+            classpars.pop("w0_fld", None)
+            classpars.pop("wa_fld", None)
+        else:
+            if "w0" in classpars:
+                classpars["w0_fld"] = classpars.pop("w0")
+            if "wa" in classpars:
+                classpars["wa_fld"] = classpars.pop("wa")
         if "logAs" in classpars:
             classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
         if "10^9As" in classpars:

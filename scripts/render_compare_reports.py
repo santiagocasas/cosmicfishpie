@@ -58,6 +58,8 @@ class RunSummary:
     max_sigma_dev_param: str | None
     max_sigma_dev_ratio: float | None
     max_sigma_dev_percent: float | None
+    sigma_threshold: float | None
+    threshold_status: str | None
     yaml_top_changed: int | None
     yaml_top_only_a: int | None
     yaml_top_only_b: int | None
@@ -256,6 +258,7 @@ def summarize_folder(folder: Path) -> RunSummary:
     yaml_key_a = None
     yaml_key_b = None
     omp_threads = None
+    sigma_threshold: float | None = None
 
     if isinstance(meta, dict):
         timestamp = meta.get("timestamp")
@@ -272,6 +275,9 @@ def summarize_folder(folder: Path) -> RunSummary:
             yaml_b = args.get("yaml_b")
             yaml_key_a = args.get("yaml_key_a")
             yaml_key_b = args.get("yaml_key_b")
+            st = args.get("sigma_threshold")
+            if isinstance(st, (int, float)):
+                sigma_threshold = float(st)
         resolved = meta.get("resolved")
         if isinstance(resolved, dict):
             # Prefer resolved yaml keys if args omitted them.
@@ -344,6 +350,10 @@ def summarize_folder(folder: Path) -> RunSummary:
                 main
             )
 
+    threshold_status: str | None = None
+    if sigma_threshold is not None and max_sigma_percent is not None:
+        threshold_status = "FAIL" if max_sigma_percent > sigma_threshold else "PASS"
+
     return RunSummary(
         folder=folder,
         status=status,
@@ -371,6 +381,8 @@ def summarize_folder(folder: Path) -> RunSummary:
         max_sigma_dev_param=max_sigma_param,
         max_sigma_dev_ratio=max_sigma_ratio,
         max_sigma_dev_percent=max_sigma_percent,
+        sigma_threshold=sigma_threshold,
+        threshold_status=threshold_status,
         yaml_top_changed=yaml_top_changed,
         yaml_top_only_a=yaml_top_only_a,
         yaml_top_only_b=yaml_top_only_b,
@@ -413,7 +425,36 @@ def _report_css() -> str:
         "th{background:#f9fafb;text-align:left}"
         "small{color:#6b7280}"
         "section{margin:32px 0;padding-top:12px;border-top:1px solid #e5e7eb}"
+        ".gate-pass{display:inline-block;background:#dcfce7;color:#166534;border:1px solid #86efac;"
+        "border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}"
+        ".gate-fail{display:inline-block;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;"
+        "border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}"
+        ".gate-na{display:inline-block;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;"
+        "border-radius:999px;padding:2px 10px;font-size:12px}"
     )
+
+
+def _gate_badge_html(summary: "RunSummary") -> str:
+    """Render a PASS/FAIL badge for the sigma-threshold gate, if one was set."""
+    if summary.threshold_status == "PASS":
+        cls = "gate-pass"
+        text = f"PASS (\u2264{_fmt_float(summary.sigma_threshold, '.3g')}%)"
+    elif summary.threshold_status == "FAIL":
+        cls = "gate-fail"
+        text = f"FAIL (&gt;{_fmt_float(summary.sigma_threshold, '.3g')}%)"
+    else:
+        cls = "gate-na"
+        text = "n/a"
+    return f"<span class='{cls}'>{text}</span>"
+
+
+def _gate_text_md(summary: "RunSummary") -> str:
+    """Render a plain-text PASS/FAIL marker for Markdown output."""
+    if summary.threshold_status == "PASS":
+        return f"PASS (<={_fmt_float(summary.sigma_threshold, '.3g')}%)"
+    if summary.threshold_status == "FAIL":
+        return f"FAIL (>{_fmt_float(summary.sigma_threshold, '.3g')}%)"
+    return "n/a"
 
 
 def _report_body_html(
@@ -517,6 +558,7 @@ def _report_body_html(
         )
     else:
         parts.append("<div>Max |sigma ratio-1|</div><div><code>n/a</code></div>")
+    parts.append(f"<div>Sigma-threshold gate</div><div>{_gate_badge_html(summary)}</div>")
     parts.append("</div>")
     parts.append("</div>")
     parts.append("</div>")
@@ -621,6 +663,7 @@ def write_report_md(summary: RunSummary) -> None:
         )
     else:
         lines.append("- Max |sigma ratio - 1|: `n/a`")
+    lines.append(f"- Sigma-threshold gate: `{_gate_text_md(summary)}`")
     lines.append("")
     lines.append("### YAML Diff Summary")
     lines.append("")
@@ -733,6 +776,7 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
             if s.max_sigma_dev_percent is not None and s.max_sigma_dev_param
             else "n/a"
         )
+        gate_html = _gate_badge_html(s)
         rows_html.append(
             "<tr>"
             f"<td><a href='{esc(rel_report)}'>{esc(label)}</a><br><small><code>{esc(rel_folder)}</code></small></td>"
@@ -743,6 +787,7 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
             f"<td>{yamls_html}</td>"
             f"<td><code>{timing}</code></td>"
             f"<td><code>{dev}</code></td>"
+            f"<td>{gate_html}</td>"
             "</tr>"
         )
 
@@ -759,6 +804,9 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
     th,td{border:1px solid #e5e7eb;padding:10px;vertical-align:top}
     th{background:#f9fafb;text-align:left}
     small{color:#6b7280}
+    .gate-pass{display:inline-block;background:#dcfce7;color:#166534;border:1px solid #86efac;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+    .gate-fail{display:inline-block;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+    .gate-na{display:inline-block;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:999px;padding:2px 10px;font-size:12px}
   </style>
 </head>
 <body>
@@ -775,6 +823,7 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
         <th>YAMLs</th>
         <th>Timings (A/B)</th>
         <th>Max σ dev</th>
+        <th>Gate</th>
       </tr>
     </thead>
     <tbody>
@@ -793,9 +842,9 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
     md_lines.append("# Fisher Compare Reports")
     md_lines.append("")
     md_lines.append(
-        "| Run | Status | Timestamp | Mode | Codes | YAMLs | Timing (A/B) | Max σ dev |"
+        "| Run | Status | Timestamp | Mode | Codes | YAMLs | Timing (A/B) | Max σ dev | Gate |"
     )
-    md_lines.append("|---|---|---|---|---|---|---|---|")
+    md_lines.append("|---|---|---|---|---|---|---|---|---|")
     for s in ordered:
         rel_report = _safe_relpath(s.folder / "REPORT.md", index_dir)
         label = s.folder.name
@@ -815,6 +864,7 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
             if s.max_sigma_dev_percent is not None and s.max_sigma_dev_param
             else "n/a"
         )
+        gate = _gate_text_md(s)
         md_lines.append(
             "| "
             f"[{label}]({rel_report}) | "
@@ -824,7 +874,8 @@ def write_index(index_dir: Path, summaries: list[RunSummary]) -> None:
             f"`{codes}` | "
             f"`{yamls}` | "
             f"`{timing}` | "
-            f"`{dev}` |"
+            f"`{dev}` | "
+            f"`{gate}` |"
         )
     (index_dir / "index.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
 
@@ -924,6 +975,7 @@ def write_single_file(path: Path, summaries: list[RunSummary]) -> None:
             if summary.max_sigma_dev_percent is not None and summary.max_sigma_dev_param
             else "n/a"
         )
+        gate_html = _gate_badge_html(summary)
         rows_html.append(
             "<tr>"
             f"<td><a href='#{esc(anchor)}'>{esc(label)}</a><br><small><code>{esc(str(summary.folder))}</code></small></td>"
@@ -934,6 +986,7 @@ def write_single_file(path: Path, summaries: list[RunSummary]) -> None:
             f"<td>{yamls_html}</td>"
             f"<td><code>{timing}</code></td>"
             f"<td><code>{dev}</code></td>"
+            f"<td>{gate_html}</td>"
             "</tr>"
         )
 
@@ -953,7 +1006,7 @@ def write_single_file(path: Path, summaries: list[RunSummary]) -> None:
     parts.append("<table>")
     parts.append("<thead>")
     parts.append(
-        "<tr><th>Run</th><th>Status</th><th>Timestamp</th><th>Mode</th><th>Codes</th><th>YAMLs</th><th>Timings (A/B)</th><th>Max sigma dev</th></tr>"
+        "<tr><th>Run</th><th>Status</th><th>Timestamp</th><th>Mode</th><th>Codes</th><th>YAMLs</th><th>Timings (A/B)</th><th>Max sigma dev</th><th>Gate</th></tr>"
     )
     parts.append("</thead>")
     parts.append("<tbody>")

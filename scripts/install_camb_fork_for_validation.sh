@@ -3,6 +3,9 @@
 # Halofit convergence) into this project's venv, for backend validation
 # scripts only. Standard cosmicfishpie usage keeps using the pinned PyPI
 # camb from pyproject.toml/uv.lock; this script never modifies that pin.
+#
+# Installs directly from the git commit via a VCS URL (no persistent local
+# clone is created or managed by this script).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,12 +17,10 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 # c52551a4c4cc9bf8d6fa64b4cb829365c89242b5 ("hard coding the halofit
 # tolerance to 1e-6").
 DEFAULT_PINNED_COMMIT="98fe7b578acb091baaf90ac8127e417f1d7ebc82"
-DEFAULT_REMOTE="git@github.com:santiagocasas/CAMB.git"
-DEFAULT_FORK_DIR="$(cd -- "${REPO_ROOT}/.." && pwd)/CAMB"
+DEFAULT_REMOTE="https://github.com/santiagocasas/CAMB.git"
 DEFAULT_PYTHON="${REPO_ROOT}/.venv/bin/python"
 DEFAULT_GFORTRAN_ENV_NAME="gfortran-build"
 
-FORK_DIR="${DEFAULT_FORK_DIR}"
 REMOTE="${DEFAULT_REMOTE}"
 PINNED_COMMIT="${DEFAULT_PINNED_COMMIT}"
 TARGET_PYTHON="${DEFAULT_PYTHON}"
@@ -36,9 +37,10 @@ Python-settable Ini parameter; empirically this does not reach the tight
 nonlinear power-spectrum convergence used in the Euclid validation paper
 (Casas et al. 2023, arXiv:2303.09451). That paper hard-codes the Halofit
 convergence tolerance directly in fortran/halofit.f90 at 1e-6. This script
-editable-installs that fork, pinned to a fixed validated commit, into the
-project .venv -- overriding (but NOT modifying the pin of) the standard
-camb==1.6.4 from pyproject.toml/uv.lock.
+installs that fork, pinned to a fixed validated commit, directly from git
+into the project .venv (via 'uv pip install camb @ git+<remote>@<commit>')
+-- overriding (but NOT modifying the pin of) the standard camb==1.6.4 from
+pyproject.toml/uv.lock. No local clone directory is created or kept.
 
 This override does not persist: any 'uv run <cmd>' (black, ruff, pytest,
 etc.) resyncs the venv back to the pinned PyPI camb. To keep the fork
@@ -53,8 +55,8 @@ Usage
   scripts/install_camb_fork_for_validation.sh [options]
 
 Options
-  --fork-dir PATH   Local clone location (default: ${DEFAULT_FORK_DIR})
-  --remote URL      Git remote to clone if --fork-dir is empty
+  --remote URL      Git remote URL, without a 'git+' prefix (HTTPS works
+                     without auth since the fork is public)
                      (default: ${DEFAULT_REMOTE})
   --commit SHA      Commit to pin (default: ${DEFAULT_PINNED_COMMIT})
   --python PATH     Target venv python (default: ${DEFAULT_PYTHON})
@@ -69,7 +71,6 @@ print_help() { printf '%s\n' "${HELP_TEXT}"; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --fork-dir) FORK_DIR="$2"; shift 2 ;;
     --remote) REMOTE="$2"; shift 2 ;;
     --commit) PINNED_COMMIT="$2"; shift 2 ;;
     --python) TARGET_PYTHON="$2"; shift 2 ;;
@@ -134,43 +135,31 @@ else
   echo "[install-camb-fork] Using gfortran: $(command -v gfortran)"
 fi
 
-echo "=== Step 2: Ensure local fork clone exists at pinned commit ==="
-if [[ ! -d "${FORK_DIR}/.git" ]]; then
-  echo "[install-camb-fork] Cloning ${REMOTE} into ${FORK_DIR}..."
-  git clone "${REMOTE}" "${FORK_DIR}"
-else
-  echo "[install-camb-fork] Reusing existing clone at ${FORK_DIR}."
-fi
-
-if [[ -n "$(git -C "${FORK_DIR}" status --porcelain)" ]]; then
-  echo "ERROR: ${FORK_DIR} has uncommitted local changes; refusing to check out a pinned commit." >&2
-  echo "Stash or commit your changes there, or pass a different --fork-dir." >&2
-  exit 1
-fi
-
-echo "[install-camb-fork] Fetching latest refs..."
-git -C "${FORK_DIR}" fetch origin --quiet
-
-echo "[install-camb-fork] Checking out pinned commit ${PINNED_COMMIT} (detached HEAD)..."
-git -C "${FORK_DIR}" checkout --quiet "${PINNED_COMMIT}"
-
-ACTUAL_COMMIT="$(git -C "${FORK_DIR}" rev-parse HEAD)"
-if [[ "${ACTUAL_COMMIT}" != "${PINNED_COMMIT}" ]]; then
-  echo "ERROR: checkout landed on ${ACTUAL_COMMIT}, expected ${PINNED_COMMIT}." >&2
-  exit 1
-fi
-
-echo "=== Step 3: Editable-install the fork into the project venv ==="
+echo "=== Step 2: Install camb directly from the pinned git commit ==="
+INSTALL_SPEC="camb @ git+${REMOTE}@${PINNED_COMMIT}"
+echo "[install-camb-fork] ${INSTALL_SPEC}"
 echo "[install-camb-fork] Target python: ${TARGET_PYTHON}"
-(cd "${REPO_ROOT}" && uv pip install -e "${FORK_DIR}" --python "${TARGET_PYTHON}")
+(cd "${REPO_ROOT}" && uv pip install "${INSTALL_SPEC}" --python "${TARGET_PYTHON}")
 
-echo "=== Step 4: Verify ==="
+echo "=== Step 3: Verify ==="
 "${TARGET_PYTHON}" - <<PY
+import json
+import importlib.metadata as im
+
 import camb
+
 print(f"[install-camb-fork] camb.__version__ = {camb.__version__}")
 print(f"[install-camb-fork] camb.__file__    = {camb.__file__}")
+
+try:
+    raw = im.distribution("camb").read_text("direct_url.json")
+    info = json.loads(raw) if raw else {}
+    vcs = info.get("vcs_info", {})
+    print(f"[install-camb-fork] commit = {vcs.get('commit_id', '?')}")
+    print(f"[install-camb-fork] remote = {info.get('url', '?')}")
+except Exception as exc:  # noqa: BLE001
+    print(f"[install-camb-fork] (could not read direct_url.json: {exc})")
 PY
-echo "[install-camb-fork] Fork commit: ${ACTUAL_COMMIT} (${REMOTE})"
 
 cat <<'EOF'
 

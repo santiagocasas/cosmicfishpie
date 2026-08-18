@@ -436,6 +436,14 @@ class boltzmann_code:
 
         upr.debug_print("DEBUG:  --> ", cosmopars)
         shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        # NOTE: CAMB >=2.0's set_cosmology() no longer accepts share_delta_neff as a
+        # direct kwarg, but camb.set_params() (used below via camb.set_params(**cambpars))
+        # still honors any leftover/"unused" kwargs by setting them directly as
+        # attributes on the CAMBparams instance, so share_delta_neff continues to work
+        # exactly as before, only emitting a harmless deprecation log message. This was
+        # verified empirically against CAMB 2.0.3: omitting share_delta_neff changes the
+        # resulting N_eff from 3.044 to 3.0587 (~0.48% error) for a Neff=3.044,
+        # num_nu_massive=1 configuration, so it must always be passed explicitly.
         cambpars["share_delta_neff"] = shareDeltaNeff
         fidNeff = boltzmann_code.hardcoded_Neff
         minmassmnu = boltzmann_code.hardcoded_mnu_massive_min

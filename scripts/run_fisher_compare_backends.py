@@ -101,6 +101,89 @@ def _git_commit(repo_root: Path) -> str | None:
         return None
 
 
+def _repo_dirty(repo_root: Path) -> bool | None:
+    """Return True if the repo has uncommitted changes, False if clean, None if unknown."""
+    try:
+        out = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            stderr=subprocess.DEVNULL,
+        )
+        return len(out.strip()) > 0
+    except Exception:
+        return None
+
+
+def _package_install_source(dist_name: str) -> dict:
+    """Inspect PEP 610 direct_url.json metadata (if present) to determine how a
+    package was installed: PyPI wheel/sdist, local path, or VCS checkout.
+
+    Returns a dict with keys: install_source ("pypi" | "local" | "vcs" | "unknown"),
+    and, when available, url, editable, vcs, commit_id.
+    """
+    result: dict = {"install_source": "unknown"}
+    try:
+        from importlib import metadata as importlib_metadata
+
+        dist = importlib_metadata.distribution(dist_name)
+        result["dist_version"] = dist.version
+        direct_url_text = None
+        try:
+            direct_url_text = dist.read_text("direct_url.json")
+        except Exception:
+            direct_url_text = None
+        if direct_url_text:
+            direct_url = json.loads(direct_url_text)
+            result["url"] = direct_url.get("url")
+            vcs_info = direct_url.get("vcs_info")
+            dir_info = direct_url.get("dir_info", {})
+            if vcs_info:
+                result["install_source"] = "vcs"
+                result["vcs"] = vcs_info.get("vcs")
+                result["commit_id"] = vcs_info.get("commit_id")
+            elif dir_info.get("editable"):
+                result["install_source"] = "local"
+                result["editable"] = True
+            elif result["url"] and result["url"].startswith("file://"):
+                result["install_source"] = "local"
+                result["editable"] = bool(dir_info.get("editable", False))
+            else:
+                result["install_source"] = "url"
+        else:
+            # No direct_url.json => installed from a package index (PyPI) as a
+            # normal (non-editable, non-VCS) distribution.
+            result["install_source"] = "pypi"
+    except Exception:
+        pass
+    return result
+
+
+def _backend_provenance(code: str) -> dict:
+    info = {"code": code, "available": False}
+    try:
+        if code == "camb":
+            import camb
+            info["available"] = True
+            info["version"] = getattr(camb, "__version__", None)
+            info["module_path"] = getattr(camb, "__file__", None)
+            info.update(_package_install_source("camb"))
+        elif code == "class":
+            try:
+                from classy import Class
+                info["available"] = True
+                info["version"] = getattr(Class, "__version__", None) or getattr(Class, "version", None)
+                import classy
+                info["module_path"] = getattr(classy, "__file__", None)
+                info.update(_package_install_source("classy"))
+            except Exception:
+                pass
+        import platform
+        info["platform"] = platform.platform()
+    except Exception:
+        pass
+    return info
+
+
 def _write_run_metadata(
     *,
     outdir: Path,
@@ -113,13 +196,19 @@ def _write_run_metadata(
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "argv": list(sys.argv),
         "git_commit": _git_commit(repo_root),
+        "git_dirty": _repo_dirty(repo_root),
         "python": sys.version,
+        "platform": __import__("platform").platform(),
         "cwd": os.getcwd(),
         "env": {
             "OMP_NUM_THREADS": os.environ.get("OMP_NUM_THREADS"),
         },
         "args": vars(args),
         "resolved": resolved,
+        "backend_provenance": {
+            "code_a": _backend_provenance(args.code_a),
+            "code_b": _backend_provenance(args.code_b),
+        },
     }
     outpath.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return outpath
@@ -250,6 +339,12 @@ def main() -> int:
         "--common-specs",
         default=None,
         help="Path to JSON with fiducialpars/freepars/options (e.g. *_FM_specs.json)",
+    )
+    parser.add_argument(
+        "--sigma-threshold",
+        type=float,
+        default=None,
+        help="Maximum allowed max sigma ratio deviation percent; exit nonzero if exceeded",
     )
     args = parser.parse_args()
 
@@ -429,6 +524,53 @@ def main() -> int:
     print("[compare] Comparing Fishers:")
     print(" ", " ".join(compare_cmd))
     subprocess.check_call(compare_cmd)
+
+    # Threshold gating
+    if args.sigma_threshold is not None:
+        compare_jsons = sorted(outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime)
+        if compare_jsons:
+            latest = compare_jsons[-1]
+            try:
+                data = json.loads(latest.read_text(encoding="utf-8"))
+                # compare_fishers_in_dir.py schema: top-level "pairwise" is a list of
+                # per-pair dicts, each with entry["analysis"]["param_sigma_ratio"]
+                # mapping parameter name -> {"ratio_b_over_a": float, ...}.
+                # The max deviation percent is max(|ratio_b_over_a - 1| * 100) across
+                # all parameters in all pairs (mirrors the console summary computation
+                # in compare_fishers_in_dir.py, which never persists this value itself).
+                max_dev = None
+                worst_param = None
+                for entry in data.get("pairwise", []):
+                    param_sigma_ratio = (entry.get("analysis") or {}).get("param_sigma_ratio") or {}
+                    for pname, pdata in param_sigma_ratio.items():
+                        ratio = pdata.get("ratio_b_over_a") if isinstance(pdata, dict) else None
+                        if ratio is None:
+                            continue
+                        try:
+                            dev = abs(float(ratio) - 1.0) * 100.0
+                        except (TypeError, ValueError):
+                            continue
+                        if max_dev is None or dev > max_dev:
+                            max_dev = dev
+                            worst_param = pname
+                if max_dev is not None:
+                    print(
+                        f"[compare] max sigma ratio deviation: {max_dev:.2f}% "
+                        f"(param={worst_param}, threshold {args.sigma_threshold}%)"
+                    )
+                    if max_dev > args.sigma_threshold:
+                        raise SystemExit(
+                            f"Threshold exceeded: {max_dev:.2f}% ({worst_param}) > {args.sigma_threshold}%"
+                        )
+                else:
+                    print(
+                        "[compare] Could not locate param_sigma_ratio data in compare JSON "
+                        f"({latest}); skipping threshold check"
+                    )
+            except SystemExit:
+                raise
+            except Exception as e:
+                print(f"[compare] Threshold check failed: {e}")
 
     if not args.plot:
         return 0

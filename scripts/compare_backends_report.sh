@@ -56,6 +56,7 @@ FOM_PARAMS="Omegam,sigma8"
 PLOT=true                # set false to skip plot generation
 USE_TIMESTAMP=false      # set true to append a timestamp to outputs
 OUTDIR=""                # optional: output directory; default uses config hash
+SIGMA_THRESHOLD=""       # optional: max allowed sigma ratio deviation percent; exit nonzero if exceeded
 
 REPORT_SINGLE=true       # set false to skip single-file report
 REPORT_SINGLE_FILE=""    # optional: single-file HTML path; default is OUTDIR/report_single.html
@@ -293,6 +294,7 @@ fi
   printf "OMP_THREADS=%q\n" "${OMP_THREADS}"
   printf "FOM_PARAMS=%q\n" "${FOM_PARAMS}"
   printf "PLOT=%q\n" "${PLOT}"
+  printf "SIGMA_THRESHOLD=%q\n" "${SIGMA_THRESHOLD}"
   printf "USE_TIMESTAMP=%q\n" "${USE_TIMESTAMP}"
   printf "REPORT_SINGLE=%q\n" "${REPORT_SINGLE}"
   printf "REPORT_SINGLE_FILE=%q\n" "${REPORT_SINGLE_FILE}"
@@ -339,6 +341,9 @@ if [[ -n "${YAML_KEY_B}" ]]; then
 fi
 if [[ -n "${COMMON_SPECS_JSON}" ]]; then
   compare_cmd+=(--common-specs "${COMMON_SPECS_JSON}")
+fi
+if [[ -n "${SIGMA_THRESHOLD}" ]]; then
+  compare_cmd+=(--sigma-threshold "${SIGMA_THRESHOLD}")
 fi
 
 echo "[compare] Running backends into: ${OUTDIR}"

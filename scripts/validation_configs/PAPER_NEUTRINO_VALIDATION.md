@@ -48,21 +48,44 @@ purely to document provenance, not as an accepted input format.
 
 ## ShareDeltaNeff convention (one-massive-species mapping)
 
-All four `common_specs_paper_*.json` files set `"ShareDeltaNeff": true`. This is the
-special neutrino-sector access CosmicFishPie uses so that CLASS's `N_ur`/`T_ncdm`/
-`Omega_ncdm` construction (`changebasis_class` in `cosmicfishpie/cosmology/cosmology.py`)
-matches CAMB's own internal `share_delta_neff` convention (`changebasis_camb`), so
-that a single massive species with `Neff` distributed as `g = Neff/3` reproduces the
-same effective number of relativistic species and neutrino mass density on both
-backends. This is required to reproduce the paper's validation convention exactly and
-must not be disabled for this track.
+All four `common_specs_paper_*.json` files set `"ShareDeltaNeff": false`. This flag
+controls whether the `mnu -> omnuh2` (CAMB) / `mnu -> Omega_ncdm` (CLASS) mass-mapping
+factor `g_factor` scales with the *free* `Neff` parameter (`g_factor = Neff/3` when
+`true`) or stays fixed at the fiducial value (`g_factor = fidNeff/3` when `false`); see
+`changebasis_camb`/`changebasis_class` in `cosmicfishpie/cosmology/cosmology.py`.
+
+**This was initially set to `true` and was found to be the root cause of the
+photometric `mnu` gate failures in cases 09 and 11 (6.82% and 9.71% deviation,
+against a 5% gate).** Cross-checking against the actual paper reference production
+Fisher matrices in the companion `Euclid_KP_nu` repository
+(`results/cosmicfish_internal/.../_specifications.dat`) showed that **every** paper
+production run (`nulcdm` = LCDM+mnu+Neff, and `wCDM+mnu+Neff`, both probes, both
+optimistic/pessimistic) uses `ShareDeltaNeff: False`, not `True`. Recomputing those
+reference matrices with `cosmicfishpie.analysis.fisher_matrix` confirmed they stay
+comfortably within the 5%/2% gates (worst photo deviation 3.83%, worst spectro 1.51%
+for the `wCDM+mnu+Neff` family; 1.66% for `nulcdm` optimistic).
+
+Diagnosis (via `scripts/compare_reference_fishers.py`, using
+`fisher_matrix.get_confidence_bounds(marginal=True/False)` and
+`get_fisher_inverse()`) showed this is a marginalization/correlation effect, not a
+derivative bug: **unmarginalized** (diagonal) CAMB-vs-CLASS sigma deviations for case
+11 were already tiny (<=1.6%, matching reference-level agreement) under
+`ShareDeltaNeff=true`; only the **marginalized** sigmas blew up (mnu 9.71%, h 3.85%,
+sigma8 4.03%). `ShareDeltaNeff=true` mathematically entangles the `mnu` mass-mapping
+with the free `Neff` parameter via the shared `g_factor`, roughly doubling the
+mnu-Neff correlation (~0.44 vs ~0.19) and raising mnu-h correlation (~0.62 vs ~0.45)
+compared to `ShareDeltaNeff=false`. That extra parameter degeneracy is what amplifies
+any small residual CAMB/CLASS derivative mismatch upon Fisher matrix inversion.
+
+`ShareDeltaNeff=false` is therefore the setting that matches both the paper's actual
+validation convention and this repo's own diagonal-level CAMB/CLASS agreement.
 
 CAMB 2.0.3 deprecated `share_delta_neff` as a direct `set_cosmology()` kwarg, but the
 code path used here (`camb.set_params(**cambpars)`) still honors it via its
 unused-kwarg passthrough (only a harmless deprecation log message is emitted). This was
 verified empirically: omitting `share_delta_neff` shifts `N_eff` from 3.044 to
 3.0587 (~0.48% error) for this fiducial, so it continues to be passed explicitly and
-unconditionally in `changebasis_camb`.
+unconditionally in `changebasis_camb`, regardless of the `ShareDeltaNeff` value.
 
 ## Four paper-fiducial model families
 
@@ -127,3 +150,26 @@ pre-existing `env_03`/`env_04` nuvalidation cases. Each run writes provenance
 (backend versions, install source, VCS commit where available, git dirty state,
 platform) to `run_metadata.json` in its output directory via
 `scripts/run_fisher_compare_backends.py`.
+
+**Note:** because the `ShareDeltaNeff` convention changed (see above), all cases
+07-14 must be (re-)run against the corrected common-specs before their results can be
+trusted; any prior results generated with `ShareDeltaNeff: true` are stale.
+
+## Cross-checking against paper reference Fisher matrices
+
+`scripts/compare_reference_fishers.py` is a standalone CLI (built on
+`cosmicfishpie.analysis.fisher_matrix.fisher_matrix`, no hand-rolled linear algebra)
+for comparing any two raw `*_fishermatrix.txt` + `.paramnames` pairs and reporting
+per-parameter 1-sigma deviations:
+
+```bash
+uv run python scripts/compare_reference_fishers.py \
+  --fisher-a <path>/CosmicFish_v1.0_..._camb-..._fishermatrix.txt \
+  --fisher-b <path>/CosmicFish_v1.0_..._class-..._fishermatrix.txt \
+  --label-a camb --label-b class \
+  --threshold 5.0
+```
+
+This was used to cross-check this repo's cases against the actual paper production
+Fisher matrices in the companion `Euclid_KP_nu` repository during the
+`ShareDeltaNeff` root-cause investigation above.

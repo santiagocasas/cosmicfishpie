@@ -18,7 +18,7 @@
     "GCsp_Tracer": "matter",
     "GCph_Tracer": "matter",
     "ell_sampling": "accuracy",
-    "ShareDeltaNeff": true
+    "ShareDeltaNeff": false
   },
   "fiducialpars": {
     "Omegam": 0.314571,

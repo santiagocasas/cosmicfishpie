@@ -10,10 +10,9 @@
 # case - it runs every case and reports the full picture.
 #
 # After all cases finish, a machine-readable batch_summary.json is written and
-# scripts/render_compare_reports.py is invoked across every case's output
-# directory to build one combined index.html/index.md + a single-file HTML
-# dashboard (with inline plots) covering the whole matrix, including a
-# PASS/FAIL badge per case against its SIGMA_THRESHOLD gate.
+# scripts/render_validation_dashboard.py refreshes the clean HTML dashboard
+# covering the whole matrix, including per-parameter details and links to the
+# exact YAML/common/Fisher specifications used by each case.
 #
 # Usage:
 #   bash scripts/run_all_validations.sh
@@ -181,33 +180,25 @@ with open(out_path, "w", encoding="utf-8") as fh:
 print(f"[batch] Wrote batch summary: {out_path}")
 PYEOF
 
-# Build one combined HTML dashboard across every case that produced an
-# outdir, regardless of pass/fail, so failures are visible in the report too.
-valid_outdirs=()
-for o in "${RESULT_OUTDIRS[@]}"; do
-  if [[ -n "${o}" ]]; then
-    valid_outdirs+=("${o}")
-  fi
-done
-
-if [[ ${#valid_outdirs[@]} -gt 0 ]]; then
-  echo
-  echo "[batch] Rendering combined dashboard for ${#valid_outdirs[@]}/${#RESULT_LABELS[@]} case(s)..."
-  render_py="python3"
-  if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
-    render_py="${REPO_ROOT}/.venv/bin/python"
-  fi
-  "${render_py}" "${REPO_ROOT}/scripts/render_compare_reports.py" \
-    "${valid_outdirs[@]}" \
-    --index-dir "${BATCH_DIR}/index" \
-    --single-file "${BATCH_DIR}/report_single.html"
-  echo "[batch] Combined dashboard: ${BATCH_DIR}/index/index.html"
-  echo "[batch] Single-file report: ${BATCH_DIR}/report_single.html"
+echo
+echo "[batch] Refreshing validation dashboard..."
+render_py="python3"
+if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
+  render_py="${REPO_ROOT}/.venv/bin/python"
+fi
+dashboard_failed=0
+if "${render_py}" "${REPO_ROOT}/scripts/render_validation_dashboard.py"; then
+  echo "[batch] Validation dashboard: ${REPO_ROOT}/scripts/benchmark_results/dashboard/index.html"
 else
-  echo "[batch] No case outdirs recovered; skipping combined dashboard."
+  echo "[batch] WARNING: validation dashboard generation failed." >&2
+  dashboard_failed=1
 fi
 
 echo "[batch] Batch directory: ${BATCH_DIR}"
+
+if [[ ${dashboard_failed} -ne 0 ]]; then
+  exit 1
+fi
 
 # Nonzero overall exit if any case failed its threshold gate.
 for s in "${RESULT_STATUS[@]}"; do

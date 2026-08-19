@@ -38,6 +38,8 @@ Options:
 
 Each case runs through compare_backends_report.sh, writes its own backend
 comparison output, and is logged under scripts/benchmark_results/.
+The HTML dashboard under scripts/benchmark_results/dashboard/ is refreshed
+after all selected cases finish.
 The script continues after a failed case and exits nonzero if any selected
 case fails or cannot be started.
 EOF
@@ -168,4 +170,16 @@ overall_elapsed=$(( $(date +%s) - overall_start ))
 echo
 echo "Selected validation run finished in ${overall_elapsed}s."
 echo "Logs and batch artifacts: ${BATCH_DIR}"
+
+render_py="python3"
+if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
+  render_py="${REPO_ROOT}/.venv/bin/python"
+fi
+if "${render_py}" "${REPO_ROOT}/scripts/render_validation_dashboard.py"; then
+  echo "Validation dashboard: ${REPO_ROOT}/scripts/benchmark_results/dashboard/index.html"
+else
+  echo "WARNING: validation dashboard generation failed." >&2
+  failed=1
+fi
+
 exit "${failed}"

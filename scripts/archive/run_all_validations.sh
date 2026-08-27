@@ -15,13 +15,13 @@
 # exact YAML/common/Fisher specifications used by each case.
 #
 # Usage:
-#   bash scripts/run_all_validations.sh
-#   OMP_NUM_THREADS=4 bash scripts/run_all_validations.sh
+#   bash scripts/archive/run_all_validations.sh
+#   OMP_NUM_THREADS=4 bash scripts/archive/run_all_validations.sh
 
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CONFIG_DIR="${REPO_ROOT}/scripts/validation_configs"
 
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-8}"

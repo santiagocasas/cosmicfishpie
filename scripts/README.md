@@ -213,6 +213,21 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
 
 Use these scripts to run two backends, compare, plot, and render shareable reports.
 
+### Maintained paper-validation workflow
+
+The maintained validation entry point covers the Casas et al. w0waCDM cases and the
+paper-faithful neutrino cases:
+
+```bash
+bash scripts/run_selected_validations.sh --all --omp-threads 8
+```
+
+Completed cases are reused when their numerical inputs and backend provenance still
+match; pass `--force` to recompute them. The command refreshes the clean dashboard at
+`scripts/benchmark_results/dashboard/index.html`. Superseded one-off and batch runners
+are retained for provenance under `scripts/archive/` and are not part of the maintained
+workflow.
+
 ### One-off CLI workflow
 
 1) Run two backends and compare (writes to scripts/benchmark_results/compare_<mode>_<timestamp>/):

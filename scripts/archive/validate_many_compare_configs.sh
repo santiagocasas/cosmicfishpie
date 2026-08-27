@@ -2,13 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 
 # User-configurable settings
 RUN_LABEL="validate_many"
 RESUME="${RESUME:-true}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 RUN_ROOT="${RUN_ROOT:-}"
+ACTIVE_CONFIGS_DIR="${REPO_ROOT}/scripts/validation_configs"
 VALIDATION_CONFIGS_DIR="${SCRIPT_DIR}/validation_configs"
 OMP_NUM_THREADS="${OMP_NUM_THREADS:-8}"
 export OMP_NUM_THREADS
@@ -49,8 +50,8 @@ echo "[validate-many] OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "[validate-many] PYTHONUNBUFFERED=${PYTHONUNBUFFERED}"
 
 CONFIG_FILES=(
-  "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_01_class_camb_photo_mpvalidation_w0waCDM"
-  "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_02_class_camb_spectro_mpvalidation_w0waCDM"
+  "${ACTIVE_CONFIGS_DIR}/compare_run_config.env_01_class_camb_photo_mpvalidation_w0waCDM"
+  "${ACTIVE_CONFIGS_DIR}/compare_run_config.env_02_class_camb_spectro_mpvalidation_w0waCDM"
   "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_03_camb_class_photo_nuvalidation_nuCDM"
   "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_04_camb_class_spectro_nuvalidation_nuCDM"
   "${VALIDATION_CONFIGS_DIR}/compare_run_config.env_05_symbolic_camb_spectro_default_LCDM"
@@ -105,7 +106,7 @@ for i in "${!CONFIG_FILES[@]}"; do
   fi
   echo "[validate-many] Running ${label}"
   set +e
-  OUTDIR="${outdir}" bash "${SCRIPT_DIR}/compare_backends_report.sh" --config "${cfg}"
+  OUTDIR="${outdir}" bash "${REPO_ROOT}/scripts/compare_backends_report.sh" --config "${cfg}"
   rc=$?
   set -e
   if [[ $rc -ne 0 ]]; then
@@ -127,7 +128,7 @@ if [[ ${#successes[@]} -gt 0 || ${#skipped[@]} -gt 0 ]]; then
   for label in "${RUN_LABELS[@]}"; do
     report_folders+=("${RUN_ROOT}/${label}")
   done
-  uv run python "${SCRIPT_DIR}/render_compare_reports.py" \
+  uv run python "${REPO_ROOT}/scripts/render_compare_reports.py" \
     "${report_folders[@]}" \
     --index-dir "${INDEX_DIR}" \
     --single-file "${COMBINED_REPORT}"

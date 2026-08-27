@@ -12,7 +12,7 @@ just invoked directly in Python instead of via the shell/env-file wrapper.
 
 This variant pairs:
   - CLASS with the HP (high-precision) YAML:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_HP.yaml
+    scripts/archive/legacy_yamls/class/mpvalidation_HP.yaml
   - CAMB with the P3 YAML:
     cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml
 
@@ -38,7 +38,7 @@ override --accuracy, --feedback, --omp-threads, --outdir, --threshold, etc.
 
 Example
 -------
-.venv/bin/python scripts/run_case01_full7_class_hp_vs_camb.py
+.venv/bin/python scripts/archive/run_case01_full7_class_hp_vs_camb.py
 """
 
 from __future__ import annotations
@@ -48,15 +48,13 @@ import sys
 from pathlib import Path
 
 ENGINE = Path(__file__).resolve().parent / "run_fisher_compare_w0wa_fast.py"
-CFG_DIR = (
-    Path(__file__).resolve().parent.parent
-    / "cosmicfishpie"
-    / "configs"
-    / "default_boltzmann_yaml_files"
-)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CFG_DIR = REPO_ROOT / "cosmicfishpie" / "configs" / "default_boltzmann_yaml_files"
 
 FULL7_PARAMS = "Omegam,Omegab,h,ns,sigma8,w0,wa"
-CLASS_HP_YAML = str(CFG_DIR / "class" / "mpvalidation_HP.yaml")
+CLASS_HP_YAML = str(
+    REPO_ROOT / "scripts" / "archive" / "legacy_yamls" / "class" / "mpvalidation_HP.yaml"
+)
 CAMB_P3_YAML = str(CFG_DIR / "camb" / "mpvalidation.yaml")
 
 

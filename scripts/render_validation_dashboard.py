@@ -23,14 +23,20 @@ Design goals (per user request):
 
 This script is read-only with respect to the raw benchmark_results folders (except
 writing into --out-dir, which defaults to a subdirectory of benchmark_results).
+
+Pass ``--serve`` to keep a local HTTP server running after generation.
 """
 
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import json
 import re
+import subprocess
 from dataclasses import dataclass, field
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
@@ -98,6 +104,9 @@ class CaseDef:
     yaml_b: Path | None
     common_specs_json: Path | None
     sigma_threshold: float | None
+    accuracy: int
+    yaml_key_a: str | None
+    yaml_key_b: str | None
 
 
 @dataclass
@@ -124,6 +133,7 @@ class CaseResult:
     provenance_b: dict[str, Any] | None = None
     fisher_specs_a: Path | None = None
     fisher_specs_b: Path | None = None
+    config_mismatches: list[str] = field(default_factory=list)
     params: list[ParamRow] = field(default_factory=list)
     max_deviation_pct: float | None = None
     max_deviation_param: str | None = None
@@ -162,6 +172,9 @@ def discover_cases(config_dir: Path, repo_root: Path) -> list[CaseDef]:
                 yaml_b=yaml_b,
                 common_specs_json=common_specs,
                 sigma_threshold=threshold,
+                accuracy=int(parsed.get("ACCURACY", "1")),
+                yaml_key_a=parsed.get("YAML_KEY_A") or None,
+                yaml_key_b=parsed.get("YAML_KEY_B") or None,
             )
         )
     return cases
@@ -202,6 +215,10 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
         if args.get("mode") != case.mode:
             continue
         if args.get("code_a") != case.code_a or args.get("code_b") != case.code_b:
+            continue
+        if args.get("accuracy") != case.accuracy:
+            continue
+        if args.get("yaml_key_a") != case.yaml_key_a or args.get("yaml_key_b") != case.yaml_key_b:
             continue
         if want_common and args.get("common_specs") != want_common:
             continue
@@ -307,6 +324,29 @@ def _param_rows(entry: dict[str, Any]) -> list[ParamRow]:
     return rows
 
 
+def _common_specs_mismatches(common_specs: Path, fisher_specs: Path) -> list[str]:
+    """Return current common-spec values that differ from the saved run snapshot."""
+    current = _read_json(common_specs)
+    snapshot = _read_json(fisher_specs)
+    if not isinstance(current, dict) or not isinstance(snapshot, dict):
+        return []
+
+    mismatches = []
+    for section in ("options", "fiducialpars", "freepars"):
+        current_section = current.get(section)
+        snapshot_section = snapshot.get(section)
+        if not isinstance(current_section, dict) or not isinstance(snapshot_section, dict):
+            continue
+        for key, current_value in current_section.items():
+            snapshot_value = snapshot_section.get(key)
+            if snapshot_value != current_value:
+                mismatches.append(
+                    f"{section}.{key}: run={json.dumps(snapshot_value)}, "
+                    f"current={json.dumps(current_value)}"
+                )
+    return mismatches
+
+
 def build_case_result(case: CaseDef, results_dir: Path, repo_root: Path) -> CaseResult:
     result = CaseResult(case=case, model_label=_model_label(case))
     outdir = _find_case_outdir(case, results_dir, repo_root)
@@ -356,6 +396,11 @@ def build_case_result(case: CaseDef, results_dir: Path, repo_root: Path) -> Case
         if specs_path.is_file():
             setattr(result, attr, specs_path)
 
+    if case.common_specs_json is not None and result.fisher_specs_a is not None:
+        result.config_mismatches = _common_specs_mismatches(
+            case.common_specs_json, result.fisher_specs_a
+        )
+
     result.params = _param_rows(entry)
     for row in result.params:
         if row.deviation_pct is None:
@@ -369,9 +414,107 @@ def build_case_result(case: CaseDef, results_dir: Path, repo_root: Path) -> Case
 
 
 def _gate_status(result: CaseResult) -> str | None:
+    if result.config_mismatches:
+        return "STALE"
     if result.case.sigma_threshold is None or result.max_deviation_pct is None:
         return None
     return "FAIL" if result.max_deviation_pct > result.case.sigma_threshold else "PASS"
+
+
+def _git_output(repo_root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args],
+        cwd=repo_root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
+def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
+    paths = [
+        ":(glob)cosmicfishpie/**/*.py",
+        "cosmicfishpie/configs/default_survey_specifications",
+        "cosmicfishpie/configs/other_survey_specifications",
+        "cosmicfishpie/configs/external_data",
+        "pyproject.toml",
+        "requirements.txt",
+        "uv.lock",
+        "scripts/run_fisher_compare_backends.py",
+        "scripts/compare_fishers_in_dir.py",
+    ]
+    for input_path in (case.yaml_a, case.yaml_b, case.common_specs_json):
+        if input_path is None:
+            continue
+        try:
+            paths.append(str(input_path.resolve().relative_to(repo_root)))
+        except ValueError:
+            paths.append(str(input_path.resolve()))
+    return paths
+
+
+def _backend_version_changed(result: CaseResult) -> str | None:
+    for label, provenance in (("A", result.provenance_a), ("B", result.provenance_b)):
+        if not isinstance(provenance, dict):
+            continue
+        code = provenance.get("code")
+        distribution = "classy" if code == "class" else code
+        recorded = provenance.get("dist_version") or provenance.get("version")
+        if not isinstance(distribution, str) or not recorded:
+            continue
+        try:
+            current = importlib.metadata.version(distribution)
+        except importlib.metadata.PackageNotFoundError:
+            return f"backend {label} ({distribution}) is not installed"
+        if current != str(recorded):
+            return f"backend {label} changed from {recorded} to {current}"
+    return None
+
+
+def completed_case_state(result: CaseResult, repo_root: Path) -> tuple[bool, str, str]:
+    """Return whether an existing result can be reused, its gate state, and the reason."""
+    if result.status != "ok":
+        return False, "INCOMPLETE", f"result status is {result.status}"
+    if result.config_mismatches:
+        return False, "STALE", "; ".join(result.config_mismatches)
+    if not result.git_commit:
+        return False, "STALE", "saved run has no Git revision"
+
+    commit_check = _git_output(repo_root, "cat-file", "-e", f"{result.git_commit}^{{commit}}")
+    if commit_check.returncode != 0:
+        return False, "STALE", f"saved Git revision {result.git_commit} is unavailable"
+
+    relevant_paths = _relevant_paths(result.case, repo_root)
+    committed_diff = _git_output(
+        repo_root,
+        "diff",
+        "--quiet",
+        f"{result.git_commit}..HEAD",
+        "--",
+        *relevant_paths,
+    )
+    if committed_diff.returncode == 1:
+        return False, "STALE", "relevant code or inputs changed since the saved run"
+    if committed_diff.returncode > 1:
+        return False, "STALE", "could not compare the saved Git revision with HEAD"
+
+    dirty = _git_output(repo_root, "status", "--porcelain", "--", *relevant_paths)
+    if dirty.returncode != 0:
+        return False, "STALE", "could not inspect current input changes"
+    if dirty.stdout.strip():
+        return False, "STALE", "relevant code or inputs have uncommitted changes"
+
+    version_change = _backend_version_changed(result)
+    if version_change:
+        return False, "STALE", version_change
+
+    gate = _gate_status(result) or "INFORMATIONAL"
+    dirty_note = "; saved run was marked dirty" if result.git_dirty else ""
+    return (
+        True,
+        gate,
+        f"completed at {result.git_commit}; relevant inputs unchanged{dirty_note}",
+    )
 
 
 def _gate_badge(status: str | None) -> str:
@@ -379,10 +522,14 @@ def _gate_badge(status: str | None) -> str:
         return "<span class='badge badge-pass'>PASS</span>"
     if status == "FAIL":
         return "<span class='badge badge-fail'>FAIL</span>"
+    if status == "STALE":
+        return "<span class='badge badge-warn'>STALE CONFIG</span>"
     return "<span class='badge badge-na'>informational</span>"
 
 
 def _status_badge(result: CaseResult) -> str:
+    if result.config_mismatches:
+        return "<span class='badge badge-warn'>rerun required</span>"
     if result.status == "ok":
         return ""
     labels = {
@@ -553,7 +700,10 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
             case.common_specs_json,
         )
         if rel:
-            specs_links.append(("Common specs JSON (fiducial + free parameters)", rel))
+            label = "Current common specs source"
+            if result.config_mismatches:
+                label += " (differs from this run)"
+            specs_links.append((label, rel))
     if result.fisher_specs_a is not None:
         rel = _write_spec_page(
             specs_dir,
@@ -598,7 +748,18 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
         "Code B", result.provenance_b
     )
 
-    body_status = ""
+    body_messages = []
+    if result.config_mismatches:
+        mismatch_items = "".join(
+            f"<li><code>{esc(item)}</code></li>" for item in result.config_mismatches
+        )
+        body_messages.append(
+            "<div class='section'><h2>Stale configuration</h2>"
+            "<p>This result was generated with different common-spec values than the current "
+            "case configuration. It is shown for provenance only and requires a rerun before "
+            "its gate can be evaluated against the current configuration.</p>"
+            f"<ul>{mismatch_items}</ul></div>"
+        )
     if result.status != "ok":
         messages = {
             "not_run": "This case has not been run yet, or its output folder could not be located.",
@@ -606,7 +767,10 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
             "in the results folder (partial or interrupted run).",
             "error": "This case's results could not be read (malformed compare JSON).",
         }
-        body_status = f"<div class='section'><p class='subtle'>{esc(messages.get(result.status, ''))}</p></div>"
+        body_messages.append(
+            f"<div class='section'><p class='subtle'>{esc(messages.get(result.status, ''))}</p></div>"
+        )
+    body_status = "".join(body_messages)
 
     cosmo_table = _param_table_html(result.params, threshold, cosmo=True)
     nuisance_table = _param_table_html(result.params, threshold, cosmo=False)
@@ -692,6 +856,27 @@ def main() -> int:
         default=str(REPO_ROOT / "scripts" / "benchmark_results" / "dashboard"),
         help="Directory to write index.html/case_*.html into",
     )
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        help="Serve the generated dashboard over HTTP until interrupted",
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="HTTP server bind address used with --serve (default: 127.0.0.1)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="HTTP server port used with --serve (default: 8000)",
+    )
+    parser.add_argument(
+        "--check-completed",
+        metavar="CASE",
+        help="Check whether a case has a reusable completed result, then exit",
+    )
     args = parser.parse_args()
 
     config_dir = Path(args.config_dir).expanduser().resolve()
@@ -703,6 +888,22 @@ def main() -> int:
     if not cases:
         raise SystemExit(f"No case configs found in {config_dir}")
 
+    if args.check_completed is not None:
+        try:
+            requested = f"{int(args.check_completed):02d}"
+        except ValueError:
+            print(f"Invalid case number: {args.check_completed}")
+            return 2
+        case = next((item for item in cases if item.number == requested), None)
+        if case is None:
+            print(f"Unknown case: {requested}")
+            return 2
+        result = build_case_result(case, results_dir, REPO_ROOT)
+        reusable, gate, reason = completed_case_state(result, REPO_ROOT)
+        action = "SKIP" if reusable else "RUN"
+        print(f"Case {requested}: {action} gate={gate} - {reason}")
+        return 0 if reusable else 1
+
     results = [build_case_result(case, results_dir, REPO_ROOT) for case in cases]
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -712,6 +913,19 @@ def main() -> int:
 
     print(f"Wrote dashboard: {out_dir / 'index.html'}")
     print(f"Cases: {len(results)} ({sum(1 for r in results if r.status == 'ok')} with results)")
+
+    if args.serve:
+        handler = partial(SimpleHTTPRequestHandler, directory=str(out_dir))
+        server = ThreadingHTTPServer((args.host, args.port), handler)
+        display_host = "localhost" if args.host in {"127.0.0.1", "0.0.0.0"} else args.host
+        print(f"Serving dashboard at http://{display_host}:{server.server_port}/")
+        print("Press Ctrl-C to stop.")
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            print("\nStopping dashboard server.")
+        finally:
+            server.server_close()
     return 0
 
 

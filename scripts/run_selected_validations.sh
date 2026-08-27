@@ -34,12 +34,16 @@ Options:
   --cases LIST          Cases to run, e.g. 7,8,11,12. May be repeated.
   --all                 Run every available case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
+  --force               Rerun cases even when an unchanged completed result exists.
   --help                Show this help text.
 
 Each case runs through compare_backends_report.sh, writes its own backend
 comparison output, and is logged under scripts/benchmark_results/.
 The HTML dashboard under scripts/benchmark_results/dashboard/ is refreshed
 after all selected cases finish.
+By default, completed cases are reused when their numerical inputs, relevant
+code, backend versions, and saved run configuration still match. Partial or
+stale cases are run again.
 The script continues after a failed case and exits nonzero if any selected
 case fails or cannot be started.
 EOF
@@ -61,6 +65,7 @@ declare -A CASE_CONFIGS=(
 declare -a SELECTED_CASES=()
 omp_threads="${OMP_NUM_THREADS:-8}"
 all_cases=false
+force=false
 
 append_cases() {
   local value case_number normalized
@@ -104,6 +109,10 @@ while [[ $# -gt 0 ]]; do
       omp_threads="${1#*=}"
       shift
       ;;
+    --force)
+      force=true
+      shift
+      ;;
     --help|-h)
       usage
       exit 0
@@ -133,6 +142,7 @@ mkdir -p "${BATCH_DIR}"
 
 overall_start=$(date +%s)
 failed=0
+skipped=0
 echo "Running cases: ${SELECTED_CASES[*]}"
 echo "OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "Batch directory: ${BATCH_DIR}"
@@ -152,6 +162,23 @@ for case_number in "${SELECTED_CASES[@]}"; do
     echo "Missing config: ${config_path}" | tee "${log_file}"
     status=2
   else
+    if [[ "${force}" != true ]]; then
+      check_output="$(
+        uv run python "${REPO_ROOT}/scripts/render_validation_dashboard.py" \
+          --check-completed "${case_number}" 2>&1
+      )"
+      check_status=$?
+      if [[ ${check_status} -eq 0 ]]; then
+        echo "${check_output}" | tee "${log_file}"
+        echo "Case ${case_number}: SKIPPED (unchanged completed result)"
+        skipped=$((skipped + 1))
+        if [[ "${check_output}" == *"gate=FAIL"* ]]; then
+          failed=1
+        fi
+        continue
+      fi
+      echo "${check_output}"
+    fi
     bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
       --config "${config_path}" 2>&1 | tee "${log_file}"
     status="${PIPESTATUS[0]}"
@@ -169,13 +196,10 @@ done
 overall_elapsed=$(( $(date +%s) - overall_start ))
 echo
 echo "Selected validation run finished in ${overall_elapsed}s."
+echo "Skipped unchanged completed cases: ${skipped}"
 echo "Logs and batch artifacts: ${BATCH_DIR}"
 
-render_py="python3"
-if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
-  render_py="${REPO_ROOT}/.venv/bin/python"
-fi
-if "${render_py}" "${REPO_ROOT}/scripts/render_validation_dashboard.py"; then
+if uv run python "${REPO_ROOT}/scripts/render_validation_dashboard.py"; then
   echo "Validation dashboard: ${REPO_ROOT}/scripts/benchmark_results/dashboard/index.html"
 else
   echo "WARNING: validation dashboard generation failed." >&2

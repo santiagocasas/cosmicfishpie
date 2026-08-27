@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 
 # Commit that produced the validated 0.05-0.93% agreement in
-# scripts/run_case01_full7_class_hp_vs_camb.py / _dp_vs_camb.py. This HEAD
+# scripts/archive/run_case01_full7_class_hp_vs_camb.py / _dp_vs_camb.py. This HEAD
 # is a merge of upstream cmbant/CAMB master and includes, as an ancestor,
 # c52551a4c4cc9bf8d6fa64b4cb829365c89242b5 ("hard coding the halofit
 # tolerance to 1e-6").
@@ -45,7 +45,7 @@ pyproject.toml/uv.lock. No local clone directory is created or kept.
 This override does not persist: any 'uv run <cmd>' (black, ruff, pytest,
 etc.) resyncs the venv back to the pinned PyPI camb. To keep the fork
 active for a validation run, invoke scripts directly via the venv python:
-    .venv/bin/python scripts/run_case01_full7_class_hp_vs_camb.py
+    .venv/bin/python scripts/archive/run_case01_full7_class_hp_vs_camb.py
 To restore the standard camb pin at any time:
     scripts/install_camb_fork_for_validation.sh --restore
     (equivalent to: uv sync --extra dev)
@@ -170,7 +170,7 @@ IMPORTANT: This is a temporary override of the venv, not a persistent pin.
     the venv back to the standard pinned camb from pyproject.toml/uv.lock.
   - To run validation scripts against the fork, invoke them directly via
     the venv python, e.g.:
-        .venv/bin/python scripts/run_case01_full7_class_hp_vs_camb.py
+        .venv/bin/python scripts/archive/run_case01_full7_class_hp_vs_camb.py
   - To explicitly restore the standard camb pin at any time:
         scripts/install_camb_fork_for_validation.sh --restore
     (or just run 'uv sync --extra dev')

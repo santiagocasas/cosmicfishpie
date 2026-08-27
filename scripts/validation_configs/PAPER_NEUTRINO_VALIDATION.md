@@ -1,9 +1,9 @@
 # Paper-faithful neutrino validation track (arXiv:2405.06047v1)
 
 This document describes the `paper_mnuvalidation*` / `common_specs_paper_*` validation
-track added alongside the pre-existing Casas et al. w0waCDM backend validation
-(`common_specs_nuCDM.json`, `nuvalidation*.yaml`, `env_03`/`env_04`). **The pre-existing
-track is untouched** and remains the reference for the original Casas et al. fiducial
+track added alongside the Casas et al. w0waCDM backend validation
+(`common_specs_w0waCDM.json`, `mpvalidation.yaml`, `env_01`/`env_02`). That companion
+track remains the reference for the original Casas et al. fiducial
 (`Omegam=.32, Omegab=.05, h=.67, ns=.96, sigma8=.815584`). This new track instead
 reproduces the neutrino-sector validation convention of Euclid preparation:
 "Sensitivity to neutrino parameters" (arXiv:2405.06047v1), using that paper's own
@@ -119,7 +119,9 @@ other varied parameters use a 1% step.
   the paper).
 
 None of the pre-existing `nuvalidation_photo.yaml`, `nuvalidation_spectro.yaml`, or
-`nuvalidation.yaml` files were modified; these new `paper_*` files are additive.
+`nuvalidation.yaml` files were modified; they remain supported fallback/package-data
+profiles. Their former `env_03`/`env_04` wrappers and `common_specs_nuCDM.json` live in
+`scripts/archive/validation_configs/` as historical validation inputs.
 
 ## Validation gates
 
@@ -146,7 +148,7 @@ scripts/compare_backends_report.sh --config scripts/validation_configs/compare_r
 ```
 
 Each case is `CODE_A=camb` vs `CODE_B=class`, matching the convention used by the
-pre-existing `env_03`/`env_04` nuvalidation cases. Each run writes provenance
+archived historical `env_03`/`env_04` nuvalidation cases. Each run writes provenance
 (backend versions, install source, VCS commit where available, git dirty state,
 platform) to `run_metadata.json` in its output directory via
 `scripts/run_fisher_compare_backends.py`.

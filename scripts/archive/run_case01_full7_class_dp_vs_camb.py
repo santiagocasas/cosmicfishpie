@@ -45,7 +45,7 @@ override --accuracy, --feedback, --omp-threads, --outdir, --threshold, etc.
 
 Example
 -------
-.venv/bin/python scripts/run_case01_full7_class_dp_vs_camb.py
+.venv/bin/python scripts/archive/run_case01_full7_class_dp_vs_camb.py
 """
 
 from __future__ import annotations
@@ -56,7 +56,7 @@ from pathlib import Path
 
 ENGINE = Path(__file__).resolve().parent / "run_fisher_compare_w0wa_fast.py"
 CFG_DIR = (
-    Path(__file__).resolve().parent.parent
+    Path(__file__).resolve().parents[2]
     / "cosmicfishpie"
     / "configs"
     / "default_boltzmann_yaml_files"

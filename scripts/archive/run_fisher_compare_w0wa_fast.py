@@ -15,7 +15,7 @@ default-precision (DP) CLASS and P3 CAMB in Case 01.
 
 By default this script compares:
   - CLASS with the new HP (high-precision) YAML:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_HP.yaml
+    scripts/archive/legacy_yamls/class/mpvalidation_HP.yaml
   - CAMB with the existing P3 YAML (already high precision):
     cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml
 
@@ -32,12 +32,12 @@ Example
 -------
 Default run (CLASS HP vs CAMB P3, photo, w0waCDM, w0+wa only)::
 
-  uv run python scripts/run_fisher_compare_w0wa_fast.py --compare
+  uv run python scripts/archive/run_fisher_compare_w0wa_fast.py --compare
 
 Compare against the original (failing) DP CLASS config instead, to reproduce
 the regression on just 2 parameters::
 
-  uv run python scripts/run_fisher_compare_w0wa_fast.py \
+  uv run python scripts/archive/run_fisher_compare_w0wa_fast.py \
     --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml \
     --compare
 """
@@ -107,7 +107,7 @@ DEFAULT_OPTIONS: dict = {
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[2]
 
 
 def _make_run_id() -> str:
@@ -343,7 +343,7 @@ def main() -> int:
     cfg_dir = repo_root / "cosmicfishpie" / "configs"
     default_specs_dir = str(cfg_dir / "default_survey_specifications") + "/"
     default_yaml_a = str(
-        cfg_dir / "default_boltzmann_yaml_files" / "class" / "mpvalidation_HP.yaml"
+        repo_root / "scripts" / "archive" / "legacy_yamls" / "class" / "mpvalidation_HP.yaml"
     )
     default_yaml_b = str(cfg_dir / "default_boltzmann_yaml_files" / "camb" / "mpvalidation.yaml")
     default_common_specs = str(

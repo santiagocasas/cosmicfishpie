@@ -29,6 +29,8 @@ Cases:
   12  Paper LCDM with free mnu and Neff, spectro, gate <2%
   13  Paper w0waCDM with free mnu and Neff, photo, gate <5%
   14  Paper w0waCDM with free mnu and Neff, spectro, gate <2%
+  15  Paper w0waCDM with free mnu and fixed Neff, photo, gate <10%
+  16  Paper w0waCDM with free mnu and fixed Neff, spectro, gate <10%
 
 Options:
   --cases LIST          Cases to run, e.g. 7,8,11,12. May be repeated.
@@ -60,6 +62,8 @@ declare -A CASE_CONFIGS=(
   [12]="compare_run_config.env_12_camb_class_spectro_papervalidation_LCDM_mnu_Neff"
   [13]="compare_run_config.env_13_camb_class_photo_papervalidation_w0wa_mnu_Neff"
   [14]="compare_run_config.env_14_camb_class_spectro_papervalidation_w0wa_mnu_Neff"
+  [15]="compare_run_config.env_15_camb_class_photo_papervalidation_w0wa_mnu_fixed_Neff"
+  [16]="compare_run_config.env_16_camb_class_spectro_papervalidation_w0wa_mnu_fixed_Neff"
 )
 
 declare -a SELECTED_CASES=()
@@ -126,7 +130,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "${all_cases}" == true ]]; then
-  SELECTED_CASES=(01 02 07 08 09 10 11 12 13 14)
+  SELECTED_CASES=(01 02 07 08 09 10 11 12 13 14 15 16)
 fi
 
 if [[ ${#SELECTED_CASES[@]} -eq 0 ]]; then

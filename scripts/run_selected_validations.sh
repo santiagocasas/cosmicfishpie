@@ -7,6 +7,49 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CONFIG_DIR="${REPO_ROOT}/scripts/validation_configs"
 
+# Validation cases are discovered automatically from config files named
+# compare_run_config.env_NN_<description> in CONFIG_DIR -- adding a new case
+# only requires dropping a new config file there, no edits to this script.
+declare -A CASE_CONFIGS=()
+declare -a CASE_ORDER=()
+
+discover_cases() {
+  local path filename case_number
+  CASE_CONFIGS=()
+  CASE_ORDER=()
+  for path in "${CONFIG_DIR}"/compare_run_config.env_*; do
+    [[ -f "${path}" ]] || continue
+    filename="$(basename "${path}")"
+    if [[ "${filename}" =~ ^compare_run_config\.env_([0-9]{2,})_ ]]; then
+      case_number="${BASH_REMATCH[1]}"
+      if [[ -n "${CASE_CONFIGS[${case_number}]+x}" ]]; then
+        echo "Duplicate case number ${case_number}: ${CASE_CONFIGS[${case_number}]} and ${filename}" >&2
+        continue
+      fi
+      CASE_CONFIGS["${case_number}"]="${filename}"
+      CASE_ORDER+=("${case_number}")
+    fi
+  done
+  if [[ ${#CASE_ORDER[@]} -gt 0 ]]; then
+    mapfile -t CASE_ORDER < <(printf '%s\n' "${CASE_ORDER[@]}" | sort -n)
+  fi
+}
+
+# One-line case summary for --help: the config's leading "#" comment plus its
+# SIGMA_THRESHOLD gate, both read live from the file so this never goes stale.
+case_description() {
+  local config_path="$1" line threshold
+  IFS= read -r line < "${config_path}" 2>/dev/null || true
+  line="${line#\#}"
+  line="${line# }"
+  threshold="$(grep -m1 '^SIGMA_THRESHOLD=' "${config_path}" 2>/dev/null | sed -E 's/^SIGMA_THRESHOLD="?([0-9.]+)"?.*/\1/')"
+  if [[ -n "${threshold}" ]]; then
+    printf '%s (gate <%s%%)' "${line}" "${threshold}"
+  else
+    printf '%s' "${line}"
+  fi
+}
+
 usage() {
   cat <<'EOF'
 Usage:
@@ -18,23 +61,17 @@ Select cases with comma-separated numbers, for example:
   bash scripts/run_selected_validations.sh --cases 7 --omp-threads 4
   bash scripts/run_selected_validations.sh --all
 
-Cases:
-  01  Casas/MP w0waCDM, photo, class vs CAMB, informational (no gate)
-  02  Casas/MP w0waCDM, spectro, class vs CAMB, informational (no gate)
-  07  Paper LCDM, fixed 60 meV one-species neutrino, photo, gate <5%
-  08  Paper LCDM, fixed 60 meV one-species neutrino, spectro, gate <2%
-  09  Paper LCDM with free mnu, photo, gate <5%
-  10  Paper LCDM with free mnu, spectro, gate <2%
-  11  Paper LCDM with free mnu and Neff, photo, gate <5%
-  12  Paper LCDM with free mnu and Neff, spectro, gate <2%
-  13  Paper w0waCDM with free mnu and Neff, photo, gate <5%
-  14  Paper w0waCDM with free mnu and Neff, spectro, gate <2%
-  15  Paper w0waCDM with free mnu and fixed Neff, photo, gate <10%
-  16  Paper w0waCDM with free mnu and fixed Neff, spectro, gate <10%
+Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_NN_*):
+EOF
+  local case_number
+  for case_number in "${CASE_ORDER[@]}"; do
+    printf '  %-3s %s\n' "${case_number}" "$(case_description "${CONFIG_DIR}/${CASE_CONFIGS[${case_number}]}")"
+  done
+  cat <<'EOF'
 
 Options:
   --cases LIST          Cases to run, e.g. 7,8,11,12. May be repeated.
-  --all                 Run every available case listed above.
+  --all                 Run every discovered case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
   --force               Rerun cases even when an unchanged completed result exists.
   --help                Show this help text.
@@ -48,23 +85,14 @@ code, backend versions, and saved run configuration still match. Partial or
 stale cases are run again.
 The script continues after a failed case and exits nonzero if any selected
 case fails or cannot be started.
+
+To add a new validation case, drop a new
+scripts/validation_configs/compare_run_config.env_NN_<description> file --
+no changes to this script are required.
 EOF
 }
 
-declare -A CASE_CONFIGS=(
-  [01]="compare_run_config.env_01_class_camb_photo_mpvalidation_w0waCDM"
-  [02]="compare_run_config.env_02_class_camb_spectro_mpvalidation_w0waCDM"
-  [07]="compare_run_config.env_07_camb_class_photo_papervalidation_LCDM_fixed"
-  [08]="compare_run_config.env_08_camb_class_spectro_papervalidation_LCDM_fixed"
-  [09]="compare_run_config.env_09_camb_class_photo_papervalidation_LCDM_mnu"
-  [10]="compare_run_config.env_10_camb_class_spectro_papervalidation_LCDM_mnu"
-  [11]="compare_run_config.env_11_camb_class_photo_papervalidation_LCDM_mnu_Neff"
-  [12]="compare_run_config.env_12_camb_class_spectro_papervalidation_LCDM_mnu_Neff"
-  [13]="compare_run_config.env_13_camb_class_photo_papervalidation_w0wa_mnu_Neff"
-  [14]="compare_run_config.env_14_camb_class_spectro_papervalidation_w0wa_mnu_Neff"
-  [15]="compare_run_config.env_15_camb_class_photo_papervalidation_w0wa_mnu_fixed_Neff"
-  [16]="compare_run_config.env_16_camb_class_spectro_papervalidation_w0wa_mnu_fixed_Neff"
-)
+discover_cases
 
 declare -a SELECTED_CASES=()
 omp_threads="${OMP_NUM_THREADS:-8}"
@@ -130,7 +158,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "${all_cases}" == true ]]; then
-  SELECTED_CASES=(01 02 07 08 09 10 11 12 13 14 15 16)
+  SELECTED_CASES=("${CASE_ORDER[@]}")
 fi
 
 if [[ ${#SELECTED_CASES[@]} -eq 0 ]]; then

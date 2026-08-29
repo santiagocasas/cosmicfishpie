@@ -8,8 +8,10 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CONFIG_DIR="${REPO_ROOT}/scripts/validation_configs"
 
 # Validation cases are discovered automatically from config files named
-# compare_run_config.env_NN_<description> in CONFIG_DIR -- adding a new case
+# compare_run_config.env_<ID>_<description> in CONFIG_DIR -- adding a new case
 # only requires dropping a new config file there, no edits to this script.
+# <ID> is a dotted hierarchical case number (e.g. 05.3, 03.2.1); the leading
+# root segment is zero-padded to 2 digits.
 declare -A CASE_CONFIGS=()
 declare -a CASE_ORDER=()
 
@@ -20,7 +22,7 @@ discover_cases() {
   for path in "${CONFIG_DIR}"/compare_run_config.env_*; do
     [[ -f "${path}" ]] || continue
     filename="$(basename "${path}")"
-    if [[ "${filename}" =~ ^compare_run_config\.env_([0-9]{2,})_ ]]; then
+    if [[ "${filename}" =~ ^compare_run_config\.env_([0-9]{2,}(\.[0-9]+)*)_ ]]; then
       case_number="${BASH_REMATCH[1]}"
       if [[ -n "${CASE_CONFIGS[${case_number}]+x}" ]]; then
         echo "Duplicate case number ${case_number}: ${CASE_CONFIGS[${case_number}]} and ${filename}" >&2
@@ -31,7 +33,7 @@ discover_cases() {
     fi
   done
   if [[ ${#CASE_ORDER[@]} -gt 0 ]]; then
-    mapfile -t CASE_ORDER < <(printf '%s\n' "${CASE_ORDER[@]}" | sort -n)
+    mapfile -t CASE_ORDER < <(printf '%s\n' "${CASE_ORDER[@]}" | sort -V)
   fi
 }
 
@@ -56,21 +58,25 @@ Usage:
   bash scripts/run_selected_validations.sh --cases LIST [OPTIONS]
   bash scripts/run_selected_validations.sh --all [OPTIONS]
 
-Select cases with comma-separated numbers, for example:
-  bash scripts/run_selected_validations.sh --cases 7,8,11,12
-  bash scripts/run_selected_validations.sh --cases 7 --omp-threads 4
+Select cases with comma-separated dotted case IDs, for example:
+  bash scripts/run_selected_validations.sh --cases 03.1,03.2
+  bash scripts/run_selected_validations.sh --cases 03.2 --omp-threads 4
   bash scripts/run_selected_validations.sh --all
 
-Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_NN_*):
+A group prefix (e.g. 03) expands to every discovered case under it (03.1,
+03.2, 03.2.1, ...). An exact case ID (e.g. 03.2) selects only that case, even
+if it also has sub-cases of its own.
+
+Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_<ID>_*):
 EOF
   local case_number
   for case_number in "${CASE_ORDER[@]}"; do
-    printf '  %-3s %s\n' "${case_number}" "$(case_description "${CONFIG_DIR}/${CASE_CONFIGS[${case_number}]}")"
+    printf '  %-6s %s\n' "${case_number}" "$(case_description "${CONFIG_DIR}/${CASE_CONFIGS[${case_number}]}")"
   done
   cat <<'EOF'
 
 Options:
-  --cases LIST          Cases to run, e.g. 7,8,11,12. May be repeated.
+  --cases LIST          Cases/groups to run, e.g. 03.1,03.2 or 03. May be repeated.
   --all                 Run every discovered case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
   --force               Rerun cases even when an unchanged completed result exists.
@@ -87,8 +93,10 @@ The script continues after a failed case and exits nonzero if any selected
 case fails or cannot be started.
 
 To add a new validation case, drop a new
-scripts/validation_configs/compare_run_config.env_NN_<description> file --
-no changes to this script are required.
+scripts/validation_configs/compare_run_config.env_<ID>_<description> file --
+no changes to this script are required. <ID> is a dotted hierarchical case
+number, e.g. 05.3 or 03.2.1; the leading root segment is zero-padded to 2
+digits.
 EOF
 }
 
@@ -99,21 +107,47 @@ omp_threads="${OMP_NUM_THREADS:-8}"
 all_cases=false
 force=false
 
+# Zero-pad the leading root segment of a dotted case ID (e.g. "3.2" -> "03.2").
+# Prints nothing and returns nonzero if the value isn't a dotted numeric ID.
+normalize_case_id() {
+  local raw="$1" root rest
+  root="${raw%%.*}"
+  [[ "${raw}" == *.* ]] && rest="${raw#*.}" || rest=""
+  [[ "${root}" =~ ^[0-9]+$ ]] || return 1
+  [[ -z "${rest}" ]] || [[ "${rest}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || return 1
+  root="$(printf '%02d' "$((10#${root}))")"
+  if [[ -n "${rest}" ]]; then
+    printf '%s.%s' "${root}" "${rest}"
+  else
+    printf '%s' "${root}"
+  fi
+}
+
 append_cases() {
-  local value case_number normalized
+  local value normalized case_number found
   IFS=',' read -r -a requested <<< "$1"
   for value in "${requested[@]}"; do
-    normalized="$(printf '%02d' "$((10#$value))" 2>/dev/null)" || {
+    normalized="$(normalize_case_id "${value}")" || {
       echo "Invalid case number: ${value}" >&2
       return 2
     }
-    case_number="${normalized#0}"
-    [[ "${normalized}" == "00" ]] && case_number="0"
-    if [[ -z "${CASE_CONFIGS[${normalized}]+x}" ]]; then
+    if [[ -n "${CASE_CONFIGS[${normalized}]+x}" ]]; then
+      # Exact case ID match -- select only that case, even if it has sub-cases.
+      SELECTED_CASES+=("${normalized}")
+      continue
+    fi
+    # Otherwise treat it as a group prefix: expand to every descendant case.
+    found=false
+    for case_number in "${CASE_ORDER[@]}"; do
+      if [[ "${case_number}" == "${normalized}."* ]]; then
+        SELECTED_CASES+=("${case_number}")
+        found=true
+      fi
+    done
+    if [[ "${found}" != true ]]; then
       echo "Unknown case: ${value}" >&2
       return 2
     fi
-    SELECTED_CASES+=("${normalized}")
   done
 }
 

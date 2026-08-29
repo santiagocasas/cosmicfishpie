@@ -8,8 +8,11 @@ and the matching outputs from ``scripts/benchmark_results/compare_*`` (as produc
 ``compare_backends_report.sh`` / ``run_fisher_compare_backends.py``), and writes:
 
   <out-dir>/index.html            landing page: case #, model, probe, max deviation, gate
-  <out-dir>/case_<NN>.html        per-case detail: full parameter sigma table + metadata
-  <out-dir>/specs/case_<NN>_*.html  readable YAML/common/generated Fisher specifications
+  <out-dir>/case_<ID>.html        per-case detail: full parameter sigma table + metadata
+  <out-dir>/specs/case_<ID>_*.html  readable YAML/common/generated Fisher specifications
+
+Case IDs are dotted hierarchical strings (e.g. "01.2", "03.2.1"), read from
+config filenames compare_run_config.env_<ID>_<description>.
 
 Design goals (per user request):
   - The landing page never shows config hashes, folder names, or file paths.
@@ -140,10 +143,24 @@ class CaseResult:
     status: str = "not_run"  # not_run | ok | no_pair | error
 
 
+def _case_sort_key(number: str) -> tuple[int, ...]:
+    """Natural-sort key for dotted hierarchical case IDs (e.g. "03.2.1" -> (3, 2, 1))."""
+    return tuple(int(part) for part in number.split("."))
+
+
+def _normalize_case_id(raw: str) -> str | None:
+    """Zero-pad the leading root segment of a dotted case ID (e.g. "3.2" -> "03.2")."""
+    parts = raw.strip().split(".")
+    if not parts or not all(part.isdigit() for part in parts):
+        return None
+    parts[0] = f"{int(parts[0]):02d}"
+    return ".".join(parts)
+
+
 def discover_cases(config_dir: Path, repo_root: Path) -> list[CaseDef]:
     cases: list[CaseDef] = []
     for path in sorted(config_dir.glob("compare_run_config.env_*")):
-        m = re.match(r"compare_run_config\.env_(\d+)_", path.name)
+        m = re.match(r"compare_run_config\.env_(\d+(?:\.\d+)*)_", path.name)
         if not m:
             continue
         number = m.group(1)
@@ -591,7 +608,7 @@ def _fmt_seconds(x: float | None) -> str:
 
 def render_index(results: list[CaseResult], out_dir: Path) -> None:
     rows = []
-    for r in sorted(results, key=lambda r: int(r.case.number)):
+    for r in sorted(results, key=lambda r: _case_sort_key(r.case.number)):
         gate = _gate_status(r)
         dev = (
             f"{_fmt_pct(r.max_deviation_pct)} ({esc(r.max_deviation_param)})"
@@ -889,9 +906,8 @@ def main() -> int:
         raise SystemExit(f"No case configs found in {config_dir}")
 
     if args.check_completed is not None:
-        try:
-            requested = f"{int(args.check_completed):02d}"
-        except ValueError:
+        requested = _normalize_case_id(args.check_completed)
+        if requested is None:
             print(f"Invalid case number: {args.check_completed}")
             return 2
         case = next((item for item in cases if item.number == requested), None)

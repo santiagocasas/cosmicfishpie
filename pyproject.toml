@@ -93,6 +93,7 @@ include-package-data = true
 cosmicfishpie = [
     "py.typed",
     "configs/default_boltzmann_yaml_files/*.md",
+    "configs/default_boltzmann_yaml_files/*.yaml",
     "configs/default_boltzmann_yaml_files/*/*.yaml",
     "configs/default_survey_specifications/*.yaml",
     "configs/other_survey_specifications/*.yaml",

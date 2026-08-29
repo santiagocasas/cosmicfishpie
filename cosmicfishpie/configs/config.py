@@ -15,6 +15,37 @@ from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
 
 
+def _merge_boltzmann_config(base, overrides):
+    """Recursively merge YAML overrides into a precision profile."""
+    merged = deepcopy(base)
+    for key, value in overrides.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _merge_boltzmann_config(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
+def _load_boltzmann_yaml(path):
+    """Load a solver YAML, optionally inheriting a named precision profile."""
+    with open(path, "r") as yaml_file:
+        parsed = yaml.safe_load(yaml_file) or {}
+
+    profile_name = parsed.pop("precision_profile", None)
+    profile_file = parsed.pop("precision_profile_file", None)
+    if profile_name is None:
+        return parsed
+    if profile_file is None:
+        raise ValueError(f"{path} declares precision_profile without precision_profile_file")
+
+    profile_path = os.path.join(os.path.dirname(path), profile_file)
+    with open(profile_path, "r") as profile_yaml_file:
+        profiles = yaml.safe_load(profile_yaml_file).get("profiles", {})
+    if profile_name not in profiles:
+        raise ValueError(f"Unknown precision profile '{profile_name}' in {profile_path}")
+    return _merge_boltzmann_config(profiles[profile_name], parsed)
+
+
 def init(
     options=dict(),
     specifications=dict(),
@@ -342,8 +373,7 @@ def init(
     elif settings["code"] == "class":
         input_type = settings["code"]
         global boltzmann_classpars
-        with open(settings["class_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["class_config_yaml"])
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
@@ -354,15 +384,13 @@ def init(
             settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
-        with open(settings["camb_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["camb_config_yaml"])
         boltzmann_cambpars = parsed_boltzmann
         external = None
     elif settings["code"] == "symbolic":
         input_type = settings["code"]
         global boltzmann_symbolicpars
-        with open(settings["symbolic_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["symbolic_config_yaml"])
         boltzmann_symbolicpars = parsed_boltzmann
         external = None
     else:

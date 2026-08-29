@@ -1,5 +1,11 @@
 # Case 13 `w0waCDM + mnu + Neff` investigation
 
+> **Superseded in part.** Cases 15 and 16 have since been run and analysed. The
+> hypothesis below is directionally correct but wrong by about an order of
+> magnitude on the size of the backend contribution, and it identifies the wrong
+> degenerate block. See `PHOTO_MARGINALIZATION_DIAGNOSIS.md` for the resolved,
+> quantitative diagnosis.
+
 ## Finding
 
 Case 13 is a photometric CAMB-vs-CLASS comparison with nonlinear HMcode2020
@@ -52,18 +58,21 @@ uv run bash scripts/run_selected_validations.sh --cases 15 --omp-threads 8 --for
 The runner also includes case 15 in `--all`. The run is intentionally not
 started by this change because it is an expensive Fisher validation.
 
-## Interpretation plan
+## Outcome
 
-Compare case 15 with case 13, especially the marginalized `mnu` sigma:
+Case 15 was run and gives a marginalized `mnu` deviation of 14.71%, which is
+*worse* than case 13 despite `Neff` being fixed, and a `sigma8` deviation of
+10.13%. Option 2 above is therefore ruled out together with option 1: freeing
+`Neff` is not the driver, and neither is the `w0`/`wa` block on its own.
 
-1. If the deviation drops below 10%, freeing `Neff` is a major contributor to
-   the marginalization amplification.
-2. If it remains high, the `w0`/`wa` degeneracy and nonlinear HMcode2020
-   baseline difference remain sufficient without a free `Neff` axis.
-3. If the deviation is still accompanied by broad 2-5% shifts in other
-   parameters, test a linear-photo control (`nonlinear_photo=false`) to
-   isolate the nonlinear backend contribution.
+The unmarginalized errors resolve it. Case 15's CAMB and CLASS Fisher matrices
+agree to a median of 0.046% element-by-element, and every unmarginalized error
+matches to better than 0.12% except `mnu` at 1.55%. The reported 10-15%
+deviations are amplification of those sub-0.1% differences by a near-singular
+marginalization over the amplitude subspace `{sigma8, mnu, b1..b10}`; removing
+any single one of the ten bias bins collapses the deviation to ~1% for `sigma8`
+and ~5.7% for `mnu`.
 
-Further diagnostics, if needed, are to compare marginalized versus diagonal
-(`unmarginalized`) `mnu` errors, then rerun with the higher-precision CLASS
-massive-neutrino settings from the spectro YAML.
+Full numbers, the nested-subset cliff, the noise-amplification check, the
+contrast with spectroscopic case 16, and the recommended changes to the gate
+are in `PHOTO_MARGINALIZATION_DIAGNOSIS.md`.

@@ -1,12 +1,18 @@
 # Photometric `mnu`/`sigma8` gate failures: unmarginalized diagnosis
 
-Status: resolved diagnosis for the photometric gate failures in cases `05.4`, `03.2`,
+Status: historical diagnosis for the photometric gate failures in cases `05.4`, `03.2.0`,
 `08.2`, and `07.2` (formerly numbered "case 09", "case 11", "case 13", "case 15").
 Supersedes the "nonlinear HMcode2020 baseline difference" reading in
 `CASE13_W0WA_MNU_INVESTIGATION.md`, which was directionally right but wrong
 by an order of magnitude about the size of the backend effect. Note also that `08.2`
 is a stress test explicitly excluded by the paper's own Sec. 6 validation scope
 (arXiv:2405.06047v1) -- see `PAPER_NEUTRINO_VALIDATION.md`.
+
+> **Configuration correction:** the matrices analyzed below used P_mm for galaxies and
+> varied `betaIA`, contrary to the paper definitions. Canonical cases now use P_cb and
+> fix `betaIA=2.17`. A corrected model-2 photometric precursor passed with a 5.53%
+> `mnu` deviation; results generated under the final `03.2.0` survey definition are the
+> authoritative comparison.
 
 Source data: case `07.2` (`compare_photo_camb_vs_class_cfg_ea069c683b`) and case `07.1`
 (`compare_spectro_camb_vs_class_cfg_86d26edc54`), run at commit `57e0757`
@@ -149,7 +155,8 @@ marginalization over a correlated block) is confirmed, with two corrections:
    agreed to 0.05% rounding.
 
 This also explains the previously unexplained monotonic escalation across cases
-`05.4` (6.82%), `03.2` (10.06%), `08.2` (12.82%), and `07.2` (14.71%): every additional
+`05.4` (6.82%), the old `03.2.0` precursor (10.06%), `08.2` (12.82%), and `07.2`
+(14.71%): every additional
 free parameter that projects onto the amplitude direction moves the matrix closer to
 the cliff, independently of any change in backend physics.
 
@@ -195,7 +202,7 @@ branch; the default `marginal=True` is what the dashboard currently reports.
 4. Test the residual 1.55% with a photometric run using the spectroscopic CLASS
    neutrino precision (`l_max_ncdm: 40`, `ncdm_fluid_approximation: 3`, keeping
    `P_k_max_1/Mpc: 50`). Expect a CLASS runtime comparable to case `07.1`. (Case
-   `03.2.1` already implements a related precision variant, but with
+   alternative `01.4` already implements a related precision variant, but with
    `ncdm_fluid_trigger_tau_over_tau_k=90` rather than
    `ncdm_fluid_approximation=3` -- this follow-up would need a distinct YAML.)
 5. If the 1.55% survives that, isolate HMcode2020 with a photometric control at

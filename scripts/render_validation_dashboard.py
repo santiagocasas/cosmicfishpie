@@ -110,6 +110,8 @@ class CaseDef:
     accuracy: int
     yaml_key_a: str | None
     yaml_key_b: str | None
+    survey_name_photo: str | None
+    survey_name_spectro: str | None
 
 
 @dataclass
@@ -192,6 +194,8 @@ def discover_cases(config_dir: Path, repo_root: Path) -> list[CaseDef]:
                 accuracy=int(parsed.get("ACCURACY", "1")),
                 yaml_key_a=parsed.get("YAML_KEY_A") or None,
                 yaml_key_b=parsed.get("YAML_KEY_B") or None,
+                survey_name_photo=parsed.get("SURVEY_NAME_PHOTO") or None,
+                survey_name_spectro=parsed.get("SURVEY_NAME_SPECTRO") or None,
             )
         )
     return cases
@@ -203,14 +207,43 @@ def _model_label(case: CaseDef) -> str:
         return case.description or f"case {case.number}"
     options = specs.get("options") or {}
     freepars = specs.get("freepars") or {}
-    cosmo_model = options.get("cosmo_model", "?")
+    cosmo_model = str(options.get("cosmo_model", "?"))
+    if cosmo_model == "w0waCDM" and "w0" in freepars and "wa" not in freepars:
+        cosmo_model = "w0CDM"
     extras = [p for p in ("mnu", "Neff") if p in freepars]
-    label = str(cosmo_model)
+    label = cosmo_model
     if extras:
         label += " + " + ", ".join(extras)
-    elif "mnu" in (specs.get("fiducialpars") or {}) and "mnu" not in freepars:
-        label += " (fixed mnu)"
+    fixed = [
+        p for p in ("mnu", "Neff") if p in (specs.get("fiducialpars") or {}) and p not in freepars
+    ]
+    if fixed:
+        label += " (fixed " + ", ".join(fixed) + ")"
     return label
+
+
+def _survey_specs_path(case: CaseDef, repo_root: Path) -> Path | None:
+    survey_name = case.survey_name_photo or case.survey_name_spectro
+    if not survey_name:
+        return None
+    return (
+        repo_root
+        / "cosmicfishpie"
+        / "configs"
+        / "default_survey_specifications"
+        / f"{survey_name}.yaml"
+    )
+
+
+def _survey_label(case: CaseDef) -> str:
+    survey_name = case.survey_name_photo or case.survey_name_spectro
+    if not survey_name:
+        return "default"
+    if survey_name.endswith("-Optimistic"):
+        return "Optimistic"
+    if survey_name.endswith("-Pessimistic"):
+        return "Pessimistic"
+    return survey_name
 
 
 def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path | None:
@@ -242,6 +275,16 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
         if want_yaml_a and args.get("yaml_a") != want_yaml_a:
             continue
         if want_yaml_b and args.get("yaml_b") != want_yaml_b:
+            continue
+        resolved = meta.get("resolved")
+        if not isinstance(resolved, dict):
+            continue
+        if case.survey_name_photo and resolved.get("survey_name_photo") != case.survey_name_photo:
+            continue
+        if (
+            case.survey_name_spectro
+            and resolved.get("survey_name_spectro") != case.survey_name_spectro
+        ):
             continue
         mtime = (folder / "run_metadata.json").stat().st_mtime
         if best is None or mtime > best[0]:
@@ -460,7 +503,12 @@ def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
         "scripts/run_fisher_compare_backends.py",
         "scripts/compare_fishers_in_dir.py",
     ]
-    for input_path in (case.yaml_a, case.yaml_b, case.common_specs_json):
+    for input_path in (
+        case.yaml_a,
+        case.yaml_b,
+        case.common_specs_json,
+        _survey_specs_path(case, repo_root),
+    ):
         if input_path is None:
             continue
         try:
@@ -541,6 +589,8 @@ def _gate_badge(status: str | None) -> str:
         return "<span class='badge badge-fail'>FAIL</span>"
     if status == "STALE":
         return "<span class='badge badge-warn'>STALE CONFIG</span>"
+    if status == "PENDING":
+        return "<span class='badge badge-na'>pending</span>"
     return "<span class='badge badge-na'>informational</span>"
 
 
@@ -610,6 +660,9 @@ def render_index(results: list[CaseResult], out_dir: Path) -> None:
     rows = []
     for r in sorted(results, key=lambda r: _case_sort_key(r.case.number)):
         gate = _gate_status(r)
+        display_gate = gate
+        if display_gate is None and r.case.sigma_threshold is not None:
+            display_gate = "PENDING"
         dev = (
             f"{_fmt_pct(r.max_deviation_pct)} ({esc(r.max_deviation_param)})"
             if r.max_deviation_pct is not None
@@ -622,8 +675,9 @@ def render_index(results: list[CaseResult], out_dir: Path) -> None:
             f"<td>{esc(r.case.number)}</td>"
             f"<td><a href='case_{esc(r.case.number)}.html'>{esc(r.model_label)}</a></td>"
             f"<td>{esc(r.case.mode.capitalize())}</td>"
+            f"<td>{esc(_survey_label(r.case))}</td>"
             f"<td class='{dev_cls}'>{dev}</td>"
-            f"<td>{_gate_badge(gate)}</td>"
+            f"<td>{_gate_badge(display_gate)}</td>"
             f"<td>{status_html}</td>"
             "</tr>"
         )
@@ -644,7 +698,7 @@ validation) and the Casas et al. w0waCDM/nuCDM validation tracks. Click a row fo
 per-parameter breakdown and the exact YAML/spec files used.</p>
 <table>
 <thead>
-<tr><th>Case</th><th>Model</th><th>Probe</th><th>Max deviation</th><th>Gate</th><th></th></tr>
+<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Max deviation</th><th>Gate</th><th></th></tr>
 </thead>
 <tbody>
 {"".join(rows)}
@@ -721,6 +775,16 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
             if result.config_mismatches:
                 label += " (differs from this run)"
             specs_links.append((label, rel))
+    survey_specs = _survey_specs_path(case, REPO_ROOT)
+    if survey_specs is not None:
+        rel = _write_spec_page(
+            specs_dir,
+            f"case_{case.number}_survey_specs",
+            "Survey Specs YAML",
+            survey_specs,
+        )
+        if rel:
+            specs_links.append((f"Survey specs ({esc(_survey_label(case))})", rel))
     if result.fisher_specs_a is not None:
         rel = _write_spec_page(
             specs_dir,
@@ -748,9 +812,20 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
     meta_rows = [
         ("Model", esc(result.model_label)),
         ("Probe", esc(case.mode.capitalize())),
+        ("Scenario", esc(_survey_label(case))),
         ("Description", esc(case.description) or "n/a"),
         ("Sigma threshold", f"{threshold:g}%" if threshold is not None else "n/a (informational)"),
-        ("Gate", _gate_badge(gate)),
+        (
+            "Gate",
+            _gate_badge(
+                gate
+                or (
+                    "PENDING"
+                    if threshold is not None and result.max_deviation_pct is None
+                    else None
+                )
+            ),
+        ),
         ("Timestamp", esc(result.run_timestamp) or "n/a"),
         ("OMP_NUM_THREADS", esc(result.omp_threads) or "n/a"),
         ("Elapsed A / B", f"{_fmt_seconds(result.a_time_s)} / {_fmt_seconds(result.b_time_s)}"),

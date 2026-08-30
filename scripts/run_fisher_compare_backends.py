@@ -163,6 +163,7 @@ def _backend_provenance(code: str) -> dict:
     try:
         if code == "camb":
             import camb
+
             info["available"] = True
             info["version"] = getattr(camb, "__version__", None)
             info["module_path"] = getattr(camb, "__file__", None)
@@ -170,14 +171,19 @@ def _backend_provenance(code: str) -> dict:
         elif code == "class":
             try:
                 from classy import Class
+
                 info["available"] = True
-                info["version"] = getattr(Class, "__version__", None) or getattr(Class, "version", None)
+                info["version"] = getattr(Class, "__version__", None) or getattr(
+                    Class, "version", None
+                )
                 import classy
+
                 info["module_path"] = getattr(classy, "__file__", None)
                 info.update(_package_install_source("classy"))
             except Exception:
                 pass
         import platform
+
         info["platform"] = platform.platform()
     except Exception:
         pass
@@ -341,6 +347,16 @@ def main() -> int:
         help="Path to JSON with fiducialpars/freepars/options (e.g. *_FM_specs.json)",
     )
     parser.add_argument(
+        "--survey-name-photo",
+        default=None,
+        help="Photometric survey YAML stem (without .yaml)",
+    )
+    parser.add_argument(
+        "--survey-name-spectro",
+        default=None,
+        help="Spectroscopic survey YAML stem (without .yaml)",
+    )
+    parser.add_argument(
         "--sigma-threshold",
         type=float,
         default=None,
@@ -379,12 +395,14 @@ def main() -> int:
 
     if args.mode == "photo":
         observables = ["GCph", "WL"]
-        survey_name_photo: str | bool = "Euclid-Photometric-ISTF-Pessimistic"
+        survey_name_photo: str | bool = (
+            args.survey_name_photo or "Euclid-Photometric-ISTF-Pessimistic"
+        )
         survey_name_spectro: str | bool = False
     else:
         observables = ["GCsp"]
         survey_name_photo = False
-        survey_name_spectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
+        survey_name_spectro = args.survey_name_spectro or "Euclid-Spectroscopic-ISTF-Pessimistic"
 
     def _default_yaml_for(code: str) -> str | None:
         if code == "class":
@@ -430,6 +448,8 @@ def main() -> int:
         print("[compare] OMP_NUM_THREADS:", os.environ.get("OMP_NUM_THREADS"))
     print("[compare] specs_dir:", paths["specs_dir"])
     print("[compare] mode:", args.mode, "observables:", observables)
+    print("[compare] survey_name_photo:", survey_name_photo)
+    print("[compare] survey_name_spectro:", survey_name_spectro)
     print("[compare] run A:", args.code_a, "yaml_key:", yaml_key_a, "yaml:", yaml_a)
     print("[compare] run B:", args.code_b, "yaml_key:", yaml_key_b, "yaml:", yaml_b)
 
@@ -471,6 +491,8 @@ def main() -> int:
     opts_a["code"] = args.code_a
     opts_a["outroot"] = prefix + "A_"
     opts_a["results_dir"] = str(outdir) + "/"
+    opts_a["survey_name_photo"] = survey_name_photo
+    opts_a["survey_name_spectro"] = survey_name_spectro
     opts_a[yaml_key_a] = yaml_a
     a_txt = _run_fisher(
         options=opts_a,
@@ -498,6 +520,8 @@ def main() -> int:
     opts_b["code"] = args.code_b
     opts_b["outroot"] = prefix + "B_"
     opts_b["results_dir"] = str(outdir) + "/"
+    opts_b["survey_name_photo"] = survey_name_photo
+    opts_b["survey_name_spectro"] = survey_name_spectro
     opts_b[yaml_key_b] = yaml_b
     b_txt = _run_fisher(
         options=opts_b,
@@ -527,7 +551,9 @@ def main() -> int:
 
     # Threshold gating
     if args.sigma_threshold is not None:
-        compare_jsons = sorted(outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime)
+        compare_jsons = sorted(
+            outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime
+        )
         if compare_jsons:
             latest = compare_jsons[-1]
             try:

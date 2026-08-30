@@ -59,13 +59,13 @@ Usage:
   bash scripts/run_selected_validations.sh --all [OPTIONS]
 
 Select cases with comma-separated dotted case IDs, for example:
-  bash scripts/run_selected_validations.sh --cases 03.1,03.2
+  bash scripts/run_selected_validations.sh --cases 03.1.0,03.2.0
   bash scripts/run_selected_validations.sh --cases 03.2 --omp-threads 4
   bash scripts/run_selected_validations.sh --all
 
-A group prefix (e.g. 03) expands to every discovered case under it (03.1,
-03.2, 03.2.1, ...). An exact case ID (e.g. 03.2) selects only that case, even
-if it also has sub-cases of its own.
+A group prefix (e.g. 03) expands to every discovered case under it (03.1.0,
+03.1.1, 03.2.0, ...). A probe prefix (e.g. 03.2) selects both survey scenarios.
+An exact leaf ID (e.g. 03.2.0) selects only that case.
 
 Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_<ID>_*):
 EOF
@@ -76,7 +76,7 @@ EOF
   cat <<'EOF'
 
 Options:
-  --cases LIST          Cases/groups to run, e.g. 03.1,03.2 or 03. May be repeated.
+  --cases LIST          Cases/groups to run, e.g. 03.1.0,03.2.0 or 03. May be repeated.
   --all                 Run every discovered case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
   --force               Rerun cases even when an unchanged completed result exists.

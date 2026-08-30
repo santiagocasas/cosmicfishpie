@@ -30,10 +30,15 @@ own validation scope:
 | `07.*` | Stress test (not a Sec. 6 model) | w0waCDM + free `mnu`, `Neff` fixed (8 free cosmological params) |
 | `08.*` | Stress test, **explicitly excluded** by Sec. 6 | w0waCDM + free `mnu`, `Neff` (9 free cosmological params) |
 
-Within each group, `.1` is the spectroscopic case and `.2` is the photometric case
-(matching the paper's own probe ordering in Sec. 6). `03.2.1` is a photometric
-CLASS-precision sensitivity variant of `03.2` (see "Boltzmann solver profiles" below);
-it is not itself a formal paper case.
+For formal groups `02.*`-`04.*`, the ID is `<model>.<probe>.<scenario>`: probe `.1` is
+spectroscopic and `.2` is photometric; scenario `.0` is pessimistic and `.1` is
+optimistic. For example, `03.1.0` is model 2 spectroscopic pessimistic and `03.2.1` is
+model 2 photometric optimistic. The reduced controls and stress tests remain
+pessimistic-only and retain their shorter IDs.
+
+The former `03.2.1` strict-CLASS-precision experiment is no longer a primary case. It
+is retained as alternative `01.4` under `alternatives/`, where it cannot be mistaken
+for the paper's optimistic photometric case.
 
 ## Why the full 9-parameter model (`08.*`) is not a formal paper model
 
@@ -41,7 +46,7 @@ Per `SensitivityNeutrinos.htm` (the paper's HTML source, Sec. 6, arXiv:2405.0604
 the paper explicitly rejects a single simultaneous 9-parameter Fisher validation
 (5 base LCDM + `mnu`, `Neff`, `w0`, `wa`) due to parameter degeneracies, non-Gaussian
 posteriors, and derivative-step sensitivity in that combined parameter space. It
-validates three reduced 7-parameter model families instead (`02.*`, `03.*`, `04.*`
+ validates three reduced 7-parameter model families instead (`02.*`, `03.*`, `04.*`
 above). `08.*` (full 9-parameter `w0waCDM+mnu+Neff`) and `07.*` (8-parameter
 `w0waCDM+mnu`, `Neff` fixed) are retained in this repo as internal stress
 tests/diagnostics of degeneracy amplification under marginalization (see
@@ -66,6 +71,41 @@ These are the values used in all seven `common_specs_paper_*.json` files (see ta
 below). The `01.*` cross-check cases use the older Casas et al. (2303.09451v1) fiducial
 instead (`common_specs_w0waCDM.json`: `Omegam=.32, Omegab=.05, h=.67, ns=.96,
 sigma8=.815584`).
+
+## Galaxy tracer and intrinsic-alignment convention
+
+All seven `common_specs_paper_*.json` files set `GCsp_Tracer` and `GCph_Tracer` to
+`clustering`, which selects the CDM+baryon spectrum P_cb (called P_cc in the paper).
+This follows Sec. 3 of arXiv:2405.06047v1: galaxies trace CDM+baryons rather than total
+matter in massive-neutrino cosmologies. Weak lensing remains on total matter P_mm in
+the photometric implementation.
+
+This corrects the earlier validation inputs, which had both tracer settings at
+`matter`. In a model-2 photometric pessimistic precursor that still varied `betaIA`,
+changing to P_cb reduced the marginalized CAMB-vs-CLASS `mnu` deviation from 10.06% to
+5.53%. The raw unmarginalized difference changed little; the gain came from reducing
+degeneracy and Fisher-inversion amplification. The final fixed-`betaIA` canonical cases
+must be rerun before quoting validation results.
+
+The dedicated paper survey YAMLs also implement the paper's nuisance convention:
+`AIA` and `etaIA` vary while `betaIA=2.17` is fixed. Both arXiv:2405.06047v1 and
+arXiv:2303.09451v1 state this explicitly. Some historical production `.paramnames`
+files nevertheless include `betaIA`; those legacy outputs are retained as provenance,
+not copied into the canonical definitions. Free-`betaIA` and P_mm variants live under
+`scripts/validation_configs/alternatives/`.
+
+## Survey scenarios
+
+The formal models use dedicated survey definitions sourced from Tables 1 and 2:
+
+| Scenario | Photo `lmax_GCph` / `lmax_WL` | Spectro `kmax_GCsp` |
+|----------|---------------------------------|---------------------|
+| Pessimistic (`*.0`) | 750 / 1500 | 0.25 |
+| Optimistic (`*.1`) | 3000 / 5000 | 0.30 |
+
+The selected survey name and survey-YAML content hash are part of each run's config
+hash and metadata, preventing pessimistic and optimistic outputs from colliding or
+being reused across scenarios.
 
 ## Parameter name mapping (paper / MontePython aliases -> CosmicFishPie canonical keys)
 
@@ -98,7 +138,7 @@ factor `g_factor` scales with the *free* `Neff` parameter (`g_factor = Neff/3` w
 
 **This was initially set to `true` and was found to be the root cause of early
 photometric `mnu` gate failures in the LCDM+mnu and LCDM+mnu+Neff cases (now `05.4` and
-`03.2`).** Cross-checking against the actual paper reference production Fisher matrices
+`03.2.0`).** Cross-checking against the actual paper reference production Fisher matrices
 in the companion `Euclid_KP_nu` repository
 (`results/cosmicfish_internal/.../_specifications.dat`) showed that **every** paper
 production run (`nulcdm` = LCDM+mnu+Neff, and `wCDM+mnu+Neff`, both probes, both
@@ -138,16 +178,16 @@ explicitly regardless of the `ShareDeltaNeff` value.
 |--------------------------------------------------|-------------|--------|-------------------------------------------------------------------------------------------|
 | `common_specs_paper_LCDM_fixed.json`              | LCDM        | `05.1`/`05.2` | Omegam, Omegab, h, ns, sigma8 (1% each). `mnu` fixed at 60 meV, Neff fixed. |
 | `common_specs_paper_LCDM_mnu.json`                | LCDM        | `05.3`/`05.4` | above + `mnu` (10% step)                                                     |
-| `common_specs_paper_LCDM_mnu_Neff.json`           | LCDM        | `03.1`/`03.2`/`03.2.1` | above + `mnu` (10%) + `Neff` (1%) -- **formal paper model 2**       |
-| `common_specs_paper_w0wa_fixed_mnu_Neff.json`     | w0waCDM     | `02.1`/`02.2` | Omegam, Omegab, h, ns, sigma8, w0, wa (1% each). `mnu`, `Neff` fixed -- **formal paper model 1** |
-| `common_specs_paper_w0_mnu_fixed_Neff.json`       | w0waCDM     | `04.1`/`04.2` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0 (1%). `wa` fixed at 0, `Neff` fixed -- **formal paper model 3** |
+| `common_specs_paper_LCDM_mnu_Neff.json`           | LCDM        | `03.1.*`/`03.2.*` | above + `mnu` (10%) + `Neff` (1%) -- **formal paper model 2**       |
+| `common_specs_paper_w0wa_fixed_mnu_Neff.json`     | w0waCDM     | `02.1.*`/`02.2.*` | Omegam, Omegab, h, ns, sigma8, w0, wa (1% each). `mnu`, `Neff` fixed -- **formal paper model 1** |
+| `common_specs_paper_w0_mnu_fixed_Neff.json`       | w0waCDM     | `04.1.*`/`04.2.*` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0 (1%). `wa` fixed at 0, `Neff` fixed -- **formal paper model 3** |
 | `common_specs_paper_w0wa_mnu_fixed_Neff.json`     | w0waCDM     | `07.1`/`07.2` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0, wa (1%). `Neff` fixed -- stress test |
 | `common_specs_paper_w0wa_mnu_Neff.json`           | w0waCDM     | `08.1`/`08.2` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), Neff (1%), w0, wa (1%) -- stress test, excluded by Sec. 6 |
 
 `mnu` always uses a 10% derivative step (paper convention, ~6 meV at fiducial); all
 other varied parameters use a 1% step.
 
-Note: `common_specs_paper_w0wa_fixed_mnu_Neff.json` (model 1: `mnu` **and** `Neff**
+Note: `common_specs_paper_w0wa_fixed_mnu_Neff.json` (model 1: `mnu` **and** `Neff`
 fixed, `w0`/`wa` free) and `common_specs_paper_w0wa_mnu_fixed_Neff.json` (the `07.*`
 stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but distinct
 -- do not confuse them.
@@ -160,17 +200,17 @@ stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but di
   `ncdm_fluid_trigger_tau_over_tau_k=100`, `hmcode_tol_sigma=1e-8`) and
   `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/paper_mnuvalidation.yaml`
   (`halofit_version=mead2020`, `num_nu_massive=1`) is used for every photo case
-  (`02.2`, `03.2`, `03.2.1`, `04.2`, `05.2`, `05.4`, `07.2`, `08.2`).
+  (all `.2.*` formal cases plus the pessimistic photo controls/stress tests).
   `paper_mnuvalidation_photo_HP.yaml` (`l_max_ncdm=40`,
   `ncdm_fluid_trigger_tau_over_tau_k=90`) is a **stricter, non-paper** CLASS precision
-  variant used only by `03.2.1`, to test whether raising CLASS's ncdm precision above
+  variant used only by alternative `01.4`, to test whether raising CLASS's ncdm precision above
   what the paper itself specifies narrows the CAMB/CLASS `mnu` marginalized deviation.
   It should not be read as "the paper's HP profile" -- `paper_mnuvalidation_photo.yaml`
-  (used by `03.2` and all other photo cases) already is that.
+  (used by all canonical photo cases) already is that.
 - **Spectroscopic (linear P_cb observable):**
   `cosmicfishpie/configs/default_boltzmann_yaml_files/class/paper_mnuvalidation_spectro.yaml`
   ("UHP" profile: `l_max_ncdm=40`, `ncdm_fluid_approximation=3`, `evolver=0`), used for
-  every spectro case (`02.1`, `03.1`, `04.1`, `05.1`, `05.3`, `07.1`, `08.1`). The
+  every canonical spectro case. The
   `non linear` key present in this YAML (and in the shared CAMB YAML) is **inert
   legacy configuration** for the spectroscopic observable: `GCsp_linear` in the common
   specs JSON drives the actual dewiggling/damping treatment in
@@ -194,18 +234,17 @@ via `--sigma-threshold` in `scripts/run_fisher_compare_backends.py` (wired throu
 .param_sigma_ratio.<name>.ratio_b_over_a` from the `compare_fishers_in_dir.py` output
 JSON and exits nonzero if `max(|ratio - 1| * 100) > SIGMA_THRESHOLD`.
 
-## Running the formal paper models (models 1-3, 6 cases: spectro + photo each)
+## Running the formal paper models (models 1-3, 12 probe/scenario cases)
 
 ```bash
 uv run bash scripts/run_selected_validations.sh --cases 02,03,04 --omp-threads 8
 ```
 
-Or individually via `scripts/compare_backends_report.sh --config
-scripts/validation_configs/compare_run_config.env_<ID>_...` for any of `02.1`, `02.2`,
-`03.1`, `03.2`, `04.1`, `04.2`. Add `03.2.1` for the CLASS precision-sensitivity
-variant, or `--cases 05,07,08` for the controls/stress tests, or `--all` for every
-discovered case. See `scripts/run_selected_validations.sh --help` for the full case
-list and ID grammar.
+The group command runs pessimistic and optimistic scenarios for both probes. A probe
+prefix such as `--cases 03.2` runs both model-2 photometric scenarios, while an exact
+leaf such as `--cases 03.2.0` runs only the pessimistic case. Use `--cases 05,07,08`
+for controls/stress tests, or `--all` for every primary case. Alternative scenarios
+are intentionally excluded from discovery; see `alternatives/README.md`.
 
 Each case is `CODE_A=camb` vs `CODE_B=class`, matching the convention used by the
 archived historical `env_03`/`env_04` nuvalidation cases. Each run writes provenance
@@ -230,7 +269,8 @@ uv run python scripts/compare_reference_fishers.py \
 
 This was used to cross-check this repo's cases against the actual paper production
 Fisher matrices in the companion `Euclid_KP_nu` repository during the
-`ShareDeltaNeff` root-cause investigation above, and again to confirm that case `03.2`
+`ShareDeltaNeff` root-cause investigation above, and again to confirm that the old
+P_mm/free-`betaIA` precursor to case `03.2.0`
 (formerly numbered "case 11") reproduces the historical published `nulcdm_external`
 P3-CAMB vs HP-CLASS marginalized `mnu` deviation almost exactly (10.06% vs 10.07%),
 showing the paper's own original validation already exhibited this deviation -- see

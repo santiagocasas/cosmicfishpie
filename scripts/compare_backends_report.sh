@@ -49,6 +49,8 @@ YAML_B=""                # optional: path to YAML for run B
 YAML_KEY_A=""            # optional: override yaml key for run A
 YAML_KEY_B=""            # optional: override yaml key for run B
 COMMON_SPECS_JSON=""     # optional: JSON with fiducialpars/freepars/options
+SURVEY_NAME_PHOTO=""     # optional: survey YAML stem; default depends on MODE
+SURVEY_NAME_SPECTRO=""   # optional: survey YAML stem; default depends on MODE
 ACCURACY=1
 FEEDBACK=1
 OMP_THREADS=""           # optional: set OMP_NUM_THREADS
@@ -101,6 +103,29 @@ if [[ -n "${COMMON_SPECS_JSON}" && "${COMMON_SPECS_JSON}" != /* ]]; then
 fi
 if [[ -n "${COMMON_SPECS_JSON}" && ! -f "${COMMON_SPECS_JSON}" ]]; then
   echo "COMMON_SPECS_JSON not found: ${COMMON_SPECS_JSON}" >&2
+  exit 2
+fi
+
+if [[ "${MODE}" == "photo" ]]; then
+  SURVEY_NAME_PHOTO="${SURVEY_NAME_PHOTO:-Euclid-Photometric-ISTF-Pessimistic}"
+  SURVEY_NAME_SPECTRO=""
+elif [[ "${MODE}" == "spectro" ]]; then
+  SURVEY_NAME_PHOTO=""
+  SURVEY_NAME_SPECTRO="${SURVEY_NAME_SPECTRO:-Euclid-Spectroscopic-ISTF-Pessimistic}"
+else
+  echo "Invalid MODE: ${MODE} (expected photo/spectro)" >&2
+  exit 2
+fi
+
+SURVEY_SPECS_DIR="${REPO_ROOT}/cosmicfishpie/configs/default_survey_specifications"
+SURVEY_SPECS_FILE=""
+if [[ -n "${SURVEY_NAME_PHOTO}" ]]; then
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_DIR}/${SURVEY_NAME_PHOTO}.yaml"
+elif [[ -n "${SURVEY_NAME_SPECTRO}" ]]; then
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_DIR}/${SURVEY_NAME_SPECTRO}.yaml"
+fi
+if [[ ! -f "${SURVEY_SPECS_FILE}" ]]; then
+  echo "Survey specifications not found: ${SURVEY_SPECS_FILE}" >&2
   exit 2
 fi
 
@@ -185,6 +210,15 @@ print(hashlib.sha256(data).hexdigest())
 PY
   )
 fi
+SURVEY_SPECS_HASH=$(
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_FILE}" python - <<'PY'
+import hashlib
+import os
+
+with open(os.environ["SURVEY_SPECS_FILE"], "rb") as fh:
+    print(hashlib.sha256(fh.read()).hexdigest())
+PY
+)
 
 CONFIG_STRING="MODE=${MODE}
 CODE_A=${CODE_A}
@@ -195,6 +229,10 @@ YAML_KEY_A=${YAML_KEY_A}
 YAML_KEY_B=${YAML_KEY_B}
 COMMON_SPECS_JSON=${COMMON_SPECS_JSON}
 COMMON_SPECS_HASH=${COMMON_SPECS_HASH}
+SURVEY_NAME_PHOTO=${SURVEY_NAME_PHOTO}
+SURVEY_NAME_SPECTRO=${SURVEY_NAME_SPECTRO}
+SURVEY_SPECS_FILE=${SURVEY_SPECS_FILE}
+SURVEY_SPECS_HASH=${SURVEY_SPECS_HASH}
 ACCURACY=${ACCURACY}
 FEEDBACK=${FEEDBACK}
 OMP_THREADS=${OMP_THREADS}
@@ -286,6 +324,10 @@ fi
   printf "YAML_KEY_B=%q\n" "${YAML_KEY_B}"
   printf "COMMON_SPECS_JSON=%q\n" "${COMMON_SPECS_JSON}"
   printf "COMMON_SPECS_HASH=%q\n" "${COMMON_SPECS_HASH}"
+  printf "SURVEY_NAME_PHOTO=%q\n" "${SURVEY_NAME_PHOTO}"
+  printf "SURVEY_NAME_SPECTRO=%q\n" "${SURVEY_NAME_SPECTRO}"
+  printf "SURVEY_SPECS_FILE=%q\n" "${SURVEY_SPECS_FILE}"
+  printf "SURVEY_SPECS_HASH=%q\n" "${SURVEY_SPECS_HASH}"
   if [[ -n "${COMMON_SPECS_COPY}" ]]; then
     printf "COMMON_SPECS_COPY=%q\n" "${COMMON_SPECS_COPY}"
   fi
@@ -341,6 +383,12 @@ if [[ -n "${YAML_KEY_B}" ]]; then
 fi
 if [[ -n "${COMMON_SPECS_JSON}" ]]; then
   compare_cmd+=(--common-specs "${COMMON_SPECS_JSON}")
+fi
+if [[ -n "${SURVEY_NAME_PHOTO}" ]]; then
+  compare_cmd+=(--survey-name-photo "${SURVEY_NAME_PHOTO}")
+fi
+if [[ -n "${SURVEY_NAME_SPECTRO}" ]]; then
+  compare_cmd+=(--survey-name-spectro "${SURVEY_NAME_SPECTRO}")
 fi
 if [[ -n "${SIGMA_THRESHOLD}" ]]; then
   compare_cmd+=(--sigma-threshold "${SIGMA_THRESHOLD}")

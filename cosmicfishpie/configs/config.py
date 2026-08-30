@@ -46,6 +46,23 @@ def _load_boltzmann_yaml(path):
     return _merge_boltzmann_config(profiles[profile_name], parsed)
 
 
+def _add_free_ia_parameters(freeparams, ia_params, variation):
+    """Add the requested intrinsic-alignment parameters to ``freeparams``."""
+    if isinstance(variation, dict):
+        unknown = set(variation) - set(ia_params)
+        if unknown:
+            names = ", ".join(sorted(unknown))
+            raise ValueError(f"Unknown intrinsic-alignment parameter(s): {names}")
+        for key, step in variation.items():
+            if key != "IA_model":
+                freeparams.setdefault(key, step)
+        return
+
+    for key in ia_params:
+        if key != "IA_model":
+            freeparams.setdefault(key, variation)
+
+
 def init(
     options=dict(),
     specifications=dict(),
@@ -741,11 +758,7 @@ def init(
     IAparams = deepcopy(IApars)
     if "WL" in obs:
         if specs["vary_IA_pars"] is not None:
-            default_eps_IA = specs["vary_IA_pars"]
-            for key in IAparams.keys():
-                if key != "IA_model":
-                    # Only add the free parameters that are not already in the dictionary
-                    freeparams.setdefault(key, default_eps_IA)
+            _add_free_ia_parameters(freeparams, IAparams, specs["vary_IA_pars"])
 
     global Spectrononlinearparams
     Spectrononlinearparams = dict()

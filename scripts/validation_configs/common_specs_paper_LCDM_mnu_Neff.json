@@ -15,8 +15,8 @@
     "fix_cosmo_nl_terms": true,
     "Pshot_nuisance_fiducial": 0.0,
     "SUPPRESS_WARNINGS": true,
-    "GCsp_Tracer": "matter",
-    "GCph_Tracer": "matter",
+    "GCsp_Tracer": "clustering",
+    "GCph_Tracer": "clustering",
     "ell_sampling": "accuracy",
     "ShareDeltaNeff": false
   },

@@ -7,6 +7,9 @@
 > the resolved, quantitative diagnosis. Note also that `08.*` is a stress test
 > explicitly excluded by the paper's own Sec. 6 validation scope (arXiv:2405.06047v1)
 > -- see `PAPER_NEUTRINO_VALIDATION.md`.
+> The numeric results also predate the paper-faithful P_cb and fixed-`betaIA`
+> correction. They remain useful conditioning diagnostics, not current validation
+> outcomes.
 
 ## Finding
 
@@ -38,7 +41,7 @@ The most likely explanation is a small CAMB-vs-CLASS nonlinear/HMcode2020
 baseline difference across the photometric derivatives, amplified when the
 Fisher matrix is marginalized over the correlated `mnu`-`Neff`-`w0`-`wa`
 block. This extends the mechanism already documented for cases `05.4` and
-`03.2` (formerly "case 09" and "case 11").
+`03.2.0` (formerly "case 09" and "case 11").
 A secondary numerical factor is that the photo CLASS profile uses lower
 massive-neutrino perturbation settings than the spectro profile
 (`l_max_ncdm=25` and the default fluid approximation versus

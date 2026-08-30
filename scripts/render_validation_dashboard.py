@@ -159,11 +159,17 @@ def _normalize_case_id(raw: str) -> str | None:
 
 def discover_cases(config_dir: Path, repo_root: Path) -> list[CaseDef]:
     cases: list[CaseDef] = []
+    seen_numbers: dict[str, Path] = {}
     for path in sorted(config_dir.glob("compare_run_config.env_*")):
         m = re.match(r"compare_run_config\.env_(\d+(?:\.\d+)*)_", path.name)
         if not m:
             continue
         number = m.group(1)
+        if number in seen_numbers:
+            raise SystemExit(
+                f"Duplicate case number {number}: {seen_numbers[number].name} and {path.name}"
+            )
+        seen_numbers[number] = path
         parsed = _parse_env_config(path, repo_root)
         threshold_raw = parsed.get("SIGMA_THRESHOLD", "").strip()
         threshold = None
@@ -203,14 +209,45 @@ def _model_label(case: CaseDef) -> str:
         return case.description or f"case {case.number}"
     options = specs.get("options") or {}
     freepars = specs.get("freepars") or {}
-    cosmo_model = options.get("cosmo_model", "?")
+    cosmo_model = str(options.get("cosmo_model", "?"))
+    if "w0" in freepars and "wa" in freepars:
+        cosmo_model = "w0waCDM"
+    elif "w0" in freepars:
+        cosmo_model = "w0CDM"
     extras = [p for p in ("mnu", "Neff") if p in freepars]
-    label = str(cosmo_model)
+    fixed = [
+        p for p in ("mnu", "Neff") if p in (specs.get("fiducialpars") or {}) and p not in freepars
+    ]
+    label = cosmo_model
     if extras:
         label += " + " + ", ".join(extras)
-    elif "mnu" in (specs.get("fiducialpars") or {}) and "mnu" not in freepars:
-        label += " (fixed mnu)"
+    if fixed:
+        label += f" (fixed {', '.join(fixed)})"
     return label
+
+
+def _yaml_dependency_paths(path: Path) -> list[Path]:
+    """Return a leaf YAML and any recursively referenced precision profiles."""
+    paths: list[Path] = []
+    seen: set[Path] = set()
+
+    def visit(current: Path) -> None:
+        current = current.resolve()
+        if current in seen:
+            return
+        seen.add(current)
+        paths.append(current)
+        try:
+            import yaml
+
+            data = yaml.safe_load(current.read_text(encoding="utf-8")) or {}
+        except Exception:
+            return
+        if isinstance(data, dict) and data.get("precision_profile_file"):
+            visit(current.parent / data["precision_profile_file"])
+
+    visit(path)
+    return paths
 
 
 def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path | None:
@@ -463,10 +500,16 @@ def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
     for input_path in (case.yaml_a, case.yaml_b, case.common_specs_json):
         if input_path is None:
             continue
-        try:
-            paths.append(str(input_path.resolve().relative_to(repo_root)))
-        except ValueError:
-            paths.append(str(input_path.resolve()))
+        dependency_paths = (
+            _yaml_dependency_paths(input_path)
+            if input_path.suffix in {".yaml", ".yml"}
+            else [input_path]
+        )
+        for dependency in dependency_paths:
+            try:
+                paths.append(str(dependency.relative_to(repo_root)))
+            except ValueError:
+                paths.append(str(dependency))
     return paths
 
 

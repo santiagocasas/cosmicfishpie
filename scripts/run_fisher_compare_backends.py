@@ -163,6 +163,7 @@ def _backend_provenance(code: str) -> dict:
     try:
         if code == "camb":
             import camb
+
             info["available"] = True
             info["version"] = getattr(camb, "__version__", None)
             info["module_path"] = getattr(camb, "__file__", None)
@@ -170,14 +171,19 @@ def _backend_provenance(code: str) -> dict:
         elif code == "class":
             try:
                 from classy import Class
+
                 info["available"] = True
-                info["version"] = getattr(Class, "__version__", None) or getattr(Class, "version", None)
+                info["version"] = getattr(Class, "__version__", None) or getattr(
+                    Class, "version", None
+                )
                 import classy
+
                 info["module_path"] = getattr(classy, "__file__", None)
                 info.update(_package_install_source("classy"))
             except Exception:
                 pass
         import platform
+
         info["platform"] = platform.platform()
     except Exception:
         pass
@@ -212,6 +218,20 @@ def _write_run_metadata(
     }
     outpath.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return outpath
+
+
+def _update_run_metadata(path: Path, **updates) -> None:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload.update(updates)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _spec_filename(matrix_path: str) -> str:
+    """Convert a Fisher matrix filename returned by CosmicFish to its specs filename."""
+    name = Path(matrix_path).name
+    if name.endswith("_FM.txt"):
+        return f"{name[:-len('_FM.txt')]}_FM_specs.json"
+    return name
 
 
 def _load_common_specs(path: Path) -> dict:
@@ -450,6 +470,8 @@ def main() -> int:
         },
     )
     print("[compare] Wrote run metadata:", meta_path)
+    phase_timing: dict[str, float] = {}
+    workflow_start = time.perf_counter()
 
     prefix = f"compare_{args.mode}_{run_id}_"
 
@@ -472,12 +494,14 @@ def main() -> int:
     opts_a["outroot"] = prefix + "A_"
     opts_a["results_dir"] = str(outdir) + "/"
     opts_a[yaml_key_a] = yaml_a
+    phase_start = time.perf_counter()
     a_txt = _run_fisher(
         options=opts_a,
         observables=observables,
         fiducial=fiducial,
         freepars=freepars,
     )
+    phase_timing["fisher_a_seconds"] = time.perf_counter() - phase_start
     print("[compare] A matrix:", a_txt)
 
     print("[compare] Running Fisher B...")
@@ -499,15 +523,19 @@ def main() -> int:
     opts_b["outroot"] = prefix + "B_"
     opts_b["results_dir"] = str(outdir) + "/"
     opts_b[yaml_key_b] = yaml_b
+    phase_start = time.perf_counter()
     b_txt = _run_fisher(
         options=opts_b,
         observables=observables,
         fiducial=fiducial,
         freepars=freepars,
     )
+    phase_timing["fisher_b_seconds"] = time.perf_counter() - phase_start
     print("[compare] B matrix:", b_txt)
 
     if not args.compare:
+        phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+        _update_run_metadata(meta_path, phase_timing=phase_timing)
         print("[compare] Done. To compare:")
         print(
             f"  uv run python scripts/compare_fishers_in_dir.py {outdir} --fom-params {args.fom_params}"
@@ -520,14 +548,25 @@ def main() -> int:
         str(outdir),
         "--fom-params",
         args.fom_params,
+        "--pair",
+        _spec_filename(a_txt) if a_txt else "",
+        _spec_filename(b_txt) if b_txt else "",
     ]
+    if not a_txt or not b_txt:
+        raise SystemExit("Could not identify both Fisher matrix specs files for pair comparison")
     print("[compare] Comparing Fishers:")
     print(" ", " ".join(compare_cmd))
+    phase_start = time.perf_counter()
     subprocess.check_call(compare_cmd)
+    phase_timing["comparison_seconds"] = time.perf_counter() - phase_start
+    phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+    _update_run_metadata(meta_path, phase_timing=phase_timing)
 
     # Threshold gating
     if args.sigma_threshold is not None:
-        compare_jsons = sorted(outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime)
+        compare_jsons = sorted(
+            outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime
+        )
         if compare_jsons:
             latest = compare_jsons[-1]
             try:
@@ -587,7 +626,11 @@ def main() -> int:
     ]
     print("[compare] Plotting comparison:")
     print(" ", " ".join(plot_cmd))
+    phase_start = time.perf_counter()
     subprocess.check_call(plot_cmd)
+    phase_timing["plotting_seconds"] = time.perf_counter() - phase_start
+    phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+    _update_run_metadata(meta_path, phase_timing=phase_timing)
     return 0
 
 

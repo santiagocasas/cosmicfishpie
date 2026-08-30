@@ -54,7 +54,7 @@ FEEDBACK=1
 OMP_THREADS=""           # optional: set OMP_NUM_THREADS
 FOM_PARAMS="Omegam,sigma8"
 PLOT=true                # set false to skip plot generation
-USE_TIMESTAMP=false      # set true to append a timestamp to outputs
+USE_TIMESTAMP=true       # always isolate runs with a timestamped output directory
 OUTDIR=""                # optional: output directory; default uses config hash
 SIGMA_THRESHOLD=""       # optional: max allowed sigma ratio deviation percent; exit nonzero if exceeded
 
@@ -71,6 +71,12 @@ if [[ -n "${CONFIG_FILE}" ]]; then
   fi
   # shellcheck disable=SC1090
   source "${CONFIG_FILE}"
+fi
+
+# Default validation configs must never reuse a deterministic output directory.
+# An explicitly supplied OUTDIR remains available for intentional aggregation.
+if [[ -z "${OUTDIR}" ]]; then
+  USE_TIMESTAMP=true
 fi
 
 if [[ -n "${ENV_OUTDIR}" && -z "${OUTDIR}" ]]; then
@@ -186,11 +192,43 @@ PY
   )
 fi
 
+_yaml_fingerprint() {
+  YAML_PATH="$1" python - <<'PY'
+import hashlib
+import os
+from pathlib import Path
+
+import yaml
+
+seen = set()
+
+
+def fingerprint(path: Path) -> bytes:
+    path = path.resolve()
+    if path in seen:
+        return b""
+    seen.add(path)
+    digest = hashlib.sha256(path.read_bytes()).digest()
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if isinstance(data, dict) and data.get("precision_profile_file"):
+        digest += fingerprint((path.parent / data["precision_profile_file"]).resolve())
+    return digest
+
+
+print(hashlib.sha256(fingerprint(Path(os.environ["YAML_PATH"]))).hexdigest())
+PY
+}
+
+YAML_HASH_A="$(_yaml_fingerprint "${YAML_A}")"
+YAML_HASH_B="$(_yaml_fingerprint "${YAML_B}")"
+
 CONFIG_STRING="MODE=${MODE}
 CODE_A=${CODE_A}
 CODE_B=${CODE_B}
 YAML_A=${YAML_A}
 YAML_B=${YAML_B}
+YAML_HASH_A=${YAML_HASH_A}
+YAML_HASH_B=${YAML_HASH_B}
 YAML_KEY_A=${YAML_KEY_A}
 YAML_KEY_B=${YAML_KEY_B}
 COMMON_SPECS_JSON=${COMMON_SPECS_JSON}
@@ -219,6 +257,8 @@ if [[ "${USE_TIMESTAMP}" == "true" ]]; then
 fi
 
 if [[ -z "${OUTDIR}" ]]; then
+  # Every default run is isolated; explicit OUTDIR remains an intentional escape hatch.
+  USE_TIMESTAMP=true
   OUTDIR="${REPO_ROOT}/scripts/benchmark_results/compare_${MODE}_${CODE_A}_vs_${CODE_B}_${NAME_SUFFIX}"
 fi
 if [[ "${REPORT_SINGLE}" == "true" && -z "${REPORT_SINGLE_FILE}" ]]; then
@@ -282,6 +322,8 @@ fi
   printf "CODE_B=%q\n" "${CODE_B}"
   printf "YAML_A=%q\n" "${YAML_A}"
   printf "YAML_B=%q\n" "${YAML_B}"
+  printf "YAML_HASH_A=%q\n" "${YAML_HASH_A}"
+  printf "YAML_HASH_B=%q\n" "${YAML_HASH_B}"
   printf "YAML_KEY_A=%q\n" "${YAML_KEY_A}"
   printf "YAML_KEY_B=%q\n" "${YAML_KEY_B}"
   printf "COMMON_SPECS_JSON=%q\n" "${COMMON_SPECS_JSON}"

@@ -224,15 +224,27 @@ def main() -> int:
         default=None,
         help="Comma-separated list of parameters for FoM (default: first two parameters)",
     )
+    parser.add_argument(
+        "--pair",
+        nargs=2,
+        metavar=("SPECS_A", "SPECS_B"),
+        help="Compare exactly these two specs files instead of scanning all files in the directory",
+    )
     args = parser.parse_args()
 
     base_dir = Path(args.dir)
     if not base_dir.is_dir():
         raise SystemExit(f"Directory not found: {base_dir}")
 
-    specs_files = sorted(base_dir.glob("*_FM_specs.json")) + sorted(
-        base_dir.glob("*_specifications.json")
-    )
+    if args.pair:
+        specs_files = [base_dir / name for name in args.pair]
+        missing = [str(path) for path in specs_files if not path.is_file()]
+        if missing:
+            raise SystemExit(f"Pair specs not found: {', '.join(missing)}")
+    else:
+        specs_files = sorted(base_dir.glob("*_FM_specs.json")) + sorted(
+            base_dir.glob("*_specifications.json")
+        )
     if not specs_files:
         raise SystemExit("No specs JSON files found.")
 
@@ -241,6 +253,8 @@ def main() -> int:
         ref_path = base_dir / args.ref
         if not ref_path.is_file():
             raise SystemExit(f"Reference specs not found: {ref_path}")
+    elif args.pair:
+        ref_path = specs_files[0]
     else:
         ref_path = specs_files[0]
 
@@ -329,8 +343,9 @@ def main() -> int:
         entry["specs_diff"] = diffs
         results["pairwise"].append(entry)
 
-    # Pairwise comparisons across all specs
-    for i, spec_a in enumerate(specs_files):
+    # Pairwise comparisons across all specs. Explicit validation pairs have
+    # already been handled above and must not be duplicated here.
+    for i, spec_a in enumerate([] if args.pair else specs_files):
         for spec_b in specs_files[i + 1 :]:
             a_specs = _load_specs(spec_a)
             b_specs = _load_specs(spec_b)

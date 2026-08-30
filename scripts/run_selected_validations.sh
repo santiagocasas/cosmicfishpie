@@ -26,7 +26,7 @@ discover_cases() {
       case_number="${BASH_REMATCH[1]}"
       if [[ -n "${CASE_CONFIGS[${case_number}]+x}" ]]; then
         echo "Duplicate case number ${case_number}: ${CASE_CONFIGS[${case_number}]} and ${filename}" >&2
-        continue
+        return 1
       fi
       CASE_CONFIGS["${case_number}"]="${filename}"
       CASE_ORDER+=("${case_number}")
@@ -80,6 +80,7 @@ Options:
   --all                 Run every discovered case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
   --force               Rerun cases even when an unchanged completed result exists.
+  --verbose             Stream detailed backend output; default output is concise.
   --help                Show this help text.
 
 Each case runs through compare_backends_report.sh, writes its own backend
@@ -100,12 +101,14 @@ digits.
 EOF
 }
 
-discover_cases
+discover_cases || exit 2
 
 declare -a SELECTED_CASES=()
+declare -A SELECTED_CASE_SET=()
 omp_threads="${OMP_NUM_THREADS:-8}"
 all_cases=false
 force=false
+verbose=false
 
 # Zero-pad the leading root segment of a dotted case ID (e.g. "3.2" -> "03.2").
 # Prints nothing and returns nonzero if the value isn't a dotted numeric ID.
@@ -133,14 +136,20 @@ append_cases() {
     }
     if [[ -n "${CASE_CONFIGS[${normalized}]+x}" ]]; then
       # Exact case ID match -- select only that case, even if it has sub-cases.
-      SELECTED_CASES+=("${normalized}")
+      if [[ -z "${SELECTED_CASE_SET[${normalized}]+x}" ]]; then
+        SELECTED_CASES+=("${normalized}")
+        SELECTED_CASE_SET["${normalized}"]=1
+      fi
       continue
     fi
     # Otherwise treat it as a group prefix: expand to every descendant case.
     found=false
     for case_number in "${CASE_ORDER[@]}"; do
       if [[ "${case_number}" == "${normalized}."* ]]; then
-        SELECTED_CASES+=("${case_number}")
+        if [[ -z "${SELECTED_CASE_SET[${case_number}]+x}" ]]; then
+          SELECTED_CASES+=("${case_number}")
+          SELECTED_CASE_SET["${case_number}"]=1
+        fi
         found=true
       fi
     done
@@ -179,6 +188,10 @@ while [[ $# -gt 0 ]]; do
       force=true
       shift
       ;;
+    --verbose)
+      verbose=true
+      shift
+      ;;
     --help|-h)
       usage
       exit 0
@@ -202,6 +215,25 @@ if [[ ${#SELECTED_CASES[@]} -eq 0 ]]; then
 fi
 
 export OMP_NUM_THREADS="${omp_threads}"
+export PYTHONUNBUFFERED=1
+
+if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+  COLOR_BOLD=$'\033[1m'
+  COLOR_GREEN=$'\033[32m'
+  COLOR_RED=$'\033[31m'
+  COLOR_YELLOW=$'\033[33m'
+  COLOR_RESET=$'\033[0m'
+else
+  COLOR_BOLD=""
+  COLOR_GREEN=""
+  COLOR_RED=""
+  COLOR_YELLOW=""
+  COLOR_RESET=""
+fi
+
+status_line() {
+  printf '%s%s%s\n' "$1" "$2" "${COLOR_RESET}"
+}
 BATCH_ID="selected_validation_$(date -u +%Y%m%d_%H%M%S)"
 BATCH_DIR="${REPO_ROOT}/scripts/benchmark_results/${BATCH_ID}"
 mkdir -p "${BATCH_DIR}"
@@ -220,9 +252,7 @@ for case_number in "${SELECTED_CASES[@]}"; do
   case_start=$(date +%s)
 
   echo
-  echo "------------------------------------------------------------------------"
-  echo "Case ${case_number}: ${config_file}"
-  echo "------------------------------------------------------------------------"
+  status_line "${COLOR_BOLD}" "[${case_number}] ${config_file}"
 
   if [[ ! -f "${config_path}" ]]; then
     echo "Missing config: ${config_path}" | tee "${log_file}"
@@ -245,16 +275,23 @@ for case_number in "${SELECTED_CASES[@]}"; do
       fi
       echo "${check_output}"
     fi
-    bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
-      --config "${config_path}" 2>&1 | tee "${log_file}"
-    status="${PIPESTATUS[0]}"
+    status_line "${COLOR_YELLOW}" "[${case_number}] running (details: ${log_file})"
+    if [[ "${verbose}" == true ]]; then
+      bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
+        --config "${config_path}" 2>&1 | tee "${log_file}"
+      status="${PIPESTATUS[0]}"
+    else
+      bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
+        --config "${config_path}" >"${log_file}" 2>&1
+      status=$?
+    fi
   fi
 
   elapsed=$(( $(date +%s) - case_start ))
   if [[ ${status} -eq 0 ]]; then
-    echo "Case ${case_number}: PASS (${elapsed}s)"
+    status_line "${COLOR_GREEN}" "[${case_number}] PASS (${elapsed}s)"
   else
-    echo "Case ${case_number}: FAIL (exit ${status}, ${elapsed}s)"
+    status_line "${COLOR_RED}" "[${case_number}] FAIL (exit ${status}, ${elapsed}s)"
     failed=1
   fi
 done

@@ -1,45 +1,53 @@
 # Einstein-Boltzmann solver profiles
 
-`precision_profiles.yaml` is the single authoritative registry for numerical and
-model-level solver settings. Files in the `camb/` and `class/` subdirectories are small
-selectors: they name one profile and contain no duplicated numerical configuration.
+Every file in `camb/` and `class/` is a plain, self-contained YAML with real settings --
+there is no shared registry and no indirection layer to follow. Open any file and you see
+exactly what CAMB/CLASS will be run with.
 
-## Validated defaults (arXiv:2405.06047v1)
+## Defaults (used automatically when nothing is specified)
 
-| Selector | Profile | Intended use |
-|---|---|---|
-| `camb/default.yaml` | `camb_hp` | CAMB HP for photo and spectro |
-| `class/default.yaml` | `class_hp` | CLASS HP for photo |
-| `class/default_spectro.yaml` | `class_uhp` | CLASS UHP for spectro |
+| Selector | Intended use |
+|---|---|
+| `camb/default.yaml` | CAMB, fast/relaxed settings, used for both probes |
+| `class/default.yaml` | CLASS, fast/relaxed settings, photometric probe |
+| `class/default_spectro.yaml` | CLASS, fast/relaxed settings, spectroscopic probe |
 
-These are the package defaults for scientific validation. The CLASS photo and spectro
-profiles intentionally differ: the paper validates HP for photo and UHP for spectro.
+These are what `cosmicfishpie.configs.config` falls back to when `camb_config_yaml` /
+`class_config_yaml` is not given. They are meant for exploration and development, not for
+publication-grade Fisher forecasts -- do not cite results computed with them without first
+validating against the high-precision profiles below.
 
-## Experimental fast profiles
+## Paper-validated high precision (arXiv:2405.06047v1)
 
-`camb/fast_photo.yaml`, `camb/fast_spectro.yaml`, `class/fast_photo.yaml`, and
-`class/fast_spectro.yaml` select relaxed speed-oriented profiles. They are not validated
-substitutes for the canonical defaults. Use them for explicit speed/accuracy experiments
-and establish numerical convergence before scientific production use.
+| Selector | Intended use |
+|---|---|
+| `camb/nuvalidation_hp.yaml` | CAMB HP, used for both photo and spectro |
+| `class/nuvalidation_hp.yaml` | CLASS HP, photometric probe |
+| `class/nuvalidation_uhp.yaml` | CLASS UHP, spectroscopic probe (deeper neutrino-perturbation treatment) |
+
+These reproduce the neutrino-sector validation's Appendix settings and are what the
+`scripts/validation_configs/compare_run_config.env_*` paper-validation cases use. The
+CLASS photo (HP) and spectro (UHP) tiers intentionally differ -- the paper validates each
+probe with its own precision tier; CAMB does not need the split.
 
 ## Historical MontePython validation (arXiv:2303.09451v1)
 
-| Selector | Profile | Paper setting |
-|---|---|---|
-| `camb/mpvalidation_p3.yaml` | `camb_mpvalidation_p3` | CAMB P3 |
-| `class/mpvalidation_hp.yaml` | `class_mpvalidation_hp` | CLASS HP |
-| `class/mpvalidation_dp.yaml` | `class_mpvalidation_dp` | CLASS DP comparison |
+| Selector | Paper setting |
+|---|---|
+| `camb/mpvalidation_p3.yaml` | CAMB P3 |
+| `class/mpvalidation_hp.yaml` | CLASS HP, Appendix A.5 |
+| `class/mpvalidation_dp.yaml` | CLASS DP comparison |
 
-The central registry records the CAMB P1/P2/P3 relationship and the historical patched
-`halofit_tol_sigma` values as provenance comments. Current CAMB does not expose that
-patched tolerance, so it is not passed as a runtime parameter. Neutrino density and
+`camb/mpvalidation_p3.yaml` documents the CAMB P1/P2/P3 relationship and the historical
+patched `halofit_tol_sigma` values as provenance comments. Current CAMB does not expose
+that patched tolerance, so it is not passed as a runtime parameter. Neutrino density and
 temperature values that vary with the cosmological model remain the responsibility of the
-CosmicFishPie parameter conversion and are not hard-coded into generic solver profiles.
+CosmicFishPie parameter conversion and are not hard-coded here.
 
-## Overrides
+## Overrides / one-off variants
 
-A selector may override individual profile values by adding local mappings such as
-`ACCURACY` or `COSMO_SETTINGS`; local values are merged over the selected profile. Such
-files should live with the experiment that needs them, not among package defaults. The
-strict CLASS photo sensitivity test is therefore stored at
+Need a small tweak to one of the profiles above (e.g. a precision-sensitivity test)?
+Copy the file and change the values you need -- there is nothing to "inherit" or point
+back at. Such files should live with the experiment that needs them, not among the package
+defaults. For example, the strict CLASS photo neutrino-precision sensitivity test lives at
 `scripts/validation_configs/alternatives/class_photo_strict.yaml`.

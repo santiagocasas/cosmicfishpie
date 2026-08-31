@@ -1,3 +1,32 @@
-# Canonical validated default: Archidiacono et al. 2405 CAMB HP.
-precision_profile_file: ../precision_profiles.yaml
-precision_profile: camb_hp
+# Default CAMB settings used automatically when no camb_config_yaml is given.
+# These are fast, relaxed-precision settings meant for exploration and
+# development, not for publication-grade Fisher forecasts. For the
+# paper-validated high-precision profile used in the neutrino-sector
+# validation (arXiv:2405.06047v1), use camb/nuvalidation_hp.yaml instead.
+ACCURACY:
+  'kmax': 50
+  'k_per_logint': 20
+  'AccuracyBoost': 1
+  'lAccuracyBoost': 1
+  'lSampleBoost': 1
+  'accurate_massive_neutrino_transfers': False
+  'MassiveNuMethod': 0
+NUMERICS:
+  'zmax': 5
+  'zsamples': 100
+COSMO_SETTINGS:
+  'halofit_version': 'mead2020'
+  'dark_energy_model': 'ppf'
+  'num_nu_massive': 1
+  'TCMB': 2.7255
+  'Reion.Reionization': False
+  'WantCls': False
+  'Want_CMB': False
+  'DoLateRadTruncation': True
+  'DoLensing': False
+LCDM:
+  'Omegak': 0.
+  'YHe': 0.2454006
+w0waCDM:
+  'Omegak': 0.
+  'YHe': 0.2454006

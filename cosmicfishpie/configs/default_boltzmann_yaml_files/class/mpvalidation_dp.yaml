@@ -1,3 +1,22 @@
-# Historical Casas et al. 2303 comparison selector: CLASS DP.
-precision_profile_file: ../precision_profiles.yaml
-precision_profile: class_mpvalidation_dp
+# Historical Casas et al. arXiv:2303.09451v1 CLASS DP profile: common
+# output/nonlinear settings without the Appendix A.5 precision overrides.
+# CLASS's own default halofit tolerance is 1e-6.
+ACCURACY: {}
+COSMO_SETTINGS:
+  'P_k_max_1/Mpc': 50
+  'output': 'mPk,mTk'
+  'non linear': 'halofit'
+  'nonlinear_min_k_max': 80.
+  'z_max_pk': 5.0
+  'N_ncdm': 1
+  'T_cmb': 2.7255
+  'k_pivot': 0.05
+LCDM:
+  'Omega_k': 0
+  'YHe': 0.2454006
+  'reio_parametrization': 'reio_none'
+w0waCDM:
+  'Omega_Lambda': 0.0
+  'Omega_k': 0
+  'YHe': 0.2454006
+  'reio_parametrization': 'reio_none'

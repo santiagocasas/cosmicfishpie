@@ -1,9 +1,8 @@
-# Historical Casas et al. arXiv:2303.09451v1 CAMB P3 profile.
-# P1/P2 both used AccuracyBoost=lAccuracyBoost=2; P1 used
-# halofit_tol_sigma=1e-3 and P2 used 1e-6. P3 (this profile) selects
-# boosts 3/3 and the 1e-6 tolerance. Modern CAMB no longer exposes that
-# patched tolerance option; it is documented here as provenance only and
-# is intentionally not passed.
+# Paper-validated CAMB high-precision (HP) profile used for the
+# neutrino-sector validation, Archidiacono et al., arXiv:2405.06047v1.
+# Used for both the photometric and spectroscopic probes (CAMB does not
+# need a separate probe-specific tier the way CLASS does; see
+# class/nuvalidation_hp.yaml vs class/nuvalidation_uhp.yaml).
 ACCURACY:
   'kmax': 50
   'k_per_logint': 50
@@ -15,7 +14,7 @@ NUMERICS:
   'zmax': 5
   'zsamples': 100
 COSMO_SETTINGS:
-  'halofit_version': 'takahashi'
+  'halofit_version': 'mead2020'
   'dark_energy_model': 'ppf'
   'num_nu_massive': 1
   'TCMB': 2.7255

@@ -15,35 +15,10 @@ from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
 
 
-def _merge_boltzmann_config(base, overrides):
-    """Recursively merge YAML overrides into a precision profile."""
-    merged = deepcopy(base)
-    for key, value in overrides.items():
-        if isinstance(value, dict) and isinstance(merged.get(key), dict):
-            merged[key] = _merge_boltzmann_config(merged[key], value)
-        else:
-            merged[key] = value
-    return merged
-
-
 def _load_boltzmann_yaml(path):
-    """Load a solver YAML, optionally inheriting a named precision profile."""
+    """Load a solver settings YAML."""
     with open(path, "r") as yaml_file:
-        parsed = yaml.safe_load(yaml_file) or {}
-
-    profile_name = parsed.pop("precision_profile", None)
-    profile_file = parsed.pop("precision_profile_file", None)
-    if profile_name is None:
-        return parsed
-    if profile_file is None:
-        raise ValueError(f"{path} declares precision_profile without precision_profile_file")
-
-    profile_path = os.path.join(os.path.dirname(path), profile_file)
-    with open(profile_path, "r") as profile_yaml_file:
-        profiles = yaml.safe_load(profile_yaml_file).get("profiles", {})
-    if profile_name not in profiles:
-        raise ValueError(f"Unknown precision profile '{profile_name}' in {profile_path}")
-    return _merge_boltzmann_config(profiles[profile_name], parsed)
+        return yaml.safe_load(yaml_file) or {}
 
 
 def _add_free_ia_parameters(freeparams, ia_params, variation):

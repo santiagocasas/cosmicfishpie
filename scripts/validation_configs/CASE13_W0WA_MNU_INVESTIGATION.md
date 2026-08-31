@@ -40,7 +40,7 @@ This is not currently indicated to be a derivative-stencil or Python-layer
 The most likely explanation is a small CAMB-vs-CLASS nonlinear/HMcode2020
 baseline difference across the photometric derivatives, amplified when the
 Fisher matrix is marginalized over the correlated `mnu`-`Neff`-`w0`-`wa`
-block. This extends the mechanism already documented for cases `05.4` and
+block. This extends the mechanism already documented for cases `06.2.0` and
 `03.2.0` (formerly "case 09" and "case 11").
 A secondary numerical factor is that the photo CLASS profile uses lower
 massive-neutrino perturbation settings than the spectro profile

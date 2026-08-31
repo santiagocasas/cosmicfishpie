@@ -2,7 +2,7 @@
 
 This document describes the `paper_mnuvalidation*` / `common_specs_paper_*` validation
 track added alongside the Casas et al. w0waCDM backend cross-check
-(`common_specs_w0waCDM.json`, `mpvalidation.yaml`, cases `01.1`/`01.2`). That companion
+(`common_specs_w0waCDM.json`, `mpvalidation.yaml`, cases `01.1.*`/`01.2.*`). That companion
 track remains the reference for the original Casas et al. fiducial
 (`Omegam=.32, Omegab=.05, h=.67, ns=.96, sigma8=.815584`,
 arXiv:2303.09451v1). This track instead reproduces the neutrino-sector validation
@@ -26,15 +26,17 @@ own validation scope:
 | `02.*` | **Formal paper model 1** [Sec. 6] | w0waCDM, `mnu`/`Neff` fixed |
 | `03.*` | **Formal paper model 2** [Sec. 6] | LCDM + free `mnu`, `Neff` |
 | `04.*` | **Formal paper model 3** [Sec. 6] | w0CDM (i.e. `wa` fixed) + free `mnu`, `Neff` fixed |
-| `05.*` | Reduced control (not a Sec. 6 model) | LCDM, fixed or free-`mnu`-only |
+| `05.*` | Reduced control (not a Sec. 6 model) | LCDM, fixed `mnu`/`Neff` |
+| `06.*` | Reduced control (not a Sec. 6 model) | LCDM + free `mnu`, fixed `Neff` |
 | `07.*` | Stress test (not a Sec. 6 model) | w0waCDM + free `mnu`, `Neff` fixed (8 free cosmological params) |
 | `08.*` | Stress test, **explicitly excluded** by Sec. 6 | w0waCDM + free `mnu`, `Neff` (9 free cosmological params) |
 
-For formal groups `02.*`-`04.*`, the ID is `<model>.<probe>.<scenario>`: probe `.1` is
-spectroscopic and `.2` is photometric; scenario `.0` is pessimistic and `.1` is
-optimistic. For example, `03.1.0` is model 2 spectroscopic pessimistic and `03.2.1` is
-model 2 photometric optimistic. The reduced controls and stress tests remain
-pessimistic-only and retain their shorter IDs.
+For cross-check/formal groups `01.*`-`04.*`, the ID is `<model>.<probe>.<scenario>`:
+probe `.1` is spectroscopic and `.2` is photometric; scenario `.0` is pessimistic and
+`.1` is optimistic. For example, `03.1.0` is model 2 spectroscopic pessimistic and
+`03.2.1` is model 2 photometric optimistic. Reduced controls `05.*`/`06.*` use the same
+three-level form but currently expose only pessimistic `.0` leaves. Stress tests `07.*`
+and `08.*` remain pessimistic-only with their shorter IDs.
 
 The former `03.2.1` strict-CLASS-precision experiment is no longer a primary case. It
 is retained as alternative `01.4` under `alternatives/`, where it cannot be mistaken
@@ -84,8 +86,12 @@ This corrects the earlier validation inputs, which had both tracer settings at
 `matter`. In a model-2 photometric pessimistic precursor that still varied `betaIA`,
 changing to P_cb reduced the marginalized CAMB-vs-CLASS `mnu` deviation from 10.06% to
 5.53%. The raw unmarginalized difference changed little; the gain came from reducing
-degeneracy and Fisher-inversion amplification. The final fixed-`betaIA` canonical cases
-must be rerun before quoting validation results.
+degeneracy and Fisher-inversion amplification. The final fixed-`betaIA` batch passed all
+formal and stress-test gates: model-2 photo gives 5.53% (pessimistic) and 2.60%
+(optimistic), while the 8- and 9-parameter pessimistic photo stress tests give 6.34% and
+5.10%, respectively. Because P_cb and fixed `betaIA` were introduced together relative
+to the older stress-test matrices, those improvements cannot be attributed to
+`betaIA` alone.
 
 The dedicated paper survey YAMLs also implement the paper's nuisance convention:
 `AIA` and `etaIA` vary while `betaIA=2.17` is fixed. Both arXiv:2405.06047v1 and
@@ -137,7 +143,7 @@ factor `g_factor` scales with the *free* `Neff` parameter (`g_factor = Neff/3` w
 `changebasis_camb`/`changebasis_class` in `cosmicfishpie/cosmology/cosmology.py`.
 
 **This was initially set to `true` and was found to be the root cause of early
-photometric `mnu` gate failures in the LCDM+mnu and LCDM+mnu+Neff cases (now `05.4` and
+photometric `mnu` gate failures in the LCDM+mnu and LCDM+mnu+Neff cases (now `06.2.0` and
 `03.2.0`).** Cross-checking against the actual paper reference production Fisher matrices
 in the companion `Euclid_KP_nu` repository
 (`results/cosmicfish_internal/.../_specifications.dat`) showed that **every** paper
@@ -176,8 +182,8 @@ explicitly regardless of the `ShareDeltaNeff` value.
 
 | Common specs JSON                              | cosmo_model | Group  | Free parameters (step)                                                                 |
 |--------------------------------------------------|-------------|--------|-------------------------------------------------------------------------------------------|
-| `common_specs_paper_LCDM_fixed.json`              | LCDM        | `05.1`/`05.2` | Omegam, Omegab, h, ns, sigma8 (1% each). `mnu` fixed at 60 meV, Neff fixed. |
-| `common_specs_paper_LCDM_mnu.json`                | LCDM        | `05.3`/`05.4` | above + `mnu` (10% step)                                                     |
+| `common_specs_paper_LCDM_fixed.json`              | LCDM        | `05.1.0`/`05.2.0` | Omegam, Omegab, h, ns, sigma8 (1% each). `mnu` fixed at 60 meV, Neff fixed. |
+| `common_specs_paper_LCDM_mnu.json`                | LCDM        | `06.1.0`/`06.2.0` | above + `mnu` (10% step)                                                     |
 | `common_specs_paper_LCDM_mnu_Neff.json`           | LCDM        | `03.1.*`/`03.2.*` | above + `mnu` (10%) + `Neff` (1%) -- **formal paper model 2**       |
 | `common_specs_paper_w0wa_fixed_mnu_Neff.json`     | w0waCDM     | `02.1.*`/`02.2.*` | Omegam, Omegab, h, ns, sigma8, w0, wa (1% each). `mnu`, `Neff` fixed -- **formal paper model 1** |
 | `common_specs_paper_w0_mnu_fixed_Neff.json`       | w0waCDM     | `04.1.*`/`04.2.*` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0 (1%). `wa` fixed at 0, `Neff` fixed -- **formal paper model 3** |
@@ -242,7 +248,7 @@ uv run bash scripts/run_selected_validations.sh --cases 02,03,04 --omp-threads 8
 
 The group command runs pessimistic and optimistic scenarios for both probes. A probe
 prefix such as `--cases 03.2` runs both model-2 photometric scenarios, while an exact
-leaf such as `--cases 03.2.0` runs only the pessimistic case. Use `--cases 05,07,08`
+leaf such as `--cases 03.2.0` runs only the pessimistic case. Use `--cases 05,06,07,08`
 for controls/stress tests, or `--all` for every primary case. Alternative scenarios
 are intentionally excluded from discovery; see `alternatives/README.md`.
 

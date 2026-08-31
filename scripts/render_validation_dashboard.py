@@ -11,7 +11,7 @@ and the matching outputs from ``scripts/benchmark_results/compare_*`` (as produc
   <out-dir>/case_<ID>.html        per-case detail: full parameter sigma table + metadata
   <out-dir>/specs/case_<ID>_*.html  readable YAML/common/generated Fisher specifications
 
-Case IDs are dotted hierarchical strings (e.g. "01.2", "03.2.1"), read from
+Case IDs are dotted hierarchical strings (e.g. "01.2.0", "03.2.1"), read from
 config filenames compare_run_config.env_<ID>_<description>.
 
 Design goals (per user request):

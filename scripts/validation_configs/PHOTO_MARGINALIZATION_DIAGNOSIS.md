@@ -1,6 +1,6 @@
 # Photometric `mnu`/`sigma8` gate failures: unmarginalized diagnosis
 
-Status: historical diagnosis for the photometric gate failures in cases `05.4`, `03.2.0`,
+Status: historical diagnosis for the photometric gate failures in cases `06.2.0`, `03.2.0`,
 `08.2`, and `07.2` (formerly numbered "case 09", "case 11", "case 13", "case 15").
 Supersedes the "nonlinear HMcode2020 baseline difference" reading in
 `CASE13_W0WA_MNU_INVESTIGATION.md`, which was directionally right but wrong
@@ -10,9 +10,9 @@ is a stress test explicitly excluded by the paper's own Sec. 6 validation scope
 
 > **Configuration correction:** the matrices analyzed below used P_mm for galaxies and
 > varied `betaIA`, contrary to the paper definitions. Canonical cases now use P_cb and
-> fix `betaIA=2.17`. A corrected model-2 photometric precursor passed with a 5.53%
-> `mnu` deviation; results generated under the final `03.2.0` survey definition are the
-> authoritative comparison.
+> fix `betaIA=2.17`. The final model-2 photometric cases pass with maximum deviations of
+> 5.53% (pessimistic `03.2.0`) and 2.60% (optimistic `03.2.1`); those final survey
+> definitions are the authoritative comparisons.
 
 Source data: case `07.2` (`compare_photo_camb_vs_class_cfg_ea069c683b`) and case `07.1`
 (`compare_spectro_camb_vs_class_cfg_86d26edc54`), run at commit `57e0757`
@@ -155,7 +155,7 @@ marginalization over a correlated block) is confirmed, with two corrections:
    agreed to 0.05% rounding.
 
 This also explains the previously unexplained monotonic escalation across cases
-`05.4` (6.82%), the old `03.2.0` precursor (10.06%), `08.2` (12.82%), and `07.2`
+`06.2.0` (6.82%), the old `03.2.0` precursor (10.06%), `08.2` (12.82%), and `07.2`
 (14.71%): every additional
 free parameter that projects onto the amplitude direction moves the matrix closer to
 the cliff, independently of any change in backend physics.

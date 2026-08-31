@@ -10,7 +10,7 @@ CONFIG_DIR="${REPO_ROOT}/scripts/validation_configs"
 # Validation cases are discovered automatically from config files named
 # compare_run_config.env_<ID>_<description> in CONFIG_DIR -- adding a new case
 # only requires dropping a new config file there, no edits to this script.
-# <ID> is a dotted hierarchical case number (e.g. 05.3, 03.2.1); the leading
+# <ID> is a dotted hierarchical case number (e.g. 06.1.0, 03.2.1); the leading
 # root segment is zero-padded to 2 digits.
 declare -A CASE_CONFIGS=()
 declare -a CASE_ORDER=()
@@ -96,7 +96,7 @@ case fails or cannot be started.
 To add a new validation case, drop a new
 scripts/validation_configs/compare_run_config.env_<ID>_<description> file --
 no changes to this script are required. <ID> is a dotted hierarchical case
-number, e.g. 05.3 or 03.2.1; the leading root segment is zero-padded to 2
+number, e.g. 06.1.0 or 03.2.1; the leading root segment is zero-padded to 2
 digits.
 EOF
 }

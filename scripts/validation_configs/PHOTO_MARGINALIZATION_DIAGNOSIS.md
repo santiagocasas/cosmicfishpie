@@ -133,9 +133,9 @@ direction and only four `lnbg_i` plus four `Ps_i` nuisances are marginalized,
 instead of ten free bias amplitudes. There is no rank cliff.
 
 The 3809.9s CLASS runtime for case `07.1.0` is the price of that agreement:
-`class/paper_mnuvalidation_spectro.yaml` uses `ncdm_fluid_approximation: 3`
-(exact ncdm hierarchy) and `l_max_ncdm: 40`, while
-`class/paper_mnuvalidation_photo.yaml` uses the CLASS default fluid
+`class/default_spectro.yaml` selects `class_uhp`, which uses
+`ncdm_fluid_approximation: 3` (exact ncdm hierarchy) and `l_max_ncdm: 40`, while
+`class/default.yaml` selects `class_hp`, which uses the CLASS default fluid
 approximation and `l_max_ncdm: 25` despite requesting `P_k_max_1/Mpc: 50`.
 That asymmetry is the most plausible origin of the residual 1.55%
 unmarginalized `mnu` difference, which is the only real backend signal in the

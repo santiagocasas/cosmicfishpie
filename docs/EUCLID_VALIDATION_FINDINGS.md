@@ -1,5 +1,10 @@
 # Euclid w0waCDM Validation: Complete Analysis & Roadmap
 
+> **Historical analysis, superseded.** Exact paper profiles and provenance are now
+> centralized in `cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`.
+> The exploratory numerical recommendations below are retained as investigation history,
+> not as current configuration instructions.
+
 **Reference:** Casas et al., "Euclid: Validation of the MontePython forecasting tools" (arXiv 2303.09451, March 2023)  
 **Your Branch:** `phase-1-validation-integration`  
 **Analysis Date:** 2026-08-17  
@@ -48,14 +53,14 @@ The Euclid Collaboration achieved **<1% agreement** between CLASS and CAMB for i
 
 ### The Problem: Configuration Asymmetry
 
-**Your CAMB config** (`cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml`):
+**Historical CAMB config** (now selected by `camb/mpvalidation_p3.yaml`):
 ```yaml
 ACCURACY:
   'AccuracyBoost'     : 3    # ✓ High-precision (P3) per Euclid paper
   'lAccuracyBoost'    : 3    # ✓ Matches Table A.4 in Casas et al.
 ```
 
-**Your CLASS config** (`cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml`):
+**Historical CLASS DP config** (now selected by `class/mpvalidation_dp.yaml`):
 ```yaml
 ACCURACY:
   'tol_perturbations_integration' : 1.e-6   # ⚠️ Borderline DP, not HP
@@ -112,7 +117,7 @@ From **Casas et al. Section 6.3:**
 
 ## Your Fix: 6-Parameter Update
 
-### File: `cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml`
+### Historical proposal (authoritative HP selector: `class/mpvalidation_hp.yaml`)
 
 **Current (DP):**
 ```yaml
@@ -140,17 +145,11 @@ ACCURACY:
 
 ## Implementation Roadmap
 
-### Phase 1: Backup & Update Config
-```bash
-cd /home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-main
+### Phase 1: Select the explicit profiles
 
-# Backup current config
-cp cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml \
-   cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml.DP
-
-# Apply the 6 changes listed above to mpvalidation.yaml
-# (See CONFIG_DIAGNOSIS.md for complete corrected file)
-```
+Use `class/mpvalidation_hp.yaml` with `camb/mpvalidation_p3.yaml` for the validated
+comparison. Use `class/mpvalidation_dp.yaml` only when intentionally reproducing the DP
+control. All three selectors resolve their numerical settings from `precision_profiles.yaml`.
 
 ### Phase 2: Verify Environment
 ```bash

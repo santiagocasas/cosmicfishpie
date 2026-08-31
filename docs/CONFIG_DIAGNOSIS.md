@@ -1,5 +1,10 @@
 # Configuration Analysis: Why Case 01 Shows >10% Deviations
 
+> **Historical analysis, superseded.** The actionable configuration now lives in
+> `cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`.
+> Use `class/mpvalidation_hp.yaml`, `class/mpvalidation_dp.yaml`, and
+> `camb/mpvalidation_p3.yaml`; do not copy the exploratory values proposed below.
+
 **Date:** 2026-08-17  
 **Status:** Root cause identified ✓  
 **Severity:** Medium (fixable with config update)
@@ -16,7 +21,7 @@ The difference? **Your config files use different precision settings for each so
 
 ## Current Configuration Analysis
 
-### File: `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml`
+### File: `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml`
 
 ```yaml
 ACCURACY:
@@ -30,7 +35,7 @@ ACCURACY:
 
 ---
 
-### File: `cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml`
+### Historical DP input (now `class/mpvalidation_dp.yaml`)
 
 ```yaml
 ACCURACY:
@@ -108,7 +113,7 @@ But Case 01 (photometric w0waCDM) shows **26.67% deviation** because:
 
 ## The Fix: Apply Euclid CLASS HP Settings
 
-### Recommended CLASS mpvalidation.yaml (Corrected)
+### Superseded exploratory CLASS HP proposal
 
 ```yaml
 ACCURACY:
@@ -159,16 +164,13 @@ COSMO_SETTINGS:
 
 ---
 
-## Implementation Steps
+## Current implementation
 
-### Step 1: Backup Current Config
-```bash
-cp cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml \
-   cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml.backup
-```
-
-### Step 2: Update CLASS Config
-Edit `cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml` and apply the changes above (or use the complete corrected file provided below).
+The exact Casas et al. Appendix A settings are centralized in
+`precision_profiles.yaml`. Select `class_mpvalidation_hp` through
+`class/mpvalidation_hp.yaml`, retain `class_mpvalidation_dp` through
+`class/mpvalidation_dp.yaml` for the historical comparison, and select CAMB P3 through
+`camb/mpvalidation_p3.yaml`.
 
 ### Step 3: Re-run Case 01
 ```bash
@@ -187,7 +189,7 @@ Update VALIDATION_SUMMARY.md with new results.
 
 ---
 
-## Complete Corrected CLASS mpvalidation.yaml
+## Historical proposed CLASS settings (do not use as the authoritative profile)
 
 ```yaml
 ACCURACY:
@@ -244,7 +246,7 @@ w0waCDM :
 1. **Casas et al. (2303.09451)** Section 6.3: Impact of accuracy settings in Einstein–Boltzmann solvers
 2. **Casas et al. (2303.09451)** Appendix A.5: High-precision (HP) CLASS settings
 3. **CLASS documentation**: Precision settings and accuracy parameters
-4. **Your repo:** `/cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml`
+4. **Current registry:** `/cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`
 
 ---
 
@@ -262,5 +264,6 @@ The fix is straightforward: 6 parameter changes in one YAML file.
 **Related files:**
 - PAPER_COMPARISON.md (high-level findings)
 - VALIDATION_SUMMARY.md (current results)
-- cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml (needs update)
-- cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml (already correct)
+- cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
+- cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml
+- cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml

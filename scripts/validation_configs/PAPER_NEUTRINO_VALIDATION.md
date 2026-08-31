@@ -1,8 +1,9 @@
 # Paper-faithful neutrino validation track (arXiv:2405.06047v1)
 
-This document describes the `paper_mnuvalidation*` / `common_specs_paper_*` validation
+This document describes the canonical solver defaults / `common_specs_paper_*` validation
 track added alongside the Casas et al. w0waCDM backend cross-check
-(`common_specs_w0waCDM.json`, `mpvalidation.yaml`, cases `01.1.*`/`01.2.*`). That companion
+(`common_specs_w0waCDM.json`, explicit `mpvalidation_*` selectors, cases
+`01.1.*`/`01.2.*`). That companion
 track remains the reference for the original Casas et al. fiducial
 (`Omegam=.32, Omegab=.05, h=.67, ns=.96, sigma8=.815584`,
 arXiv:2303.09451v1). This track instead reproduces the neutrino-sector validation
@@ -208,23 +209,17 @@ stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but di
 ## Boltzmann solver profiles
 
 - **Photometric (nonlinear, HMcode2020):**
-  `cosmicfishpie/configs/default_boltzmann_yaml_files/class/paper_mnuvalidation_photo.yaml`
-  is the paper's actual photo "HP" profile per its Appendix (`l_max_ncdm=25`,
-  `ncdm_fluid_trigger_tau_over_tau_k=100`, `hmcode_tol_sigma=1e-8`) and
-  `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/paper_mnuvalidation.yaml`
-  (`halofit_version=mead2020`, `num_nu_massive=1`) is used for every photo case
-  (all `.2.*` formal cases plus the pessimistic photo controls/stress tests).
-  `paper_mnuvalidation_photo_HP.yaml` (`l_max_ncdm=40`,
-  `ncdm_fluid_trigger_tau_over_tau_k=90`) is a **stricter, non-paper** CLASS precision
-  variant used only by alternative `01.4`, to test whether raising CLASS's ncdm precision above
-  what the paper itself specifies narrows the CAMB/CLASS `mnu` marginalized deviation.
-  It should not be read as "the paper's HP profile" -- `paper_mnuvalidation_photo.yaml`
-  (used by all canonical photo cases) already is that.
+  `class/default.yaml` selects the paper's photo `class_hp` profile
+  (`l_max_ncdm=25`, `ncdm_fluid_trigger_tau_over_tau_k=100`,
+  `hmcode_tol_sigma=1e-8`). `camb/default.yaml` selects `camb_hp`
+  (`halofit_version=mead2020`, `num_nu_massive=1`) for both probes. The stricter,
+  **non-paper** alternative `01.4` uses
+  `scripts/validation_configs/alternatives/class_photo_strict.yaml` to override
+  `l_max_ncdm=40` and `ncdm_fluid_trigger_tau_over_tau_k=90`.
 - **Spectroscopic (linear P_cb observable):**
-  `cosmicfishpie/configs/default_boltzmann_yaml_files/class/paper_mnuvalidation_spectro.yaml`
-  ("UHP" profile: `l_max_ncdm=40`, `ncdm_fluid_approximation=3`, `evolver=0`), used for
-  every canonical spectro case. The
-  `non linear` key present in this YAML (and in the shared CAMB YAML) is **inert
+  `class/default_spectro.yaml` selects the paper's `class_uhp` profile
+  (`l_max_ncdm=40`, `ncdm_fluid_approximation=3`, `evolver=0`). The
+  `non linear` key in that profile (and in `camb_hp`) is **inert
   legacy configuration** for the spectroscopic observable: `GCsp_linear` in the common
   specs JSON drives the actual dewiggling/damping treatment in
   `cosmicfishpie/LSSsurvey/spectro_obs.py`, and the spectro Pk is always computed from
@@ -232,10 +227,10 @@ stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but di
   own treatment (Halofit is explicitly unsuitable for extended-neutrino forecasts, per
   the paper).
 
-None of the pre-existing `nuvalidation_photo.yaml`, `nuvalidation_spectro.yaml`, or
-`nuvalidation.yaml` files were modified; they remain supported fallback/package-data
-profiles. Their former `env_03`/`env_04` wrappers and `common_specs_nuCDM.json` live in
-`scripts/archive/validation_configs/` as historical validation inputs.
+All numerical settings and paper provenance now live in
+`cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`. Redundant
+`nuvalidation*` and `paper_mnuvalidation*` aliases were removed; archived wrappers were
+redirected to the canonical selectors.
 
 ## Validation gate
 

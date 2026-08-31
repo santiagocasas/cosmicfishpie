@@ -287,6 +287,29 @@ def _yaml_dependency_paths(path: Path) -> list[Path]:
     return paths
 
 
+LEGACY_2405_YAML_MIGRATIONS = {
+    ("camb", "paper_mnuvalidation.yaml"): ("camb", "default.yaml"),
+    ("class", "paper_mnuvalidation_photo.yaml"): ("class", "default.yaml"),
+    ("class", "paper_mnuvalidation_spectro.yaml"): ("class", "default_spectro.yaml"),
+}
+
+
+def _yaml_path_matches(saved: object, current: str | None) -> bool:
+    """Match current solver selectors and verified-equivalent 2405 legacy paths."""
+    if current is None:
+        return True
+    if saved == current:
+        return True
+    if not isinstance(saved, str):
+        return False
+
+    saved_path = Path(saved)
+    current_path = Path(current)
+    saved_key = (saved_path.parent.name, saved_path.name)
+    current_key = (current_path.parent.name, current_path.name)
+    return LEGACY_2405_YAML_MIGRATIONS.get(saved_key) == current_key
+
+
 def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path | None:
     if not results_dir.is_dir():
         return None
@@ -313,9 +336,9 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
             continue
         if want_common and args.get("common_specs") != want_common:
             continue
-        if want_yaml_a and args.get("yaml_a") != want_yaml_a:
+        if not _yaml_path_matches(args.get("yaml_a"), want_yaml_a):
             continue
-        if want_yaml_b and args.get("yaml_b") != want_yaml_b:
+        if not _yaml_path_matches(args.get("yaml_b"), want_yaml_b):
             continue
         resolved = meta.get("resolved")
         if not isinstance(resolved, dict):
@@ -818,11 +841,11 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
 
     specs_links = []
     if case.yaml_a is not None:
-        rel = _write_spec_page(specs_dir, f"case_{case.number}_yaml_a", "YAML A", case.yaml_a)
+        rel = _write_yaml_page(specs_dir, f"case_{case.number}_yaml_a", "YAML A", case.yaml_a)
         if rel:
             specs_links.append((f"CAMB/CLASS YAML A ({esc(case.code_a)})", rel))
     if case.yaml_b is not None:
-        rel = _write_spec_page(specs_dir, f"case_{case.number}_yaml_b", "YAML B", case.yaml_b)
+        rel = _write_yaml_page(specs_dir, f"case_{case.number}_yaml_b", "YAML B", case.yaml_b)
         if rel:
             specs_links.append((f"CAMB/CLASS YAML B ({esc(case.code_b)})", rel))
     if case.common_specs_json is not None:
@@ -839,7 +862,7 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
             specs_links.append((label, rel))
     survey_specs = _survey_specs_path(case, REPO_ROOT)
     if survey_specs is not None:
-        rel = _write_spec_page(
+        rel = _write_yaml_page(
             specs_dir,
             f"case_{case.number}_survey_specs",
             "Survey Specs YAML",
@@ -965,13 +988,26 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
     (out_dir / f"case_{case.number}.html").write_text(html, encoding="utf-8")
 
 
-def _write_spec_page(specs_dir: Path, slug: str, kind: str, source: Path) -> str | None:
+def _write_spec_page(
+    specs_dir: Path,
+    slug: str,
+    kind: str,
+    source: Path,
+    related_links: list[tuple[str, str]] | None = None,
+) -> str | None:
     if not source.is_file():
         return None
     try:
         content = source.read_text(encoding="utf-8")
     except Exception:
         return None
+    links_html = ""
+    if related_links:
+        links = "".join(
+            f"<a href='{esc(href)}' target='_blank'>{esc(label)} &rarr;</a>"
+            for label, href in related_links
+        )
+        links_html = "<div class='section links'><h2>Referenced inputs</h2>" f"{links}</div>"
     html = f"""<!doctype html>
 <html lang='en'>
 <head>
@@ -981,9 +1017,9 @@ def _write_spec_page(specs_dir: Path, slug: str, kind: str, source: Path) -> str
 <style>{CSS}</style>
 </head>
 <body>
-<a class='back' href='javascript:history.back()'>&larr; Back</a>
 <h1>{esc(kind)}</h1>
 <p class='subtle'><code>{esc(source.name)}</code></p>
+{links_html}
 <pre>{esc(content)}</pre>
 </body>
 </html>
@@ -992,6 +1028,35 @@ def _write_spec_page(specs_dir: Path, slug: str, kind: str, source: Path) -> str
     filename = f"{slug}.html"
     (specs_dir / filename).write_text(html, encoding="utf-8")
     return filename
+
+
+def _write_yaml_page(specs_dir: Path, slug: str, kind: str, source: Path) -> str | None:
+    dependencies = _yaml_dependency_paths(source)[1:]
+    related_links: list[tuple[str, str]] = []
+    profile_name = None
+    try:
+        import yaml
+
+        data = yaml.safe_load(source.read_text(encoding="utf-8")) or {}
+        if isinstance(data, dict):
+            profile_name = data.get("precision_profile")
+    except Exception:
+        pass
+
+    for index, dependency in enumerate(dependencies, start=1):
+        dependency_rel = _write_spec_page(
+            specs_dir,
+            f"{slug}_dependency_{index}",
+            "Precision Profiles YAML",
+            dependency,
+        )
+        if dependency_rel:
+            label = f"Precision profile source: {dependency.name}"
+            if index == 1 and profile_name:
+                label += f" (selected: {profile_name})"
+            related_links.append((label, dependency_rel))
+
+    return _write_spec_page(specs_dir, slug, kind, source, related_links)
 
 
 def main() -> int:

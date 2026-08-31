@@ -1,16 +1,7 @@
 # Precision sensitivity variant: inherit class_hp, then override only these two
 # neutrino settings. This is not the paper's canonical photo HP profile.
-precision_profile_file: ../precision_profiles.yaml
+precision_profile_file: ../../../cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml
 precision_profile: class_hp
 ACCURACY:
   'l_max_ncdm' : 40
   'ncdm_fluid_trigger_tau_over_tau_k' : 90.
-LCDM :
-  'Omega_k' : 0
-  'tau_reio' : 0.058
-  'YHe' : 0.2454006
-w0waCDM :
-  'Omega_Lambda' : 0.0
-  'Omega_k' : 0
-  'tau_reio' : 0.058
-  'YHe' : 0.2454006

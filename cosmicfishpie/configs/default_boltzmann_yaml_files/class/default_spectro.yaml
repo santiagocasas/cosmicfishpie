@@ -1,0 +1,3 @@
+# Canonical validated spectro selector: Archidiacono et al. 2405 CLASS UHP.
+precision_profile_file: ../precision_profiles.yaml
+precision_profile: class_uhp

@@ -1,0 +1,3 @@
+# Historical Casas et al. 2303 validation selector: CLASS HP.
+precision_profile_file: ../precision_profiles.yaml
+precision_profile: class_mpvalidation_hp

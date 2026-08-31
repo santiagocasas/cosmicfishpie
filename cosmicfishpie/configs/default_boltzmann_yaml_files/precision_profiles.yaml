@@ -1,6 +1,14 @@
-# Canonical solver precision profiles for the neutrino validation track.
-# Provenance: SensitivityNeutrinos.htm (arXiv:2405.06047v1), Appendix.
+# Authoritative Einstein-Boltzmann solver profiles used by CosmicFishPie.
+#
+# Paper provenance:
+# - camb_hp, class_hp, class_uhp: Archidiacono et al., arXiv:2405.06047v1.
+# - camb_mpvalidation_p3, class_mpvalidation_hp, class_mpvalidation_dp:
+#   Casas et al., arXiv:2303.09451v1, Appendix A.
+#
+# The fast profiles are explicitly experimental speed-oriented starting points. They are
+# not paper-validation profiles and must be validated before scientific production use.
 profiles:
+  # Canonical CAMB HP profile for the 2405 validation, used for both probes.
   camb_hp:
     ACCURACY:
       'kmax': 50
@@ -26,7 +34,16 @@ profiles:
       'Want_cl_2D_array': False
       'DoLateRadTruncation': True
       'DoLensing': False
+    LCDM:
+      'Omegak': 0.
+      'tau': 0.058
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omegak': 0.
+      'tau': 0.058
+      'YHe': 0.2454006
 
+  # Canonical CLASS HP profile for the 2405 photometric validation.
   class_hp:
     ACCURACY:
       'k_per_decade_for_bao': 50
@@ -53,7 +70,17 @@ profiles:
       'N_ncdm': 1
       'T_cmb': 2.7255
       'k_pivot': 0.05
+    LCDM:
+      'Omega_k': 0
+      'tau_reio': 0.058
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+      'tau_reio': 0.058
+      'YHe': 0.2454006
 
+  # Canonical CLASS UHP profile for the 2405 spectroscopic validation.
   class_uhp:
     ACCURACY:
       'k_per_decade_for_bao': 50
@@ -81,3 +108,212 @@ profiles:
       'N_ncdm': 1
       'T_cmb': 2.7255
       'k_pivot': 0.05
+    LCDM:
+      'Omega_k': 0
+      'tau_reio': 0.058
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+      'tau_reio': 0.058
+      'YHe': 0.2454006
+
+  # Experimental relaxed CAMB profiles. Numerical agreement is not guaranteed.
+  camb_fast_photo:
+    ACCURACY:
+      'kmax': 50
+      'k_per_logint': 20
+      'AccuracyBoost': 1
+      'lAccuracyBoost': 1
+      'lSampleBoost': 1
+      'accurate_massive_neutrino_transfers': False
+      'MassiveNuMethod': 0
+    NUMERICS:
+      'zmax': 5
+      'zsamples': 100
+    COSMO_SETTINGS:
+      'halofit_version': 'mead2020'
+      'dark_energy_model': 'ppf'
+      'num_nu_massive': 1
+      'TCMB': 2.7255
+      'Reion.Reionization': False
+      'WantCls': False
+      'Want_CMB': False
+      'DoLateRadTruncation': True
+      'DoLensing': False
+    LCDM:
+      'Omegak': 0.
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omegak': 0.
+      'YHe': 0.2454006
+
+  camb_fast_spectro:
+    ACCURACY:
+      'kmax': 20
+      'k_per_logint': 20
+      'AccuracyBoost': 1
+      'lAccuracyBoost': 1
+      'lSampleBoost': 1
+      'accurate_massive_neutrino_transfers': False
+      'MassiveNuMethod': 0
+    NUMERICS:
+      'zmax': 2
+      'zsamples': 60
+    COSMO_SETTINGS:
+      'halofit_version': 'mead2020'
+      'dark_energy_model': 'ppf'
+      'num_nu_massive': 1
+      'TCMB': 2.7255
+      'Reion.Reionization': False
+      'WantCls': False
+      'Want_CMB': False
+      'DoLateRadTruncation': True
+      'DoLensing': False
+    LCDM:
+      'Omegak': 0.
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omegak': 0.
+      'YHe': 0.2454006
+
+  # Experimental relaxed CLASS profiles, preserving the historical fast settings.
+  class_fast_photo:
+    ACCURACY:
+      'k_per_decade_for_bao': 70
+      'k_per_decade_for_pk': 10
+    COSMO_SETTINGS:
+      'P_k_max_1/Mpc': 50.
+      'output': 'mPk,mTk'
+      'non linear': 'halofit'
+      'z_max_pk': 4.0
+      'N_ncdm': 1
+      'T_cmb': 2.7255
+      'nonlinear_min_k_max': 50.
+      'halofit_tol_sigma': 1.e-8
+      'k_pivot': 0.05
+      'YHe': 0.2454006
+    LCDM:
+      'Omega_k': 0
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+      'use_ppf': 'yes'
+
+  class_fast_spectro:
+    ACCURACY:
+      'k_per_decade_for_bao': 70
+      'k_per_decade_for_pk': 10
+    COSMO_SETTINGS:
+      'P_k_max_1/Mpc': 50.
+      'output': 'mPk,mTk'
+      'non linear': 'halofit'
+      'z_max_pk': 2.0
+      'N_ncdm': 1
+      'T_cmb': 2.7255
+      'nonlinear_min_k_max': 5.
+      'k_pivot': 0.05
+      'YHe': 0.2454006
+    LCDM:
+      'Omega_k': 0
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+
+  # Casas et al. 2303 CAMB P3. P1/P2 both use AccuracyBoost=lAccuracyBoost=2;
+  # P1 used halofit_tol_sigma=1e-3 and P2 used 1e-6. P3 selects boosts 3/3 and
+  # 1e-6. Modern CAMB no longer exposes that patched tolerance; it is provenance
+  # only and is intentionally not passed here.
+  camb_mpvalidation_p3:
+    ACCURACY:
+      'kmax': 50
+      'k_per_logint': 50
+      'AccuracyBoost': 3
+      'lAccuracyBoost': 3
+      'lSampleBoost': 1
+      'accurate_massive_neutrino_transfers': True
+    NUMERICS:
+      'zmax': 5
+      'zsamples': 100
+    COSMO_SETTINGS:
+      'halofit_version': 'takahashi'
+      'dark_energy_model': 'ppf'
+      'num_nu_massive': 1
+      'TCMB': 2.7255
+      'WantTensors': False
+      'WantVectors': False
+      'Reion.Reionization': False
+      'WantCls': False
+      'Want_CMB': False
+      'Want_CMB_lensing': False
+      'Want_cl_2D_array': False
+      'DoLateRadTruncation': True
+      'DoLensing': False
+    LCDM:
+      'Omegak': 0.
+      'tau': 0.058
+      'YHe': 0.2454006
+    w0waCDM:
+      'Omegak': 0.
+      'tau': 0.058
+      'YHe': 0.2454006
+
+  # Casas et al. 2303 CLASS DP: common output/nonlinear settings without the
+  # Appendix A.5 precision overrides. CLASS's default halofit tolerance is 1e-6.
+  class_mpvalidation_dp:
+    ACCURACY: {}
+    COSMO_SETTINGS:
+      'P_k_max_1/Mpc': 50
+      'output': 'mPk,mTk'
+      'non linear': 'halofit'
+      'nonlinear_min_k_max': 80.
+      'z_max_pk': 5.0
+      'N_ncdm': 1
+      'T_cmb': 2.7255
+      'k_pivot': 0.05
+    LCDM:
+      'Omega_k': 0
+      'YHe': 0.2454006
+      'reio_parametrization': 'reio_none'
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+      'YHe': 0.2454006
+      'reio_parametrization': 'reio_none'
+
+  # Casas et al. 2303 CLASS HP from Appendix A.5.
+  class_mpvalidation_hp:
+    ACCURACY:
+      'k_per_decade_for_bao': 50
+      'k_per_decade_for_pk': 50
+      'l_max_g': 20
+      'l_max_pol_g': 15
+      'radiation_streaming_approximation': 2
+      'radiation_streaming_trigger_tau_over_tau_k': 240.
+      'radiation_streaming_trigger_tau_c_over_tau': 100.
+      'tol_ncdm_synchronous': 1.e-5
+      'l_max_ncdm': 22
+      'ncdm_fluid_trigger_tau_over_tau_k': 41.
+      'background_Nloga': 6000
+      'thermo_Nz_log': 20000
+      'thermo_Nz_lin': 40000
+      'tol_perturbations_integration': 1.e-6
+      'halofit_tol_sigma': 1.e-8
+    COSMO_SETTINGS:
+      'P_k_max_1/Mpc': 50
+      'output': 'mPk,mTk'
+      'non linear': 'halofit'
+      'nonlinear_min_k_max': 80.
+      'z_max_pk': 5.0
+      'N_ncdm': 1
+      'T_cmb': 2.7255
+      'k_pivot': 0.05
+    LCDM:
+      'Omega_k': 0
+      'YHe': 0.2454006
+      'reio_parametrization': 'reio_none'
+    w0waCDM:
+      'Omega_Lambda': 0.0
+      'Omega_k': 0
+      'YHe': 0.2454006
+      'reio_parametrization': 'reio_none'

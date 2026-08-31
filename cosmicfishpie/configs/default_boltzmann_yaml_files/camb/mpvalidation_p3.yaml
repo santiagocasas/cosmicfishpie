@@ -1,0 +1,4 @@
+# Historical Casas et al. 2303 validation selector: CAMB P3.
+# P1/P2/P3 and the removed patched halofit tolerance are documented centrally.
+precision_profile_file: ../precision_profiles.yaml
+precision_profile: camb_mpvalidation_p3

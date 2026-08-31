@@ -1,3 +1,3 @@
 # Experimental relaxed profile; validate before scientific production use.
 precision_profile_file: ../precision_profiles.yaml
-precision_profile: class_fast_photo
+precision_profile: class_fast_spectro

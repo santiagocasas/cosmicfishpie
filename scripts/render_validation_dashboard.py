@@ -263,34 +263,10 @@ def _variant_label(case: CaseDef) -> str:
     return str(tracer or "default")
 
 
-def _yaml_dependency_paths(path: Path) -> list[Path]:
-    """Return a leaf YAML and any recursively referenced precision profiles."""
-    paths: list[Path] = []
-    seen: set[Path] = set()
-
-    def visit(current: Path) -> None:
-        current = current.resolve()
-        if current in seen:
-            return
-        seen.add(current)
-        paths.append(current)
-        try:
-            import yaml
-
-            data = yaml.safe_load(current.read_text(encoding="utf-8")) or {}
-        except Exception:
-            return
-        if isinstance(data, dict) and data.get("precision_profile_file"):
-            visit(current.parent / data["precision_profile_file"])
-
-    visit(path)
-    return paths
-
-
 LEGACY_2405_YAML_MIGRATIONS = {
-    ("camb", "paper_mnuvalidation.yaml"): ("camb", "default.yaml"),
-    ("class", "paper_mnuvalidation_photo.yaml"): ("class", "default.yaml"),
-    ("class", "paper_mnuvalidation_spectro.yaml"): ("class", "default_spectro.yaml"),
+    ("camb", "paper_mnuvalidation.yaml"): ("camb", "nuvalidation_hp.yaml"),
+    ("class", "paper_mnuvalidation_photo.yaml"): ("class", "nuvalidation_hp.yaml"),
+    ("class", "paper_mnuvalidation_spectro.yaml"): ("class", "nuvalidation_uhp.yaml"),
 }
 
 
@@ -575,16 +551,10 @@ def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
     ):
         if input_path is None:
             continue
-        dependency_paths = (
-            _yaml_dependency_paths(input_path)
-            if input_path.suffix in {".yaml", ".yml"}
-            else [input_path]
-        )
-        for dependency in dependency_paths:
-            try:
-                paths.append(str(dependency.relative_to(repo_root)))
-            except ValueError:
-                paths.append(str(dependency))
+        try:
+            paths.append(str(input_path.relative_to(repo_root)))
+        except ValueError:
+            paths.append(str(input_path))
     return paths
 
 
@@ -1031,32 +1001,10 @@ def _write_spec_page(
 
 
 def _write_yaml_page(specs_dir: Path, slug: str, kind: str, source: Path) -> str | None:
-    dependencies = _yaml_dependency_paths(source)[1:]
-    related_links: list[tuple[str, str]] = []
-    profile_name = None
-    try:
-        import yaml
-
-        data = yaml.safe_load(source.read_text(encoding="utf-8")) or {}
-        if isinstance(data, dict):
-            profile_name = data.get("precision_profile")
-    except Exception:
-        pass
-
-    for index, dependency in enumerate(dependencies, start=1):
-        dependency_rel = _write_spec_page(
-            specs_dir,
-            f"{slug}_dependency_{index}",
-            "Precision Profiles YAML",
-            dependency,
-        )
-        if dependency_rel:
-            label = f"Precision profile source: {dependency.name}"
-            if index == 1 and profile_name:
-                label += f" (selected: {profile_name})"
-            related_links.append((label, dependency_rel))
-
-    return _write_spec_page(specs_dir, slug, kind, source, related_links)
+    """Write a solver/survey YAML detail page. Each leaf YAML is self-contained,
+    so this is a thin alias over _write_spec_page (kept as its own name since
+    call sites read more clearly as "write this YAML" than "write this spec")."""
+    return _write_spec_page(specs_dir, slug, kind, source)
 
 
 def main() -> int:

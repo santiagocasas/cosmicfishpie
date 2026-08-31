@@ -91,7 +91,8 @@ formal and stress-test gates: model-2 photo gives 5.53% (pessimistic) and 2.60%
 (optimistic), while the 8- and 9-parameter pessimistic photo stress tests give 6.34% and
 5.10%, respectively. Because P_cb and fixed `betaIA` were introduced together relative
 to the older stress-test matrices, those improvements cannot be attributed to
-`betaIA` alone.
+`betaIA` alone. See `PCB_NEUTRINO_DERIVATIVE_ANALYSIS.md` for the direct P_mm/P_cb
+derivative comparison and the Fisher-conditioning explanation.
 
 The dedicated paper survey YAMLs also implement the paper's nuisance convention:
 `AIA` and `etaIA` vary while `betaIA=2.17` is fixed. Both arXiv:2405.06047v1 and

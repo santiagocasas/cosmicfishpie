@@ -308,7 +308,9 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
             continue
         if args.get("accuracy") != case.accuracy:
             continue
-        if args.get("yaml_key_a") != case.yaml_key_a or args.get("yaml_key_b") != case.yaml_key_b:
+        if case.yaml_key_a is not None and args.get("yaml_key_a") != case.yaml_key_a:
+            continue
+        if case.yaml_key_b is not None and args.get("yaml_key_b") != case.yaml_key_b:
             continue
         if want_common and args.get("common_specs") != want_common:
             continue
@@ -638,7 +640,11 @@ def _status_badge(result: CaseResult) -> str:
     if result.config_mismatches:
         return "<span class='badge badge-warn'>rerun required</span>"
     if result.status == "ok":
-        return ""
+        commit = result.git_commit or "unknown"
+        if result.git_dirty:
+            commit = f"{commit} (dirty)"
+        commit_esc = esc(commit)
+        return f"<code>{commit_esc}</code>"
     labels = {
         "not_run": "<span class='badge badge-na'>not run yet</span>",
         "no_pair": "<span class='badge badge-warn'>ran, no A/B pair found</span>",
@@ -753,7 +759,7 @@ neutrino sector). Click a row for the full per-parameter breakdown and the exact
 YAML/spec files used.</p>
 <table>
 <thead>
-<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Variant</th><th>Max deviation</th><th>Gate</th><th></th></tr>
+<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Variant</th><th>Max deviation</th><th>Gate</th><th>State</th></tr>
 </thead>
 <tbody>
 {"".join(rows)}

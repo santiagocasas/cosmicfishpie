@@ -5,20 +5,21 @@
 
 Examples
 --------
-Photometric (GCph+WL), CLASS HP vs CAMB HP validated defaults:
+Photometric (GCph+WL), CLASS HP vs CAMB HP paper-validated profiles
+(arXiv:2405.06047v1):
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode photo \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare --plot
 
-Spectroscopic (GCsp), CLASS vs CAMB:
+Spectroscopic (GCsp), CLASS UHP vs CAMB HP paper-validated profiles:
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode spectro \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/default_spectro.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare
 
 Notes

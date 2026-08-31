@@ -10,7 +10,7 @@ ACCURACY:
 COSMO_SETTINGS:
   'P_k_max_1/Mpc': 50.
   'output': 'mPk,mTk'
-  'non linear': 'halofit'
+  'non linear': 'hmcode_2020'
   'z_max_pk': 2.0
   'N_ncdm': 1
   'T_cmb': 2.7255

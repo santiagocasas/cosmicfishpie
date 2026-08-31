@@ -117,8 +117,8 @@ formal and stress-test gate. Relevant photometric maxima were:
 | `03.2.1` | LCDM + `mnu` + `Neff`, optimistic | 2.60% (`b10`) |
 | `04.2.0` | w0CDM + `mnu`, pessimistic | 5.49% (`mnu`) |
 | `04.2.1` | w0CDM + `mnu`, optimistic | 1.98% (`mnu`) |
-| `07.2` | 8-parameter stress test | 6.34% (`mnu`) |
-| `08.2` | 9-parameter stress test | 5.10% (`mnu`) |
+| `07.2.0` | 8-parameter stress test | 6.34% (`mnu`) |
+| `08.2.0` | 9-parameter stress test | 5.10% (`mnu`) |
 
 P_cb and fixed `betaIA` were introduced together relative to the original stress-test
 matrices, so the stress-test improvement cannot be assigned to either change in
@@ -147,6 +147,11 @@ The visualization should persist the numerical arrays, solver YAML/profile hashe
 common-specs hash, git commit, backend versions, derivative stencil, step size, redshift
 grid, and k grid alongside the plots. Relative differences should not be shown without
 also plotting absolute differences and marking derivative zero crossings.
+
+Primary validation variant `07.2.0.1` provides the intentionally non-paper P_mm Fisher
+counterpart to the canonical P_cb stress case `07.2.0`. Once run, their saved matrices
+can supply the dashboard-level marginalized comparison while the notebook regenerates
+the underlying power-spectrum derivatives.
 
 ## Interpretation boundary
 

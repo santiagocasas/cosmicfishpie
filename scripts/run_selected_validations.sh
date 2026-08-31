@@ -65,18 +65,19 @@ Select cases with comma-separated dotted case IDs, for example:
 
 A group prefix (e.g. 03) expands to every discovered case under it (03.1.0,
 03.1.1, 03.2.0, ...). A probe prefix (e.g. 03.2) selects both survey scenarios.
-An exact leaf ID (e.g. 03.2.0) selects only that case.
+An exact canonical leaf (e.g. 07.2.0) selects only that case. Optional fourth
+segments identify variants (e.g. 07.2.0.1); use 07.2 to select both.
 
 Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_<ID>_*):
 EOF
   local case_number
   for case_number in "${CASE_ORDER[@]}"; do
-    printf '  %-6s %s\n' "${case_number}" "$(case_description "${CONFIG_DIR}/${CASE_CONFIGS[${case_number}]}")"
+    printf '  %-9s %s\n' "${case_number}" "$(case_description "${CONFIG_DIR}/${CASE_CONFIGS[${case_number}]}")"
   done
   cat <<'EOF'
 
 Options:
-  --cases LIST          Cases/groups to run, e.g. 03.1.0,03.2.0 or 03. May be repeated.
+  --cases LIST          Cases/groups to run, e.g. 03.1.0,07.2.0.1 or 03. May be repeated.
   --all                 Run every discovered case listed above.
   --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
   --force               Rerun cases even when an unchanged completed result exists.

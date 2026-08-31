@@ -1,10 +1,10 @@
 # Photometric `mnu`/`sigma8` gate failures: unmarginalized diagnosis
 
 Status: historical diagnosis for the photometric gate failures in cases `06.2.0`, `03.2.0`,
-`08.2`, and `07.2` (formerly numbered "case 09", "case 11", "case 13", "case 15").
+`08.2.0`, and `07.2.0` (formerly numbered "case 09", "case 11", "case 13", "case 15").
 Supersedes the "nonlinear HMcode2020 baseline difference" reading in
 `CASE13_W0WA_MNU_INVESTIGATION.md`, which was directionally right but wrong
-by an order of magnitude about the size of the backend effect. Note also that `08.2`
+by an order of magnitude about the size of the backend effect. Note also that `08.2.0`
 is a stress test explicitly excluded by the paper's own Sec. 6 validation scope
 (arXiv:2405.06047v1) -- see `PAPER_NEUTRINO_VALIDATION.md`.
 
@@ -14,7 +14,7 @@ is a stress test explicitly excluded by the paper's own Sec. 6 validation scope
 > 5.53% (pessimistic `03.2.0`) and 2.60% (optimistic `03.2.1`); those final survey
 > definitions are the authoritative comparisons.
 
-Source data: case `07.2` (`compare_photo_camb_vs_class_cfg_ea069c683b`) and case `07.1`
+Source data: case `07.2.0` (`compare_photo_camb_vs_class_cfg_ea069c683b`) and case `07.1.0`
 (`compare_spectro_camb_vs_class_cfg_86d26edc54`), run at commit `57e0757`
 (dirty), `OMP_NUM_THREADS=6`.
 
@@ -32,7 +32,7 @@ near-singular marginalization in the `{sigma8, mnu, b1..b10}` amplitude
 subspace. The current 10% marginalized gate is therefore measuring the
 conditioning of the photometric Fisher matrix, not CAMB-vs-CLASS physics.
 
-## Case `07.2` unmarginalized versus marginalized errors
+## Case `07.2.0` unmarginalized versus marginalized errors
 
 Unmarginalized (conditional) errors are `1/sqrt(F_ii)`; the amplification
 column is `sigma_marginalized / sigma_unmarginalized` for CAMB.
@@ -70,7 +70,7 @@ entirely inside it.
 
 ## The degeneracy cliff
 
-Marginalizing case `07.2`'s own matrices over nested subsets of free parameters,
+Marginalizing case `07.2.0`'s own matrices over nested subsets of free parameters,
 with all remaining parameters held fixed:
 
 ```
@@ -114,11 +114,11 @@ A 0.02% perturbation, well below the observed 0.046% median CAMB-vs-CLASS
 element difference, already reproduces the observed deviations. At 0.05% noise
 nearly half the perturbed matrices are no longer positive definite.
 
-## Contrast with the spectroscopic case `07.1`
+## Contrast with the spectroscopic case `07.1.0`
 
-Case `07.1` is *more* ill-conditioned than case `07.2`, yet agrees far better:
+Case `07.1.0` is *more* ill-conditioned than case `07.2.0`, yet agrees far better:
 
-| quantity | case `07.2` photo | case `07.1` spectro |
+| quantity | case `07.2.0` photo | case `07.1.0` spectro |
 |---|---:|---:|
 | scale-invariant condition number of the normalized Fisher | 3.50e4 | 7.06e4 |
 | amplification of `sigma8` | 30.5 | 45.7 |
@@ -132,7 +132,7 @@ passes, because RSD and Alcock-Paczynski information breaks the amplitude
 direction and only four `lnbg_i` plus four `Ps_i` nuisances are marginalized,
 instead of ten free bias amplitudes. There is no rank cliff.
 
-The 3809.9s CLASS runtime for case `07.1` is the price of that agreement:
+The 3809.9s CLASS runtime for case `07.1.0` is the price of that agreement:
 `class/paper_mnuvalidation_spectro.yaml` uses `ncdm_fluid_approximation: 3`
 (exact ncdm hierarchy) and `l_max_ncdm: 40`, while
 `class/paper_mnuvalidation_photo.yaml` uses the CLASS default fluid
@@ -147,15 +147,15 @@ The mechanism proposed in `CASE13_W0WA_MNU_INVESTIGATION.md` and
 `PAPER_NEUTRINO_VALIDATION.md` (small backend differences amplified by
 marginalization over a correlated block) is confirmed, with two corrections:
 
-1. The dominant degenerate block is **not** `mnu`-`Neff`-`w0`-`wa`. Case `07.2` has
-   `Neff` fixed and is *worse* than case `08.2` (14.71% versus 12.82%). The
+1. The dominant degenerate block is **not** `mnu`-`Neff`-`w0`-`wa`. Case `07.2.0` has
+   `Neff` fixed and is *worse* than case `08.2.0` (14.71% versus 12.82%). The
    dominant block is the amplitude subspace `{sigma8, mnu, b1..b10}`.
 2. The backend contribution is 1.55%, not 5-13%. Roughly a factor of ten of the
    quoted deviation is conditioning, and would appear identically if both codes
    agreed to 0.05% rounding.
 
 This also explains the previously unexplained monotonic escalation across cases
-`06.2.0` (6.82%), the old `03.2.0` precursor (10.06%), `08.2` (12.82%), and `07.2`
+`06.2.0` (6.82%), the old `03.2.0` precursor (10.06%), `08.2.0` (12.82%), and `07.2.0`
 (14.71%): every additional
 free parameter that projects onto the amplitude direction moves the matrix closer to
 the cliff, independently of any change in backend physics.
@@ -197,11 +197,11 @@ branch; the default `marginal=True` is what the dashboard currently reports.
    number, per-parameter amplification factor, and the nested-subset curve, so
    a rank cliff is visible instead of being misread as a physics failure.
 3. Make the blocking gate act on the unmarginalized deviation, keeping the
-   marginalized deviation as informational. Under that criterion case `07.2` passes
+   marginalized deviation as informational. Under that criterion case `07.2.0` passes
    everything except `mnu` at 1.55%.
 4. Test the residual 1.55% with a photometric run using the spectroscopic CLASS
    neutrino precision (`l_max_ncdm: 40`, `ncdm_fluid_approximation: 3`, keeping
-   `P_k_max_1/Mpc: 50`). Expect a CLASS runtime comparable to case `07.1`. (Case
+   `P_k_max_1/Mpc: 50`). Expect a CLASS runtime comparable to case `07.1.0`. (Case
    alternative `01.4` already implements a related precision variant, but with
    `ncdm_fluid_trigger_tau_over_tau_k=90` rather than
    `ncdm_fluid_approximation=3` -- this follow-up would need a distinct YAML.)

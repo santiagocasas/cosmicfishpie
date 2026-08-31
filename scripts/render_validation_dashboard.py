@@ -219,14 +219,9 @@ def _model_label(case: CaseDef) -> str:
     elif "w0" in freepars:
         cosmo_model = "w0CDM"
     extras = [p for p in ("mnu", "Neff") if p in freepars]
-    fixed = [
-        p for p in ("mnu", "Neff") if p in (specs.get("fiducialpars") or {}) and p not in freepars
-    ]
     label = cosmo_model
     if extras:
         label += " + " + ", ".join(extras)
-    if fixed:
-        label += f" (fixed {', '.join(fixed)})"
     return label
 
 
@@ -252,6 +247,20 @@ def _survey_label(case: CaseDef) -> str:
     if survey_name.endswith("-Pessimistic"):
         return "Pessimistic"
     return survey_name
+
+
+def _variant_label(case: CaseDef) -> str:
+    specs = _read_json(case.common_specs_json) if case.common_specs_json else None
+    if not isinstance(specs, dict):
+        return "default"
+    options = specs.get("options") or {}
+    tracer_key = "GCph_Tracer" if case.mode == "photo" else "GCsp_Tracer"
+    tracer = options.get(tracer_key)
+    if tracer == "clustering":
+        return "P_cb"
+    if tracer == "matter":
+        return "P_mm"
+    return str(tracer or "default")
 
 
 def _yaml_dependency_paths(path: Path) -> list[Path]:
@@ -657,6 +666,8 @@ th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:
 th{background:#f9fafb}
 tr.clickable{cursor:pointer}
 tr.clickable:hover{background:#f3f4f6}
+.track-row td{background:#e5e7eb;color:#374151;font-size:13px;font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase}
 .badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
 .badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
 .badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
@@ -696,7 +707,18 @@ def _fmt_seconds(x: float | None) -> str:
 
 def render_index(results: list[CaseResult], out_dir: Path) -> None:
     rows = []
+    current_track = None
     for r in sorted(results, key=lambda r: _case_sort_key(r.case.number)):
+        root = r.case.number.split(".", 1)[0]
+        if root == "01":
+            track = ("2303", "arXiv:2303.09451v1 - baseline-model MontePython validation")
+        elif root in {"02", "03", "04"}:
+            track = ("2405", "arXiv:2405.06047v1 - sensitivity to the neutrino sector")
+        else:
+            track = ("beyond", "Beyond paper validation")
+        if track[0] != current_track:
+            rows.append(f"<tr class='track-row'><td colspan='8'>{esc(track[1])}</td></tr>")
+            current_track = track[0]
         gate = _gate_status(r)
         display_gate = gate
         if display_gate is None and r.case.sigma_threshold is not None:
@@ -714,6 +736,7 @@ def render_index(results: list[CaseResult], out_dir: Path) -> None:
             f"<td><a href='case_{esc(r.case.number)}.html'>{esc(r.model_label)}</a></td>"
             f"<td>{esc(r.case.mode.capitalize())}</td>"
             f"<td>{esc(_survey_label(r.case))}</td>"
+            f"<td>{esc(_variant_label(r.case))}</td>"
             f"<td class='{dev_cls}'>{dev}</td>"
             f"<td>{_gate_badge(display_gate)}</td>"
             f"<td>{status_html}</td>"
@@ -731,12 +754,13 @@ def render_index(results: list[CaseResult], out_dir: Path) -> None:
 </head>
 <body>
 <h1>Backend Validation Dashboard</h1>
-<p class='subtle'>CAMB vs CLASS Fisher matrix validation, arXiv:2405.06047v1 (paper neutrino
-validation) and the Casas et al. w0waCDM/nuCDM validation tracks. Click a row for the full
-per-parameter breakdown and the exact YAML/spec files used.</p>
+<p class='subtle'>CAMB vs CLASS Fisher-matrix validation for arXiv:2303.09451v1
+(baseline-model MontePython validation) and arXiv:2405.06047v1 (sensitivity to the
+neutrino sector). Click a row for the full per-parameter breakdown and the exact
+YAML/spec files used.</p>
 <table>
 <thead>
-<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Max deviation</th><th>Gate</th><th></th></tr>
+<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Variant</th><th>Max deviation</th><th>Gate</th><th></th></tr>
 </thead>
 <tbody>
 {"".join(rows)}
@@ -851,6 +875,7 @@ def render_case(result: CaseResult, out_dir: Path, specs_dir: Path) -> None:
         ("Model", esc(result.model_label)),
         ("Probe", esc(case.mode.capitalize())),
         ("Scenario", esc(_survey_label(case))),
+        ("Variant", esc(_variant_label(case))),
         ("Description", esc(case.description) or "n/a"),
         ("Sigma threshold", f"{threshold:g}%" if threshold is not None else "n/a (informational)"),
         (

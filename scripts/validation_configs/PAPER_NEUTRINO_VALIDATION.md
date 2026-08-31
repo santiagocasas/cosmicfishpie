@@ -36,7 +36,12 @@ probe `.1` is spectroscopic and `.2` is photometric; scenario `.0` is pessimisti
 `.1` is optimistic. For example, `03.1.0` is model 2 spectroscopic pessimistic and
 `03.2.1` is model 2 photometric optimistic. Reduced controls `05.*`/`06.*` use the same
 three-level form but currently expose only pessimistic `.0` leaves. Stress tests `07.*`
-and `08.*` remain pessimistic-only with their shorter IDs.
+and `08.*` now follow the same scenario convention (`07.1.0`, `07.2.0`, `08.1.0`,
+`08.2.0`). An optional fourth segment identifies a variant of an otherwise identical
+leaf: canonical case `07.2.0` uses P_cb, while `07.2.0.1` is variant 1 and intentionally
+uses the non-paper P_mm galaxy tracer. Variant segments are unpadded (`.1`, `.2`, ...)
+because the runner normalizes only the root segment; future precision or parameter-set
+variants can use subsequent values.
 
 The former `03.2.1` strict-CLASS-precision experiment is no longer a primary case. It
 is retained as alternative `01.4` under `alternatives/`, where it cannot be mistaken
@@ -179,7 +184,7 @@ log. This was verified empirically: omitting `share_delta_neff` shifts `N_eff` f
 3.044 to 3.0587 (~0.48% error) for this fiducial, so it continues to be applied
 explicitly regardless of the `ShareDeltaNeff` value.
 
-## Seven paper-fiducial model families
+## Eight paper-fiducial model families
 
 | Common specs JSON                              | cosmo_model | Group  | Free parameters (step)                                                                 |
 |--------------------------------------------------|-------------|--------|-------------------------------------------------------------------------------------------|
@@ -188,8 +193,9 @@ explicitly regardless of the `ShareDeltaNeff` value.
 | `common_specs_paper_LCDM_mnu_Neff.json`           | LCDM        | `03.1.*`/`03.2.*` | above + `mnu` (10%) + `Neff` (1%) -- **formal paper model 2**       |
 | `common_specs_paper_w0wa_fixed_mnu_Neff.json`     | w0waCDM     | `02.1.*`/`02.2.*` | Omegam, Omegab, h, ns, sigma8, w0, wa (1% each). `mnu`, `Neff` fixed -- **formal paper model 1** |
 | `common_specs_paper_w0_mnu_fixed_Neff.json`       | w0waCDM     | `04.1.*`/`04.2.*` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0 (1%). `wa` fixed at 0, `Neff` fixed -- **formal paper model 3** |
-| `common_specs_paper_w0wa_mnu_fixed_Neff.json`     | w0waCDM     | `07.1`/`07.2` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0, wa (1%). `Neff` fixed -- stress test |
-| `common_specs_paper_w0wa_mnu_Neff.json`           | w0waCDM     | `08.1`/`08.2` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), Neff (1%), w0, wa (1%) -- stress test, excluded by Sec. 6 |
+| `common_specs_paper_w0wa_mnu_fixed_Neff.json`     | w0waCDM     | `07.1.0`/`07.2.0` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), w0, wa (1%). `Neff` fixed -- stress test |
+| `common_specs_paper_w0wa_mnu_Neff.json`           | w0waCDM     | `08.1.0`/`08.2.0` | Omegam, Omegab, h, ns, sigma8 (1%), mnu (10%), Neff (1%), w0, wa (1%) -- stress test, excluded by Sec. 6 |
+| `common_specs_paper_w0wa_mnu_fixed_Neff_Pmm.json` | w0waCDM     | `07.2.0.1` | Same free parameters as `07.2.0`, but both galaxy tracer settings intentionally use P_mm -- beyond-paper diagnostic variant |
 
 `mnu` always uses a 10% derivative step (paper convention, ~6 meV at fiducial); all
 other varied parameters use a 1% step.

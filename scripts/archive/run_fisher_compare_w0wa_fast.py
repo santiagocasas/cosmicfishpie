@@ -14,10 +14,10 @@ propagated through the marginalized w0/wa errors) discrepancy between
 default-precision (DP) CLASS and P3 CAMB in Case 01.
 
 By default this script compares:
-  - CLASS with the new HP (high-precision) YAML:
-    scripts/archive/legacy_yamls/class/mpvalidation_HP.yaml
+  - CLASS with the HP (high-precision) selector:
+    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
   - CAMB with the existing P3 YAML (already high precision):
-    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml
+    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
 
 See CONFIG_DIAGNOSIS.md and EUCLID_VALIDATION_FINDINGS.md at the repo root for
 the full root-cause analysis and the rationale for the HP settings.
@@ -38,7 +38,7 @@ Compare against the original (failing) DP CLASS config instead, to reproduce
 the regression on just 2 parameters::
 
   uv run python scripts/archive/run_fisher_compare_w0wa_fast.py \
-    --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml \
+    --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml \
     --compare
 """
 
@@ -343,9 +343,9 @@ def main() -> int:
     cfg_dir = repo_root / "cosmicfishpie" / "configs"
     default_specs_dir = str(cfg_dir / "default_survey_specifications") + "/"
     default_yaml_a = str(
-        repo_root / "scripts" / "archive" / "legacy_yamls" / "class" / "mpvalidation_HP.yaml"
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "mpvalidation_hp.yaml"
     )
-    default_yaml_b = str(cfg_dir / "default_boltzmann_yaml_files" / "camb" / "mpvalidation.yaml")
+    default_yaml_b = str(cfg_dir / "default_boltzmann_yaml_files" / "camb" / "mpvalidation_p3.yaml")
     default_common_specs = str(
         repo_root / "scripts" / "validation_configs" / "common_specs_w0waCDM.json"
     )

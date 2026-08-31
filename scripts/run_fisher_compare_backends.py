@@ -5,20 +5,20 @@
 
 Examples
 --------
-Photometric (GCph+WL), CLASS vs CAMB using nuvalidation YAMLs:
+Photometric (GCph+WL), CLASS HP vs CAMB HP validated defaults:
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode photo \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_photo.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
     --compare --plot
 
 Spectroscopic (GCsp), CLASS vs CAMB:
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode spectro \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_spectro.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/default_spectro.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
     --compare
 
 Notes
@@ -74,13 +74,11 @@ def _default_paths(repo_root: Path) -> dict[str, str]:
     cfg = repo_root / "cosmicfishpie" / "configs"
     return {
         "specs_dir": str(cfg / "default_survey_specifications") + "/",
-        "class_yaml_photo": str(
-            cfg / "default_boltzmann_yaml_files" / "class" / "nuvalidation_photo.yaml"
-        ),
+        "class_yaml_photo": str(cfg / "default_boltzmann_yaml_files" / "class" / "default.yaml"),
         "class_yaml_spectro": str(
-            cfg / "default_boltzmann_yaml_files" / "class" / "nuvalidation_spectro.yaml"
+            cfg / "default_boltzmann_yaml_files" / "class" / "default_spectro.yaml"
         ),
-        "camb_yaml": str(cfg / "default_boltzmann_yaml_files" / "camb" / "nuvalidation.yaml"),
+        "camb_yaml": str(cfg / "default_boltzmann_yaml_files" / "camb" / "default.yaml"),
         "symbolic_yaml": str(cfg / "default_boltzmann_yaml_files" / "symbolic" / "default.yaml"),
     }
 

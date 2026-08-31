@@ -12,9 +12,9 @@ just invoked directly in Python instead of via the shell/env-file wrapper.
 
 This variant pairs:
   - CLASS with the ORIGINAL default-precision (DP) YAML, unchanged:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml
+    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml
   - CAMB with the P3 YAML:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml
+    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
 
 The purpose of this DP variant is to isolate how much of Case 01's original
 26.67%-level discrepancy was due to CLASS precision (DP vs HP) versus CAMB's
@@ -63,8 +63,8 @@ CFG_DIR = (
 )
 
 FULL7_PARAMS = "Omegam,Omegab,h,ns,sigma8,w0,wa"
-CLASS_DP_YAML = str(CFG_DIR / "class" / "mpvalidation.yaml")
-CAMB_P3_YAML = str(CFG_DIR / "camb" / "mpvalidation.yaml")
+CLASS_DP_YAML = str(CFG_DIR / "class" / "mpvalidation_dp.yaml")
+CAMB_P3_YAML = str(CFG_DIR / "camb" / "mpvalidation_p3.yaml")
 
 
 def main() -> int:

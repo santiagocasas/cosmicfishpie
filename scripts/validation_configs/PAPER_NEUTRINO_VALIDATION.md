@@ -208,29 +208,30 @@ stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but di
 
 ## Boltzmann solver profiles
 
+Every paper-validation case uses the self-contained, paper-validated high-precision
+selectors under `cosmicfishpie/configs/default_boltzmann_yaml_files/` (see that
+directory's README.md for the full picture; note that `camb/default.yaml`,
+`class/default.yaml`, and `class/default_spectro.yaml` are now the package's fast,
+*non-validated* fallback defaults, not the paper profiles -- do not confuse them):
+
 - **Photometric (nonlinear, HMcode2020):**
-  `class/default.yaml` selects the paper's photo `class_hp` profile
+  `class/nuvalidation_hp.yaml` is the paper's photo HP profile
   (`l_max_ncdm=25`, `ncdm_fluid_trigger_tau_over_tau_k=100`,
-  `hmcode_tol_sigma=1e-8`). `camb/default.yaml` selects `camb_hp`
-  (`halofit_version=mead2020`, `num_nu_massive=1`) for both probes. The stricter,
-  **non-paper** alternative `01.4` uses
+  `hmcode_tol_sigma=1e-8`). `camb/nuvalidation_hp.yaml`
+  (`halofit_version=mead2020`, `num_nu_massive=1`) is used for both probes. The
+  stricter, **non-paper** alternative `01.4` uses
   `scripts/validation_configs/alternatives/class_photo_strict.yaml` to override
   `l_max_ncdm=40` and `ncdm_fluid_trigger_tau_over_tau_k=90`.
 - **Spectroscopic (linear P_cb observable):**
-  `class/default_spectro.yaml` selects the paper's `class_uhp` profile
+  `class/nuvalidation_uhp.yaml` is the paper's UHP profile
   (`l_max_ncdm=40`, `ncdm_fluid_approximation=3`, `evolver=0`). The
-  `non linear` key in that profile (and in `camb_hp`) is **inert
+  `non linear` key in that profile (and in `camb/nuvalidation_hp.yaml`) is **inert
   legacy configuration** for the spectroscopic observable: `GCsp_linear` in the common
   specs JSON drives the actual dewiggling/damping treatment in
   `cosmicfishpie/LSSsurvey/spectro_obs.py`, and the spectro Pk is always computed from
   the linear transfer function, never from Halofit/HMcode. This mirrors the paper's
   own treatment (Halofit is explicitly unsuitable for extended-neutrino forecasts, per
   the paper).
-
-All numerical settings and paper provenance now live in
-`cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`. Redundant
-`nuvalidation*` and `paper_mnuvalidation*` aliases were removed; archived wrappers were
-redirected to the canonical selectors.
 
 ## Validation gate
 

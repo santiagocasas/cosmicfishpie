@@ -1,9 +1,9 @@
 # Configuration Analysis: Why Case 01 Shows >10% Deviations
 
-> **Historical analysis, superseded.** The actionable configuration now lives in
-> `cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`.
-> Use `class/mpvalidation_hp.yaml`, `class/mpvalidation_dp.yaml`, and
-> `camb/mpvalidation_p3.yaml`; do not copy the exploratory values proposed below.
+> **Historical analysis, superseded.** The actionable configuration now lives directly in
+> `cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml`,
+> `class/mpvalidation_dp.yaml`, and `camb/mpvalidation_p3.yaml` (each self-contained --
+> no shared registry to look up); do not copy the exploratory values proposed below.
 
 **Date:** 2026-08-17  
 **Status:** Root cause identified ✓  
@@ -166,11 +166,9 @@ COSMO_SETTINGS:
 
 ## Current implementation
 
-The exact Casas et al. Appendix A settings are centralized in
-`precision_profiles.yaml`. Select `class_mpvalidation_hp` through
-`class/mpvalidation_hp.yaml`, retain `class_mpvalidation_dp` through
-`class/mpvalidation_dp.yaml` for the historical comparison, and select CAMB P3 through
-`camb/mpvalidation_p3.yaml`.
+The exact Casas et al. Appendix A settings are self-contained in
+`class/mpvalidation_hp.yaml`; `class/mpvalidation_dp.yaml` retains the historical DP
+comparison, and `camb/mpvalidation_p3.yaml` is the CAMB P3 profile.
 
 ### Step 3: Re-run Case 01
 ```bash
@@ -246,7 +244,7 @@ w0waCDM :
 1. **Casas et al. (2303.09451)** Section 6.3: Impact of accuracy settings in Einstein–Boltzmann solvers
 2. **Casas et al. (2303.09451)** Appendix A.5: High-precision (HP) CLASS settings
 3. **CLASS documentation**: Precision settings and accuracy parameters
-4. **Current registry:** `/cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`
+4. **Current implementation:** `cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml`
 
 ---
 

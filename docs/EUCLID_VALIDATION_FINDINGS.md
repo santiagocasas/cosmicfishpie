@@ -1,7 +1,8 @@
 # Euclid w0waCDM Validation: Complete Analysis & Roadmap
 
-> **Historical analysis, superseded.** Exact paper profiles and provenance are now
-> centralized in `cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml`.
+> **Historical analysis, superseded.** Exact paper profiles now live directly (and
+> self-contained, with no shared registry) in `cosmicfishpie/configs/default_boltzmann_yaml_files/`:
+> `class/mpvalidation_hp.yaml`, `class/mpvalidation_dp.yaml`, `camb/mpvalidation_p3.yaml`.
 > The exploratory numerical recommendations below are retained as investigation history,
 > not as current configuration instructions.
 
@@ -149,7 +150,7 @@ ACCURACY:
 
 Use `class/mpvalidation_hp.yaml` with `camb/mpvalidation_p3.yaml` for the validated
 comparison. Use `class/mpvalidation_dp.yaml` only when intentionally reproducing the DP
-control. All three selectors resolve their numerical settings from `precision_profiles.yaml`.
+control. All three selectors are self-contained (real settings, no shared registry).
 
 ### Phase 2: Verify Environment
 ```bash

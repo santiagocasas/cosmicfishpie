@@ -2,7 +2,6 @@ import pytest
 
 from cosmicfishpie.configs.config import _add_free_ia_parameters
 
-
 IA_PARAMS = {"IA_model": "eNLA", "AIA": 1.72, "betaIA": 2.17, "etaIA": -0.41}
 
 

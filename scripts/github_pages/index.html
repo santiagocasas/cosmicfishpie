@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CosmicFishPie cosmological Fisher forecasting tools and validation results.">
+    <title>CosmicFishPie</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f6f0e4;
+        --muted: #b7b0a5;
+        --panel: rgba(19, 28, 46, 0.78);
+        --line: rgba(190, 220, 255, 0.18);
+        --cyan: #76d7e8;
+        --gold: #f2bc68;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 78% 12%, rgba(80, 145, 190, 0.24), transparent 29rem),
+          radial-gradient(circle at 13% 90%, rgba(179, 111, 72, 0.18), transparent 25rem),
+          #080d18;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        opacity: 0.32;
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.3px);
+        background-size: 67px 67px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+      }
+
+      main {
+        position: relative;
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: clamp(72px, 12vw, 150px) 0 64px;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--cyan);
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(3.6rem, 10vw, 8.8rem);
+        font-weight: 400;
+        letter-spacing: -0.065em;
+        line-height: 0.84;
+      }
+
+      h1 span { color: var(--gold); }
+
+      .intro {
+        max-width: 690px;
+        margin: 38px 0 56px;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2vw, 1.32rem);
+        line-height: 1.65;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr;
+        gap: 16px;
+      }
+
+      .card {
+        min-height: 210px;
+        padding: 26px;
+        color: inherit;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        text-decoration: none;
+        backdrop-filter: blur(14px);
+        transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+      }
+
+      .card:hover,
+      .card:focus-visible {
+        background: rgba(27, 40, 63, 0.92);
+        border-color: var(--cyan);
+        outline: none;
+        transform: translateY(-4px);
+      }
+
+      .card small {
+        color: var(--cyan);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .card h2 {
+        margin: 44px 0 12px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.75rem;
+        font-weight: 400;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 50px;
+        padding-top: 20px;
+        color: #888b91;
+        border-top: 1px solid var(--line);
+        font-size: 0.82rem;
+      }
+
+      @media (max-width: 760px) {
+        main { width: min(100% - 28px, 560px); padding-top: 70px; }
+        h1 { font-size: clamp(3.4rem, 18vw, 5.5rem); }
+        .intro { margin: 28px 0 38px; }
+        .grid { grid-template-columns: 1fr; }
+        .card { min-height: 180px; }
+        .card h2 { margin-top: 32px; }
+        footer { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Cosmological forecasting toolkit</p>
+      <h1>Cosmic<span>Fish</span>Pie</h1>
+      <p class="intro">
+        Open-source Fisher forecasting for next-generation cosmological surveys,
+        with configurable CAMB and CLASS backends, survey specifications, and
+        reproducible validation workflows.
+      </p>
+
+      <section class="grid" aria-label="Project resources">
+        <a class="card" href="dashboard/">
+          <small>Validation evidence</small>
+          <h2>CAMB / CLASS dashboard</h2>
+          <p>Explore numerical agreement, case-level gates, and commit provenance.</p>
+        </a>
+        <a class="card" href="https://cosmicfishpie.readthedocs.io/en/latest/">
+          <small>Learn</small>
+          <h2>Documentation</h2>
+          <p>Installation, concepts, API reference, and examples.</p>
+        </a>
+        <a class="card" href="https://github.com/santiagocasas/cosmicfishpie">
+          <small>Build with us</small>
+          <h2>Source code</h2>
+          <p>Browse the repository, open an issue, or contribute on GitHub.</p>
+        </a>
+      </section>
+
+      <footer>
+        <span>CosmicFishPie · cosmology by calculation</span>
+        <span>Version 1.3.1</span>
+      </footer>
+    </main>
+  </body>
+</html>

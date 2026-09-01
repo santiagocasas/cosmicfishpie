@@ -622,7 +622,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "astropy", specifier = "==6.1.7" },
-    { name = "black", marker = "extra == 'dev'", specifier = ">=24.4.2,<25.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = ">=24.4.2,<27.0" },
     { name = "build", marker = "extra == 'dev'" },
     { name = "camb", specifier = "==2.0.3" },
     { name = "chainconsumer", specifier = ">=1.2.0,<2.0.0" },
@@ -630,17 +630,17 @@ requires-dist = [
     { name = "colossus" },
     { name = "cython", specifier = "==3.1.4" },
     { name = "furo", marker = "extra == 'dev'", specifier = "==2024.1.29" },
-    { name = "getdist", specifier = "==1.7.3" },
+    { name = "getdist", specifier = "==1.7.5" },
     { name = "h5py", specifier = "==3.14.0" },
     { name = "ipython", specifier = "==8.37.0" },
     { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12,<7.1" },
-    { name = "joblib", specifier = "==1.5.2" },
+    { name = "joblib", specifier = "==1.5.3" },
     { name = "jupyter", specifier = "==1.1.1" },
     { name = "matplotlib", specifier = "==3.10.7" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0,<1.20" },
     { name = "myst-parser", marker = "extra == 'dev'" },
     { name = "myst-parser", marker = "extra == 'dev'", specifier = ">=1.0,<4.1" },
-    { name = "nautilus-sampler", specifier = "==1.0.5" },
+    { name = "nautilus-sampler", specifier = "==1.0.6" },
     { name = "numpy" },
     { name = "packaging", marker = "extra == 'dev'" },
     { name = "pandas" },
@@ -939,7 +939,7 @@ wheels = [
 
 [[package]]
 name = "getdist"
-version = "1.7.3"
+version = "1.7.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
@@ -950,9 +950,9 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/64/b0/e074ffbb25dfddc153cef610515c4a17d1c9adf1e4bb2f3da9b31f468c6a/getdist-1.7.3.tar.gz", hash = "sha256:eb5834b5083d051d300da38ae6b103ab9312e7eb6bc03734e81d430cf419b8bf", size = 823398, upload-time = "2025-09-22T15:26:24.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/81/b1754e449948b79c7f480e2e611cbce3450cc1332aab6592529b37131f68/getdist-1.7.5.tar.gz", hash = "sha256:b0295c10e861db3ed9439eac88d8dc452e93d67173b5723756b0658b9694f98c", size = 823498, upload-time = "2025-12-17T10:46:10.1Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/e0/472df6bfa87364029d218b6c3d6689b66ab921735ba66d2c29b85ba75eac/getdist-1.7.3-py3-none-any.whl", hash = "sha256:11a692987c77c9b3e7c619b5e12a551acabe2399a41e47dff141482da9ae2f17", size = 833969, upload-time = "2025-09-22T15:26:22.774Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/dc/d4b9a09e7b8732564bb8a72be1a916fceb2717318d52e828ad9645152f18/getdist-1.7.5-py3-none-any.whl", hash = "sha256:d167491bc90b1d53e4377b6d574239e397151608381b295a65717f9ab096c2d7", size = 834048, upload-time = "2025-12-17T10:46:08.351Z" },
 ]
 
 [[package]]
@@ -1224,11 +1224,11 @@ wheels = [
 
 [[package]]
 name = "joblib"
-version = "1.5.2"
+version = "1.5.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/5d/447af5ea094b9e4c4054f82e223ada074c552335b9b4b2d14bd9b35a67c4/joblib-1.5.2.tar.gz", hash = "sha256:3faa5c39054b2f03ca547da9b2f52fde67c06240c31853f306aea97f13647b55", size = 331077, upload-time = "2025-08-27T12:15:46.575Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/f2/d34e8b3a08a9cc79a50b2208a93dce981fe615b64d5a4d4abee421d898df/joblib-1.5.3.tar.gz", hash = "sha256:8561a3269e6801106863fd0d6d84bb737be9e7631e33aaed3fb9ce5953688da3", size = 331603, upload-time = "2025-12-15T08:41:46.427Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/e8/685f47e0d754320684db4425a0967f7d3fa70126bffd76110b7009a0090f/joblib-1.5.2-py3-none-any.whl", hash = "sha256:4e1f0bdbb987e6d843c70cf43714cb276623def372df3c22fe5266b2670bc241", size = 308396, upload-time = "2025-08-27T12:15:45.188Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/91/984aca2ec129e2757d1e4e3c81c3fcda9d0f85b74670a094cc443d9ee949/joblib-1.5.3-py3-none-any.whl", hash = "sha256:5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713", size = 309071, upload-time = "2025-12-15T08:41:44.973Z" },
 ]
 
 [[package]]
@@ -1797,7 +1797,7 @@ wheels = [
 
 [[package]]
 name = "nautilus-sampler"
-version = "1.0.5"
+version = "1.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -1807,9 +1807,9 @@ dependencies = [
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "threadpoolctl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/31/93eae1e2c19949f1a69c0f58ef460b8e8c568aedd74b3a848ed927e4a5ba/nautilus_sampler-1.0.5.tar.gz", hash = "sha256:1247eb633ac18fddafb85f37015ba0b3b5de3a4afe12ad09bfdf95755ecfe3ac", size = 41519, upload-time = "2024-10-18T14:02:20.079Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/2c/a50c1a550ba43d86a0b41cf6410986d478d8640139c8e963f4dde8a8bfc2/nautilus_sampler-1.0.6.tar.gz", hash = "sha256:4e90b6d97be742be2e255c35a79e5a388cee043b4d2ce970eec327ed34139b78", size = 43118, upload-time = "2025-12-29T14:08:25.629Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/95/1ff5b8b04b1fde075771023786a56878599563ad0f1e3aac99215420ffb1/nautilus_sampler-1.0.5-py3-none-any.whl", hash = "sha256:4351986f938ba897dc850a9cac2894509df6d4d0a19dc3edd0070032ef0b016e", size = 33131, upload-time = "2024-10-18T14:02:18.819Z" },
+    { url = "https://files.pythonhosted.org/packages/47/54/372c42bcfe324b650946f6cfee0e5adbd55aafc25cab555460bf5d9e8d36/nautilus_sampler-1.0.6-py3-none-any.whl", hash = "sha256:de6f3b9d249d87f05a673e8597e56621037e84dc712a6c2d3c18ff3672735b9b", size = 35772, upload-time = "2025-12-29T14:08:24.603Z" },
 ]
 
 [[package]]

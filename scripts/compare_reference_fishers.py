@@ -74,7 +74,9 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"A ({args.label_a}): {args.fisher_a}")
     print(f"B ({args.label_b}): {args.fisher_b}")
-    print(f"{'param':10s} {'sigma_' + args.label_a:>16s} {'sigma_' + args.label_b:>16s} {'dev%':>8s}")
+    print(
+        f"{'param':10s} {'sigma_' + args.label_a:>16s} {'sigma_' + args.label_b:>16s} {'dev%':>8s}"
+    )
     worst_param, worst_dev = None, 0.0
     for p in params:
         dev = abs(sig_b[p] / sig_a[p] - 1.0) * 100.0

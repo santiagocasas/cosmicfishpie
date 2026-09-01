@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Case 04.2: w0waCDM + mnu</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<a class='back' href='index.html'>&larr; Back to all cases</a>
+<h1>Case 04.2: w0waCDM + mnu (Photo)</h1>
+<div class='section'><h2>Stale configuration</h2><p>This result was generated with different common-spec values than the current case configuration. It is shown for provenance only and requires a rerun before its gate can be evaluated against the current configuration.</p><ul><li><code>options.GCsp_Tracer: run=&quot;matter&quot;, current=&quot;clustering&quot;</code></li><li><code>options.GCph_Tracer: run=&quot;matter&quot;, current=&quot;clustering&quot;</code></li></ul></div>
+<div class='section'>
+<h2>Metadata</h2>
+<div class='kv'><div>Model</div><div>w0waCDM + mnu</div><div>Probe</div><div>Photo</div><div>Description</div><div>camb vs class (photo), paper neutrino validation (arXiv:2405.06047v1) model 3 [Sec. 6]: w0CDM + free mnu, with Neff and wa fixed; validates nonlinear modelling with neutrinos and dark energy varied simultaneously</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-warn'>STALE CONFIG</span></div><div>Timestamp</div><div>2026-08-30 12:04:46</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>409.0s / 639.3s</div><div>Git commit</div><div>ef034f3 (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>camb 2.0.3</code> (pypi)</div><div>Code B</div><div><code>class 3.3.4.0</code> (pypi)</div></div>
+</div>
+<div class='section'>
+<h2>Cosmological parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.00370439</td><td>0.00360057</td><td class='dev-cell'>2.80%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.00350564</td><td>0.00354084</td><td class='dev-cell'>1.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.0333021</td><td>0.0330888</td><td class='dev-cell'>0.64%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.0171634</td><td>0.0171899</td><td class='dev-cell'>0.15%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.00744406</td><td>0.00700693</td><td class='dev-cell'>5.87%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>mnu</code></td><td>0.113545</td><td>0.10148</td><td class='dev-cell dev-high'>10.63%</td><td><span class='badge badge-fail'>FAIL</span></td></tr>
+<tr><td><code>w0</code></td><td>0.0226138</td><td>0.0216326</td><td class='dev-cell'>4.34%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section'>
+<h2>Nuisance parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>AIA</code></td><td>1.43899</td><td>1.43901</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b1</code></td><td>0.0145865</td><td>0.0138502</td><td class='dev-cell'>5.05%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b10</code></td><td>0.020777</td><td>0.0197325</td><td class='dev-cell'>5.03%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b2</code></td><td>0.0163417</td><td>0.0154557</td><td class='dev-cell'>5.42%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b3</code></td><td>0.0168398</td><td>0.0159424</td><td class='dev-cell'>5.33%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b4</code></td><td>0.0172207</td><td>0.0163294</td><td class='dev-cell'>5.18%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b5</code></td><td>0.017634</td><td>0.0166814</td><td class='dev-cell'>5.40%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b6</code></td><td>0.0179513</td><td>0.0169987</td><td class='dev-cell'>5.31%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b7</code></td><td>0.0183912</td><td>0.0174226</td><td class='dev-cell'>5.27%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b8</code></td><td>0.018724</td><td>0.0177408</td><td class='dev-cell'>5.25%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b9</code></td><td>0.0192619</td><td>0.0182617</td><td class='dev-cell'>5.19%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>betaIA</code></td><td>0.348628</td><td>0.348625</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>etaIA</code></td><td>0.934181</td><td>0.934199</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section links'>
+<h2>Inputs used</h2>
+<a href='specs/case_04.2_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_04.2_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_04.2_common_specs.html' target='_blank'>Current common specs source (differs from this run) &rarr;</a><a href='specs/case_04.2_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (camb) &rarr;</a><a href='specs/case_04.2_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (class) &rarr;</a>
+</div>
+</body>
+</html>

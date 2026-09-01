@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Case 03.2: LCDM + mnu, Neff</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<a class='back' href='index.html'>&larr; Back to all cases</a>
+<h1>Case 03.2: LCDM + mnu, Neff (Photo)</h1>
+
+<div class='section'>
+<h2>Metadata</h2>
+<div class='kv'><div>Model</div><div>LCDM + mnu, Neff</div><div>Probe</div><div>Photo</div><div>Description</div><div>camb vs class (photo), paper neutrino validation (arXiv:2405.06047v1) model 2 [Sec. 6]: LCDM + free mnu, Neff (CLASS paper-HP ncdm profile, l_max_ncdm=25/trigger=100)</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-pass'>PASS</span></div><div>Timestamp</div><div>2026-08-30 18:21:43</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>433.3s / 635.6s</div><div>Git commit</div><div>ef034f3 (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>camb 2.0.3</code> (pypi)</div><div>Code B</div><div><code>class 3.3.4.0</code> (pypi)</div></div>
+</div>
+<div class='section'>
+<h2>Cosmological parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.00340367</td><td>0.00335416</td><td class='dev-cell'>1.45%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.00332463</td><td>0.0033488</td><td class='dev-cell'>0.73%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.0497258</td><td>0.0491027</td><td class='dev-cell'>1.25%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.0218878</td><td>0.021698</td><td class='dev-cell'>0.87%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.00536811</td><td>0.00524619</td><td class='dev-cell'>2.27%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>mnu</code></td><td>0.0850277</td><td>0.0803286</td><td class='dev-cell'>5.53%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Neff</code></td><td>0.571938</td><td>0.568904</td><td class='dev-cell'>0.53%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section'>
+<h2>Nuisance parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>AIA</code></td><td>1.43843</td><td>1.43841</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b1</code></td><td>0.00665442</td><td>0.00663499</td><td class='dev-cell'>0.29%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b10</code></td><td>0.00957665</td><td>0.0094715</td><td class='dev-cell'>1.10%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b2</code></td><td>0.00655126</td><td>0.00651331</td><td class='dev-cell'>0.58%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b3</code></td><td>0.00676736</td><td>0.00669969</td><td class='dev-cell'>1.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b4</code></td><td>0.00697719</td><td>0.00691385</td><td class='dev-cell'>0.91%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b5</code></td><td>0.00726569</td><td>0.00720991</td><td class='dev-cell'>0.77%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b6</code></td><td>0.00751706</td><td>0.00745105</td><td class='dev-cell'>0.88%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b7</code></td><td>0.00792284</td><td>0.00785802</td><td class='dev-cell'>0.82%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b8</code></td><td>0.00801745</td><td>0.00794159</td><td class='dev-cell'>0.95%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b9</code></td><td>0.0084237</td><td>0.00834112</td><td class='dev-cell'>0.98%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>betaIA</code></td><td>0.348308</td><td>0.348311</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>etaIA</code></td><td>0.933666</td><td>0.933666</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section links'>
+<h2>Inputs used</h2>
+<a href='specs/case_03.2_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_03.2_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_03.2_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_03.2_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (camb) &rarr;</a><a href='specs/case_03.2_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (class) &rarr;</a>
+</div>
+</body>
+</html>

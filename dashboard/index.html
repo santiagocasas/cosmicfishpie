@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>CosmicFishPie Backend Validation Dashboard</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.track-row td{background:#e5e7eb;color:#374151;font-size:13px;font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<h1>Backend Validation Dashboard</h1>
+<p class='subtle'>CAMB vs CLASS Fisher-matrix validation for arXiv:2303.09451v1
+(baseline-model MontePython validation) and arXiv:2405.06047v1 (sensitivity to the
+neutrino sector). Click a row for the full per-parameter breakdown and the exact
+YAML/spec files used.</p>
+<table>
+<thead>
+<tr><th>Case</th><th>Model</th><th>Probe</th><th>Scenario</th><th>Variant</th><th>Max deviation</th><th>Gate</th><th>State</th></tr>
+</thead>
+<tbody>
+<tr class='track-row'><td colspan='8'>arXiv:2303.09451v1 - baseline-model MontePython validation</td></tr><tr class='clickable' onclick="location.href='case_01.1.0.html'"><td>01.1.0</td><td><a href='case_01.1.0.html'>w0waCDM</a></td><td>Spectro</td><td>Pessimistic</td><td>P_mm</td><td class='dev-cell'>0.35% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_01.1.1.html'"><td>01.1.1</td><td><a href='case_01.1.1.html'>w0waCDM</a></td><td>Spectro</td><td>Optimistic</td><td>P_mm</td><td class='dev-cell'>0.37% (Omegam)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_01.2.0.html'"><td>01.2.0</td><td><a href='case_01.2.0.html'>w0waCDM</a></td><td>Photo</td><td>Pessimistic</td><td>P_mm</td><td class='dev-cell'>0.76% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_01.2.1.html'"><td>01.2.1</td><td><a href='case_01.2.1.html'>w0waCDM</a></td><td>Photo</td><td>Optimistic</td><td>P_mm</td><td class='dev-cell'>0.93% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='track-row'><td colspan='8'>arXiv:2405.06047v1 - sensitivity to the neutrino sector</td></tr><tr class='clickable' onclick="location.href='case_02.1.0.html'"><td>02.1.0</td><td><a href='case_02.1.0.html'>w0waCDM</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>0.59% (Ps_1)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_02.1.1.html'"><td>02.1.1</td><td><a href='case_02.1.1.html'>w0waCDM</a></td><td>Spectro</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>0.57% (Ps_1)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_02.2.0.html'"><td>02.2.0</td><td><a href='case_02.2.0.html'>w0waCDM</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>0.86% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_02.2.1.html'"><td>02.2.1</td><td><a href='case_02.2.1.html'>w0waCDM</a></td><td>Photo</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>1.14% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_03.1.0.html'"><td>03.1.0</td><td><a href='case_03.1.0.html'>LCDM + mnu, Neff</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.25% (Ps_1)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_03.1.1.html'"><td>03.1.1</td><td><a href='case_03.1.1.html'>LCDM + mnu, Neff</a></td><td>Spectro</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>1.02% (h)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_03.2.0.html'"><td>03.2.0</td><td><a href='case_03.2.0.html'>LCDM + mnu, Neff</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>5.53% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_03.2.1.html'"><td>03.2.1</td><td><a href='case_03.2.1.html'>LCDM + mnu, Neff</a></td><td>Photo</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>2.60% (b10)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_04.1.0.html'"><td>04.1.0</td><td><a href='case_04.1.0.html'>w0CDM + mnu</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.12% (Ps_1)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_04.1.1.html'"><td>04.1.1</td><td><a href='case_04.1.1.html'>w0CDM + mnu</a></td><td>Spectro</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>0.74% (h)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_04.2.0.html'"><td>04.2.0</td><td><a href='case_04.2.0.html'>w0CDM + mnu</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>5.49% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_04.2.1.html'"><td>04.2.1</td><td><a href='case_04.2.1.html'>w0CDM + mnu</a></td><td>Photo</td><td>Optimistic</td><td>P_cb</td><td class='dev-cell'>1.98% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='track-row'><td colspan='8'>Beyond paper validation</td></tr><tr class='clickable' onclick="location.href='case_05.1.0.html'"><td>05.1.0</td><td><a href='case_05.1.0.html'>LCDM</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.33% (sigma8)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_05.2.0.html'"><td>05.2.0</td><td><a href='case_05.2.0.html'>LCDM</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.17% (Omegab)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_06.1.0.html'"><td>06.1.0</td><td><a href='case_06.1.0.html'>LCDM + mnu</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.17% (Ps_1)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_06.2.0.html'"><td>06.2.0</td><td><a href='case_06.2.0.html'>LCDM + mnu</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>4.24% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_07.1.0.html'"><td>07.1.0</td><td><a href='case_07.1.0.html'>w0waCDM + mnu</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>1.29% (Ps_2)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_07.2.0.html'"><td>07.2.0</td><td><a href='case_07.2.0.html'>w0waCDM + mnu</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>6.34% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_07.2.0.1.html'"><td>07.2.0.1</td><td><a href='case_07.2.0.1.html'>w0waCDM + mnu</a></td><td>Photo</td><td>Pessimistic</td><td>P_mm</td><td class='dev-cell dev-high'>14.70% (mnu)</td><td><span class='badge badge-fail'>FAIL</span></td><td><code>0462bd8 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_08.1.0.html'"><td>08.1.0</td><td><a href='case_08.1.0.html'>w0waCDM + mnu, Neff</a></td><td>Spectro</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>2.32% (ns)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr><tr class='clickable' onclick="location.href='case_08.2.0.html'"><td>08.2.0</td><td><a href='case_08.2.0.html'>w0waCDM + mnu, Neff</a></td><td>Photo</td><td>Pessimistic</td><td>P_cb</td><td class='dev-cell'>5.10% (mnu)</td><td><span class='badge badge-pass'>PASS</span></td><td><code>b0e8eb1 (dirty)</code></td></tr>
+</tbody>
+</table>
+</body>
+</html>

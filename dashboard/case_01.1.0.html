@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Case 01.1.0: w0waCDM</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.track-row td{background:#e5e7eb;color:#374151;font-size:13px;font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<a class='back' href='index.html'>&larr; Back to all cases</a>
+<h1>Case 01.1.0: w0waCDM (Spectro)</h1>
+
+<div class='section'>
+<h2>Metadata</h2>
+<div class='kv'><div>Model</div><div>w0waCDM</div><div>Probe</div><div>Spectro</div><div>Scenario</div><div>Pessimistic</div><div>Variant</div><div>P_mm</div><div>Description</div><div>class vs camb (spectro, pessimistic), paper montepython validation (arXiv:2303.09451v1), w0waCDM</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-pass'>PASS</span></div><div>Timestamp</div><div>2026-08-31 12:42:40</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>559.5s / 433.5s</div><div>Git commit</div><div>0462bd8 (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>class 3.3.4.0</code> (pypi)</div><div>Code B</div><div><code>camb 2.0.3</code> (pypi)</div></div>
+</div>
+<div class='section'>
+<h2>Cosmological parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.0160788</td><td>0.0160535</td><td class='dev-cell'>0.16%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.00241417</td><td>0.00240565</td><td class='dev-cell'>0.35%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.0200502</td><td>0.0200442</td><td class='dev-cell'>0.03%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.0141917</td><td>0.0141934</td><td class='dev-cell'>0.01%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.0154512</td><td>0.0154225</td><td class='dev-cell'>0.19%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>w0</code></td><td>0.137306</td><td>0.137028</td><td class='dev-cell'>0.20%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>wa</code></td><td>0.409402</td><td>0.408452</td><td class='dev-cell'>0.23%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section'>
+<h2>Nuisance parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Ps_1</code></td><td>34.2894</td><td>34.3322</td><td class='dev-cell'>0.12%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_2</code></td><td>35.24</td><td>35.2924</td><td class='dev-cell'>0.15%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_3</code></td><td>37.5108</td><td>37.583</td><td class='dev-cell'>0.19%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_4</code></td><td>38.7204</td><td>38.7831</td><td class='dev-cell'>0.16%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_1</code></td><td>0.0123989</td><td>0.0124041</td><td class='dev-cell'>0.04%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_2</code></td><td>0.0131345</td><td>0.013139</td><td class='dev-cell'>0.03%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_3</code></td><td>0.0138047</td><td>0.0138064</td><td class='dev-cell'>0.01%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_4</code></td><td>0.0145288</td><td>0.0145292</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section links'>
+<h2>Inputs used</h2>
+<a href='specs/case_01.1.0_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (class) &rarr;</a><a href='specs/case_01.1.0_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (camb) &rarr;</a><a href='specs/case_01.1.0_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_01.1.0_survey_specs.html' target='_blank'>Survey specs (Pessimistic) &rarr;</a><a href='specs/case_01.1.0_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (class) &rarr;</a><a href='specs/case_01.1.0_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (camb) &rarr;</a>
+</div>
+</body>
+</html>

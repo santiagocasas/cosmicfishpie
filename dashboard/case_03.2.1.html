@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Case 03.2.1: LCDM + mnu, Neff</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.track-row td{background:#e5e7eb;color:#374151;font-size:13px;font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<a class='back' href='index.html'>&larr; Back to all cases</a>
+<h1>Case 03.2.1: LCDM + mnu, Neff (Photo)</h1>
+
+<div class='section'>
+<h2>Metadata</h2>
+<div class='kv'><div>Model</div><div>LCDM + mnu, Neff</div><div>Probe</div><div>Photo</div><div>Scenario</div><div>Optimistic</div><div>Variant</div><div>P_cb</div><div>Description</div><div>camb vs class (photo, optimistic), paper model 2: LCDM + free mnu, Neff (arXiv:2405.06047v1 Sec. 6; CLASS paper HP)</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-pass'>PASS</span></div><div>Timestamp</div><div>2026-08-31 02:58:15</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>339.7s / 516.1s</div><div>Git commit</div><div>b0e8eb1 (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>camb 2.0.3</code> (pypi)</div><div>Code B</div><div><code>class 3.3.4.0</code> (pypi)</div></div>
+</div>
+<div class='section'>
+<h2>Cosmological parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.00205987</td><td>0.00202008</td><td class='dev-cell'>1.93%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.00298946</td><td>0.00301375</td><td class='dev-cell'>0.81%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.024467</td><td>0.024334</td><td class='dev-cell'>0.54%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.00863628</td><td>0.00858755</td><td class='dev-cell'>0.56%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.00347205</td><td>0.00343723</td><td class='dev-cell'>1.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>mnu</code></td><td>0.0629512</td><td>0.0621541</td><td class='dev-cell'>1.27%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Neff</code></td><td>0.435587</td><td>0.436278</td><td class='dev-cell'>0.16%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section'>
+<h2>Nuisance parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>AIA</code></td><td>0.120893</td><td>0.120856</td><td class='dev-cell'>0.03%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b1</code></td><td>0.00203301</td><td>0.00204352</td><td class='dev-cell'>0.52%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b10</code></td><td>0.00564643</td><td>0.00579339</td><td class='dev-cell'>2.60%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b2</code></td><td>0.00259755</td><td>0.00262891</td><td class='dev-cell'>1.21%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b3</code></td><td>0.00296904</td><td>0.00297957</td><td class='dev-cell'>0.35%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b4</code></td><td>0.00327794</td><td>0.00329976</td><td class='dev-cell'>0.67%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b5</code></td><td>0.00353752</td><td>0.00360642</td><td class='dev-cell'>1.95%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b6</code></td><td>0.00382341</td><td>0.00388917</td><td class='dev-cell'>1.72%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b7</code></td><td>0.0041422</td><td>0.00423073</td><td class='dev-cell'>2.14%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b8</code></td><td>0.00436237</td><td>0.00446421</td><td class='dev-cell'>2.33%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>b9</code></td><td>0.00474516</td><td>0.00486527</td><td class='dev-cell'>2.53%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>etaIA</code></td><td>0.0744342</td><td>0.0744372</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section links'>
+<h2>Inputs used</h2>
+<a href='specs/case_03.2.1_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_03.2.1_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_03.2.1_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_03.2.1_survey_specs.html' target='_blank'>Survey specs (Optimistic) &rarr;</a><a href='specs/case_03.2.1_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (camb) &rarr;</a><a href='specs/case_03.2.1_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (class) &rarr;</a>
+</div>
+</body>
+</html>

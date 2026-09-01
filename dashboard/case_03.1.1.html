@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Case 03.1.1: LCDM + mnu, Neff</title>
+<style>
+:root { color-scheme: light; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  max-width:980px;margin:32px auto;padding:0 16px;line-height:1.5;color:#111827}
+h1,h2,h3{line-height:1.25}
+a{color:#1d4ed8;text-decoration:none}
+a:hover{text-decoration:underline}
+table{border-collapse:collapse;width:100%;margin:16px 0}
+th,td{border:1px solid #e5e7eb;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f3f4f6}
+.track-row td{background:#e5e7eb;color:#374151;font-size:13px;font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase}
+.badge{display:inline-block;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.badge-pass{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.badge-fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.badge-na{background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb}
+.badge-warn{background:#fef9c3;color:#854d0e;border:1px solid #fde68a}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:6px 16px;margin:16px 0}
+.kv div{padding:2px 0}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:auto;
+  white-space:pre-wrap;word-break:break-word}
+.section{margin:32px 0}
+.subtle{color:#6b7280;font-size:14px}
+.dev-cell{font-variant-numeric:tabular-nums}
+.dev-high{color:#991b1b;font-weight:700}
+.back{display:inline-block;margin-bottom:12px}
+.links a{display:inline-block;margin-right:16px}
+</style>
+</head>
+<body>
+<a class='back' href='index.html'>&larr; Back to all cases</a>
+<h1>Case 03.1.1: LCDM + mnu, Neff (Spectro)</h1>
+
+<div class='section'>
+<h2>Metadata</h2>
+<div class='kv'><div>Model</div><div>LCDM + mnu, Neff</div><div>Probe</div><div>Spectro</div><div>Scenario</div><div>Optimistic</div><div>Variant</div><div>P_cb</div><div>Description</div><div>camb vs class (spectro, optimistic), paper model 2: LCDM + free mnu, Neff (arXiv:2405.06047v1 Sec. 6)</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-pass'>PASS</span></div><div>Timestamp</div><div>2026-08-31 02:07:56</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>316.1s / 1652.2s</div><div>Git commit</div><div>b0e8eb1 (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>camb 2.0.3</code> (pypi)</div><div>Code B</div><div><code>class 3.3.4.0</code> (pypi)</div></div>
+</div>
+<div class='section'>
+<h2>Cosmological parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.00603808</td><td>0.00605193</td><td class='dev-cell'>0.23%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.00207303</td><td>0.00207421</td><td class='dev-cell'>0.06%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.0105169</td><td>0.0106243</td><td class='dev-cell'>1.02%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.0151717</td><td>0.0151078</td><td class='dev-cell'>0.42%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.00738277</td><td>0.00742771</td><td class='dev-cell'>0.61%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>mnu</code></td><td>0.132796</td><td>0.132793</td><td class='dev-cell'>0.00%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Neff</code></td><td>0.253021</td><td>0.252917</td><td class='dev-cell'>0.04%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section'>
+<h2>Nuisance parameters</h2>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Ps_1</code></td><td>21.0015</td><td>20.8485</td><td class='dev-cell'>0.73%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_2</code></td><td>23.189</td><td>23.0408</td><td class='dev-cell'>0.64%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_3</code></td><td>25.6621</td><td>25.4949</td><td class='dev-cell'>0.65%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_4</code></td><td>27.5168</td><td>27.3569</td><td class='dev-cell'>0.58%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_1</code></td><td>0.0096145</td><td>0.00969209</td><td class='dev-cell'>0.81%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_2</code></td><td>0.00985699</td><td>0.00993439</td><td class='dev-cell'>0.79%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_3</code></td><td>0.010105</td><td>0.0101847</td><td class='dev-cell'>0.79%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_4</code></td><td>0.0104035</td><td>0.0104831</td><td class='dev-cell'>0.76%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
+</div>
+<div class='section links'>
+<h2>Inputs used</h2>
+<a href='specs/case_03.1.1_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_03.1.1_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_03.1.1_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_03.1.1_survey_specs.html' target='_blank'>Survey specs (Optimistic) &rarr;</a><a href='specs/case_03.1.1_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (camb) &rarr;</a><a href='specs/case_03.1.1_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (class) &rarr;</a>
+</div>
+</body>
+</html>

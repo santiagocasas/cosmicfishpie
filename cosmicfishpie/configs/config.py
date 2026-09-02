@@ -15,6 +15,29 @@ from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
 
 
+def _load_boltzmann_yaml(path):
+    """Load a solver settings YAML."""
+    with open(path, "r") as yaml_file:
+        return yaml.safe_load(yaml_file) or {}
+
+
+def _add_free_ia_parameters(freeparams, ia_params, variation):
+    """Add the requested intrinsic-alignment parameters to ``freeparams``."""
+    if isinstance(variation, dict):
+        unknown = set(variation) - set(ia_params)
+        if unknown:
+            names = ", ".join(sorted(unknown))
+            raise ValueError(f"Unknown intrinsic-alignment parameter(s): {names}")
+        for key, step in variation.items():
+            if key != "IA_model":
+                freeparams.setdefault(key, step)
+        return
+
+    for key in ia_params:
+        if key != "IA_model":
+            freeparams.setdefault(key, variation)
+
+
 def init(
     options=dict(),
     specifications=dict(),
@@ -342,8 +365,7 @@ def init(
     elif settings["code"] == "class":
         input_type = settings["code"]
         global boltzmann_classpars
-        with open(settings["class_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["class_config_yaml"])
         boltzmann_classpars = parsed_boltzmann
         external = None
     elif settings["code"] == "camb":
@@ -354,15 +376,13 @@ def init(
             settings["camb_path"] = cambpath
         input_type = settings["code"]
         global boltzmann_cambpars
-        with open(settings["camb_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["camb_config_yaml"])
         boltzmann_cambpars = parsed_boltzmann
         external = None
     elif settings["code"] == "symbolic":
         input_type = settings["code"]
         global boltzmann_symbolicpars
-        with open(settings["symbolic_config_yaml"], "r") as boltzmann_yaml_file:
-            parsed_boltzmann = yaml.safe_load(boltzmann_yaml_file)
+        parsed_boltzmann = _load_boltzmann_yaml(settings["symbolic_config_yaml"])
         boltzmann_symbolicpars = parsed_boltzmann
         external = None
     else:
@@ -713,11 +733,7 @@ def init(
     IAparams = deepcopy(IApars)
     if "WL" in obs:
         if specs["vary_IA_pars"] is not None:
-            default_eps_IA = specs["vary_IA_pars"]
-            for key in IAparams.keys():
-                if key != "IA_model":
-                    # Only add the free parameters that are not already in the dictionary
-                    freeparams.setdefault(key, default_eps_IA)
+            _add_free_ia_parameters(freeparams, IAparams, specs["vary_IA_pars"])
 
     global Spectrononlinearparams
     Spectrononlinearparams = dict()

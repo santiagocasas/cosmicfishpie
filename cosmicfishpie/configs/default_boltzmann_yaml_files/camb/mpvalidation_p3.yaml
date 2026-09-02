@@ -1,0 +1,38 @@
+# Historical Casas et al. arXiv:2303.09451v1 CAMB P3 profile.
+# P1/P2 both used AccuracyBoost=lAccuracyBoost=2; P1 used
+# halofit_tol_sigma=1e-3 and P2 used 1e-6. P3 (this profile) selects
+# boosts 3/3 and the 1e-6 tolerance. Modern CAMB no longer exposes that
+# patched tolerance option; it is documented here as provenance only and
+# is intentionally not passed.
+ACCURACY:
+  'kmax': 50
+  'k_per_logint': 50
+  'AccuracyBoost': 3
+  'lAccuracyBoost': 3
+  'lSampleBoost': 1
+  'accurate_massive_neutrino_transfers': True
+NUMERICS:
+  'zmax': 5
+  'zsamples': 100
+COSMO_SETTINGS:
+  'halofit_version': 'takahashi'
+  'dark_energy_model': 'ppf'
+  'num_nu_massive': 1
+  'TCMB': 2.7255
+  'WantTensors': False
+  'WantVectors': False
+  'Reion.Reionization': False
+  'WantCls': False
+  'Want_CMB': False
+  'Want_CMB_lensing': False
+  'Want_cl_2D_array': False
+  'DoLateRadTruncation': True
+  'DoLensing': False
+LCDM:
+  'Omegak': 0.
+  'tau': 0.058
+  'YHe': 0.2454006
+w0waCDM:
+  'Omegak': 0.
+  'tau': 0.058
+  'YHe': 0.2454006

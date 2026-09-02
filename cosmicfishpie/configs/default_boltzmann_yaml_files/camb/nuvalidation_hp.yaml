@@ -1,0 +1,37 @@
+# Paper-validated CAMB high-precision (HP) profile used for the
+# neutrino-sector validation, Archidiacono et al., arXiv:2405.06047v1.
+# Used for both the photometric and spectroscopic probes (CAMB does not
+# need a separate probe-specific tier the way CLASS does; see
+# class/nuvalidation_hp.yaml vs class/nuvalidation_uhp.yaml).
+ACCURACY:
+  'kmax': 50
+  'k_per_logint': 50
+  'AccuracyBoost': 3
+  'lAccuracyBoost': 3
+  'lSampleBoost': 1
+  'accurate_massive_neutrino_transfers': True
+NUMERICS:
+  'zmax': 5
+  'zsamples': 100
+COSMO_SETTINGS:
+  'halofit_version': 'mead2020'
+  'dark_energy_model': 'ppf'
+  'num_nu_massive': 1
+  'TCMB': 2.7255
+  'WantTensors': False
+  'WantVectors': False
+  'Reion.Reionization': False
+  'WantCls': False
+  'Want_CMB': False
+  'Want_CMB_lensing': False
+  'Want_cl_2D_array': False
+  'DoLateRadTruncation': True
+  'DoLensing': False
+LCDM:
+  'Omegak': 0.
+  'tau': 0.058
+  'YHe': 0.2454006
+w0waCDM:
+  'Omegak': 0.
+  'tau': 0.058
+  'YHe': 0.2454006

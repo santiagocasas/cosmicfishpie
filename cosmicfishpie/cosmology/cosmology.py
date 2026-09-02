@@ -372,7 +372,7 @@ class boltzmann_code:
         self.print_cosmo_params(
             self.cambcosmopars, feedback=self.feed_lvl, text="---CAMB parameters---"
         )
-        self.cambclasspars = camb.set_params(**self.cambcosmopars)
+        self.cambclasspars = self._set_camb_params(camb, self.cambcosmopars)
         if hasattr(self.cambclasspars, "H0"):
             self.h_now = self.cambclasspars.H0 / 100.0
 
@@ -388,6 +388,16 @@ class boltzmann_code:
         # TODO: nonlinear options to be selectable
         self.cambclasspars.NonLinear = camb.model.NonLinear_both
         self.cambclasspars.set_for_lmax(4000, lens_potential_accuracy=1)
+
+    def _set_camb_params(self, camb, cambpars, **extra_params):
+        """Build CAMB parameters without its deprecated ``share_delta_neff`` kwarg."""
+        params = {**cambpars, **extra_params}
+        share_delta_neff = params.pop("share_delta_neff", None)
+        pars = camb.set_params(**params)
+        if share_delta_neff is not None:
+            # CAMB's legacy kwarg performs this same assignment after construction.
+            pars.share_delta_neff = share_delta_neff
+        return pars
 
     def changebasis_camb(self, cosmopars, camb):
         """
@@ -436,6 +446,8 @@ class boltzmann_code:
 
         upr.debug_print("DEBUG:  --> ", cosmopars)
         shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        # Keep CAMB's matching field aligned with the CosmicFishPie convention below.
+        # _set_camb_params assigns it after construction to avoid CAMB's deprecation log.
         cambpars["share_delta_neff"] = shareDeltaNeff
         fidNeff = boltzmann_code.hardcoded_Neff
         minmassmnu = boltzmann_code.hardcoded_mnu_massive_min
@@ -492,7 +504,7 @@ class boltzmann_code:
             rescaleAs = True
 
         try:
-            camb.set_params(**cambpars)  # to see which methods are being called: verbose=True
+            self._set_camb_params(camb, cambpars)  # Set verbose=True to inspect CAMB setters.
         except camb.CAMBUnknownArgumentError as argument:
             upr.debug_print("Remove parameter from cambparams: ", str(argument))
 
@@ -530,7 +542,7 @@ class boltzmann_code:
         cambpars_LP["lAccuracyBoost"] = boost
         cambpars_LP["lSampleBoost"] = boost
         cambpars_LP["kmax"] = 20
-        pars = camb.set_params(redshifts=[0.0], **cambpars_LP)
+        pars = self._set_camb_params(camb, cambpars_LP, redshifts=[0.0])
         results = camb.get_results(pars)
         test_sig8 = np.array(results.get_sigma8())
         final_As = ini_As * (insigma8 / test_sig8[-1]) ** 2.0
@@ -538,7 +550,7 @@ class boltzmann_code:
         if get_rescaled_s8:
             cambpars_rs = cambpars_LP.copy()
             cambpars_rs["As"] = final_As
-            pars2 = camb.set_params(redshifts=[0.0], **cambpars_rs)
+            pars2 = self._set_camb_params(camb, cambpars_rs, redshifts=[0.0])
             results2 = camb.get_results(pars2)
             final_sig8 = np.array(results2.get_sigma8())[-1]
         if self.feed_lvl > 2:
@@ -816,10 +828,18 @@ class boltzmann_code:
                 classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
             )
 
-        if "w0" in classpars:
-            classpars["w0_fld"] = classpars.pop("w0")
-        if "wa" in classpars:
-            classpars["wa_fld"] = classpars.pop("wa")
+        if self.settings["cosmo_model"] == "LCDM":
+            # CLASS rejects dark-energy evolution parameters in LCDM mode,
+            # even when CosmicFishPie carries fixed w0/wa in the fiducial.
+            classpars.pop("w0", None)
+            classpars.pop("wa", None)
+            classpars.pop("w0_fld", None)
+            classpars.pop("wa_fld", None)
+        else:
+            if "w0" in classpars:
+                classpars["w0_fld"] = classpars.pop("w0")
+            if "wa" in classpars:
+                classpars["wa_fld"] = classpars.pop("wa")
         if "logAs" in classpars:
             classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
         if "10^9As" in classpars:

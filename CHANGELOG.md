@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 1.3.1
+
+- Add the CAMB/CLASS validation suite, threshold-aware dashboard, and manual
+  GitHub Pages publication workflow.
+
 1.0.1 : Bugfix for external file reading for release notebooks.
         Change `is False` statements with a normal `not` to catch False-equivalents.
 

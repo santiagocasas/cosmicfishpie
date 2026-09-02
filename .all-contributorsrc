@@ -14,7 +14,16 @@
       "profile": "https://github.com/Sefa76",
       "contributions": [
         "code",
-        "design"
+        "design",
+        "ideas",
+        "test",
+        "research",
+        "review",
+        "userTesting",
+        "example",
+        "doc",
+        "content",
+        "bug"
       ]
     },
     {
@@ -23,8 +32,19 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/6987716?v=4",
       "profile": "http://www.santicasas.xyz",
       "contributions": [
-        "code",
-        "design"
+        "bug",
+        "content",
+        "data",
+        "doc",
+        "example",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "research",
+        "review",
+        "test",
+        "tutorial",
+        "userTesting"
       ]
     },
     {
@@ -34,7 +54,8 @@
       "profile": "https://github.com/matmartinelli",
       "contributions": [
         "code",
-        "design"
+        "design",
+        "ideas"
       ]
     }
   ],

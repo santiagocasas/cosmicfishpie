@@ -13,9 +13,15 @@ def test_packaged_config_files_exist_and_parse():
         cfg_dir / "default_survey_specifications" / "Simons-Observatory-PlanckLowEll.yaml",
         cfg_dir / "default_survey_specifications" / "CMB-Stage4-PlanckLowEll.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "camb" / "default.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "camb" / "nuvalidation_hp.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "camb" / "mpvalidation_p3.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "class" / "default.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "default_spectro.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "nuvalidation_hp.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "nuvalidation_uhp.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "mpvalidation_dp.yaml",
+        cfg_dir / "default_boltzmann_yaml_files" / "class" / "mpvalidation_hp.yaml",
         cfg_dir / "default_boltzmann_yaml_files" / "symbolic" / "default.yaml",
-        cfg_dir / "default_boltzmann_yaml_files" / "class" / "nuvalidation_photo.yaml",
     ]
 
     for path in yaml_paths:

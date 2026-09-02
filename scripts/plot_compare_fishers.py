@@ -64,6 +64,9 @@ def _plot_param_differences(entry: dict, outdir: Path) -> None:
         figure_title=fig_title,
         y_label="Discrepancy of constraints (%)",
     )
+    # ploterrs creates the figure internally; close it so bulk validation runs
+    # do not accumulate dozens of live Matplotlib figures.
+    plt.close("all")
 
 
 def _plot_fom(entry: dict, outdir: Path) -> None:

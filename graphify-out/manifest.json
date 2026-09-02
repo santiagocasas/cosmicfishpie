@@ -1,0 +1,797 @@
+{
+  "cosmicfishpie/CMBsurvey/CMB_cov.py": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "add5752384a4fc48929e78fb60480037",
+    "semantic_hash": "add5752384a4fc48929e78fb60480037"
+  },
+  "cosmicfishpie/CMBsurvey/CMB_obs.py": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "aae0cb2a61e4c2f523371de5e6b13ef3",
+    "semantic_hash": "aae0cb2a61e4c2f523371de5e6b13ef3"
+  },
+  "cosmicfishpie/CMBsurvey/__init__.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "76340939066625bc50a350483564151b",
+    "semantic_hash": "76340939066625bc50a350483564151b"
+  },
+  "cosmicfishpie/LSSsurvey/__init__.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "3c5f25330a3e8b8ba152ef4f3196a94e",
+    "semantic_hash": "3c5f25330a3e8b8ba152ef4f3196a94e"
+  },
+  "cosmicfishpie/LSSsurvey/photo_cov.py": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "e452fb16acb5a373777d39104f6935c4",
+    "semantic_hash": "e452fb16acb5a373777d39104f6935c4"
+  },
+  "cosmicfishpie/LSSsurvey/photo_obs.py": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "eb0f7a4e6a958f037042a2860c3db97e",
+    "semantic_hash": "eb0f7a4e6a958f037042a2860c3db97e"
+  },
+  "cosmicfishpie/LSSsurvey/photo_window.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "fce339d1ab6a726974e69891232cf3a2",
+    "semantic_hash": "fce339d1ab6a726974e69891232cf3a2"
+  },
+  "cosmicfishpie/LSSsurvey/spectro_cov.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "8a08fa761fbd35b5dede880382a19a14",
+    "semantic_hash": "8a08fa761fbd35b5dede880382a19a14"
+  },
+  "cosmicfishpie/LSSsurvey/spectro_obs.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "34496595c1e86a8700e46bd102f81d1a",
+    "semantic_hash": "34496595c1e86a8700e46bd102f81d1a"
+  },
+  "cosmicfishpie/__init__.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "26eb835fa3c8fd0ccf2eb3803dcdb53d",
+    "semantic_hash": "26eb835fa3c8fd0ccf2eb3803dcdb53d"
+  },
+  "cosmicfishpie/analysis/__init__.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "df4697b9472e60508b091c83df7f595e",
+    "semantic_hash": "df4697b9472e60508b091c83df7f595e"
+  },
+  "cosmicfishpie/analysis/colors.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "ff484f21e96ccd8219b12f79291a3603",
+    "semantic_hash": "ff484f21e96ccd8219b12f79291a3603"
+  },
+  "cosmicfishpie/analysis/fishconsumer.py": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "d215bcfe4e53c1d4b11dae1cd3fc3797",
+    "semantic_hash": "d215bcfe4e53c1d4b11dae1cd3fc3797"
+  },
+  "cosmicfishpie/analysis/fisher_derived.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "99745180618adbc9db32d484f8484c06",
+    "semantic_hash": "99745180618adbc9db32d484f8484c06"
+  },
+  "cosmicfishpie/analysis/fisher_matrix.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "628a18291557ed6c7ea0972b72299db5",
+    "semantic_hash": "628a18291557ed6c7ea0972b72299db5"
+  },
+  "cosmicfishpie/analysis/fisher_operations.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "1d440c0988284f4003c5f539aa6d2727",
+    "semantic_hash": "1d440c0988284f4003c5f539aa6d2727"
+  },
+  "cosmicfishpie/analysis/fisher_plot_analysis.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "9c907733b0a9afef0dfb6c5c5a05c0a1",
+    "semantic_hash": "9c907733b0a9afef0dfb6c5c5a05c0a1"
+  },
+  "cosmicfishpie/analysis/fisher_plotting.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "674c0a38d76d1e54b5789ea23eb75ef1",
+    "semantic_hash": "674c0a38d76d1e54b5789ea23eb75ef1"
+  },
+  "cosmicfishpie/analysis/plot_comparison.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "e54ea6d8327572a4c8228b66ebae9ec6",
+    "semantic_hash": "e54ea6d8327572a4c8228b66ebae9ec6"
+  },
+  "cosmicfishpie/analysis/utilities.py": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "d69e72ec149d3ce887741dc2138935cd",
+    "semantic_hash": "d69e72ec149d3ce887741dc2138935cd"
+  },
+  "cosmicfishpie/configs/config.py": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "43a971be22dffa92f1773bb94b8cdd66",
+    "semantic_hash": "43a971be22dffa92f1773bb94b8cdd66"
+  },
+  "cosmicfishpie/configs/install_external_data.py": {
+    "mtime": 1767902228.7230422,
+    "ast_hash": "9fdfb8f33d355c1d5beb30793cdd96b6",
+    "semantic_hash": "9fdfb8f33d355c1d5beb30793cdd96b6"
+  },
+  "cosmicfishpie/cosmology/__init__.py": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "d45de2b50993540251f8ac50e77bc363",
+    "semantic_hash": "d45de2b50993540251f8ac50e77bc363"
+  },
+  "cosmicfishpie/cosmology/cosmology.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "6c475a06dd00484acf58cc547ea37dea",
+    "semantic_hash": "6c475a06dd00484acf58cc547ea37dea"
+  },
+  "cosmicfishpie/cosmology/nuisance.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "8a3c8aee353e604a332560315eadd9c0",
+    "semantic_hash": "8a3c8aee353e604a332560315eadd9c0"
+  },
+  "cosmicfishpie/fishermatrix/__init__.py": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "3c5f25330a3e8b8ba152ef4f3196a94e",
+    "semantic_hash": "3c5f25330a3e8b8ba152ef4f3196a94e"
+  },
+  "cosmicfishpie/fishermatrix/cosmicfish.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "ee61f7a06e4e8721b8448081a5ed4843",
+    "semantic_hash": "ee61f7a06e4e8721b8448081a5ed4843"
+  },
+  "cosmicfishpie/fishermatrix/derivatives.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "55bde389ea5a9c50d4aead643f27b81d",
+    "semantic_hash": "55bde389ea5a9c50d4aead643f27b81d"
+  },
+  "cosmicfishpie/likelihood/__init__.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "6b8c9c576b04849b5224075d0f9b09de",
+    "semantic_hash": "6b8c9c576b04849b5224075d0f9b09de"
+  },
+  "cosmicfishpie/likelihood/base.py": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "91384555a5c5f5f0228569b37f612511",
+    "semantic_hash": "91384555a5c5f5f0228569b37f612511"
+  },
+  "cosmicfishpie/likelihood/photo_like.py": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "fca9c57a4f7716033df706b94418d269",
+    "semantic_hash": "fca9c57a4f7716033df706b94418d269"
+  },
+  "cosmicfishpie/likelihood/sampler.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "0fd713cb8c02afeb1f06a79bd7c74f35",
+    "semantic_hash": "0fd713cb8c02afeb1f06a79bd7c74f35"
+  },
+  "cosmicfishpie/likelihood/spectro_like.py": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "155f216d846ecc9c1d3e60bfd2add872",
+    "semantic_hash": "155f216d846ecc9c1d3e60bfd2add872"
+  },
+  "cosmicfishpie/utilities/__init__.py": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "f4a69e1eecda3a21ee8e3108b154b694",
+    "semantic_hash": "f4a69e1eecda3a21ee8e3108b154b694"
+  },
+  "cosmicfishpie/utilities/legendre_tools.py": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "a69190cc5405e82434fce0893952d3cd",
+    "semantic_hash": "a69190cc5405e82434fce0893952d3cd"
+  },
+  "cosmicfishpie/utilities/utils.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "9f0d2c55669081b4aca4b4c6e13bb84c",
+    "semantic_hash": "9f0d2c55669081b4aca4b4c6e13bb84c"
+  },
+  "cosmicfishpie/version.py": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "10c943b3d9ec4406f61f201d0e218d6d",
+    "semantic_hash": "10c943b3d9ec4406f61f201d0e218d6d"
+  },
+  "docs/source/conf.py": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "589e3cb1bbbfdd98ae9c8c5cbd02d09c",
+    "semantic_hash": "589e3cb1bbbfdd98ae9c8c5cbd02d09c"
+  },
+  "notebooks/legacy/likelihod_photometric.py": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "7b4237ff1cda05dc9e4e7eac82b3d3b2",
+    "semantic_hash": "7b4237ff1cda05dc9e4e7eac82b3d3b2"
+  },
+  "notebooks/likelihod_spectroscopic.py": {
+    "mtime": 1767902228.7930436,
+    "ast_hash": "53ec0ef445f4ebcc74a735a1eca86c8c",
+    "semantic_hash": "53ec0ef445f4ebcc74a735a1eca86c8c"
+  },
+  "notebooks/old/likelihod_photometric-Debole-CAMB.py": {
+    "mtime": 1767902228.8430448,
+    "ast_hash": "ee1bb6726abdbea531bc33c46a0422ce",
+    "semantic_hash": "ee1bb6726abdbea531bc33c46a0422ce"
+  },
+  "notebooks/old/likelihod_photometric-Debole.py": {
+    "mtime": 1767902228.8430448,
+    "ast_hash": "3785fc8f7f0d3467f9dcb65e156b2ac7",
+    "semantic_hash": "3785fc8f7f0d3467f9dcb65e156b2ac7"
+  },
+  "pyproject.toml": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "ac4531208dfe24ff7ca1cc05ef927ff3",
+    "semantic_hash": "ac4531208dfe24ff7ca1cc05ef927ff3"
+  },
+  "sampler_scripts/run_sampler.py": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "6e568498eed8b384a63d8b2bb7aecdcc",
+    "semantic_hash": "6e568498eed8b384a63d8b2bb7aecdcc"
+  },
+  "scripts/add_scalar_prior_to_fisher.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "a66ef807ffa36dd84d9f0eb80788965e",
+    "semantic_hash": "a66ef807ffa36dd84d9f0eb80788965e"
+  },
+  "scripts/compare_backends_report.sh": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "098a33d3b38097169556c64e12f2f789",
+    "semantic_hash": "098a33d3b38097169556c64e12f2f789"
+  },
+  "scripts/compare_fishers_in_dir.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "b7cbdca8cab4e1d244ca36540c1379b5",
+    "semantic_hash": "b7cbdca8cab4e1d244ca36540c1379b5"
+  },
+  "scripts/compare_planck_published.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "f5dba9b090d1c19fa1ac83919d5d3725",
+    "semantic_hash": "f5dba9b090d1c19fa1ac83919d5d3725"
+  },
+  "scripts/package_benchmarks.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "132d6744e0db0ec6f8435664342ba7c9",
+    "semantic_hash": "132d6744e0db0ec6f8435664342ba7c9"
+  },
+  "scripts/photometric_benchmark.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "1e212bb4396911ac5f8fa9d7e60bd737",
+    "semantic_hash": "1e212bb4396911ac5f8fa9d7e60bd737"
+  },
+  "scripts/plot_compare_fishers.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "07da25b1525ffe289b4dc30fbc1a3e82",
+    "semantic_hash": "07da25b1525ffe289b4dc30fbc1a3e82"
+  },
+  "scripts/plot_planck_covmat_vs_fisher.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "cdecf7f8883e29f51bf90b9a0e012e2d",
+    "semantic_hash": "cdecf7f8883e29f51bf90b9a0e012e2d"
+  },
+  "scripts/prepare_changelog.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "4decf22d4750b515f3ee3eb0b4a6493e",
+    "semantic_hash": "4decf22d4750b515f3ee3eb0b4a6493e"
+  },
+  "scripts/release.sh": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "61b8000a8168ecab8e761dc251a45284",
+    "semantic_hash": "61b8000a8168ecab8e761dc251a45284"
+  },
+  "scripts/release_notes.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "b3d96c549a1d867bccb1474b92180688",
+    "semantic_hash": "b3d96c549a1d867bccb1474b92180688"
+  },
+  "scripts/render_compare_reports.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "d6714fa0d8d2ec6daf0db50629f474c7",
+    "semantic_hash": "d6714fa0d8d2ec6daf0db50629f474c7"
+  },
+  "scripts/run_cmb_benchmarks.py": {
+    "mtime": 1786007241.4660578,
+    "ast_hash": "3e1580e34e2f86b626b3674e2d926920",
+    "semantic_hash": "3e1580e34e2f86b626b3674e2d926920"
+  },
+  "scripts/run_cmb_fisher_smoke.py": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "76525ae207f1c440e4af397aad322725",
+    "semantic_hash": "76525ae207f1c440e4af397aad322725"
+  },
+  "scripts/run_fisher_compare_backends.py": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "b00b428ef804c28331b454500bc6bc4f",
+    "semantic_hash": "b00b428ef804c28331b454500bc6bc4f"
+  },
+  "scripts/run_planck_bestfit_fisher.py": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "768cd03bcb806a60cee0da3f7909a574",
+    "semantic_hash": "768cd03bcb806a60cee0da3f7909a574"
+  },
+  "scripts/run_planck_diagnostics_suite.sh": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "37f81358fc06d0a06c1412a215591137",
+    "semantic_hash": "37f81358fc06d0a06c1412a215591137"
+  },
+  "scripts/validate_many_compare_configs.sh": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "2a8313e5f55b900446449c9cc58809fd",
+    "semantic_hash": "2a8313e5f55b900446449c9cc58809fd"
+  },
+  "scripts/validation_configs/common_specs_LCDM.json": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "caab19079e17e564dcb99cbda81a6afe",
+    "semantic_hash": "caab19079e17e564dcb99cbda81a6afe"
+  },
+  "scripts/validation_configs/common_specs_nuCDM.json": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "314469fb5ac16b69915e2fe50ec8bc49",
+    "semantic_hash": "314469fb5ac16b69915e2fe50ec8bc49"
+  },
+  "scripts/validation_configs/common_specs_w0waCDM.json": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "266651350c1c4c7f7b1e95c9a5752b56",
+    "semantic_hash": "266651350c1c4c7f7b1e95c9a5752b56"
+  },
+  "tests/__init__.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "tests/analysis_test.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "662ac4f0c1288690d416d2a00458ef20",
+    "semantic_hash": "662ac4f0c1288690d416d2a00458ef20"
+  },
+  "tests/colors_test.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "cb0ab3b9b642b8aae8de60f7ac8352e3",
+    "semantic_hash": "cb0ab3b9b642b8aae8de60f7ac8352e3"
+  },
+  "tests/config_test.py": {
+    "mtime": 1786007241.4760578,
+    "ast_hash": "215f04302444995f7807628a92e64cc1",
+    "semantic_hash": "215f04302444995f7807628a92e64cc1"
+  },
+  "tests/conftest.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "42b2d876e55333308b95b8ad83f36524",
+    "semantic_hash": "42b2d876e55333308b95b8ad83f36524"
+  },
+  "tests/cosmicfish_test.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "9dfa85a4fe20f02e24f299b86552b248",
+    "semantic_hash": "9dfa85a4fe20f02e24f299b86552b248"
+  },
+  "tests/cosmicfish_test_photo.py": {
+    "mtime": 1767902228.953047,
+    "ast_hash": "2bb987f6cebb155ca8b4f755c79dd8d8",
+    "semantic_hash": "2bb987f6cebb155ca8b4f755c79dd8d8"
+  },
+  "tests/derivatives_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "bac0ec35f852018eb450e3ac1d4ddc8e",
+    "semantic_hash": "bac0ec35f852018eb450e3ac1d4ddc8e"
+  },
+  "tests/fishconsumer_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "02dfe8ded7ff9fb4949848569b238219",
+    "semantic_hash": "02dfe8ded7ff9fb4949848569b238219"
+  },
+  "tests/fisher_derived_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "55894c6ba9066f89ad7046d2e2b8f39d",
+    "semantic_hash": "55894c6ba9066f89ad7046d2e2b8f39d"
+  },
+  "tests/fisher_operations_extra_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "afde1cb4f1d95a07fd939f6074b52312",
+    "semantic_hash": "afde1cb4f1d95a07fd939f6074b52312"
+  },
+  "tests/fisher_plot_analysis_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "d4bb91aa264ddaa89b0baeed5d303b80",
+    "semantic_hash": "d4bb91aa264ddaa89b0baeed5d303b80"
+  },
+  "tests/legendre_tools_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "a32aa4429466647da3ba5fb66e9771d2",
+    "semantic_hash": "a32aa4429466647da3ba5fb66e9771d2"
+  },
+  "tests/likelihood_base_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "c6a6d784f38f962197561a83561bb82c",
+    "semantic_hash": "c6a6d784f38f962197561a83561bb82c"
+  },
+  "tests/nuisance_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "ecba49e31cf7f32e6c940530dbbb9b92",
+    "semantic_hash": "ecba49e31cf7f32e6c940530dbbb9b92"
+  },
+  "tests/package_data_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "cb52fc4f70b0ccc29671d3ef8ab17ae6",
+    "semantic_hash": "cb52fc4f70b0ccc29671d3ef8ab17ae6"
+  },
+  "tests/photo_cov_extra_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "b186d9c0db5593f8676283520dee4817",
+    "semantic_hash": "b186d9c0db5593f8676283520dee4817"
+  },
+  "tests/photo_cov_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "ffd0ae78915a701b19c2f6df6742e8d4",
+    "semantic_hash": "ffd0ae78915a701b19c2f6df6742e8d4"
+  },
+  "tests/photo_like_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "71bf5e7f5560ce2402032300d24b31f8",
+    "semantic_hash": "71bf5e7f5560ce2402032300d24b31f8"
+  },
+  "tests/photo_obs_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "6e7450583339f265217c415b7558c1de",
+    "semantic_hash": "6e7450583339f265217c415b7558c1de"
+  },
+  "tests/reference_spectro_obs_edge_cases.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "59cf8df635ab14b1421f0ac338539710",
+    "semantic_hash": "59cf8df635ab14b1421f0ac338539710"
+  },
+  "tests/spectro_cov_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "e088e788d34cdd3a028be6d63754e33d",
+    "semantic_hash": "e088e788d34cdd3a028be6d63754e33d"
+  },
+  "tests/spectro_like_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "2e622b062de7cf1f0eef237989ba6b6e",
+    "semantic_hash": "2e622b062de7cf1f0eef237989ba6b6e"
+  },
+  "tests/spectro_obs_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "9e294c7a44de0c23a9a7467bd1431f9a",
+    "semantic_hash": "9e294c7a44de0c23a9a7467bd1431f9a"
+  },
+  "tests/utils_extra_test.py": {
+    "mtime": 1786007241.4860578,
+    "ast_hash": "11a0cb9c452dbfd0737ff44e466c8bf6",
+    "semantic_hash": "11a0cb9c452dbfd0737ff44e466c8bf6"
+  },
+  "tests/utils_test.py": {
+    "mtime": 1767902228.9630473,
+    "ast_hash": "c6f9a71294f0262bfb9a013222dd8629",
+    "semantic_hash": "c6f9a71294f0262bfb9a013222dd8629"
+  },
+  ".github/CONTRIBUTING.md": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "60b023f0fab035f376d054f2a3da1646",
+    "semantic_hash": "60b023f0fab035f376d054f2a3da1646"
+  },
+  ".github/ISSUE_TEMPLATE/bug_report.yml": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "31cd13804b776b03e137d371e5659200",
+    "semantic_hash": "31cd13804b776b03e137d371e5659200"
+  },
+  ".github/ISSUE_TEMPLATE/documentation.yml": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "88d71c9b4fa27686d99e61b6ed9b20ff",
+    "semantic_hash": "88d71c9b4fa27686d99e61b6ed9b20ff"
+  },
+  ".github/ISSUE_TEMPLATE/feature_request.yml": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "9b1b301546b3510a200044cb9c17774d",
+    "semantic_hash": "9b1b301546b3510a200044cb9c17774d"
+  },
+  ".github/actions/setup-venv/action.yml": {
+    "mtime": 1786007241.3660576,
+    "ast_hash": "5db276947982ca6d41fa68095b57f1b8",
+    "semantic_hash": "5db276947982ca6d41fa68095b57f1b8"
+  },
+  ".github/dependabot.yml": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "7aabd139226582dae8c6fc254f27b7cb",
+    "semantic_hash": "7aabd139226582dae8c6fc254f27b7cb"
+  },
+  ".github/pull_request_template.md": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "ea3352fecdcfee788a7d06860b57f421",
+    "semantic_hash": "ea3352fecdcfee788a7d06860b57f421"
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1786007241.3660576,
+    "ast_hash": "490d1bc75178802a5f2f9ab842a66237",
+    "semantic_hash": "490d1bc75178802a5f2f9ab842a66237"
+  },
+  ".github/workflows/main.yml": {
+    "mtime": 1786007241.3660576,
+    "ast_hash": "a0b01d1a673561e55b79f225fec1a685",
+    "semantic_hash": "a0b01d1a673561e55b79f225fec1a685"
+  },
+  ".github/workflows/pr_checks.yml": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "e61d66031c9869b73115cfc9b6e69741",
+    "semantic_hash": "e61d66031c9869b73115cfc9b6e69741"
+  },
+  ".pre-commit-config.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "a3366319eb12c167f5a5746a8b750aac",
+    "semantic_hash": "a3366319eb12c167f5a5746a8b750aac"
+  },
+  ".readthedocs.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "4e42ec2ed7066f1d290814164842ef36",
+    "semantic_hash": "4e42ec2ed7066f1d290814164842ef36"
+  },
+  "AGENTS.md": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "9db4a668bdeb5325e0ebc14dc479c8ee",
+    "semantic_hash": "9db4a668bdeb5325e0ebc14dc479c8ee"
+  },
+  "CHANGELOG.md": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "5939aae16c6e324f560013abb6e74e17",
+    "semantic_hash": "5939aae16c6e324f560013abb6e74e17"
+  },
+  "README.md": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "ffc69747830505fc6e259c9be6b1f221",
+    "semantic_hash": "ffc69747830505fc6e259c9be6b1f221"
+  },
+  "RELEASE_PROCESS.md": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "02aabc13e0b4519cf81bbdbe953d794f",
+    "semantic_hash": "02aabc13e0b4519cf81bbdbe953d794f"
+  },
+  "boltzmann_yaml_files/camb/default.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "8202ac35e9b34d183195cfc7d686d443",
+    "semantic_hash": "8202ac35e9b34d183195cfc7d686d443"
+  },
+  "boltzmann_yaml_files/class/default.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "a2642e19f7d71124544e7f58ee85be4d",
+    "semantic_hash": "a2642e19f7d71124544e7f58ee85be4d"
+  },
+  "boltzmann_yaml_files/class/fast_photo-hmcode.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "46d56b9e5d6f8ac6ea48721113c156e7",
+    "semantic_hash": "46d56b9e5d6f8ac6ea48721113c156e7"
+  },
+  "boltzmann_yaml_files/class/fast_photo.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "291f93a23bdf42e5800a9b29c88b0212",
+    "semantic_hash": "291f93a23bdf42e5800a9b29c88b0212"
+  },
+  "boltzmann_yaml_files/class/fast_spectro.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "91a1e43a8767e4d61e6cae5148ca028b",
+    "semantic_hash": "91a1e43a8767e4d61e6cae5148ca028b"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/README.md": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "d223315215444c1a3f49c1f36540179a",
+    "semantic_hash": "d223315215444c1a3f49c1f36540179a"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "8202ac35e9b34d183195cfc7d686d443",
+    "semantic_hash": "8202ac35e9b34d183195cfc7d686d443"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default_hmcode.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "b89dcdce56e96b992fa709c4de682ecd",
+    "semantic_hash": "b89dcdce56e96b992fa709c4de682ecd"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "5515b9851792da0a5171a45e663093a2",
+    "semantic_hash": "5515b9851792da0a5171a45e663093a2"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "f77436e35a6e8ffc2a9a3b3844bdf774",
+    "semantic_hash": "f77436e35a6e8ffc2a9a3b3844bdf774"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "a2642e19f7d71124544e7f58ee85be4d",
+    "semantic_hash": "a2642e19f7d71124544e7f58ee85be4d"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/class/fast_photo.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "291f93a23bdf42e5800a9b29c88b0212",
+    "semantic_hash": "291f93a23bdf42e5800a9b29c88b0212"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "2e6ad705d28598d4f5f78031a60b8e68",
+    "semantic_hash": "2e6ad705d28598d4f5f78031a60b8e68"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_photo.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "6564f8251d4ede9b16df1b51d2bc7e71",
+    "semantic_hash": "6564f8251d4ede9b16df1b51d2bc7e71"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_spectro.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "74056064838e3c5c028d1e2388fac63d",
+    "semantic_hash": "74056064838e3c5c028d1e2388fac63d"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "2bba8411bda3b758081cf210a3b726ec",
+    "semantic_hash": "2bba8411bda3b758081cf210a3b726ec"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/halofit+.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "702e0ecf15385ba736769b94637ddc67",
+    "semantic_hash": "702e0ecf15385ba736769b94637ddc67"
+  },
+  "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren.yaml": {
+    "mtime": 1767902228.713042,
+    "ast_hash": "497c17fa6959bb8c1486bbd41fa83fe8",
+    "semantic_hash": "497c17fa6959bb8c1486bbd41fa83fe8"
+  },
+  "cosmicfishpie/configs/default_survey_specifications/CMB-Stage4-PlanckLowEll.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "549b2704decac9dcb13bbb47f2104da8",
+    "semantic_hash": "549b2704decac9dcb13bbb47f2104da8"
+  },
+  "cosmicfishpie/configs/default_survey_specifications/Euclid-Photometric-ISTF-Pessimistic.yaml": {
+    "mtime": 1767902228.7230422,
+    "ast_hash": "1033ebc7ef164e12bac6d890444cd9d4",
+    "semantic_hash": "1033ebc7ef164e12bac6d890444cd9d4"
+  },
+  "cosmicfishpie/configs/default_survey_specifications/Euclid-Spectroscopic-ISTF-Pessimistic.yaml": {
+    "mtime": 1767902228.7230422,
+    "ast_hash": "8c4cea9a3919f045f5f6a3d707a27425",
+    "semantic_hash": "8c4cea9a3919f045f5f6a3d707a27425"
+  },
+  "cosmicfishpie/configs/default_survey_specifications/Planck.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "5da7151f7cf18e3ebbccaca2d4c3fdf8",
+    "semantic_hash": "5da7151f7cf18e3ebbccaca2d4c3fdf8"
+  },
+  "cosmicfishpie/configs/default_survey_specifications/Simons-Observatory-PlanckLowEll.yaml": {
+    "mtime": 1786007241.3860576,
+    "ast_hash": "aaef0c9c4fd42776f985161f2487c541",
+    "semantic_hash": "aaef0c9c4fd42776f985161f2487c541"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Photometric-DeboleR1.yaml": {
+    "mtime": 1767902228.7230422,
+    "ast_hash": "b7b6c02bb2b6312cd9b89d55ade74759",
+    "semantic_hash": "b7b6c02bb2b6312cd9b89d55ade74759"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Photometric-ISTF-GW.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "3b2f917fe6d8e534fd35d579fd356cf9",
+    "semantic_hash": "3b2f917fe6d8e534fd35d579fd356cf9"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Spectroscopic-DR1-Pessimistic.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "8976c912b60a289795a1b6fdbfaabd00",
+    "semantic_hash": "8976c912b60a289795a1b6fdbfaabd00"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Spectroscopic-ISTF-Pessimistic-Qbias-1par.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "0798134b1c3a77afe73d111839dad0ce",
+    "semantic_hash": "0798134b1c3a77afe73d111839dad0ce"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Spectroscopic-ISTF-Pessimistic-Qbias-sigma_pv.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "750803381dc159567df54acabd3d3a8a",
+    "semantic_hash": "750803381dc159567df54acabd3d3a8a"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Spectroscopic-ISTF-Pessimistic-Qbias.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "94adc9b42b8d255f1f59a207b69bd527",
+    "semantic_hash": "94adc9b42b8d255f1f59a207b69bd527"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/Euclid-Spectroscopic-ISTF-Pessimistic-sigma_pv.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "c2fcb52ba037fc2cee838ec02be52087",
+    "semantic_hash": "c2fcb52ba037fc2cee838ec02be52087"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/MeerKlass-IM-Ze.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "855f2457d6626518894a8204ced3910b",
+    "semantic_hash": "855f2457d6626518894a8204ced3910b"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/SKAO-IM-Redbook.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "415935267c858c85aa0a62b58ca672b7",
+    "semantic_hash": "415935267c858c85aa0a62b58ca672b7"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/SKAO-Photometric-Redbook.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "45091b06736db8a5e1f4513251ec4896",
+    "semantic_hash": "45091b06736db8a5e1f4513251ec4896"
+  },
+  "cosmicfishpie/configs/other_survey_specifications/SKAO-Spectroscopic-Redbook.yaml": {
+    "mtime": 1767902228.7330422,
+    "ast_hash": "0d2b38c60817037d82058e4d208a8bac",
+    "semantic_hash": "0d2b38c60817037d82058e4d208a8bac"
+  },
+  "docs/source/CHANGELOG.md": {
+    "mtime": 1786007241.3760576,
+    "ast_hash": "5939aae16c6e324f560013abb6e74e17",
+    "semantic_hash": "5939aae16c6e324f560013abb6e74e17"
+  },
+  "docs/source/CONTRIBUTING.md": {
+    "mtime": 1767902228.7030418,
+    "ast_hash": "60b023f0fab035f376d054f2a3da1646",
+    "semantic_hash": "60b023f0fab035f376d054f2a3da1646"
+  },
+  "docs/source/cmb_benchmarks.md": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "96a09175c223932f06abab6bbb350f60",
+    "semantic_hash": "96a09175c223932f06abab6bbb350f60"
+  },
+  "docs/source/cosmicfishpie.CMBsurvey.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "06cdf507f791865c8a29833f62953ac3",
+    "semantic_hash": "06cdf507f791865c8a29833f62953ac3"
+  },
+  "docs/source/cosmicfishpie.LSSsurvey.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "c482662f46cfef3a5c3fb4005d739dce",
+    "semantic_hash": "c482662f46cfef3a5c3fb4005d739dce"
+  },
+  "docs/source/cosmicfishpie.analysis.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "d6e7f6e97973f02dc7d28c0959bdca2e",
+    "semantic_hash": "d6e7f6e97973f02dc7d28c0959bdca2e"
+  },
+  "docs/source/cosmicfishpie.cosmology.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "3e5eb0aa094e4b693b809b9c3daf95bc",
+    "semantic_hash": "3e5eb0aa094e4b693b809b9c3daf95bc"
+  },
+  "docs/source/cosmicfishpie.fishermatrix.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "545b6ea9a5d30a8833e143b41276b88a",
+    "semantic_hash": "545b6ea9a5d30a8833e143b41276b88a"
+  },
+  "docs/source/cosmicfishpie.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "d60e1c17852aaf47f8a67e963edda45d",
+    "semantic_hash": "d60e1c17852aaf47f8a67e963edda45d"
+  },
+  "docs/source/cosmicfishpie.utilities.rst": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "9577f8dc66b2df1c3ef05b5bcc863ec6",
+    "semantic_hash": "9577f8dc66b2df1c3ef05b5bcc863ec6"
+  },
+  "docs/source/index.md": {
+    "mtime": 1786007241.3960576,
+    "ast_hash": "b9d9e582a69ebabd8f37f035e2097372",
+    "semantic_hash": "b9d9e582a69ebabd8f37f035e2097372"
+  },
+  "docs/source/installation.md": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "99f65b2e336f4f4a48188fe81928a126",
+    "semantic_hash": "99f65b2e336f4f4a48188fe81928a126"
+  },
+  "docs/source/overview.md": {
+    "mtime": 1767902228.7430425,
+    "ast_hash": "25ee35aa71826b8eaf03965bc1db72ba",
+    "semantic_hash": "25ee35aa71826b8eaf03965bc1db72ba"
+  },
+  "requirements.txt": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "5296f2581333cbc8e792a75511c8c31e",
+    "semantic_hash": "5296f2581333cbc8e792a75511c8c31e"
+  },
+  "sampler_scripts/darkenergy_desi_config.yaml": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "06fe3b0246d16218f90ade99fc044ba8",
+    "semantic_hash": "06fe3b0246d16218f90ade99fc044ba8"
+  },
+  "sampler_scripts/darkenergy_lcdm_config.yaml": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "b107d8695328d51cfe07c1c4fd001f39",
+    "semantic_hash": "b107d8695328d51cfe07c1c4fd001f39"
+  },
+  "sampler_scripts/darkenergy_lcdm_highH0_config.yaml": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "60605ba04110e07e4e86cd0936da5968",
+    "semantic_hash": "60605ba04110e07e4e86cd0936da5968"
+  },
+  "scripts/README.md": {
+    "mtime": 1786007241.4560578,
+    "ast_hash": "8aaddefdbbdb8b5193bea31108039f7c",
+    "semantic_hash": "8aaddefdbbdb8b5193bea31108039f7c"
+  }
+}

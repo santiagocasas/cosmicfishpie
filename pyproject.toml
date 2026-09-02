@@ -56,7 +56,7 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 dev = [
     "ruff",
     "mypy>=2.3.0,<2.4",
-    "black>=24.4.2,<27.0",
+    "black>=26.5.1,<27.0",
     "isort>=5.12,<7.1",
     "pytest",
     "pytest-sphinx",

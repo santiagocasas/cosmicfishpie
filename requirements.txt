@@ -14,7 +14,7 @@ numpy
 pandas
 PyYAML==6.0.3
 scikit-learn==1.7.2
-SciPy>=1.8.0
+SciPy>=1.15.3
 seaborn
 uv==0.12.5
 colossus

@@ -1,5 +1,5 @@
 astropy==6.1.7
-camb==2.0.3
+camb==2.0.4
 classy==3.3.4.0
 Cython==3.1.4
 getdist==1.7.5

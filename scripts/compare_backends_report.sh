@@ -49,13 +49,16 @@ YAML_B=""                # optional: path to YAML for run B
 YAML_KEY_A=""            # optional: override yaml key for run A
 YAML_KEY_B=""            # optional: override yaml key for run B
 COMMON_SPECS_JSON=""     # optional: JSON with fiducialpars/freepars/options
+SURVEY_NAME_PHOTO=""     # optional: survey YAML stem; default depends on MODE
+SURVEY_NAME_SPECTRO=""   # optional: survey YAML stem; default depends on MODE
 ACCURACY=1
 FEEDBACK=1
 OMP_THREADS=""           # optional: set OMP_NUM_THREADS
 FOM_PARAMS="Omegam,sigma8"
 PLOT=true                # set false to skip plot generation
-USE_TIMESTAMP=false      # set true to append a timestamp to outputs
+USE_TIMESTAMP=true       # always isolate runs with a timestamped output directory
 OUTDIR=""                # optional: output directory; default uses config hash
+SIGMA_THRESHOLD=""       # optional: max allowed sigma ratio deviation percent; exit nonzero if exceeded
 
 REPORT_SINGLE=true       # set false to skip single-file report
 REPORT_SINGLE_FILE=""    # optional: single-file HTML path; default is OUTDIR/report_single.html
@@ -70,6 +73,12 @@ if [[ -n "${CONFIG_FILE}" ]]; then
   fi
   # shellcheck disable=SC1090
   source "${CONFIG_FILE}"
+fi
+
+# Default validation configs must never reuse a deterministic output directory.
+# An explicitly supplied OUTDIR remains available for intentional aggregation.
+if [[ -z "${OUTDIR}" ]]; then
+  USE_TIMESTAMP=true
 fi
 
 if [[ -n "${ENV_OUTDIR}" && -z "${OUTDIR}" ]]; then
@@ -100,6 +109,29 @@ if [[ -n "${COMMON_SPECS_JSON}" && "${COMMON_SPECS_JSON}" != /* ]]; then
 fi
 if [[ -n "${COMMON_SPECS_JSON}" && ! -f "${COMMON_SPECS_JSON}" ]]; then
   echo "COMMON_SPECS_JSON not found: ${COMMON_SPECS_JSON}" >&2
+  exit 2
+fi
+
+if [[ "${MODE}" == "photo" ]]; then
+  SURVEY_NAME_PHOTO="${SURVEY_NAME_PHOTO:-Euclid-Photometric-ISTF-Pessimistic}"
+  SURVEY_NAME_SPECTRO=""
+elif [[ "${MODE}" == "spectro" ]]; then
+  SURVEY_NAME_PHOTO=""
+  SURVEY_NAME_SPECTRO="${SURVEY_NAME_SPECTRO:-Euclid-Spectroscopic-ISTF-Pessimistic}"
+else
+  echo "Invalid MODE: ${MODE} (expected photo/spectro)" >&2
+  exit 2
+fi
+
+SURVEY_SPECS_DIR="${REPO_ROOT}/cosmicfishpie/configs/default_survey_specifications"
+SURVEY_SPECS_FILE=""
+if [[ -n "${SURVEY_NAME_PHOTO}" ]]; then
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_DIR}/${SURVEY_NAME_PHOTO}.yaml"
+elif [[ -n "${SURVEY_NAME_SPECTRO}" ]]; then
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_DIR}/${SURVEY_NAME_SPECTRO}.yaml"
+fi
+if [[ ! -f "${SURVEY_SPECS_FILE}" ]]; then
+  echo "Survey specifications not found: ${SURVEY_SPECS_FILE}" >&2
   exit 2
 fi
 
@@ -184,16 +216,61 @@ print(hashlib.sha256(data).hexdigest())
 PY
   )
 fi
+SURVEY_SPECS_HASH=$(
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_FILE}" python - <<'PY'
+import hashlib
+import os
+
+with open(os.environ["SURVEY_SPECS_FILE"], "rb") as fh:
+    print(hashlib.sha256(fh.read()).hexdigest())
+PY
+)
+
+_yaml_fingerprint() {
+  YAML_PATH="$1" python - <<'PY'
+import hashlib
+import os
+from pathlib import Path
+
+import yaml
+
+seen = set()
+
+
+def fingerprint(path: Path) -> bytes:
+    path = path.resolve()
+    if path in seen:
+        return b""
+    seen.add(path)
+    digest = hashlib.sha256(path.read_bytes()).digest()
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if isinstance(data, dict) and data.get("precision_profile_file"):
+        digest += fingerprint((path.parent / data["precision_profile_file"]).resolve())
+    return digest
+
+
+print(hashlib.sha256(fingerprint(Path(os.environ["YAML_PATH"]))).hexdigest())
+PY
+}
+
+YAML_HASH_A="$(_yaml_fingerprint "${YAML_A}")"
+YAML_HASH_B="$(_yaml_fingerprint "${YAML_B}")"
 
 CONFIG_STRING="MODE=${MODE}
 CODE_A=${CODE_A}
 CODE_B=${CODE_B}
 YAML_A=${YAML_A}
 YAML_B=${YAML_B}
+YAML_HASH_A=${YAML_HASH_A}
+YAML_HASH_B=${YAML_HASH_B}
 YAML_KEY_A=${YAML_KEY_A}
 YAML_KEY_B=${YAML_KEY_B}
 COMMON_SPECS_JSON=${COMMON_SPECS_JSON}
 COMMON_SPECS_HASH=${COMMON_SPECS_HASH}
+SURVEY_NAME_PHOTO=${SURVEY_NAME_PHOTO}
+SURVEY_NAME_SPECTRO=${SURVEY_NAME_SPECTRO}
+SURVEY_SPECS_FILE=${SURVEY_SPECS_FILE}
+SURVEY_SPECS_HASH=${SURVEY_SPECS_HASH}
 ACCURACY=${ACCURACY}
 FEEDBACK=${FEEDBACK}
 OMP_THREADS=${OMP_THREADS}
@@ -218,6 +295,8 @@ if [[ "${USE_TIMESTAMP}" == "true" ]]; then
 fi
 
 if [[ -z "${OUTDIR}" ]]; then
+  # Every default run is isolated; explicit OUTDIR remains an intentional escape hatch.
+  USE_TIMESTAMP=true
   OUTDIR="${REPO_ROOT}/scripts/benchmark_results/compare_${MODE}_${CODE_A}_vs_${CODE_B}_${NAME_SUFFIX}"
 fi
 if [[ "${REPORT_SINGLE}" == "true" && -z "${REPORT_SINGLE_FILE}" ]]; then
@@ -281,10 +360,16 @@ fi
   printf "CODE_B=%q\n" "${CODE_B}"
   printf "YAML_A=%q\n" "${YAML_A}"
   printf "YAML_B=%q\n" "${YAML_B}"
+  printf "YAML_HASH_A=%q\n" "${YAML_HASH_A}"
+  printf "YAML_HASH_B=%q\n" "${YAML_HASH_B}"
   printf "YAML_KEY_A=%q\n" "${YAML_KEY_A}"
   printf "YAML_KEY_B=%q\n" "${YAML_KEY_B}"
   printf "COMMON_SPECS_JSON=%q\n" "${COMMON_SPECS_JSON}"
   printf "COMMON_SPECS_HASH=%q\n" "${COMMON_SPECS_HASH}"
+  printf "SURVEY_NAME_PHOTO=%q\n" "${SURVEY_NAME_PHOTO}"
+  printf "SURVEY_NAME_SPECTRO=%q\n" "${SURVEY_NAME_SPECTRO}"
+  printf "SURVEY_SPECS_FILE=%q\n" "${SURVEY_SPECS_FILE}"
+  printf "SURVEY_SPECS_HASH=%q\n" "${SURVEY_SPECS_HASH}"
   if [[ -n "${COMMON_SPECS_COPY}" ]]; then
     printf "COMMON_SPECS_COPY=%q\n" "${COMMON_SPECS_COPY}"
   fi
@@ -293,6 +378,7 @@ fi
   printf "OMP_THREADS=%q\n" "${OMP_THREADS}"
   printf "FOM_PARAMS=%q\n" "${FOM_PARAMS}"
   printf "PLOT=%q\n" "${PLOT}"
+  printf "SIGMA_THRESHOLD=%q\n" "${SIGMA_THRESHOLD}"
   printf "USE_TIMESTAMP=%q\n" "${USE_TIMESTAMP}"
   printf "REPORT_SINGLE=%q\n" "${REPORT_SINGLE}"
   printf "REPORT_SINGLE_FILE=%q\n" "${REPORT_SINGLE_FILE}"
@@ -339,6 +425,15 @@ if [[ -n "${YAML_KEY_B}" ]]; then
 fi
 if [[ -n "${COMMON_SPECS_JSON}" ]]; then
   compare_cmd+=(--common-specs "${COMMON_SPECS_JSON}")
+fi
+if [[ -n "${SURVEY_NAME_PHOTO}" ]]; then
+  compare_cmd+=(--survey-name-photo "${SURVEY_NAME_PHOTO}")
+fi
+if [[ -n "${SURVEY_NAME_SPECTRO}" ]]; then
+  compare_cmd+=(--survey-name-spectro "${SURVEY_NAME_SPECTRO}")
+fi
+if [[ -n "${SIGMA_THRESHOLD}" ]]; then
+  compare_cmd+=(--sigma-threshold "${SIGMA_THRESHOLD}")
 fi
 
 echo "[compare] Running backends into: ${OUTDIR}"

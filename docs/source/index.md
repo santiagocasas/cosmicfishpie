@@ -16,6 +16,7 @@ CHANGELOG
 CONTRIBUTING
 License <https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE>
 GitHub Repository <https://github.com/santiagocasas/cosmicfishpie>
+Validation Dashboard <https://santiagocasas.github.io/cosmicfishpie/dashboard/>
 ```
 
 ```{include} overview.md

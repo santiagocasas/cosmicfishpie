@@ -5,20 +5,21 @@
 
 Examples
 --------
-Photometric (GCph+WL), CLASS vs CAMB using nuvalidation YAMLs:
+Photometric (GCph+WL), CLASS HP vs CAMB HP paper-validated profiles
+(arXiv:2405.06047v1):
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode photo \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_photo.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare --plot
 
-Spectroscopic (GCsp), CLASS vs CAMB:
+Spectroscopic (GCsp), CLASS UHP vs CAMB HP paper-validated profiles:
 
   uv run python scripts/run_fisher_compare_backends.py \
     --mode spectro \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_spectro.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation.yaml \
+    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml \
+    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare
 
 Notes
@@ -74,13 +75,11 @@ def _default_paths(repo_root: Path) -> dict[str, str]:
     cfg = repo_root / "cosmicfishpie" / "configs"
     return {
         "specs_dir": str(cfg / "default_survey_specifications") + "/",
-        "class_yaml_photo": str(
-            cfg / "default_boltzmann_yaml_files" / "class" / "nuvalidation_photo.yaml"
-        ),
+        "class_yaml_photo": str(cfg / "default_boltzmann_yaml_files" / "class" / "default.yaml"),
         "class_yaml_spectro": str(
-            cfg / "default_boltzmann_yaml_files" / "class" / "nuvalidation_spectro.yaml"
+            cfg / "default_boltzmann_yaml_files" / "class" / "default_spectro.yaml"
         ),
-        "camb_yaml": str(cfg / "default_boltzmann_yaml_files" / "camb" / "nuvalidation.yaml"),
+        "camb_yaml": str(cfg / "default_boltzmann_yaml_files" / "camb" / "default.yaml"),
         "symbolic_yaml": str(cfg / "default_boltzmann_yaml_files" / "symbolic" / "default.yaml"),
     }
 
@@ -101,6 +100,95 @@ def _git_commit(repo_root: Path) -> str | None:
         return None
 
 
+def _repo_dirty(repo_root: Path) -> bool | None:
+    """Return True if the repo has uncommitted changes, False if clean, None if unknown."""
+    try:
+        out = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            stderr=subprocess.DEVNULL,
+        )
+        return len(out.strip()) > 0
+    except Exception:
+        return None
+
+
+def _package_install_source(dist_name: str) -> dict:
+    """Inspect PEP 610 direct_url.json metadata (if present) to determine how a
+    package was installed: PyPI wheel/sdist, local path, or VCS checkout.
+
+    Returns a dict with keys: install_source ("pypi" | "local" | "vcs" | "unknown"),
+    and, when available, url, editable, vcs, commit_id.
+    """
+    result: dict = {"install_source": "unknown"}
+    try:
+        from importlib import metadata as importlib_metadata
+
+        dist = importlib_metadata.distribution(dist_name)
+        result["dist_version"] = dist.version
+        direct_url_text = None
+        try:
+            direct_url_text = dist.read_text("direct_url.json")
+        except Exception:
+            direct_url_text = None
+        if direct_url_text:
+            direct_url = json.loads(direct_url_text)
+            result["url"] = direct_url.get("url")
+            vcs_info = direct_url.get("vcs_info")
+            dir_info = direct_url.get("dir_info", {})
+            if vcs_info:
+                result["install_source"] = "vcs"
+                result["vcs"] = vcs_info.get("vcs")
+                result["commit_id"] = vcs_info.get("commit_id")
+            elif dir_info.get("editable"):
+                result["install_source"] = "local"
+                result["editable"] = True
+            elif result["url"] and result["url"].startswith("file://"):
+                result["install_source"] = "local"
+                result["editable"] = bool(dir_info.get("editable", False))
+            else:
+                result["install_source"] = "url"
+        else:
+            # No direct_url.json => installed from a package index (PyPI) as a
+            # normal (non-editable, non-VCS) distribution.
+            result["install_source"] = "pypi"
+    except Exception:
+        pass
+    return result
+
+
+def _backend_provenance(code: str) -> dict:
+    info = {"code": code, "available": False}
+    try:
+        if code == "camb":
+            import camb
+
+            info["available"] = True
+            info["version"] = getattr(camb, "__version__", None)
+            info["module_path"] = getattr(camb, "__file__", None)
+            info.update(_package_install_source("camb"))
+        elif code == "class":
+            try:
+                from classy import Class
+
+                info["available"] = True
+                info["version"] = getattr(Class, "__version__", None) or getattr(
+                    Class, "version", None
+                )
+                import classy
+
+                info["module_path"] = getattr(classy, "__file__", None)
+                info.update(_package_install_source("classy"))
+            except Exception:
+                pass
+        import platform
+
+        info["platform"] = platform.platform()
+    except Exception:
+        pass
+    return info
+
+
 def _write_run_metadata(
     *,
     outdir: Path,
@@ -113,16 +201,36 @@ def _write_run_metadata(
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "argv": list(sys.argv),
         "git_commit": _git_commit(repo_root),
+        "git_dirty": _repo_dirty(repo_root),
         "python": sys.version,
+        "platform": __import__("platform").platform(),
         "cwd": os.getcwd(),
         "env": {
             "OMP_NUM_THREADS": os.environ.get("OMP_NUM_THREADS"),
         },
         "args": vars(args),
         "resolved": resolved,
+        "backend_provenance": {
+            "code_a": _backend_provenance(args.code_a),
+            "code_b": _backend_provenance(args.code_b),
+        },
     }
     outpath.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return outpath
+
+
+def _update_run_metadata(path: Path, **updates) -> None:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload.update(updates)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _spec_filename(matrix_path: str) -> str:
+    """Convert a Fisher matrix filename returned by CosmicFish to its specs filename."""
+    name = Path(matrix_path).name
+    if name.endswith("_FM.txt"):
+        return f"{name[:-len('_FM.txt')]}_FM_specs.json"
+    return name
 
 
 def _load_common_specs(path: Path) -> dict:
@@ -251,6 +359,22 @@ def main() -> int:
         default=None,
         help="Path to JSON with fiducialpars/freepars/options (e.g. *_FM_specs.json)",
     )
+    parser.add_argument(
+        "--survey-name-photo",
+        default=None,
+        help="Photometric survey YAML stem (without .yaml)",
+    )
+    parser.add_argument(
+        "--survey-name-spectro",
+        default=None,
+        help="Spectroscopic survey YAML stem (without .yaml)",
+    )
+    parser.add_argument(
+        "--sigma-threshold",
+        type=float,
+        default=None,
+        help="Maximum allowed max sigma ratio deviation percent; exit nonzero if exceeded",
+    )
     args = parser.parse_args()
 
     if args.omp_threads is not None:
@@ -284,12 +408,14 @@ def main() -> int:
 
     if args.mode == "photo":
         observables = ["GCph", "WL"]
-        survey_name_photo: str | bool = "Euclid-Photometric-ISTF-Pessimistic"
+        survey_name_photo: str | bool = (
+            args.survey_name_photo or "Euclid-Photometric-ISTF-Pessimistic"
+        )
         survey_name_spectro: str | bool = False
     else:
         observables = ["GCsp"]
         survey_name_photo = False
-        survey_name_spectro = "Euclid-Spectroscopic-ISTF-Pessimistic"
+        survey_name_spectro = args.survey_name_spectro or "Euclid-Spectroscopic-ISTF-Pessimistic"
 
     def _default_yaml_for(code: str) -> str | None:
         if code == "class":
@@ -335,6 +461,8 @@ def main() -> int:
         print("[compare] OMP_NUM_THREADS:", os.environ.get("OMP_NUM_THREADS"))
     print("[compare] specs_dir:", paths["specs_dir"])
     print("[compare] mode:", args.mode, "observables:", observables)
+    print("[compare] survey_name_photo:", survey_name_photo)
+    print("[compare] survey_name_spectro:", survey_name_spectro)
     print("[compare] run A:", args.code_a, "yaml_key:", yaml_key_a, "yaml:", yaml_a)
     print("[compare] run B:", args.code_b, "yaml_key:", yaml_key_b, "yaml:", yaml_b)
 
@@ -355,6 +483,8 @@ def main() -> int:
         },
     )
     print("[compare] Wrote run metadata:", meta_path)
+    phase_timing: dict[str, float] = {}
+    workflow_start = time.perf_counter()
 
     prefix = f"compare_{args.mode}_{run_id}_"
 
@@ -376,13 +506,17 @@ def main() -> int:
     opts_a["code"] = args.code_a
     opts_a["outroot"] = prefix + "A_"
     opts_a["results_dir"] = str(outdir) + "/"
+    opts_a["survey_name_photo"] = survey_name_photo
+    opts_a["survey_name_spectro"] = survey_name_spectro
     opts_a[yaml_key_a] = yaml_a
+    phase_start = time.perf_counter()
     a_txt = _run_fisher(
         options=opts_a,
         observables=observables,
         fiducial=fiducial,
         freepars=freepars,
     )
+    phase_timing["fisher_a_seconds"] = time.perf_counter() - phase_start
     print("[compare] A matrix:", a_txt)
 
     print("[compare] Running Fisher B...")
@@ -403,16 +537,22 @@ def main() -> int:
     opts_b["code"] = args.code_b
     opts_b["outroot"] = prefix + "B_"
     opts_b["results_dir"] = str(outdir) + "/"
+    opts_b["survey_name_photo"] = survey_name_photo
+    opts_b["survey_name_spectro"] = survey_name_spectro
     opts_b[yaml_key_b] = yaml_b
+    phase_start = time.perf_counter()
     b_txt = _run_fisher(
         options=opts_b,
         observables=observables,
         fiducial=fiducial,
         freepars=freepars,
     )
+    phase_timing["fisher_b_seconds"] = time.perf_counter() - phase_start
     print("[compare] B matrix:", b_txt)
 
     if not args.compare:
+        phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+        _update_run_metadata(meta_path, phase_timing=phase_timing)
         print("[compare] Done. To compare:")
         print(
             f"  uv run python scripts/compare_fishers_in_dir.py {outdir} --fom-params {args.fom_params}"
@@ -425,10 +565,68 @@ def main() -> int:
         str(outdir),
         "--fom-params",
         args.fom_params,
+        "--pair",
+        _spec_filename(a_txt) if a_txt else "",
+        _spec_filename(b_txt) if b_txt else "",
     ]
+    if not a_txt or not b_txt:
+        raise SystemExit("Could not identify both Fisher matrix specs files for pair comparison")
     print("[compare] Comparing Fishers:")
     print(" ", " ".join(compare_cmd))
+    phase_start = time.perf_counter()
     subprocess.check_call(compare_cmd)
+    phase_timing["comparison_seconds"] = time.perf_counter() - phase_start
+    phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+    _update_run_metadata(meta_path, phase_timing=phase_timing)
+
+    # Threshold gating
+    if args.sigma_threshold is not None:
+        compare_jsons = sorted(
+            outdir.glob("compare_fishers_*.json"), key=lambda p: p.stat().st_mtime
+        )
+        if compare_jsons:
+            latest = compare_jsons[-1]
+            try:
+                data = json.loads(latest.read_text(encoding="utf-8"))
+                # compare_fishers_in_dir.py schema: top-level "pairwise" is a list of
+                # per-pair dicts, each with entry["analysis"]["param_sigma_ratio"]
+                # mapping parameter name -> {"ratio_b_over_a": float, ...}.
+                # The max deviation percent is max(|ratio_b_over_a - 1| * 100) across
+                # all parameters in all pairs (mirrors the console summary computation
+                # in compare_fishers_in_dir.py, which never persists this value itself).
+                max_dev = None
+                worst_param = None
+                for entry in data.get("pairwise", []):
+                    param_sigma_ratio = (entry.get("analysis") or {}).get("param_sigma_ratio") or {}
+                    for pname, pdata in param_sigma_ratio.items():
+                        ratio = pdata.get("ratio_b_over_a") if isinstance(pdata, dict) else None
+                        if ratio is None:
+                            continue
+                        try:
+                            dev = abs(float(ratio) - 1.0) * 100.0
+                        except (TypeError, ValueError):
+                            continue
+                        if max_dev is None or dev > max_dev:
+                            max_dev = dev
+                            worst_param = pname
+                if max_dev is not None:
+                    print(
+                        f"[compare] max sigma ratio deviation: {max_dev:.2f}% "
+                        f"(param={worst_param}, threshold {args.sigma_threshold}%)"
+                    )
+                    if max_dev > args.sigma_threshold:
+                        raise SystemExit(
+                            f"Threshold exceeded: {max_dev:.2f}% ({worst_param}) > {args.sigma_threshold}%"
+                        )
+                else:
+                    print(
+                        "[compare] Could not locate param_sigma_ratio data in compare JSON "
+                        f"({latest}); skipping threshold check"
+                    )
+            except SystemExit:
+                raise
+            except Exception as e:
+                print(f"[compare] Threshold check failed: {e}")
 
     if not args.plot:
         return 0
@@ -445,7 +643,11 @@ def main() -> int:
     ]
     print("[compare] Plotting comparison:")
     print(" ", " ".join(plot_cmd))
+    phase_start = time.perf_counter()
     subprocess.check_call(plot_cmd)
+    phase_timing["plotting_seconds"] = time.perf_counter() - phase_start
+    phase_timing["total_seconds"] = time.perf_counter() - workflow_start
+    _update_run_metadata(meta_path, phase_timing=phase_timing)
     return 0
 
 

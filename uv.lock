@@ -271,7 +271,7 @@ wheels = [
 
 [[package]]
 name = "camb"
-version = "1.6.4"
+version = "2.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -281,14 +281,14 @@ dependencies = [
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sympy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/29/164fa69126587a09068815279d8c37548ec4f5a1db6fa0f946471e8a0049/camb-1.6.4.tar.gz", hash = "sha256:5103be105e3fe8ce2f0a9bb99d4d9919fa0db80700580d8a7e7fc46184462cd1", size = 762612, upload-time = "2025-08-26T08:15:18.999Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/6b/d4933b5fe21d81af39a44466614065636b24acba9f690603a9334da5a537/camb-2.0.3.tar.gz", hash = "sha256:34f789696a7b5ad63a4064999832b14f294238c12a4872873580911562763c71", size = 921693, upload-time = "2026-08-17T17:06:39.953Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/2d/15f61dcec684ed2c0f35cc3c29279e277b8f5e30b8f471233e537073cb04/camb-1.6.4-py3-none-macosx_13_0_arm64.whl", hash = "sha256:83d62e22bb12737d0d10ce4c7d45a151524326e383ea4c3772010bf477241a35", size = 1291694, upload-time = "2025-08-26T08:15:02.849Z" },
-    { url = "https://files.pythonhosted.org/packages/0c/10/71973571e8536c5e5a01fd39b4ca6e989c2a94e214bcd7066203bb0e144e/camb-1.6.4-py3-none-macosx_13_0_x86_64.whl", hash = "sha256:6a1c31b987c2df605b58f382a22ade4a971a69b73c91aa79a4260f4e2cff0274", size = 1337709, upload-time = "2025-08-26T08:15:04.504Z" },
-    { url = "https://files.pythonhosted.org/packages/03/32/a2026657a2c8ce902793ae870e8296ba6ad399a988fdded9c01a6ee24bff/camb-1.6.4-py3-none-macosx_14_0_arm64.whl", hash = "sha256:a608ac502b9745993426b9437bf00ebacb7a3a31251f26d6bfc5a1f0ad92184f", size = 1291854, upload-time = "2025-08-26T08:15:06.38Z" },
-    { url = "https://files.pythonhosted.org/packages/41/31/e75b7a789a3bce8c850048bcb5e54b2e3573d44f654a43e348e2f4fa5003/camb-1.6.4-py3-none-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:d6479d738c0805dda2938d4adc30bd9239c351e2e986175fa82225bc1c9c4292", size = 1551489, upload-time = "2025-08-26T08:15:08.066Z" },
-    { url = "https://files.pythonhosted.org/packages/4b/e1/2a49e5de34697ae73cb8f9e7d22f893f636f8aea386c9f1f5c3a6effaf7c/camb-1.6.4-py3-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:67f3f63ac7a169e7037e02c7d7859396eccf22c54d90c6edeb7bc0d3f9b5251a", size = 2315175, upload-time = "2025-08-26T08:15:09.825Z" },
-    { url = "https://files.pythonhosted.org/packages/3c/3e/811ac6746e3d972aa2afea03be5b2c8002e2dc1997e0e4954fdf7636d02d/camb-1.6.4-py3-none-win_amd64.whl", hash = "sha256:d69c67d9ec15bfa71f9b7ec9b263b8b79065f7df81bada6280cffa3423b4b46d", size = 1394113, upload-time = "2025-08-26T08:15:11.654Z" },
+    { url = "https://files.pythonhosted.org/packages/93/81/4436164167f051df9adb7d6a810ac6531b010d85755a099b50d80ce5efc7/camb-2.0.3-py3-none-macosx_14_0_arm64.whl", hash = "sha256:71283ab926bcbe4e880d04f7acdedb9392c18fa347a50fefaeabb5f03fbf72a9", size = 1500347, upload-time = "2026-08-17T17:06:26.075Z" },
+    { url = "https://files.pythonhosted.org/packages/15/a3/cb905f775a66f9ecadb78547d30b578b4dec93cd2d260761689f2704385d/camb-2.0.3-py3-none-macosx_14_0_x86_64.whl", hash = "sha256:c2b02d0e90f4d38b9f7cfacb0ea079b68399de17c9d1ee47951e031546134edf", size = 1553087, upload-time = "2026-08-17T17:06:27.62Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/33/a1bb31d11bfc2208613066b3a0d74da5ef5c1e10620086dde89333feda1a/camb-2.0.3-py3-none-macosx_15_0_arm64.whl", hash = "sha256:e8f22148215ddfa79b88f7cd4aaf4a56b8d426625b5120c676f2fe9b52f8e4a4", size = 1500482, upload-time = "2026-08-17T17:06:28.932Z" },
+    { url = "https://files.pythonhosted.org/packages/40/8e/0278161675627fbad2ac0ce20f2552b6c7436854c2bf9e4d1a1cfdbdc011/camb-2.0.3-py3-none-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:4248b03364e8621b94b26586cc9f190c0c32ed9c236219b61ad6d66e3385f5e0", size = 1764823, upload-time = "2026-08-17T17:06:30.245Z" },
+    { url = "https://files.pythonhosted.org/packages/49/23/d0e4af6600180d0c2cad4809e28cc0c2b96b59156d1080ab148a8877ebdc/camb-2.0.3-py3-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:108b684bc98b4fd7f20af9426bdd9c9846379127506bf2ea573141f6a1e879a4", size = 2392580, upload-time = "2026-08-17T17:06:31.705Z" },
+    { url = "https://files.pythonhosted.org/packages/3a/e9/10b029aa547c66fda720552ab7379bbcf0cf17ef6f24f9e044e232bd44d1/camb-2.0.3-py3-none-win_amd64.whl", hash = "sha256:53ae174411b131151c8c48f88a9a30533aa9ce89c23208f8b8f8138fdc0b23cf", size = 1667739, upload-time = "2026-08-17T17:06:33.26Z" },
 ]
 
 [[package]]
@@ -424,6 +424,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/d9/0ed4c7098a861482a7b6a95603edce4c0d9db2311af23da1fb2b75ec26fc/charset_normalizer-3.4.4-cp312-cp312-win_arm64.whl", hash = "sha256:376bec83a63b8021bb5c8ea75e21c4ccb86e7e45ca4eb81146091b56599b80c3", size = 100390, upload-time = "2025-10-14T04:41:11.915Z" },
     { url = "https://files.pythonhosted.org/packages/0a/4c/925909008ed5a988ccbb72dcc897407e5d6d3bd72410d69e051fc0c14647/charset_normalizer-3.4.4-py3-none-any.whl", hash = "sha256:7a32c560861a02ff789ad905a2fe94e3f840803362c84fecf1851cb4cf3dc37f", size = 53402, upload-time = "2025-10-14T04:42:31.76Z" },
 ]
+
+[[package]]
+name = "classy"
+version = "3.3.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/fb/1a26610ef00768d10f814331d456d5a6f075786743b4a9a9ecb8f3990123/classy-3.3.4.0.tar.gz", hash = "sha256:9696ae51ac759315cee62ba1fe223f2a6bc0c89eff8ee542c02fbb6597a37fff", size = 5997441, upload-time = "2025-11-24T14:37:28.685Z" }
 
 [[package]]
 name = "click"
@@ -569,6 +575,7 @@ dependencies = [
     { name = "astropy" },
     { name = "camb" },
     { name = "chainconsumer" },
+    { name = "classy" },
     { name = "colossus" },
     { name = "cython" },
     { name = "getdist" },
@@ -615,24 +622,25 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "astropy", specifier = "==6.1.7" },
-    { name = "black", marker = "extra == 'dev'", specifier = ">=24.4.2,<25.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = ">=24.4.2,<27.0" },
     { name = "build", marker = "extra == 'dev'" },
-    { name = "camb", specifier = "==1.6.4" },
+    { name = "camb", specifier = "==2.0.3" },
     { name = "chainconsumer", specifier = ">=1.2.0,<2.0.0" },
+    { name = "classy", specifier = "==3.3.4.0" },
     { name = "colossus" },
     { name = "cython", specifier = "==3.1.4" },
     { name = "furo", marker = "extra == 'dev'", specifier = "==2024.1.29" },
-    { name = "getdist", specifier = "==1.7.3" },
+    { name = "getdist", specifier = "==1.7.5" },
     { name = "h5py", specifier = "==3.14.0" },
     { name = "ipython", specifier = "==8.37.0" },
     { name = "isort", marker = "extra == 'dev'", specifier = ">=5.12,<7.1" },
-    { name = "joblib", specifier = "==1.5.2" },
+    { name = "joblib", specifier = "==1.5.3" },
     { name = "jupyter", specifier = "==1.1.1" },
     { name = "matplotlib", specifier = "==3.10.7" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0,<1.20" },
     { name = "myst-parser", marker = "extra == 'dev'" },
     { name = "myst-parser", marker = "extra == 'dev'", specifier = ">=1.0,<4.1" },
-    { name = "nautilus-sampler", specifier = "==1.0.5" },
+    { name = "nautilus-sampler", specifier = "==1.0.6" },
     { name = "numpy" },
     { name = "packaging", marker = "extra == 'dev'" },
     { name = "pandas" },
@@ -931,7 +939,7 @@ wheels = [
 
 [[package]]
 name = "getdist"
-version = "1.7.3"
+version = "1.7.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
@@ -942,9 +950,9 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/64/b0/e074ffbb25dfddc153cef610515c4a17d1c9adf1e4bb2f3da9b31f468c6a/getdist-1.7.3.tar.gz", hash = "sha256:eb5834b5083d051d300da38ae6b103ab9312e7eb6bc03734e81d430cf419b8bf", size = 823398, upload-time = "2025-09-22T15:26:24.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/81/b1754e449948b79c7f480e2e611cbce3450cc1332aab6592529b37131f68/getdist-1.7.5.tar.gz", hash = "sha256:b0295c10e861db3ed9439eac88d8dc452e93d67173b5723756b0658b9694f98c", size = 823498, upload-time = "2025-12-17T10:46:10.1Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/e0/472df6bfa87364029d218b6c3d6689b66ab921735ba66d2c29b85ba75eac/getdist-1.7.3-py3-none-any.whl", hash = "sha256:11a692987c77c9b3e7c619b5e12a551acabe2399a41e47dff141482da9ae2f17", size = 833969, upload-time = "2025-09-22T15:26:22.774Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/dc/d4b9a09e7b8732564bb8a72be1a916fceb2717318d52e828ad9645152f18/getdist-1.7.5-py3-none-any.whl", hash = "sha256:d167491bc90b1d53e4377b6d574239e397151608381b295a65717f9ab096c2d7", size = 834048, upload-time = "2025-12-17T10:46:08.351Z" },
 ]
 
 [[package]]
@@ -1216,11 +1224,11 @@ wheels = [
 
 [[package]]
 name = "joblib"
-version = "1.5.2"
+version = "1.5.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/5d/447af5ea094b9e4c4054f82e223ada074c552335b9b4b2d14bd9b35a67c4/joblib-1.5.2.tar.gz", hash = "sha256:3faa5c39054b2f03ca547da9b2f52fde67c06240c31853f306aea97f13647b55", size = 331077, upload-time = "2025-08-27T12:15:46.575Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/f2/d34e8b3a08a9cc79a50b2208a93dce981fe615b64d5a4d4abee421d898df/joblib-1.5.3.tar.gz", hash = "sha256:8561a3269e6801106863fd0d6d84bb737be9e7631e33aaed3fb9ce5953688da3", size = 331603, upload-time = "2025-12-15T08:41:46.427Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/e8/685f47e0d754320684db4425a0967f7d3fa70126bffd76110b7009a0090f/joblib-1.5.2-py3-none-any.whl", hash = "sha256:4e1f0bdbb987e6d843c70cf43714cb276623def372df3c22fe5266b2670bc241", size = 308396, upload-time = "2025-08-27T12:15:45.188Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/91/984aca2ec129e2757d1e4e3c81c3fcda9d0f85b74670a094cc443d9ee949/joblib-1.5.3-py3-none-any.whl", hash = "sha256:5fc3c5039fc5ca8c0276333a188bbd59d6b7ab37fe6632daa76bc7f9ec18e713", size = 309071, upload-time = "2025-12-15T08:41:44.973Z" },
 ]
 
 [[package]]
@@ -1789,7 +1797,7 @@ wheels = [
 
 [[package]]
 name = "nautilus-sampler"
-version = "1.0.5"
+version = "1.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -1799,9 +1807,9 @@ dependencies = [
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "threadpoolctl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/31/93eae1e2c19949f1a69c0f58ef460b8e8c568aedd74b3a848ed927e4a5ba/nautilus_sampler-1.0.5.tar.gz", hash = "sha256:1247eb633ac18fddafb85f37015ba0b3b5de3a4afe12ad09bfdf95755ecfe3ac", size = 41519, upload-time = "2024-10-18T14:02:20.079Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/2c/a50c1a550ba43d86a0b41cf6410986d478d8640139c8e963f4dde8a8bfc2/nautilus_sampler-1.0.6.tar.gz", hash = "sha256:4e90b6d97be742be2e255c35a79e5a388cee043b4d2ce970eec327ed34139b78", size = 43118, upload-time = "2025-12-29T14:08:25.629Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/95/1ff5b8b04b1fde075771023786a56878599563ad0f1e3aac99215420ffb1/nautilus_sampler-1.0.5-py3-none-any.whl", hash = "sha256:4351986f938ba897dc850a9cac2894509df6d4d0a19dc3edd0070032ef0b016e", size = 33131, upload-time = "2024-10-18T14:02:18.819Z" },
+    { url = "https://files.pythonhosted.org/packages/47/54/372c42bcfe324b650946f6cfee0e5adbd55aafc25cab555460bf5d9e8d36/nautilus_sampler-1.0.6-py3-none-any.whl", hash = "sha256:de6f3b9d249d87f05a673e8597e56621037e84dc712a6c2d3c18ff3672735b9b", size = 35772, upload-time = "2025-12-29T14:08:24.603Z" },
 ]
 
 [[package]]

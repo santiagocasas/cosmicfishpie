@@ -54,7 +54,7 @@ options = {
     'nonlinear': True, # If the nonlinear power spectrum should be computed
     'cosmo_model' : 'LCDM', # Cosmological model used
     'code': 'camb', # Code to be used
-    'class_config_yaml':'/boltzmann_yaml_files/camb/default.yaml', # Settings for the Einstein Boltzmann solver
+    'camb_config_yaml':'cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml', # Settings for the Einstein Boltzmann solver
 
     'survey_name': 'Euclid', # Survey Name
     'specs_dir' : 'survey_specifications/', # Path of survey specification

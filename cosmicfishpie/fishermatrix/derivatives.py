@@ -1,33 +1,81 @@
 # -*- coding: utf-8 -*-
-"""DERIVATIVES
+
+"""
+DERIVATIVES
 
 This is the derivatives engine of CosmicFish.
-
 """
 
 import copy
+from collections.abc import Mapping as MappingABC
+from dataclasses import dataclass
 from time import time
+from typing import Callable, Mapping, Protocol
 
 import numpy as np
 
 import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.utilities.utils import printing as upt
 
+_UNSET = object()
+
+
+def _thaw(value):
+    """Recursively copy frozen configuration values into provider-owned values."""
+    if isinstance(value, MappingABC):
+        return {key: _thaw(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return tuple(_thaw(item) for item in value)
+    if isinstance(value, list):
+        return [_thaw(item) for item in value]
+    return copy.deepcopy(value)
+
+
+@dataclass(frozen=True)
+class DerivativeRequest:
+    """Backend-neutral inputs required to compute observable derivatives.
+
+    Concrete providers may use finite differences, analytical formulae, or a
+    future autodiff implementation. Providers must return the existing
+    ``{parameter: derivative}`` result shape.
+    """
+
+    observable: Callable
+    fiducial: Mapping[str, object]
+    freeparams: Mapping[str, float]
+    observables_type: tuple[str, ...]
+    external_settings: object
+    feed_lvl: int
+    method: str
+    special_deriv_function: Callable | None
+    configuration: object
+
+
+class DerivativeProvider(Protocol):
+    """Protocol implemented by interchangeable derivative backends."""
+
+    def compute(self, request: DerivativeRequest) -> dict[str, object]:
+        """Compute all derivatives described by ``request``."""
+        ...
+
 
 class derivatives:
+    """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute."""
+
     def __init__(
         self,
         observable,
         fiducial,
         special_deriv_function=None,
-        derivatives_type="3PT",
-        freeparams=dict(),
+        derivatives_type=None,
+        freeparams=None,
         observables_type=None,
-        external_settings=None,
+        external_settings=_UNSET,
         feed_lvl=None,
+        *,
+        configuration=None,
     ):
-        """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute.
-
+        """
         Arguments
         ---------
         observable : callable
@@ -38,58 +86,61 @@ class derivatives:
                                  callable function that receives a parameter name and calculates the exact derivative of the observable for that parameter
         freeparams : dict, optional
                      A dictionary for the parameters that should be varied. Will vary all parameters if not passed
-
-        Attributes
-        ----------
-        observable        : callable
-                            A callable function that when passed a dictionary of all cosmological and nuisance parameters will return the observable of a probe
-        fiducial          : dict
-                            A dictionary containing the fiducial values of all parameters
-        special           : callable, None
-                            If it exists, it is a callable function that receives a parameter name and calculates the exact derivative of the observable for that parameter
-        feed_lvl          : int
-                            Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
-        observables       : callable
-                            A callable that is passed all cosmological and nuisance parameters in a dict that is returning the computed observable of a given probe
-        external_settings : dict
+        observables_type : tuple[str, ...], optional
+                           Tuple of observable types (e.g. ("GCph", "WL"))
+        external_settings : dict or _UNSET, optional
                             A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be none if code runs in internal mode
-        result            : dict
-                            A dictionary with all derivatives of the observable with respect to the parameter corresponding to the key name
+        feed_lvl : int, optional
+                   Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
+        derivatives_type : str, optional
+                           One of "3PT", "STEM", "POLY", "4PT_FWD". If None, taken from configuration.
+        configuration : object, optional
+                        Configuration object providing defaults for missing arguments. If None, uses the legacy global cfg.
         """
-        if freeparams != dict():
-            self.freeparams = freeparams
+        self.configuration = cfg if configuration is None else configuration
+
+        # Resolve freeparams: if None, take a thawed copy from configuration; if provided, use as-is (but still thaw if it's a mapping? we assume user provides a mutable dict)
+        if freeparams is None:
+            self.freeparams = _thaw(self.configuration.freeparams)
         else:
-            self.freeparams = cfg.freeparams
+            # User-provided freeparams should be used directly; we still copy to avoid mutating user input?
+            self.freeparams = copy.deepcopy(freeparams)
+
         self.observable = observable
         self.fiducial = fiducial
         self.special = special_deriv_function
-        if feed_lvl is None:
-            self.feed_lvl = cfg.settings["feedback"]
-        else:
-            self.feed_lvl = feed_lvl
-        if observables_type is None:
-            self.observables_type = cfg.obs
-        else:
-            self.observables_type = observables_type
-        if external_settings is None:
-            self.external_settings = cfg.external
+
+        self.feed_lvl = self.configuration.settings["feedback"] if feed_lvl is None else feed_lvl
+
+        self.observables_type = (
+            tuple(self.configuration.obs) if observables_type is None else tuple(observables_type)
+        )
+
+        if external_settings is _UNSET:
+            self.external_settings = self.configuration.external
         else:
             self.external_settings = external_settings
-        if derivatives_type is None:
-            self.derivatives_type = cfg.settings["derivatives"]
-        else:
-            self.derivatives_type = derivatives_type
-        if derivatives_type == "3PT":
+
+        self.method = (
+            self.configuration.settings["derivatives"]
+            if derivatives_type is None
+            else derivatives_type
+        )
+        self.derivatives_type = self.method
+
+        # Dispatch to the correct derivative method
+        if self.method == "3PT":
             self.result = self.derivative_3pt()
-        elif derivatives_type == "STEM":
+        elif self.method == "STEM":
             self.result = self.derivative_stem()
-        elif derivatives_type == "POLY":
+        elif self.method == "POLY":
             self.result = self.derivative_poly()
-        elif derivatives_type == "4PT_FWD":
+        elif self.method == "4PT_FWD":
             self.result = self.derivative_forward_4pt()
         else:
-            raise ValueError("ERROR: I don't know this derivative type!!!")
+            raise ValueError(f"ERROR: I don't know this derivative type!!! ({self.method})")
 
+    # --- 3PT -------------------------------------------------------------
     def der_3pt_stencil(self, fwd, bwd, step):
         """Helper function to compute the 3PT symmetrical finite step size derivative
 
@@ -97,7 +148,7 @@ class derivatives:
         ---------
         fwd  : float, numpy.ndarray
                Observable computed at the forward step
-        fwd  : float, numpy.ndarray
+        bwd  : float, numpy.ndarray
                Observable computed at the backwards step
         step : float
                Absolute step size of the numerical derivative
@@ -132,11 +183,17 @@ class derivatives:
             if self.special is not None:
                 special_deriv = self.special(par)
                 if special_deriv is not None:
-                    print("ððð Obtaining analytical derivative for parameter: ", str(par))
+                    upt.time_print(
+                        feedback_level=self.feed_lvl,
+                        min_level=1,
+                        text="ððð Obtaining analytical derivative for parameter: {}".format(
+                            str(par)
+                        ),
+                    )
                     deriv_dict[par] = special_deriv
                     continue
-                elif special_deriv is None:
-                    pass
+                # if special_deriv is None, fall back to numerical
+
             if self.fiducial[par] != 0.0:
                 stepsize = self.fiducial[par] * self.freeparams[par]
             else:
@@ -151,7 +208,6 @@ class derivatives:
 
             # doing forward step
             fwd = copy.deepcopy(self.fiducial)
-
             fwd[par] = fwd[par] + stepsize
 
             obs_fwd = self.observable(fwd)
@@ -206,6 +262,7 @@ class derivatives:
 
         return deriv_dict
 
+    # --- 4PT forward -----------------------------------------------------
     def der_fwd_4pt(self, fwdi, step):
         """Helper function to compute the 4PT forward finite step size derivative
 
@@ -225,14 +282,14 @@ class derivatives:
         return der
 
     def derivative_forward_4pt(self):
-        r"""One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
+        """One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
         Taken from:
         https://web.media.mit.edu/~crtaylor/calculator.html
         @misc{fdcc,
-        title={Finite Difference Coefficients Calculator},
-        author={Taylor, Cameron R.},
-        year={2016},
-        howpublished="\url{https://web.media.mit.edu/~crtaylor/calculator.html}"
+          title={Finite Difference Coefficients Calculator},
+          author={Taylor, Cameron R.},
+          year={2016},
+          howpublished="\\url{https://web.media.mit.edu/~crtaylor/calculator.html}"
         }
 
         Returns
@@ -247,7 +304,6 @@ class derivatives:
         .. math::
 
             \\frac{\\mathrm{d} \\mathcal{O}}{\\mathrm{d} \\theta} = \\frac{-11\\,\\mathcal{O}(\\theta)+18\\,\\mathcal{O}(\\theta+h)-9\\,\\mathcal{O}(\\theta+2\\,)+2\\,\\mathcal{O}(\\theta+3\\,h)}{6\\,h}
-
         """
         deriv_dict = {}
 
@@ -258,12 +314,12 @@ class derivatives:
                     upt.time_print(
                         feedback_level=self.feed_lvl,
                         min_level=2,
-                        text='ððð "Obtaining analytical derivative for parameter: {:s}'.format(par),
+                        text='ððð "Obtaining analytical derivative for parameter: {:s}".format(par)',
                     )
                     deriv_dict[par] = special_deriv
                     continue
-                elif special_deriv is None:
-                    pass
+                # if special_deriv is None, fall back to numerical
+
             if self.fiducial[par] != 0.0:
                 stepsize = self.fiducial[par] * self.freeparams[par]
             else:
@@ -291,7 +347,7 @@ class derivatives:
 
             upt.time_print(
                 feedback_level=self.feed_lvl,
-                min_level=1,
+                min_level=2,
                 text="++++ Computing observables at 4 steps",
             )
             obs_fwd_list = []
@@ -305,6 +361,7 @@ class derivatives:
                 )
                 obs_at_step = self.observable(ffstep)
                 obs_fwd_list.append(obs_at_step)
+
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=2,
@@ -327,7 +384,6 @@ class derivatives:
                     else:
                         obs_fwd_list_at_key = [obs_fwd_list[sti][key] for sti in range(Nsteps_fwd)]
                         dpar[key] = self.der_fwd_4pt(obs_fwd_list_at_key, stepsize)
-
             if "plain" in self.observables_type:
                 dpar = self.der_fwd_4pt(obs_fwd_list, stepsize)
 
@@ -345,6 +401,7 @@ class derivatives:
 
         return deriv_dict
 
+    # --- STEM ------------------------------------------------------------
     def derivative_stem(self):
         """One of the possible derivative methods. Computes the numerical derivative using the SteM derivative method
 
@@ -364,7 +421,6 @@ class derivatives:
                 d_eps = np.linspace(
                     -param_eps * mult_eps_factor, param_eps * mult_eps_factor, numstem
                 )
-                # eps_arr = np.linspace(-self.freeparams[par], self.freeparams[par], numstem)
             return d_eps
 
         threshold = 1.0e-3
@@ -390,15 +446,11 @@ class derivatives:
 
             for step in stepsize:
                 modpars = copy.deepcopy(self.fiducial)
-
                 modpars[par] = modpars[par] + step
-
                 obs_mod.append(self.observable(modpars))
 
             if "GCph" in self.observables_type or "WL" in self.observables_type:
                 for key in obs_mod[0]:
-                    # WARNING: THIS WORKS FOR NOW, BUT OTHER THINGS HAVE TO BE
-                    # ADDED TO THE IF FOR OTHER OBS
                     if key == "ells":
                         dpar[key] = obs_mod[0][key]
                     else:
@@ -424,7 +476,7 @@ class derivatives:
                             temp.append(fit[0][0])
                         dpar[key] = np.array(temp)
             else:
-                raise ValueError("STEM derivative not availabe for spectropscopic probes yet!")
+                raise ValueError("STEM derivative not availabe")
 
             tend = time()
             upt.time_print(
@@ -440,13 +492,15 @@ class derivatives:
 
         return deriv_dict
 
+    # --- Polynomial ------------------------------------------------------
     def derivative_poly(self):
         """One of the possible derivative methods. Computes the numerical derivative using a polynomial derivative method
 
         Returns
         -------
         dict
-            A dictionary containing the derivative of the observable for each varied parameter."""
+            A dictionary containing the derivative of the observable for each varied parameter.
+        """
         numpoints = 10  # HARD CODED?
 
         deriv_dict = {}
@@ -476,14 +530,10 @@ class derivatives:
 
             for step in stepsize:
                 modpars = copy.deepcopy(self.fiducial)
-
                 modpars[par] = modpars[par] + step
-
                 obs_mod.append(self.observable(modpars))
 
             for key in obs_mod[0]:
-                # WARNING: THIS WORKS FOR NOW, BUT OTHER THINGS HAVE TO BE
-                # ADDED TO THE IF FOR OTHER OBS
                 if key == "ells":
                     dpar[key] = obs_mod[0][key]
                 else:
@@ -493,7 +543,8 @@ class derivatives:
                             stepsize, [obs_mod[step][key][ind] for step in range(len(stepsize))], 4
                         )
                         temp.append(
-                            4 * fit[0] * fidpar**3 * +3 * fit[2] * fidpar**2
+                            4 * fit[0] * fidpar**3
+                            + 3 * fit[2] * fidpar**2
                             + 2 * fit[3] * fidpar
                             + fit[4]
                         )
@@ -513,3 +564,68 @@ class derivatives:
             deriv_dict[par] = dpar
 
         return deriv_dict
+
+
+class FiniteDifferenceProvider:
+    """Default provider adapting the existing finite-difference engine."""
+
+    def compute(self, request: DerivativeRequest) -> dict[str, object]:
+        return derivatives(
+            observable=request.observable,
+            fiducial=request.fiducial,
+            special_deriv_function=request.special_deriv_function,
+            derivatives_type=request.method,
+            freeparams=request.freeparams,
+            observables_type=request.observables_type,
+            external_settings=request.external_settings,
+            feed_lvl=request.feed_lvl,
+            configuration=request.configuration,
+        ).result
+
+
+def compute_derivatives(
+    observable,
+    fiducial,
+    *,
+    configuration=None,
+    provider: DerivativeProvider | None = None,
+    special_deriv_function=None,
+    derivatives_type=None,
+    freeparams=None,
+    observables_type=None,
+    external_settings=_UNSET,
+    feed_lvl=None,
+):
+    """Compute derivatives through an interchangeable backend-neutral provider.
+
+    The default provider preserves the existing finite-difference formulas. A
+    differentiable backend or emulator can later inject an autodiff provider
+    without coupling probe covariance code to JAX.
+    """
+    resolved_configuration = cfg if configuration is None else configuration
+
+    # Normalize external_settings sentinel to None for internal logic (the derivatives class expects _UNSET or a dict)
+    # but we will pass through as-is; the derivatives class treats _UNSET as "take from configuration".
+    # We'll keep the sentinel.
+
+    request = DerivativeRequest(
+        observable=observable,
+        fiducial=fiducial,
+        freeparams=dict(resolved_configuration.freeparams if freeparams is None else freeparams),
+        observables_type=tuple(
+            resolved_configuration.obs if observables_type is None else observables_type
+        ),
+        external_settings=(
+            resolved_configuration.external if external_settings is _UNSET else external_settings
+        ),
+        feed_lvl=(resolved_configuration.settings["feedback"] if feed_lvl is None else feed_lvl),
+        method=(
+            resolved_configuration.settings["derivatives"]
+            if derivatives_type is None
+            else derivatives_type
+        ),
+        special_deriv_function=special_deriv_function,
+        configuration=resolved_configuration,
+    )
+    active_provider = FiniteDifferenceProvider() if provider is None else provider
+    return active_provider.compute(request)

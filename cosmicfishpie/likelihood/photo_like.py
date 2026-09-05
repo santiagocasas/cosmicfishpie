@@ -18,7 +18,7 @@ logger = logging.getLogger("cosmicfishpie.likelihood.photo")
 
 
 def _dict_with_updates(template: Dict[str, Any], pool: Dict[str, Any]) -> Dict[str, Any]:
-    updated = deepcopy(template)
+    updated = dict(template)
     for key in template:
         if key in pool:
             updated[key] = pool.pop(key)
@@ -132,6 +132,7 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
                 IApars=self.cosmo_data.IApars,
                 biaspars=self.cosmo_data.photobiaspars,
                 fiducial_cosmo=self.cosmo_data.fiducialcosmo,
+                configuration=self.cosmo_data,
             )
 
         self.photo_cov_data = getattr(self.cosmo_data, "photo_LSS", None)
@@ -142,6 +143,7 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
                 IApars=self.cosmo_data.IApars,
                 biaspars=self.cosmo_data.photobiaspars,
                 fiducial_Cls=photo_cls,
+                configuration=self.cosmo_data,
             )
 
         cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
@@ -174,7 +176,9 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
             IApars=IApars,
             biaspars=photobias,
             fiducial_cosmo=None,
+            configuration=self.cosmo_theory,
         )
+        assert self.photo_cov_data is not None
         return _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
 
     def compute_chi2(self, theory_obs: Dict[str, np.ndarray]) -> float:

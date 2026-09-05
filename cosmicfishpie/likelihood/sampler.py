@@ -7,7 +7,7 @@ import numpy as np
 from nautilus import Prior, Sampler
 from scipy.stats import norm
 
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicfishpie.configs.context import build_analysis_context
 from cosmicfishpie.likelihood import PhotometricLikelihood
 
 
@@ -118,18 +118,18 @@ class NautilusSampler:
         return self.options["survey_name_photo"] or self.options["survey_name_spectro"]
 
     def _setup_cosmology(self):
-        self.cosmoFM_fid = cosmicfish.FisherMatrix(
+        self.cosmo_context = build_analysis_context(
             fiducialpars=self.fiducial,
             options=self.options,
             observables=self.observables,
-            cosmoModel=self.options["cosmo_model"],
-            surveyName=self.options["survey_name"],
+            cosmo_model=self.options["cosmo_model"],
+            survey_name=self.options["survey_name"],
         )
 
     def _setup_priors(self):
         self.prior_chosen = Prior()
         for par, prior_range in self.prior_dict.items():
-            if par in self.cosmoFM_fid.freeparams:
+            if par in self.cosmo_context.freeparams:
                 if isinstance(prior_range, dict) and prior_range["type"] == "gaussian":
                     dist = norm(loc=prior_range["loc"], scale=prior_range["scale"])
                 else:
@@ -138,15 +138,15 @@ class NautilusSampler:
 
     def _setup_likelihood(self):
         self.photo_like = PhotometricLikelihood(
-            cosmo_data=self.cosmoFM_fid, cosmo_theory=self.cosmoFM_fid
+            cosmo_data=self.cosmo_context, cosmo_theory=self.cosmo_context
         )
 
     def _save_metadata(self, evidence=None, finish_time=None):
 
         sampled_fiducial = {}
         for param in self.prior_dict.keys():
-            if param in self.cosmoFM_fid.allparams:
-                sampled_fiducial[param] = self.cosmoFM_fid.allparams[param]
+            if param in self.cosmo_context.allparams:
+                sampled_fiducial[param] = self.cosmo_context.allparams[param]
 
         metadata = {
             "cosmicfishpie_version": "1.0.0",  # Replace with actual version
@@ -243,7 +243,14 @@ class NautilusSampler:
             print(f"🔬 Code: {self.options['code']}")
             print(f"📦 Config name: {self.config['name']}")
             print("=" * 60 + "\n")
-            nautilus_sampler.run(verbose=True, discard_exploration=True)
+            run_kwargs = {
+                "verbose": self.sampler_settings.get("verbose", True),
+                "discard_exploration": self.sampler_settings.get("discard_exploration", True),
+            }
+            for key in ("f_live", "n_shell", "n_eff", "n_like_max", "timeout"):
+                if key in self.sampler_settings:
+                    run_kwargs[key] = self.sampler_settings[key]
+            nautilus_sampler.run(**run_kwargs)
             evidence = nautilus_sampler.log_z
             points, log_w, log_l = nautilus_sampler.posterior()
 
@@ -251,7 +258,7 @@ class NautilusSampler:
             # Save chain and final metadata
             sample_wghlkl = np.vstack((points.T, np.exp(log_w), log_l)).T
             outfile_chain = self.outroot + ".txt"
-            header = "loglike weights " + " ".join(self.prior_chosen.keys)
+            header = " ".join(self.prior_chosen.keys) + " weights loglike"
             np.savetxt(outfile_chain, sample_wghlkl, header=header)
             print(f"Saved chain to {outfile_chain}")
             self._save_metadata(evidence=evidence, finish_time=self.tfin)

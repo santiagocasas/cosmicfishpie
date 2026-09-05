@@ -43,7 +43,7 @@ dependencies = [
     "SciPy>=1.8.0",
     "seaborn",
     "colossus",
-    "symbolic-pofk@git+https://github.com/DeaglanBartlett/symbolic_pofk.git",
+    "symbolic-pofk @ https://github.com/DeaglanBartlett/symbolic_pofk/archive/cb4d2bb5a759d0c682dc1499cf3aad1c496436ac.tar.gz",
 ]
 
 [project.urls]

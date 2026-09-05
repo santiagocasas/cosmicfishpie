@@ -31,6 +31,8 @@ class PhotoCov:
         fiducial_Cls=None,
         enable_cache=True,
         cache_size=32,
+        *,
+        configuration=None,
     ):
         """Main class to obtain the ingredients for the Fisher matrix of a photometric probe
 
@@ -69,6 +71,15 @@ class PhotoCov:
                        number indicating the verbosity of the output. Higher numbers mean more output
 
         """
+        self._legacy_configuration = configuration is None
+        self.configuration = cfg if self._legacy_configuration else configuration
+        self.settings = self.configuration.settings
+        self.specs = self.configuration.specs
+        self.configured_observables = tuple(self.configuration.obs)
+        self.freeparams = self.configuration.freeparams
+        self.fiducialparams = getattr(
+            self.configuration, "fiducialcosmopars", self.configuration.fiducialparams
+        )
         self.cosmopars = cosmopars
         self.photopars = photopars
         self.IApars = IApars
@@ -81,24 +92,24 @@ class PhotoCov:
         self.fiducial_Cls = fiducial_Cls
         self.observables = []
         self.binrange = {}
-        for key in cfg.obs:
+        for key in self.configured_observables:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
                 if key == "GCph":
-                    self.binrange[key] = cfg.specs["binrange_GCph"]
+                    self.binrange[key] = self.specs["binrange_GCph"]
                 elif key == "WL":
-                    self.binrange[key] = cfg.specs["binrange_WL"]
+                    self.binrange[key] = self.specs["binrange_WL"]
 
-        self.binrange_WL = cfg.specs["binrange_WL"]
-        self.binrange_GCph = cfg.specs["binrange_GCph"]
-        self.feed_lvl = cfg.settings["feedback"]
-        self.fsky_WL = cfg.specs.get("fsky_WL")
-        self.fsky_GCph = cfg.specs.get("fsky_GCph")
-        self.ngalbin_WL = np.array(cfg.specs["ngalbin_WL"])
-        self.ngalbin_GCph = np.array(cfg.specs["ngalbin_GCph"])
-        self.numbins_WL = len(cfg.specs["z_bins_WL"]) - 1
-        self.numbins_GCph = len(cfg.specs["z_bins_GCph"]) - 1
-        self.ellipt_error = cfg.specs["ellipt_error"]
+        self.binrange_WL = self.specs["binrange_WL"]
+        self.binrange_GCph = self.specs["binrange_GCph"]
+        self.feed_lvl = self.settings["feedback"]
+        self.fsky_WL = self.specs.get("fsky_WL")
+        self.fsky_GCph = self.specs.get("fsky_GCph")
+        self.ngalbin_WL = np.array(self.specs["ngalbin_WL"])
+        self.ngalbin_GCph = np.array(self.specs["ngalbin_GCph"])
+        self.numbins_WL = len(self.specs["z_bins_WL"]) - 1
+        self.numbins_GCph = len(self.specs["z_bins_GCph"]) - 1
+        self.ellipt_error = self.specs["ellipt_error"]
 
         # Performance tuning options
         self._enable_cache = enable_cache
@@ -147,10 +158,22 @@ class PhotoCov:
                 return cached
         if cosmopars == self.cosmopars and self.fiducial_Cls is not None:
             cls = photo_obs.ComputeCls(
-                cosmopars, photopars, IApars, biaspars, fiducial_cosmo=self.fiducial_Cls.cosmo
+                cosmopars,
+                photopars,
+                IApars,
+                biaspars,
+                fiducial_cosmo=self.fiducial_Cls.cosmo,
+                configuration=self.configuration,
             )
         else:
-            cls = photo_obs.ComputeCls(cosmopars, photopars, IApars, biaspars, fiducial_cosmo=None)
+            cls = photo_obs.ComputeCls(
+                cosmopars,
+                photopars,
+                IApars,
+                biaspars,
+                fiducial_cosmo=None,
+                configuration=self.configuration,
+            )
 
         cls.compute_all()
         LSScls = cls.result
@@ -267,7 +290,8 @@ class PhotoCov:
         # we attempt to back-fill common missing parameters with sensible defaults.
         # This keeps the Fisher workflow robust in minimal test configurations while
         # leaving full runs unaffected.
-        freeparams_iter = cfg.freeparams or []
+        freeparams_iter = (cfg.freeparams if self._legacy_configuration else self.freeparams) or []
+        fiducialparams = cfg.fiducialparams if self._legacy_configuration else self.fiducialparams
         missing = [key for key in freeparams_iter if key not in self.allparsfid]
         if missing:
             # Fallback defaults (cosmology-standard values) used only for tests / reduced inputs.
@@ -278,9 +302,8 @@ class PhotoCov:
             for key in missing:
                 if key in fallback_defaults:
                     self.allparsfid[key] = fallback_defaults[key]
-                elif hasattr(cfg, "fiducialparams") and key in getattr(cfg, "fiducialparams", {}):
-                    # In case global fiducialparams actually contains it (different init path)
-                    self.allparsfid[key] = cfg.fiducialparams[key]
+                elif key in fiducialparams:
+                    self.allparsfid[key] = fiducialparams[key]
                 else:
                     unresolved.append(key)
             if unresolved:
@@ -292,38 +315,38 @@ class PhotoCov:
                     )
                 )
             else:
-                if cfg.settings.get("feedback", 0) > 0:
+                if self.settings.get("feedback", 0) > 0:
                     print(
                         "[PhotoCov] Filled missing fiducial values for: {} (fallback defaults)".format(
                             ", ".join(missing)
                         )
                     )
 
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Computing fiducial")
         t1 = datetime.datetime.now().timestamp()
 
         cls = self.getcls(self.allparsfid)
 
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Fiducial generated in {:.2f} s".format(t2 - t1))
 
         t1 = datetime.datetime.now().timestamp()
         # add noise
         noisy_cls = self.getclsnoise(cls)
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Noise added to fiducial")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Noisy Cls generated in {:.2f} s".format(t2 - t1))
 
         # build covmat
@@ -331,25 +354,25 @@ class PhotoCov:
         self.noisy_cls = noisy_cls
         t1 = datetime.datetime.now().timestamp()
         self.covmat = self.get_covmat(noisy_cls)
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Computed covariance matrix")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Covmat of Cls generated in {:.2f} s".format(t2 - t1))
 
         tfin = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Total calculation in {:.2f} s".format(tfin - tini))
 
         return self.noisy_cls, self.covmat
 
-    def compute_derivs(self, print_info_specs=False):
+    def compute_derivs(self, print_info_specs=False, *, derivative_provider=None):
         """computes the derivatives of the angular power spectrum needed to compute the Fisher matrix
 
         Returns
@@ -365,8 +388,12 @@ class PhotoCov:
         if compute_derivs:
             tder1 = time()
             print(">> computing derivs >>")
-            deriv_engine = fishderiv.derivatives(self.getcls, self.allparsfid)
-            derivs = deriv_engine.result
+            derivs = fishderiv.compute_derivatives(
+                self.getcls,
+                self.allparsfid,
+                configuration=self.configuration,
+                provider=derivative_provider,
+            )
             tder2 = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,

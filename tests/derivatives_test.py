@@ -1,7 +1,10 @@
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
-from cosmicfishpie.fishermatrix.derivatives import derivatives
+import cosmicfishpie.configs.config as cfg
+from cosmicfishpie.fishermatrix.derivatives import compute_derivatives, derivatives
 
 
 def test_invalid_derivative_type_raises():
@@ -130,3 +133,56 @@ def test_derivative_stem_unsupported_for_spectro_raises():
             external_settings={"eps_values": [0.01, 0.02, 0.03]},
             feed_lvl=0,
         )
+
+
+def test_explicit_configuration_owns_all_default_derivative_inputs(monkeypatch):
+    context_a = SimpleNamespace(
+        freeparams={"x": 0.25},
+        settings={"feedback": 0, "derivatives": "3PT"},
+        obs=("plain",),
+        external={"owner": "A"},
+    )
+    monkeypatch.setattr(cfg, "freeparams", {"wrong": 10.0}, raising=False)
+    monkeypatch.setattr(cfg, "settings", {"feedback": 99, "derivatives": "UNKNOWN"}, raising=False)
+    monkeypatch.setattr(cfg, "obs", ("UNKNOWN",), raising=False)
+    monkeypatch.setattr(cfg, "external", {"owner": "B"}, raising=False)
+
+    result = derivatives(
+        observable=lambda pars: pars["x"] ** 2,
+        fiducial={"x": 2.0},
+        configuration=context_a,
+    )
+
+    assert result.freeparams == {"x": 0.25}
+    assert result.feed_lvl == 0
+    assert result.observables_type == ("plain",)
+    assert result.external_settings == {"owner": "A"}
+    assert result.derivatives_type == "3PT"
+    assert result.result["x"] == pytest.approx(4.0)
+
+
+def test_compute_derivatives_accepts_backend_neutral_provider():
+    context = SimpleNamespace(
+        freeparams={"x": 0.1},
+        settings={"feedback": 0, "derivatives": "3PT"},
+        obs=("plain",),
+        external=None,
+    )
+    captured = []
+
+    class FakeAutodiffProvider:
+        def compute(self, request):
+            captured.append(request)
+            return {"x": "jacobian"}
+
+    result = compute_derivatives(
+        observable=lambda pars: pars["x"],
+        fiducial={"x": 1.0},
+        configuration=context,
+        provider=FakeAutodiffProvider(),
+    )
+
+    assert result == {"x": "jacobian"}
+    assert captured[0].configuration is context
+    assert captured[0].freeparams == {"x": 0.1}
+    assert captured[0].method == "3PT"

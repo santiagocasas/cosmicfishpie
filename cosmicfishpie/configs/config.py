@@ -3,6 +3,7 @@
 
 import glob
 import os
+import sys
 from copy import deepcopy
 from time import time
 
@@ -672,7 +673,9 @@ def init(
         text="-> Computing cosmology at the fiducial point",
     )
     tcosmo1 = time()
-    fiducialcosmo = cosmology.cosmo_functions(fiducialparams, input_type)
+    fiducialcosmo = cosmology.cosmo_functions(
+        fiducialparams, input_type, configuration=sys.modules[__name__]
+    )
     tcosmo2 = time()
     upt.time_print(
         feedback_level=feed_lvl,

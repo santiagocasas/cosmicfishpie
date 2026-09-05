@@ -8,7 +8,10 @@ This module contains useful cosmological functions.
 
 import os
 import sys
+import threading
 import types
+from collections.abc import Mapping
+from contextlib import contextmanager
 from copy import deepcopy
 from glob import glob
 from time import time
@@ -31,6 +34,59 @@ from cosmicfishpie.utilities.utils import printing as upr
 
 cachedir = "memory_cache"
 memory = Memory(cachedir, verbose=0)
+
+_COLOSSUS_SETTINGS_LOCK = threading.RLock()
+
+
+def _thaw(value):
+    """Recursively copy frozen context values into mutable backend inputs."""
+
+    if isinstance(value, Mapping):
+        return {key: _thaw(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw(item) for item in value]
+    return deepcopy(value)
+
+
+def _backend_parameters(configuration, code):
+    """Return a mutable backend-parameter snapshot owned by ``configuration``."""
+
+    selected = getattr(configuration, "backend_parameters", None)
+    if selected is not None:
+        configured_code = getattr(configuration, "input_type", None)
+        if code != configured_code:
+            raise ValueError(
+                f"Explicit configuration resolves backend {configured_code!r}; "
+                f"cannot construct runtime for {code!r}."
+            )
+        return _thaw(selected)
+
+    attribute = {
+        "camb": "boltzmann_cambpars",
+        "class": "boltzmann_classpars",
+        "symbolic": "boltzmann_symbolicpars",
+    }.get(code)
+    if attribute is None:
+        return {}
+    return deepcopy(getattr(configuration, attribute))
+
+
+@contextmanager
+def _scoped_colossus_settings(settings, colossus_settings):
+    """Temporarily apply run-local Colossus settings and always restore them."""
+
+    with _COLOSSUS_SETTINGS_LOCK:
+        base_dir = colossus_settings.BASE_DIR
+        persistence = colossus_settings.PERSISTENCE
+        try:
+            if settings.get("colossus_base_dir") is not None:
+                colossus_settings.BASE_DIR = settings["colossus_base_dir"]
+            if settings.get("colossus_persistence") is not None:
+                colossus_settings.PERSISTENCE = settings["colossus_persistence"]
+            yield
+        finally:
+            colossus_settings.BASE_DIR = base_dir
+            colossus_settings.PERSISTENCE = persistence
 
 
 def _dcom_func_trapz(zi, interpolfunc):
@@ -90,37 +146,28 @@ class boltzmann_code:
     hardcoded_neutrino_mass_fac = 94.07
     hardcoded_mnu_massive_min = 0.001
 
-    def __init__(self, cosmopars, code="camb"):
-        """
-        Initialize the boltzmann_code class.
+    def __init__(self, cosmopars, code="camb", *, configuration=None):
+        """Initialize a backend bound to one resolved run configuration.
 
-        Parameters
-        ----------
-        cosmopars : dict
-            The cosmological parameters object to be copied.
-        code : str, optional
-            The Boltzmann code to be used (default is 'camb').
-
-        Raises
-        ------
-        ValueError
-            If an unsupported Boltzmann code is specified.
+        ``configuration`` is optional for legacy callers; when omitted, the
+        legacy ``cfg`` module is captured once at construction.
         """
+        self.configuration = cfg if configuration is None else configuration
         self.cosmopars = deepcopy(cosmopars)
-        self.feed_lvl = cfg.settings["feedback"]
-        self.settings = cfg.settings
-        upr.SUPPRESS_WARNINGS = cfg.settings["SUPPRESS_WARNINGS"]
+        self.feed_lvl = self.configuration.settings["feedback"]
+        self.settings = self.configuration.settings
+        upr.SUPPRESS_WARNINGS = self.settings["SUPPRESS_WARNINGS"]
         self.set_cosmicfish_defaults()
         if code == "camb":
             camb_path = os.path.realpath(os.path.join(os.getcwd(), self.settings["camb_path"]))
             sys.path.insert(0, camb_path)
             import camb as camb
 
-            self.boltzmann_cambpars = cfg.boltzmann_cambpars
+            self.boltzmann_cambpars = _backend_parameters(self.configuration, code)
             self.camb_setparams(self.cosmopars, camb)
             self.camb_results(camb)
         elif code == "class":
-            self.boltzmann_classpars = cfg.boltzmann_classpars
+            self.boltzmann_classpars = _backend_parameters(self.configuration, code)
             from classy import Class
 
             self.class_setparams(self.cosmopars)
@@ -133,28 +180,13 @@ class boltzmann_code:
                 import symbolic_pofk.syrenhalofit as symbfit
 
                 self.colmo = colmo
+                self.colossus_settings = colossus_settings
                 self.symblin = symblin
                 self.symbfit = symbfit
-                colossus_base_dir = cfg.settings.get("colossus_base_dir")
-                if colossus_base_dir is not None:
-                    colossus_settings.BASE_DIR = colossus_base_dir
-                colossus_persistence = cfg.settings.get("colossus_persistence")
-                if colossus_persistence is not None:
-                    colossus_settings.PERSISTENCE = colossus_persistence
-                if not hasattr(colmo.cosmology, "_cfp_wrapped_setCosmology"):
-                    orig_setCosmology = colmo.cosmology.setCosmology
-
-                    def _setCosmology_with_persistence(cosmo_name, params=None, **kwargs):
-                        if "persistence" not in kwargs and colossus_persistence is not None:
-                            kwargs["persistence"] = colossus_persistence
-                        return orig_setCosmology(cosmo_name, params=params, **kwargs)
-
-                    colmo.cosmology.setCosmology = _setCosmology_with_persistence
-                    colmo.cosmology._cfp_wrapped_setCosmology = True
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
-            self.boltzmann_symbolicpars = cfg.boltzmann_symbolicpars
+            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
             self.halofit_version = self.boltzmann_symbolicpars["COSMO_SETTINGS"][
                 "halofit_version"
             ]  # 'syren' or 'halofit+' or 'takahashi'
@@ -445,7 +477,7 @@ class boltzmann_code:
             cambpars["As"] = np.exp(cambpars.pop("logAs")) * 1.0e-10
 
         upr.debug_print("DEBUG:  --> ", cosmopars)
-        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        shareDeltaNeff = self.settings["ShareDeltaNeff"]
         # Keep CAMB's matching field aligned with the CosmicFishPie convention below.
         # _set_camb_params assigns it after construction to avoid CAMB's deprecation log.
         cambpars["share_delta_neff"] = shareDeltaNeff
@@ -793,7 +825,7 @@ class boltzmann_code:
             classpars["H0"] = classpars.pop("H0")
             h = classpars["H0"] / 100.0
 
-        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        shareDeltaNeff = self.settings["ShareDeltaNeff"]
         fidNeff = boltzmann_code.hardcoded_Neff
         Neff = classpars.pop("Neff", fidNeff)
 
@@ -897,7 +929,7 @@ class boltzmann_code:
         self.results.zgrid = z[::-1]
 
         ## interpolating function Pk_nl (k,z)
-        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=cfg.settings["nonlinear"])
+        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=self.settings["nonlinear"])
         self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
 
         tk, k, z = classres.get_transfer_and_k_and_z()
@@ -1086,7 +1118,7 @@ class boltzmann_code:
             If the cosmological model is not supported by the symbolic code.
         """
         tini_basis = time()
-        if cfg.settings["cosmo_model"] != "LCDM":
+        if self.settings["cosmo_model"] != "LCDM":
             print("Symbolic_pofk only supports LCDM at the moment")
             raise ValueError("Cosmo model not supported by cosmo code")
         self.symbcosmopars = dict()
@@ -1134,14 +1166,15 @@ class boltzmann_code:
             "H0": self.symbcosmopars["h"] * 100,
             "ns": self.symbcosmopars["ns"],
         }
-        colossus_persistence = cfg.settings.get("colossus_persistence")
+        colossus_persistence = self.settings.get("colossus_persistence")
         if colossus_persistence is not None:
             symb_colmo_pars["persistence"] = colossus_persistence
         self.results.zgrid = self.zgrid
         self.h_now = self.symbcosmopars["h"]
         self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now
         self.results.kgrid = self.kgrid_1Mpc  # results kgrid is in units of 1/Mpc
-        self.symbcosmo = self.colmo.cosmology.setCosmology("colmo", **symb_colmo_pars)
+        with _scoped_colossus_settings(self.settings, self.colossus_settings):
+            self.symbcosmo = self.colmo.cosmology.setCosmology("colmo", **symb_colmo_pars)
         self.results.h_of_z = np.vectorize(
             lambda zz: self.symbcosmo.Hz(zz) / cosmo_functions.c
         )  # H(z) in 1/Mpc
@@ -1206,7 +1239,7 @@ class boltzmann_code:
 
 
 class external_input:
-    def __init__(self, cosmopars, fiducialcosmopars=dict(), external=dict(), extra_settings=dict()):
+    def __init__(self, cosmopars, fiducialcosmopars=None, external=None, extra_settings=None):
         """
         Initialize the external_input class.
 
@@ -1227,10 +1260,12 @@ class external_input:
             If the external_input class has been initialized wrongly.
         """
         self.cosmopars = cosmopars
+        if not fiducialcosmopars or not external or not extra_settings:
+            raise ValueError("The external_input class has been initialized wrongly")
         self.fiducialpars = fiducialcosmopars
-        self.feed_lvl = cfg.settings["feedback"]
-        self.external = external  # cfg.external
-        self.settings = extra_settings  # cfg.settings
+        self.feed_lvl = extra_settings["feedback"]
+        self.external = external
+        self.settings = extra_settings
         self.activate_MG = None
         if (
             self.settings["external_activateMG"] is True
@@ -1259,8 +1294,8 @@ class external_input:
         )
         self.cb_files_on = False
         if (
-            cfg.settings["GCsp_Tracer"] == "clustering"
-            or cfg.settings["GCph_Tracer"] == "clustering"
+            self.settings["GCsp_Tracer"] == "clustering"
+            or self.settings["GCph_Tracer"] == "clustering"
         ):
             self.cb_files_on = True
         self.load_txt_files(parameter_string=param_folder_string)
@@ -1566,36 +1601,24 @@ class external_input:
 class cosmo_functions:
     c = sconst.speed_of_light / 1000  ##speed of light in km/s
 
-    def __init__(self, cosmopars, input=None):
-        """
-        Initialize the cosmo_functions class.
-
-        Parameters
-        ----------
-        cosmopars : dict
-            Dictionary containing the cosmological parameters.
-        input : str, optional
-            Input type for the cosmological code (default is None).
-
-        Raises
-        ------
-        ValueError
-            If an unsupported input type is specified.
-        """
-        self.settings = cfg.settings
-        self.fiducialcosmopars = cfg.fiducialparams
-        self.input = input
-        if input is None:
-            input = cfg.input_type
-        if input == "camb":
-            cambresults = boltzmann_code(cosmopars, code="camb")
+    def __init__(self, cosmopars, input=None, *, configuration=None):
+        """Initialize cosmological functions bound to one configuration snapshot."""
+        self.configuration = cfg if configuration is None else configuration
+        self.settings = self.configuration.settings
+        self.fiducialcosmopars = getattr(self.configuration, "fiducialcosmopars", None)
+        if self.fiducialcosmopars is None:
+            self.fiducialcosmopars = self.configuration.fiducialparams
+        effective_input = self.configuration.input_type if input is None else input
+        self.input = effective_input
+        if effective_input == "camb":
+            cambresults = boltzmann_code(cosmopars, code="camb", configuration=self.configuration)
             self.code = "camb"
             self.results = cambresults.results
             self.kgrid = cambresults.results.kgrid
             self.cosmopars = cambresults.cosmopars
             self.cambcosmopars = cambresults.cambclasspars
-        elif input == "external":
-            self.external = cfg.external
+        elif effective_input == "external":
+            self.external = self.configuration.external
             ## filter settings which contain the word 'external_'
             # extra_settings = dict([[kk, self.settings[kk]] for kk in self.settings.keys() if 'external_' in kk])
             # externalinput = external_input(cosmopars,  fiducialcosmopars=self.fiducialcosmopars,
@@ -1615,23 +1638,25 @@ class cosmo_functions:
             self.results = externalinput.results
             self.kgrid = externalinput.results.kgrid
             self.cosmopars = externalinput.cosmopars
-        elif input == "class":
-            classresults = boltzmann_code(cosmopars, code="class")
+        elif effective_input == "class":
+            classresults = boltzmann_code(cosmopars, code="class", configuration=self.configuration)
             self.code = "class"
             self.results = classresults.results
             self.Classres = classresults.Classres
             self.kgrid = classresults.results.kgrid
             self.cosmopars = classresults.cosmopars
             self.classcosmopars = classresults.classcosmopars
-        elif input == "symbolic":
-            symbresults = boltzmann_code(cosmopars, code="symbolic")
+        elif effective_input == "symbolic":
+            symbresults = boltzmann_code(
+                cosmopars, code="symbolic", configuration=self.configuration
+            )
             self.code = "symbolic"
             self.results = symbresults.results
             self.kgrid = symbresults.results.kgrid
             self.cosmopars = symbresults.cosmopars
             self.symbcosmopars = symbresults.symbcosmopars
         else:
-            print(input, ":  This input type is not implemented yet")
+            print(effective_input, ":  This input type is not implemented yet")
 
     def Hubble(self, z, physical=False):
         """

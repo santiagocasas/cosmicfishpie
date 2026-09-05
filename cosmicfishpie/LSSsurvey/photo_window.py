@@ -13,7 +13,7 @@ import cosmicfishpie.configs.config as cfg
 
 
 class GalaxyPhotoDist:
-    def __init__(self, photopars):
+    def __init__(self, photopars, *, specifications=None):
         """Class to obtain the survey specific ingredients of the window function
 
         Parameters
@@ -44,16 +44,17 @@ class GalaxyPhotoDist:
         n_i_vec : callable
                   callable function that receives the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
         """
-        self.z_bins_WL = cfg.specs["z_bins_WL"]
+        specs = cfg.specs if specifications is None else specifications
+        self.z_bins_WL = specs["z_bins_WL"]
         self.n_bins_WL = len(self.z_bins_WL)
-        self.z_bins_GCph = cfg.specs["z_bins_GCph"]
+        self.z_bins_GCph = specs["z_bins_GCph"]
         self.n_bins_GCph = len(self.z_bins_GCph)
-        self.z0 = cfg.specs["z0"]
-        self.z0_p = cfg.specs["z0_p"]
-        self.ngamma = cfg.specs["ngamma"]
+        self.z0 = specs["z0"]
+        self.z0_p = specs["z0_p"]
+        self.ngamma = specs["ngamma"]
         self.photo = photopars
-        self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
-        self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
+        self.z_min = np.min([specs["z_bins_GCph"][0], specs["z_bins_WL"][0]])
+        self.z_max = np.max([specs["z_bins_GCph"][-1], specs["z_bins_WL"][-1]])
         self.normalization = {"GCph": self.norm("GCph"), "WL": self.norm("WL")}
         self.n_i_vec = np.vectorize(self.n_i)
 

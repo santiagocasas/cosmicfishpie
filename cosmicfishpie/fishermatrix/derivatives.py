@@ -282,28 +282,16 @@ class derivatives:
         return der
 
     def derivative_forward_4pt(self):
-        """One of the possible derivative methods. Computes the numerical derivative using a finite differences one-sided 4 point forward derivative.
-        Taken from:
-        https://web.media.mit.edu/~crtaylor/calculator.html
-        @misc{fdcc,
-          title={Finite Difference Coefficients Calculator},
-          author={Taylor, Cameron R.},
-          year={2016},
-          howpublished="\\url{https://web.media.mit.edu/~crtaylor/calculator.html}"
-        }
+        """Compute a one-sided, four-point forward finite-difference derivative.
+
+        The stencil is ``(-11 f(x) + 18 f(x + h) - 9 f(x + 2h) +
+        2 f(x + 3h)) / (6h)``. Its coefficients were obtained with the
+        `Finite Difference Coefficients Calculator <https://web.media.mit.edu/~crtaylor/calculator.html>`_.
 
         Returns
         -------
         dict
-            A dictionary containing the derivative of the observable for each varied parameter.
-
-        Note
-        -----
-        Implements the following equation:
-
-        .. math::
-
-            \\frac{\\mathrm{d} \\mathcal{O}}{\\mathrm{d} \\theta} = \\frac{-11\\,\\mathcal{O}(\\theta)+18\\,\\mathcal{O}(\\theta+h)-9\\,\\mathcal{O}(\\theta+2\\,)+2\\,\\mathcal{O}(\\theta+3\\,h)}{6\\,h}
+            Derivative of the observable for each varied parameter.
         """
         deriv_dict = {}
 

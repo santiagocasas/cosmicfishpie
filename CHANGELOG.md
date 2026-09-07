@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add explicit analysis context runtime isolation and refresh the comprehensive guide.
+
 ## 1.3.1
 
 - Add the CAMB/CLASS validation suite, threshold-aware dashboard, and manual

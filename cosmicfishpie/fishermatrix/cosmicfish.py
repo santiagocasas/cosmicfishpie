@@ -142,51 +142,60 @@ class FisherMatrix:
             print("****************************************************************")
             sys.stdout.flush()
 
-        cfg.init(
-            options=options,
-            specifications=specifications,
-            observables=observables,
-            freepars=freepars,
-            extfiles=extfiles,
-            fiducialpars=fiducialpars,
-            photobiaspars=photobiaspars,
-            photopars=photopars,
-            IApars=IApars,
-            spectrononlinearpars=spectrononlinearpars,
-            spectrobiaspars=spectrobiaspars,
-            IMbiaspars=IMbiaspars,
-            PShotpars=PShotpars,
-            surveyName=surveyName,
-            cosmoModel=cosmoModel,
-            latexnames=latexnames,
-        )
-        self.settings = deepcopy(cfg.settings)
-        self.specs = deepcopy(cfg.specs)
-        self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
-        self.fiducialparams = self.fiducialcosmopars  ## for compatibility
-        self.fiducialcosmo = copy(cfg.fiducialcosmo)
-        self.photopars = deepcopy(cfg.photoparams)
-        self.photobiaspars = deepcopy(cfg.Photobiasparams)
-        self.IApars = deepcopy(cfg.IAparams)
-        self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
-        self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
-        self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
-        self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
-        self.IMbiaspars = deepcopy(cfg.IMbiasparams)
-        self.IMbiasparams = self.IMbiaspars  ## for compatibility
-        self.PShotpars = deepcopy(cfg.PShotparams)
-        self.PShotparams = self.PShotpars  ## for compatibility
-        self.observables = deepcopy(cfg.obs)
-        self.obs = self.observables  ## for compatibility
-        self.external = deepcopy(cfg.external)
-        self.input_type = deepcopy(cfg.input_type)  ## for compatibility
-        backend_attribute = {
-            "camb": "boltzmann_cambpars",
-            "class": "boltzmann_classpars",
-            "symbolic": "boltzmann_symbolicpars",
-        }.get(self.input_type)
-        self.backend_parameters = deepcopy(getattr(cfg, backend_attribute, {}))
-        self.freeparams = deepcopy(cfg.freeparams)
+        # `cfg.init()` mutates the shared `cosmicfishpie.configs.config` module's
+        # global state, which is then immediately read back below. Hold the
+        # shared lock for the full init-then-read-back sequence so a concurrent
+        # `cfg.init()` call (from another `FisherMatrix` instance or from
+        # `build_analysis_context`) cannot interleave and corrupt the read-back
+        # values.
+        with cfg._CONFIG_INIT_LOCK:
+            cfg.init(
+                options=options,
+                specifications=specifications,
+                observables=observables,
+                freepars=freepars,
+                extfiles=extfiles,
+                fiducialpars=fiducialpars,
+                photobiaspars=photobiaspars,
+                photopars=photopars,
+                IApars=IApars,
+                spectrononlinearpars=spectrononlinearpars,
+                spectrobiaspars=spectrobiaspars,
+                IMbiaspars=IMbiaspars,
+                PShotpars=PShotpars,
+                surveyName=surveyName,
+                cosmoModel=cosmoModel,
+                latexnames=latexnames,
+            )
+            self.settings = deepcopy(cfg.settings)
+            self.specs = deepcopy(cfg.specs)
+            self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
+            self.fiducialparams = self.fiducialcosmopars  ## for compatibility
+            self.fiducialcosmo = copy(cfg.fiducialcosmo)
+            self.photopars = deepcopy(cfg.photoparams)
+            self.photobiaspars = deepcopy(cfg.Photobiasparams)
+            self.IApars = deepcopy(cfg.IAparams)
+            self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+            self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
+            self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
+            self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
+            self.IMbiaspars = deepcopy(cfg.IMbiasparams)
+            self.IMbiasparams = self.IMbiaspars  ## for compatibility
+            self.PShotpars = deepcopy(cfg.PShotparams)
+            self.PShotparams = self.PShotpars  ## for compatibility
+            self.observables = deepcopy(cfg.obs)
+            self.obs = self.observables  ## for compatibility
+            self.external = deepcopy(cfg.external)
+            self.input_type = deepcopy(cfg.input_type)  ## for compatibility
+            backend_attribute = {
+                "camb": "boltzmann_cambpars",
+                "class": "boltzmann_classpars",
+                "symbolic": "boltzmann_symbolicpars",
+            }.get(self.input_type)
+            self.backend_parameters = (
+                deepcopy(getattr(cfg, backend_attribute, {})) if backend_attribute else {}
+            )
+            self.freeparams = deepcopy(cfg.freeparams)
         self.allparams_fidus = {
             **self.fiducialcosmopars,
             **self.photopars,

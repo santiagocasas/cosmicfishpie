@@ -14,6 +14,7 @@ after probe implementations receive explicit contexts.
 from __future__ import annotations
 
 from collections.abc import Mapping
+from contextlib import nullcontext
 from copy import deepcopy
 from dataclasses import dataclass
 from importlib import import_module
@@ -222,24 +223,35 @@ def build_analysis_context(
     """
 
     legacy_config = _load_legacy_config()
-    legacy_config.init(
-        options=deepcopy(dict(options or {})),
-        specifications=deepcopy(dict(specifications or {})),
-        observables=deepcopy(observables),
-        freepars=deepcopy(dict(freepars)) if freepars is not None else None,
-        extfiles=deepcopy(dict(extfiles)) if extfiles is not None else None,
-        fiducialpars=deepcopy(dict(fiducialpars)) if fiducialpars is not None else None,
-        photobiaspars=deepcopy(photobiaspars),
-        photopars=deepcopy(dict(photopars)) if photopars is not None else None,
-        IApars=deepcopy(dict(IApars)) if IApars is not None else None,
-        PShotpars=deepcopy(dict(PShotpars)) if PShotpars is not None else None,
-        spectrobiaspars=deepcopy(dict(spectrobiaspars)) if spectrobiaspars is not None else None,
-        spectrononlinearpars=(
-            deepcopy(dict(spectrononlinearpars)) if spectrononlinearpars is not None else None
-        ),
-        IMbiaspars=deepcopy(dict(IMbiaspars)) if IMbiaspars is not None else None,
-        surveyName=survey_name,
-        cosmoModel=cosmo_model,
-        latexnames=deepcopy(dict(latexnames)) if latexnames is not None else None,
-    )
-    return AnalysisContext.from_legacy_config(legacy_config)
+    # `init()` mutates legacy_config's module-global state, which is then
+    # immediately snapshotted below. Hold the shared lock for the full
+    # init-then-snapshot sequence so a concurrent `init()` call (from this
+    # function or from a direct `config.init()` caller such as
+    # `FisherMatrix.__init__`) cannot interleave and corrupt the snapshot.
+    # Fall back to a no-op context manager for test doubles that stand in for
+    # the legacy config module without defining the lock.
+    init_lock = getattr(legacy_config, "_CONFIG_INIT_LOCK", None)
+    with init_lock if init_lock is not None else nullcontext():
+        legacy_config.init(
+            options=deepcopy(dict(options or {})),
+            specifications=deepcopy(dict(specifications or {})),
+            observables=deepcopy(observables),
+            freepars=deepcopy(dict(freepars)) if freepars is not None else None,
+            extfiles=deepcopy(dict(extfiles)) if extfiles is not None else None,
+            fiducialpars=deepcopy(dict(fiducialpars)) if fiducialpars is not None else None,
+            photobiaspars=deepcopy(photobiaspars),
+            photopars=deepcopy(dict(photopars)) if photopars is not None else None,
+            IApars=deepcopy(dict(IApars)) if IApars is not None else None,
+            PShotpars=deepcopy(dict(PShotpars)) if PShotpars is not None else None,
+            spectrobiaspars=(
+                deepcopy(dict(spectrobiaspars)) if spectrobiaspars is not None else None
+            ),
+            spectrononlinearpars=(
+                deepcopy(dict(spectrononlinearpars)) if spectrononlinearpars is not None else None
+            ),
+            IMbiaspars=deepcopy(dict(IMbiaspars)) if IMbiaspars is not None else None,
+            surveyName=survey_name,
+            cosmoModel=cosmo_model,
+            latexnames=deepcopy(dict(latexnames)) if latexnames is not None else None,
+        )
+        return AnalysisContext.from_legacy_config(legacy_config)

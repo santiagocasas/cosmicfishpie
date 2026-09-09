@@ -302,7 +302,7 @@ class derivatives:
                     upt.time_print(
                         feedback_level=self.feed_lvl,
                         min_level=2,
-                        text='ððð "Obtaining analytical derivative for parameter: {:s}".format(par)',
+                        text="ððð Obtaining analytical derivative for parameter: {:s}".format(par),
                     )
                     deriv_dict[par] = special_deriv
                     continue

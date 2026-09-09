@@ -58,6 +58,47 @@ def test_photocov_uses_explicit_context(photo_fisher_matrix):
     assert cov.binrange_GCph == context.specs["binrange_GCph"]
 
 
+class _FiducialCosmoParsOnlyContext:
+    """Proxy that exposes ``fiducialcosmopars`` but hides ``fiducialparams``.
+
+    Used to verify that ``PhotoCov`` can resolve its fiducial parameters from
+    a configuration object that only implements one of the two legacy
+    spellings, without eagerly touching the other (missing) one.
+    """
+
+    def __init__(self, context):
+        self._context = context
+
+    def __getattr__(self, name):
+        if name == "fiducialparams":
+            raise AttributeError(name)
+        return getattr(self._context, name)
+
+
+def test_photocov_resolves_fiducialparams_from_fiducialcosmopars_only(photo_fisher_matrix):
+    context = AnalysisContext.from_legacy_config(cfg)
+    proxy = _FiducialCosmoParsOnlyContext(context)
+
+    cls = ComputeCls(
+        {"Omegam": 0.3, "h": 0.7},
+        context.photopars,
+        context.IApars,
+        context.photobiaspars,
+        fiducial_cosmo=context.fiducialcosmo,
+        configuration=context,
+    )
+    cov = PhotoCov(
+        {"Omegam": 0.3, "h": 0.7},
+        context.photopars,
+        context.IApars,
+        context.photobiaspars,
+        fiducial_Cls=cls,
+        configuration=proxy,
+    )
+
+    assert cov.fiducialparams == dict(context.fiducialcosmopars)
+
+
 def test_photocov_derivatives_remain_bound_to_context_a(monkeypatch):
     context_a = SimpleNamespace(
         freeparams={"x": 0.1},

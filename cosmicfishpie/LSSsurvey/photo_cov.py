@@ -77,9 +77,13 @@ class PhotoCov:
         self.specs = self.configuration.specs
         self.configured_observables = tuple(self.configuration.obs)
         self.freeparams = self.configuration.freeparams
-        self.fiducialparams = getattr(
-            self.configuration, "fiducialcosmopars", self.configuration.fiducialparams
-        )
+        # Avoid eager evaluation of the default argument to getattr: a
+        # configuration object that only exposes "fiducialcosmopars" (and not
+        # "fiducialparams") would otherwise raise AttributeError before the
+        # fallback is even needed.
+        self.fiducialparams = getattr(self.configuration, "fiducialcosmopars", None)
+        if self.fiducialparams is None:
+            self.fiducialparams = self.configuration.fiducialparams
         self.cosmopars = cosmopars
         self.photopars = photopars
         self.IApars = IApars

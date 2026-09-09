@@ -512,8 +512,6 @@ class derivatives:
             )
             tini = time()
 
-            fidpar = self.fiducial[par]
-
             obs_mod = []
 
             for step in stepsize:
@@ -530,12 +528,11 @@ class derivatives:
                         fit = np.polyfit(
                             stepsize, [obs_mod[step][key][ind] for step in range(len(stepsize))], 4
                         )
-                        temp.append(
-                            4 * fit[0] * fidpar**3
-                            + 3 * fit[2] * fidpar**2
-                            + 2 * fit[3] * fidpar
-                            + fit[4]
-                        )
+                        # stepsize is the offset from the fiducial value (step = theta - fidpar),
+                        # so the derivative at the fiducial point is the fit evaluated at
+                        # step=0, i.e. the linear coefficient fit[3] of
+                        # fit[0]*step^4 + fit[1]*step^3 + fit[2]*step^2 + fit[3]*step + fit[4].
+                        temp.append(fit[3])
 
                     dpar[key] = np.array(temp)
 

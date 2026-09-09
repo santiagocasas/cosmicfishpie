@@ -120,14 +120,15 @@ def test_spectro_derivatives_remain_bound_to_context_a(spectro_fisher_matrix, mo
     class CaptureProvider:
         def compute(self, request):
             assert request.configuration is context_a
-            assert request.freeparams == {"Omegam": 0.01}
+            assert request.freeparams == dict(context_a.freeparams)
             assert request.observables_type == tuple(context_a.observables)
             assert request.external_settings == context_a.external
             assert request.method == context_a.settings["derivatives"]
             return {"spectro": "context-a"}
 
-    result = deriv_engine.compute_derivs(
-        freeparams={"Omegam": 0.01}, derivative_provider=CaptureProvider()
-    )
+    # Omit freeparams here (rather than passing an explicit override) so this
+    # test actually exercises the default-path wiring: compute_derivs() must
+    # fall back to context_a.freeparams, not the monkeypatched global cfg.
+    result = deriv_engine.compute_derivs(derivative_provider=CaptureProvider())
 
     assert result == {"spectro": "context-a"}

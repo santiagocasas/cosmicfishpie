@@ -250,7 +250,14 @@ class NautilusSampler:
             for key in ("f_live", "n_shell", "n_eff", "n_like_max", "timeout"):
                 if key in self.sampler_settings:
                     run_kwargs[key] = self.sampler_settings[key]
-            nautilus_sampler.run(**run_kwargs)
+            completed = nautilus_sampler.run(**run_kwargs)
+            if not completed:
+                raise RuntimeError(
+                    "Nautilus stopped before convergence (e.g. due to n_like_max or "
+                    "timeout); resumable checkpoint was retained in "
+                    f"{self.chain_hdf5}. Re-run to resume and reach convergence "
+                    "before the final chain and metadata are saved."
+                )
             evidence = nautilus_sampler.log_z
             points, log_w, log_l = nautilus_sampler.posterior()
 

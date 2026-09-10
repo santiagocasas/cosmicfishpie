@@ -492,36 +492,25 @@ class ComputeCls:
         }
         chi = self._chi_z  # reuse cached
         kappa = (self.ell[:, None] + 1 / 2) / chi
-        index_pknn = np.array(np.where(kappa < self.specs["kmax"])).T
-
-        for ell, zin in index_pknn:
-            self.sqrtPell["WL"][zin, ell] = (
-                self.cosmo.SigmaMG(self.z[zin], kappa[ell, zin])
-                * np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin], kappa[ell, zin], nonlinear=self.settings["nonlinear"]
-                    )
-                )
-            ) / chi[zin]
-            self.sqrtPell["WL_IA"][zin, ell] = (
-                np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin], kappa[ell, zin], nonlinear=self.settings["nonlinear"]
-                    )
-                )
-                / chi[zin]
-            )
-            self.sqrtPell["GCph"][zin, ell] = (
-                np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin],
-                        kappa[ell, zin],
-                        nonlinear=self.settings["nonlinear"],
-                        tracer=self.tracer,
-                    )
-                )
-                / chi[zin]
-            )
+        kmax = self.specs["kmax"]
+        nonlinear = self.settings["nonlinear"]
+        # Row-wise vectorization: one vector `matpow` call per redshift instead of
+        # one scalar call per (ell, z) pair. WL and GCph share the same matter P(k)
+        # when the GCph tracer is matter, so it is computed only once per row.
+        for iz in range(self.zsamp):
+            col = kappa[:, iz]
+            mask = col < kmax
+            if not np.any(mask):
+                continue
+            kn = col[mask]
+            sqrtPmm = np.sqrt(self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear))
+            self.sqrtPell["WL"][iz, mask] = self.cosmo.SigmaMG(self.z[iz], kn) * sqrtPmm / chi[iz]
+            self.sqrtPell["WL_IA"][iz, mask] = sqrtPmm / chi[iz]
+            if self.tracer == "clustering":
+                Pcb = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear, tracer=self.tracer)
+                self.sqrtPell["GCph"][iz, mask] = np.sqrt(Pcb) / chi[iz]
+            else:
+                self.sqrtPell["GCph"][iz, mask] = sqrtPmm / chi[iz]
         return None
 
     def galaxy_kernel(self, z, i):
@@ -644,7 +633,15 @@ class ComputeCls:
         # be performed if cosmopars and photopars are the same
         z = self.z
         ngal_func = self.window.norm_ngal_photoz
-        comoving_func = self.cosmo.comoving
+        # Reuse the comoving distance precomputed in __init__ when the helper
+        # asks for the same grid; each fresh call would redo one quad per point.
+        chi_z = self._chi_z
+
+        def comoving_func(zz):
+            if zz is z:
+                return chi_z
+            return self.cosmo.comoving(zz)
+
         if not _USE_FAST_EFF:
             # Fallback to vectorized O(N^2) implementation
             return faster_integral_efficiency(i, ngal_func, comoving_func, z)
@@ -690,17 +687,14 @@ class ComputeCls:
             self.efficiency = self.lensing_efficiency()
             # Sakr Fix June 2023
             # self.WL         = [interp1d(self.z,self.lensing_kernel(self.z,ind), kind='cubic') for ind in self.binrange]
-            self.WL = [
-                interp1d(self.z, self.lensing_kernel(self.z, ind)[0], kind="cubic")
-                for ind in self.binrange_WL
-            ]
+            wl_kernels = [self.lensing_kernel(self.z, ind) for ind in self.binrange_WL]
+            self.WL = [interp1d(self.z, kern[0], kind="cubic") for kern in wl_kernels]
             self.WL.insert(0, None)
             # Sakr Fix June 2023
-            self.WL_IA = [
-                interp1d(self.z, self.lensing_kernel(self.z, ind)[1], kind="cubic")
-                for ind in self.binrange_WL
-            ]
+            self.WL_IA = [interp1d(self.z, kern[1], kind="cubic") for kern in wl_kernels]
             self.WL_IA.insert(0, None)
+        # Memoized window-function samples on the integration grid (used by clsintegral)
+        self._win_cache = {}
         return None
 
     def genwindow(self, z, obs, i):
@@ -888,6 +882,27 @@ class ComputeCls:
 
         return cls
 
+    def _window_matrix(self, obs, i, hub_inv_sqrt):
+        """Cached Limber integrand factor for one (observable, bin) pair.
+
+        Combines the clustering and IA terms into
+        ``[sqrtP * W + sqrtP_IA * W_IA] / sqrt(H)`` evaluated on the redshift
+        grid, so that each pair of the ``O(nbins^2)`` Cl terms reuses the same
+        array instead of rebuilding the window functions and bias callables.
+        """
+        cache = getattr(self, "_win_cache", None)
+        if cache is None:
+            cache = self._win_cache = {}
+        cached = cache.get((obs, i))
+        if cached is None:
+            win, win_IA = self.genwindow(self.z, obs, i)
+            cached = (
+                self.sqrtPell[obs] * win[:, np.newaxis] * hub_inv_sqrt
+                + self.sqrtPell[obs + "_IA"] * win_IA[:, np.newaxis] * hub_inv_sqrt
+            )
+            cache[(obs, i)] = cached
+        return cached
+
     def clsintegral(self, obs1, obs2, bin1, bin2, hub):
         """function to obtain the angular power spectrum as an function of the multipole.
 
@@ -912,23 +927,9 @@ class ComputeCls:
         mask1 = (self.ell >= self.specs["lmin_" + obs1]) & (self.ell <= self.specs["lmax_" + obs1])
         mask2 = (self.ell >= self.specs["lmin_" + obs2]) & (self.ell <= self.specs["lmax_" + obs2])
 
-        # Sakr Fix June 2023
-        # pz_arr = self.genwindow(self.z,obs1,bin1)*self.genwindow(self.z,obs2,bin2)/hub
-        # intgn  = self.sqrtPell[obs1]* self.sqrtPell[obs2] * pz_arr[:,np.newaxis]
-        intgn = (
-            self.sqrtPell[obs1]
-            * self.genwindow(self.z, obs1, bin1)[0][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-            + self.sqrtPell[obs1 + "_IA"]
-            * self.genwindow(self.z, obs1, bin1)[1][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-        ) * (
-            self.sqrtPell[obs2]
-            * self.genwindow(self.z, obs2, bin2)[0][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-            + self.sqrtPell[obs2 + "_IA"]
-            * self.genwindow(self.z, obs2, bin2)[1][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
+        hub_inv_sqrt = (1.0 / np.sqrt(hub))[:, np.newaxis]
+        intgn = self._window_matrix(obs1, bin1, hub_inv_sqrt) * self._window_matrix(
+            obs2, bin2, hub_inv_sqrt
         )
 
         clint = integrate.trapezoid(intgn, dx=self.dz, axis=0)

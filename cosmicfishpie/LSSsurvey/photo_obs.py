@@ -506,11 +506,11 @@ class ComputeCls:
             sqrtPmm = np.sqrt(self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear))
             self.sqrtPell["WL"][iz, mask] = self.cosmo.SigmaMG(self.z[iz], kn) * sqrtPmm / chi[iz]
             self.sqrtPell["WL_IA"][iz, mask] = sqrtPmm / chi[iz]
-            if self.tracer == "clustering":
-                Pcb = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear, tracer=self.tracer)
-                self.sqrtPell["GCph"][iz, mask] = np.sqrt(Pcb) / chi[iz]
-            else:
+            if self.tracer == "matter":
                 self.sqrtPell["GCph"][iz, mask] = sqrtPmm / chi[iz]
+            else:
+                Pgcph = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear, tracer=self.tracer)
+                self.sqrtPell["GCph"][iz, mask] = np.sqrt(Pgcph) / chi[iz]
         return None
 
     def galaxy_kernel(self, z, i):

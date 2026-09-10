@@ -8,6 +8,7 @@ overview
 comprehensive_guide
 derivatives
 cmb_benchmarks
+photometric_optimization_results
 cosmicfishpie
 ```
 

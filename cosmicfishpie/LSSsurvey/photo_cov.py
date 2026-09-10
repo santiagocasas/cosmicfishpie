@@ -391,7 +391,12 @@ class PhotoCov:
         compute_derivs = True
         if compute_derivs:
             tder1 = time()
-            print(">> computing derivs >>")
+            upt.time_print(
+                feedback_level=self.feed_lvl,
+                min_level=1,
+                text="Computing photometric derivatives",
+                instance=self,
+            )
             derivs = fishderiv.compute_derivatives(
                 self.getcls,
                 self.allparsfid,

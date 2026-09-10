@@ -882,13 +882,15 @@ class ComputeCls:
 
         return cls
 
-    def _window_matrix(self, obs, i, hub_inv_sqrt):
-        """Cached Limber integrand factor for one (observable, bin) pair.
+    def _window_matrix(self, obs, i):
+        """Cached hub-independent Limber factor for one observable/bin pair.
 
         Combines the clustering and IA terms into
-        ``[sqrtP * W + sqrtP_IA * W_IA] / sqrt(H)`` evaluated on the redshift
-        grid, so that each pair of the ``O(nbins^2)`` Cl terms reuses the same
-        array instead of rebuilding the window functions and bias callables.
+        ``sqrtP * W + sqrtP_IA * W_IA`` evaluated on the redshift grid, so that
+        each pair of the ``O(nbins^2)`` Cl terms reuses the same array instead of
+        rebuilding the window functions and bias callables. The Hubble factor is
+        deliberately applied by ``clsintegral`` because it is an input to that
+        public method and may differ between calls.
         """
         cache = getattr(self, "_win_cache", None)
         if cache is None:
@@ -897,8 +899,8 @@ class ComputeCls:
         if cached is None:
             win, win_IA = self.genwindow(self.z, obs, i)
             cached = (
-                self.sqrtPell[obs] * win[:, np.newaxis] * hub_inv_sqrt
-                + self.sqrtPell[obs + "_IA"] * win_IA[:, np.newaxis] * hub_inv_sqrt
+                self.sqrtPell[obs] * win[:, np.newaxis]
+                + self.sqrtPell[obs + "_IA"] * win_IA[:, np.newaxis]
             )
             cache[(obs, i)] = cached
         return cached
@@ -928,9 +930,7 @@ class ComputeCls:
         mask2 = (self.ell >= self.specs["lmin_" + obs2]) & (self.ell <= self.specs["lmax_" + obs2])
 
         hub_inv_sqrt = (1.0 / np.sqrt(hub))[:, np.newaxis]
-        intgn = self._window_matrix(obs1, bin1, hub_inv_sqrt) * self._window_matrix(
-            obs2, bin2, hub_inv_sqrt
-        )
+        intgn = self._window_matrix(obs1, bin1) * self._window_matrix(obs2, bin2) * hub_inv_sqrt**2
 
         clint = integrate.trapezoid(intgn, dx=self.dz, axis=0)
 

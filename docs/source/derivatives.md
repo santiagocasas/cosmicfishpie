@@ -54,7 +54,7 @@ fixed coefficients (obtained from a
     - 9\,\mathcal{O}(\theta_0+2h) + 2\,\mathcal{O}(\theta_0+3h)}{6h}
 ```
 
-This is also $O(h^2)$-accurate, like `3PT`, but uses **4 observable
+This is $O(h^3)$-accurate, but uses **4 observable
 evaluations per parameter** (2x the cost of `3PT`) since it cannot reuse a
 symmetric backward point.
 

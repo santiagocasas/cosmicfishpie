@@ -50,6 +50,6 @@ if git -C "$worktree" diff --cached --quiet; then
     exit 0
 fi
 
-git -C "$worktree" commit -m "Publish project landing page and validation dashboard" >/dev/null
+PRE_COMMIT_ALLOW_NO_CONFIG=1 git -C "$worktree" commit -m "Publish project landing page and validation dashboard" >/dev/null
 git -C "$worktree" push "$remote" "$branch"
 printf 'Published dashboard to %s/%s on %s.\n' "$remote" "$branch" "$target_dir"

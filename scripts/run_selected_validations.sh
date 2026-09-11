@@ -242,6 +242,23 @@ mkdir -p "${BATCH_DIR}"
 overall_start=$(date +%s)
 failed=0
 skipped=0
+current_case_pid=""
+current_tail_pid=""
+interrupted=false
+
+stop_active_case() {
+  interrupted=true
+  if [[ -n "${current_case_pid}" ]] && kill -0 "${current_case_pid}" 2>/dev/null; then
+    # Each comparison runs in its own session, so one signal terminates uv,
+    # Python, and any backend children belonging to the active case.
+    kill -TERM -- "-${current_case_pid}" 2>/dev/null || kill -TERM "${current_case_pid}" 2>/dev/null || true
+  fi
+  if [[ -n "${current_tail_pid}" ]] && kill -0 "${current_tail_pid}" 2>/dev/null; then
+    kill -TERM "${current_tail_pid}" 2>/dev/null || true
+  fi
+}
+trap stop_active_case INT TERM
+
 echo "Running cases: ${SELECTED_CASES[*]}"
 echo "OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "Batch directory: ${BATCH_DIR}"
@@ -277,15 +294,23 @@ for case_number in "${SELECTED_CASES[@]}"; do
       echo "${check_output}"
     fi
     status_line "${COLOR_YELLOW}" "[${case_number}] running (details: ${log_file})"
+    # Run the complete comparison in a separate process session. This makes
+    # Ctrl-C kill the whole nested backend process tree, not just one child.
+    setsid bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
+      --config "${config_path}" >"${log_file}" 2>&1 &
+    current_case_pid=$!
     if [[ "${verbose}" == true ]]; then
-      bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
-        --config "${config_path}" 2>&1 | tee "${log_file}"
-      status="${PIPESTATUS[0]}"
-    else
-      bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
-        --config "${config_path}" >"${log_file}" 2>&1
-      status=$?
+      tail -f "${log_file}" &
+      current_tail_pid=$!
     fi
+    wait "${current_case_pid}"
+    status=$?
+    if [[ -n "${current_tail_pid}" ]]; then
+      kill "${current_tail_pid}" 2>/dev/null || true
+      wait "${current_tail_pid}" 2>/dev/null || true
+      current_tail_pid=""
+    fi
+    current_case_pid=""
   fi
 
   elapsed=$(( $(date +%s) - case_start ))
@@ -294,6 +319,10 @@ for case_number in "${SELECTED_CASES[@]}"; do
   else
     status_line "${COLOR_RED}" "[${case_number}] FAIL (exit ${status}, ${elapsed}s)"
     failed=1
+  fi
+  if [[ "${interrupted}" == true ]]; then
+    echo "Validation interrupted; stopping after case ${case_number}." >&2
+    break
   fi
 done
 

@@ -228,6 +228,36 @@ match; pass `--force` to recompute them. The command refreshes the clean dashboa
 are retained for provenance under `scripts/archive/` and are not part of the maintained
 workflow.
 
+To render the dashboard from whatever completed results are currently available:
+
+```bash
+uv run python scripts/render_validation_dashboard.py
+```
+
+Preview it locally with:
+
+```bash
+uv run python scripts/render_validation_dashboard.py --serve
+```
+
+Open `http://127.0.0.1:8000/` and press Ctrl-C once to stop the preview server.
+
+The generated `scripts/benchmark_results/` directory is gitignored. To publish the
+dashboard and landing page to the `gh-pages` branch after rendering, run:
+
+```bash
+bash scripts/publish_validation_dashboard.sh
+```
+
+The publisher uses a temporary worktree, commits the generated site on `gh-pages`, and
+pushes that branch. It does not add benchmark output to the feature PR. If the site must
+be updated only after the feature branch is merged, run the publisher from the updated
+main branch instead.
+
+The validation runner isolates each case in its own process group. Press Ctrl-C once to
+terminate the active backend comparison and stop the batch; completed cases remain
+reusable on the next run.
+
 ### One-off CLI workflow
 
 1) Run two backends and compare (writes to scripts/benchmark_results/compare_<mode>_<timestamp>/):

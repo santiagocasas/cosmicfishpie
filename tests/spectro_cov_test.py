@@ -1,5 +1,6 @@
 import numpy as np
 
+import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.LSSsurvey.spectro_cov import SpectroCov, SpectroDerivs
 
 
@@ -97,3 +98,37 @@ def test_spectro_derivs_wrapper_minimal(spectro_fisher_matrix):
     if "Omegam" in derivs:
         first_par = derivs["Omegam"]
         assert 0 in first_par
+
+
+def test_spectro_derivatives_remain_bound_to_context_a(spectro_fisher_matrix, monkeypatch):
+    context_a = spectro_fisher_matrix
+    spec_cov = SpectroCov(dict(context_a.fiducialcosmopars), configuration=context_a)
+    deriv_engine = SpectroDerivs(
+        z_array=np.array(spec_cov.global_z_bin_mids[:1]),
+        pk_kmesh=np.array([0.1]),
+        pk_mumesh=np.array([0.0, 0.5]),
+        fiducial_spectro_obj=spec_cov.pk_obs,
+        bias_samples=["g", "g"],
+        configuration=context_a,
+    )
+
+    monkeypatch.setattr(cfg, "freeparams", {"wrong": 99.0})
+    monkeypatch.setattr(cfg, "settings", {"feedback": 99, "derivatives": "UNKNOWN"})
+    monkeypatch.setattr(cfg, "obs", ["UNKNOWN"])
+    monkeypatch.setattr(cfg, "external", {"wrong": True})
+
+    class CaptureProvider:
+        def compute(self, request):
+            assert request.configuration is context_a
+            assert request.freeparams == dict(context_a.freeparams)
+            assert request.observables_type == tuple(context_a.observables)
+            assert request.external_settings == context_a.external
+            assert request.method == context_a.settings["derivatives"]
+            return {"spectro": "context-a"}
+
+    # Omit freeparams here (rather than passing an explicit override) so this
+    # test actually exercises the default-path wiring: compute_derivs() must
+    # fall back to context_a.freeparams, not the monkeypatched global cfg.
+    result = deriv_engine.compute_derivs(derivative_provider=CaptureProvider())
+
+    assert result == {"spectro": "context-a"}

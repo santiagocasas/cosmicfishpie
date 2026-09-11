@@ -170,7 +170,9 @@ class ComputeGalSpectro:
         if self.cosmopars == self.fiducial_cosmopars:
             self.cosmo = self.fiducialcosmo
         else:
-            self.cosmo = cosmology.cosmo_functions(cosmopars, self.config.input_type)
+            self.cosmo = cosmology.cosmo_functions(
+                cosmopars, self.config.input_type, configuration=self.config
+            )
 
         # Load the Nuisance Parameters
         self.fiducial_spectrobiaspars = deepcopy(self.config.Spectrobiasparams)
@@ -331,7 +333,7 @@ class ComputeGalSpectro:
                 print(" >>>>> Fiducial cosmology could not be loaded, recomputing....")
                 print(" **** In ComputeGalSpectro: Calculating fiducial cosmology...")
                 self.fiducialcosmo = cosmology.cosmo_functions(
-                    self.fiducial_cosmopars, self.config.input_type
+                    self.fiducial_cosmopars, self.config.input_type, configuration=self.config
                 )
         else:
             print(

@@ -362,8 +362,7 @@ class Nuisance:
         return np.array(dndz)
 
     def extra_Pshot_noise(self):
-        Psfid = self.settings["Pshot_nuisance_fiducial"] = 0
-        return Psfid
+        return self.settings.get("Pshot_nuisance_fiducial", 0)
 
     def IM_zbins_func(self):
         """

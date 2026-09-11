@@ -5,6 +5,8 @@
 
 installation
 overview
+comprehensive_guide
+derivatives
 cmb_benchmarks
 cosmicfishpie
 ```

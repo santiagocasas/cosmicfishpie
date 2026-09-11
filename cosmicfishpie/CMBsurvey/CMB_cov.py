@@ -28,9 +28,9 @@ class CMBCov:
 
     This class:
     - computes fiducial CMB spectra (via `CMB_obs.ComputeCls`)
-    - adds instrumental noise given `cfg.specs` beam/noise settings
+    - adds instrumental noise given `self.specs` beam/noise settings
     - constructs a per-ell covariance matrix
-    - computes numerical derivatives w.r.t. `cfg.freeparams`
+    - computes numerical derivatives w.r.t. `self.freeparams`
 
     Notes
     -----
@@ -38,15 +38,19 @@ class CMBCov:
     `CMB_B`. Lensing spectra (e.g. phi-phi) are not implemented yet.
     """
 
-    def __init__(self, cosmopars, print_info_specs=False):
+    def __init__(self, cosmopars, print_info_specs=False, *, configuration=None):
+        self.config = cfg if configuration is None else configuration
         self.cosmopars = cosmopars
         self.observables = []
-        for key in cfg.obs:  # LENSING TO BE ADDED
+        for key in self.config.obs:  # LENSING TO BE ADDED
             if key in ["CMB_T", "CMB_E", "CMB_B"]:
                 self.observables.append(key)
 
         self.print_info = print_info_specs
-        self.feed_lvl = cfg.settings["feedback"]
+        self.settings = self.config.settings
+        self.specs = self.config.specs
+        self.freeparams = self.config.freeparams
+        self.feed_lvl = self.settings["feedback"]
 
     def getcls(self, allpars):
         """Compute (noise-free) CMB C_ell for a given parameter dictionary."""
@@ -54,7 +58,7 @@ class CMBCov:
         # Splitting the dictionary of full parameters
         pars = dict((k, allpars[k]) for k in self.cosmopars)
 
-        cls = CMB_obs.ComputeCls(pars, print_info_specs=self.print_info)
+        cls = CMB_obs.ComputeCls(pars, print_info_specs=self.print_info, configuration=self.config)
 
         cls.compute_all()
         CMBcls = cls.result
@@ -89,9 +93,9 @@ class CMBCov:
         #        temp1 = self.cosmopars['TCMB']*np.pi/180./60.
         #        temp2 = 180.*60.*np.sqrt(8.*np.log(2.))/np.pi
 
-        #        noisevar_temp = (np.array(cfg.specs['CMB_temp_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
-        #        noisevar_pol  = (np.array(cfg.specs['CMB_pol_sens'])*np.array(cfg.specs['CMB_fwhm'])*temp1)**2.
-        #        sigma2        = -1.*(np.array(cfg.specs['CMB_fwhm'])/temp2 )**2
+        #        noisevar_temp = (np.array(self.specs['CMB_temp_sens'])*np.array(self.specs['CMB_fwhm'])*temp1)**2.
+        #        noisevar_pol  = (np.array(self.specs['CMB_pol_sens'])*np.array(self.specs['CMB_fwhm'])*temp1)**2.
+        #        sigma2        = -1.*(np.array(self.specs['CMB_fwhm'])/temp2 )**2
 
         #        TT_Noise  = np.zeros((len(noisy_cls['ells'])))
         #        pol_Noise = np.zeros((len(noisy_cls['ells'])))
@@ -105,7 +109,7 @@ class CMBCov:
         #            elif obs == 'CMB_E' or obs == 'CMB_B':
         #                noisy_cls[obs+'x'+obs] += 1/pol_Noise
 
-        noise_model = str(cfg.specs.get("CMB_noise_model", "legacy")).strip().lower()
+        noise_model = str(self.specs.get("CMB_noise_model", "legacy")).strip().lower()
         if noise_model not in {"legacy", "knox"}:
             warnings.warn(
                 f"Unknown CMB_noise_model={noise_model!r}; falling back to 'legacy'.",
@@ -118,34 +122,34 @@ class CMBCov:
         # norm          = ls*(ls+1)/(2.*np.pi)
 
         thetab = [
-            arcmin_to_rad * beam / np.sqrt(8.0 * np.log(2.0)) for beam in cfg.specs["CMB_fwhm"]
+            arcmin_to_rad * beam / np.sqrt(8.0 * np.log(2.0)) for beam in self.specs["CMB_fwhm"]
         ]
 
         Bell = [
             np.exp(ang**2.0 * noisy_cls["ells"] * (noisy_cls["ells"] + 1) / 2.0) for ang in thetab
         ]
 
-        TTnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
-        polnoise_chan = np.zeros((len(cfg.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
+        TTnoise_chan = np.zeros((len(self.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
+        polnoise_chan = np.zeros((len(self.specs["CMB_fwhm"]), len(noisy_cls["ells"])))
 
-        for ind in range(len(cfg.specs["CMB_fwhm"])):
+        for ind in range(len(self.specs["CMB_fwhm"])):
             if noise_model == "knox":
-                delta_t_rad = arcmin_to_rad * cfg.specs["CMB_temp_sens"][ind]
-                delta_p_rad = arcmin_to_rad * cfg.specs["CMB_pol_sens"][ind]
+                delta_t_rad = arcmin_to_rad * self.specs["CMB_temp_sens"][ind]
+                delta_p_rad = arcmin_to_rad * self.specs["CMB_pol_sens"][ind]
                 # Eq. N_ell = w^{-1} b_ell^{-2}, with w^{-1} = Delta^2.
                 TTnoise_chan[ind, :] = (delta_t_rad**2.0) * (Bell[ind][:] ** 2.0)
                 polnoise_chan[ind, :] = (delta_p_rad**2.0) * (Bell[ind][:] ** 2.0)
             else:
                 wtemp = (
-                    arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_temp_sens"][ind]
+                    arcmin_to_rad * self.specs["CMB_fwhm"][ind] * self.specs["CMB_temp_sens"][ind]
                 ) ** (-2.0)
                 wpol = (
-                    arcmin_to_rad * cfg.specs["CMB_fwhm"][ind] * cfg.specs["CMB_pol_sens"][ind]
+                    arcmin_to_rad * self.specs["CMB_fwhm"][ind] * self.specs["CMB_pol_sens"][ind]
                 ) ** (-2.0)
                 TTnoise_chan[ind, :] = Bell[ind][:] / wtemp
                 polnoise_chan[ind, :] = Bell[ind][:] / wpol
 
-        if len(cfg.specs["CMB_fwhm"]) > 1:
+        if len(self.specs["CMB_fwhm"]) > 1:
             if noise_model == "knox":
                 TTnoise = np.array(
                     [
@@ -179,19 +183,19 @@ class CMBCov:
         polnoise_E = polnoise
         if noise_model == "knox":
             # Preferred naming ("boost") for low-ell EE noise scaling.
-            lowell_factor = cfg.specs.get("CMB_EE_noise_boost_lowell")
-            lowell_lmax = cfg.specs.get("CMB_EE_noise_boost_lmax")
+            lowell_factor = self.specs.get("CMB_EE_noise_boost_lowell")
+            lowell_lmax = self.specs.get("CMB_EE_noise_boost_lmax")
 
             # Backward compatibility with deprecated "inflation" keys.
-            if lowell_factor is None and "CMB_EE_noise_inflation_lowell" in cfg.specs:
-                lowell_factor = cfg.specs.get("CMB_EE_noise_inflation_lowell")
+            if lowell_factor is None and "CMB_EE_noise_inflation_lowell" in self.specs:
+                lowell_factor = self.specs.get("CMB_EE_noise_inflation_lowell")
                 warnings.warn(
                     "CMB_EE_noise_inflation_lowell is deprecated; use CMB_EE_noise_boost_lowell instead.",
                     DeprecationWarning,
                     stacklevel=2,
                 )
-            if lowell_lmax is None and "CMB_EE_noise_lmax_inflation" in cfg.specs:
-                lowell_lmax = cfg.specs.get("CMB_EE_noise_lmax_inflation")
+            if lowell_lmax is None and "CMB_EE_noise_lmax_inflation" in self.specs:
+                lowell_lmax = self.specs.get("CMB_EE_noise_lmax_inflation")
                 warnings.warn(
                     "CMB_EE_noise_lmax_inflation is deprecated; use CMB_EE_noise_boost_lmax instead.",
                     DeprecationWarning,
@@ -260,7 +264,7 @@ class CMBCov:
 
             for obs1, obs2 in product(self.observables, self.observables):
                 covdf.at[obs1, obs2] = noisy_cls[obs1 + "x" + obs2][ind] / np.sqrt(
-                    np.sqrt(cfg.specs["fsky_" + obs1] * cfg.specs["fsky_" + obs2])
+                    np.sqrt(self.specs["fsky_" + obs1] * self.specs["fsky_" + obs2])
                 )
 
             covvec.append(covdf)
@@ -285,7 +289,7 @@ class CMBCov:
             obstring = obstring + obs
 
         # Check free pars are in the fiducial
-        for key in cfg.freeparams:
+        for key in self.freeparams:
             if key not in allpars:
                 print("ERROR: free param " + key + " does not have a fiducial value!")
                 return None
@@ -294,13 +298,13 @@ class CMBCov:
             os.makedirs("./raw_results")
 
         # compute fiducial
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Computing fiducial")
         t1 = datetime.datetime.now().timestamp()
 
-        # fiducial_csv = './raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial.csv'
+        # fiducial_csv = './raw_results/'+self.settings['outroot']+'_'+obstring+'_fiducial.csv'
         # if os.path.isfile(fiducial_csv):
         #    cls = pd.read_csv(fiducial_csv, index_col=0)
         # if True:  ## TODO: needs to be fixed to properly handle Pandas!
@@ -309,37 +313,37 @@ class CMBCov:
         # fiducial.to_csv(fiducial_csv, index=False)
 
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Fiducial generated in {:.2f} s".format(t2 - t1))
 
-        # with open('./raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial.txt', 'w') as f:
+        # with open('./raw_results/'+self.settings['outroot']+'_'+obstring+'_fiducial.txt', 'w') as f:
         #    f.write(fiducial.to_string(header = True, index = False))
 
-        # if cfg.settings['derivatives'] == '3PT': numcomp = 2
-        # if cfg.settings['derivatives'] == 'STEM': numcomp = 11
-        # estimate = datetime.timedelta(seconds=numcomp*(t2-t1)*len(cfg.freeparams))
-        # if cfg.settings['feedback'] > 0: print('')
-        # if cfg.settings['feedback'] > 0: print('Estimated time to finish {}'.format(estimate))
+        # if self.settings['derivatives'] == '3PT': numcomp = 2
+        # if self.settings['derivatives'] == 'STEM': numcomp = 11
+        # estimate = datetime.timedelta(seconds=numcomp*(t2-t1)*len(self.freeparams))
+        # if self.settings['feedback'] > 0: print('')
+        # if self.settings['feedback'] > 0: print('Estimated time to finish {}'.format(estimate))
         t1 = datetime.datetime.now().timestamp()
         # add noise
         noisy_cls = self.getclsnoise(cls)
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Noise added to fiducial")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Noisy Cls generated in {:.2f} s".format(t2 - t1))
 
         # TODO: fix pandas stuff
         # noisy_fiducial = pd.DataFrame(noisy_cls, columns=noisy_cls.keys())
-        # noisy_fiducial_csv = './raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial_noisy.csv'
+        # noisy_fiducial_csv = './raw_results/'+self.settings['outroot']+'_'+obstring+'_fiducial_noisy.csv'
         # noisy_fiducial.to_csv(noisy_fiducial_csv, index=False)
-        # with open('./raw_results/'+cfg.settings['outroot']+'_'+obstring+'_fiducial_noisy.txt', 'w') as f:
+        # with open('./raw_results/'+self.settings['outroot']+'_'+obstring+'_fiducial_noisy.txt', 'w') as f:
         #    f.write(noisy_fiducial.to_string(header = True, index = False))
 
         # build covmat
@@ -347,25 +351,25 @@ class CMBCov:
         self.noisy_cls = noisy_cls
         t1 = datetime.datetime.now().timestamp()
         self.covmat = self.get_covmat(noisy_cls)
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Computed covariance matrix")
         t2 = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Covmat of Cls generated in {:.2f} s".format(t2 - t1))
 
         tfin = datetime.datetime.now().timestamp()
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("")
-        if cfg.settings["feedback"] > 0:
+        if self.settings["feedback"] > 0:
             print("Total calculation in {:.2f} s".format(tfin - tini))
 
         return self.noisy_cls, self.covmat
 
-    def compute_derivs(self, print_info_specs=False):
+    def compute_derivs(self, print_info_specs=False, *, derivative_provider=None):
         """Compute numerical derivatives of CMB spectra w.r.t. free parameters."""
         # compute and save derivatives-----------------------------------------
         allpars = {}
@@ -373,8 +377,8 @@ class CMBCov:
 
         derivs = dict()
         # needs to be fixed: TODO: not treating things properly as Pandas!
-        # for par in cfg.freeparams:
-        #    deriv_csv = './raw_results/'+cfg.settings['outroot']+'_'+obstring+'_derivative_'+par+'.csv'
+        # for par in self.freeparams:
+        #    deriv_csv = './raw_results/'+self.settings['outroot']+'_'+obstring+'_derivative_'+par+'.csv'
         #    if os.path.isfile(deriv_csv):
         #        derivs[par] = pd.read_csv(deriv_csv, index_col=0)
         #        compute_derivs=False
@@ -386,12 +390,16 @@ class CMBCov:
         if compute_derivs:
             tder1 = time()
             print(">> computing derivs >>")
-            deriv_engine = fishderiv.derivatives(self.getcls, allpars)
-            derivs = deriv_engine.result
+            derivs = fishderiv.compute_derivatives(
+                self.getcls,
+                allpars,
+                configuration=self.config,
+                provider=derivative_provider,
+            )
             tder2 = time()
             # TODO: fix pandas stuff!!
-            # for par in cfg.freeparams:
-            #    deriv_csv = './raw_results/'+cfg.settings['outroot']+'_'+obstring+'_derivative_'+par+'.csv'
+            # for par in self.freeparams:
+            #    deriv_csv = './raw_results/'+self.settings['outroot']+'_'+obstring+'_derivative_'+par+'.csv'
             #    derivative = pd.DataFrame(derivs[par], columns=derivs[par].keys())
             #    derivative.to_csv(deriv_csv, index=False)
 
@@ -404,7 +412,7 @@ class CMBCov:
                 instance=self,
             )
 
-            # with open('./raw_results/'+cfg.settings['outroot']+'_'+obstring+'_derivative_'+par+'.txt', 'w') as f:
+            # with open('./raw_results/'+self.settings['outroot']+'_'+obstring+'_derivative_'+par+'.txt', 'w') as f:
             #    f.write(derivative.to_string(header = True, index = False))
         self.derivs = derivs
         return self.derivs

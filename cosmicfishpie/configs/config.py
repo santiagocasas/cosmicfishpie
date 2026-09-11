@@ -3,6 +3,8 @@
 
 import glob
 import os
+import sys
+import threading
 from copy import deepcopy
 from time import time
 
@@ -13,6 +15,15 @@ import cosmicfishpie.cosmology.cosmology as cosmology
 from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
+
+# `init()` below mutates this module's global variables in place. Callers that
+# call `init()` and then immediately read back those globals (e.g. to snapshot
+# them into an instance/context object) must hold this lock for the full
+# init-then-read-back sequence, otherwise a concurrent `init()` call from
+# another thread can interleave and corrupt the read-back values. See
+# `cosmicfishpie.cosmology.cosmology._COLOSSUS_SETTINGS_LOCK` for the same
+# pattern applied to a different piece of global state.
+_CONFIG_INIT_LOCK = threading.RLock()
 
 
 def _load_boltzmann_yaml(path):
@@ -672,7 +683,9 @@ def init(
         text="-> Computing cosmology at the fiducial point",
     )
     tcosmo1 = time()
-    fiducialcosmo = cosmology.cosmo_functions(fiducialparams, input_type)
+    fiducialcosmo = cosmology.cosmo_functions(
+        fiducialparams, input_type, configuration=sys.modules[__name__]
+    )
     tcosmo2 = time()
     upt.time_print(
         feedback_level=feed_lvl,

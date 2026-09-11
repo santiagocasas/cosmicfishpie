@@ -39,23 +39,42 @@ pre{background:#0b1021;color:#d1d5db;padding:16px;border-radius:10px;overflow-x:
 <body>
 <a class='back' href='index.html'>&larr; Back to all cases</a>
 <h1>Case 08.1.0: w0waCDM + mnu, Neff (Spectro)</h1>
-<div class='section'><p class='subtle'>This case has not been run yet, or its output folder could not be located.</p></div>
+
 <div class='section'>
 <h2>Metadata</h2>
-<div class='kv'><div>Model</div><div>w0waCDM + mnu, Neff</div><div>Probe</div><div>Spectro</div><div>Scenario</div><div>Pessimistic</div><div>Variant</div><div>P_cb</div><div>Description</div><div>camb vs class (spectro, pessimistic), stress test explicitly excluded by paper Sec. 6 (arXiv:2405.06047v1) for degeneracy/non-Gaussian-posterior reasons, 9 free cosmological params: w0waCDM + free mnu, Neff</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-na'>pending</span></div><div>Timestamp</div><div>n/a</div><div>OMP_NUM_THREADS</div><div>n/a</div><div>Elapsed A / B</div><div>n/a / n/a</div><div>Git commit</div><div>n/a</div></div>
-<div class='kv'><div>Code A</div><div>n/a</div><div>Code B</div><div>n/a</div></div>
+<div class='kv'><div>Model</div><div>w0waCDM + mnu, Neff</div><div>Probe</div><div>Spectro</div><div>Scenario</div><div>Pessimistic</div><div>Variant</div><div>P_cb</div><div>Description</div><div>camb vs class (spectro, pessimistic), stress test explicitly excluded by paper Sec. 6 (arXiv:2405.06047v1) for degeneracy/non-Gaussian-posterior reasons, 9 free cosmological params: w0waCDM + free mnu, Neff</div><div>Sigma threshold</div><div>10%</div><div>Gate</div><div><span class='badge badge-pass'>PASS</span></div><div>Timestamp</div><div>2026-09-11 02:33:37</div><div>OMP_NUM_THREADS</div><div>8</div><div>Elapsed A / B</div><div>472.5s / 2547.4s</div><div>Git commit</div><div>ab38a3a (dirty)</div></div>
+<div class='kv'><div>Code A</div><div><code>camb 2.0.3</code> (pypi)</div><div>Code B</div><div><code>class 3.3.4.0</code> (pypi)</div></div>
 </div>
 <div class='section'>
 <h2>Cosmological parameters</h2>
-<p class='subtle'>(none)</p>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Omegam</code></td><td>0.0569521</td><td>0.0580473</td><td class='dev-cell'>1.92%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Omegab</code></td><td>0.0100729</td><td>0.0103017</td><td class='dev-cell'>2.27%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>h</code></td><td>0.0441524</td><td>0.0450262</td><td class='dev-cell'>1.98%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>ns</code></td><td>0.0443014</td><td>0.0453277</td><td class='dev-cell'>2.32%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>sigma8</code></td><td>0.055261</td><td>0.0561068</td><td class='dev-cell'>1.53%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>mnu</code></td><td>0.294158</td><td>0.293695</td><td class='dev-cell'>0.16%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Neff</code></td><td>0.791183</td><td>0.807586</td><td class='dev-cell'>2.07%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>w0</code></td><td>0.387998</td><td>0.395473</td><td class='dev-cell'>1.93%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>wa</code></td><td>1.39682</td><td>1.42291</td><td class='dev-cell'>1.87%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
 </div>
 <div class='section'>
 <h2>Nuisance parameters</h2>
-<p class='subtle'>(none)</p>
+<table><thead><tr><th>Parameter</th><th>&sigma; (A)</th><th>&sigma; (B)</th><th>Deviation</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>Ps_1</code></td><td>49.3499</td><td>49.9058</td><td class='dev-cell'>1.13%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_2</code></td><td>49.8988</td><td>50.4115</td><td class='dev-cell'>1.03%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_3</code></td><td>52.6074</td><td>52.9441</td><td class='dev-cell'>0.64%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>Ps_4</code></td><td>54.5015</td><td>54.8598</td><td class='dev-cell'>0.66%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_1</code></td><td>0.0246717</td><td>0.0251087</td><td class='dev-cell'>1.77%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_2</code></td><td>0.0279939</td><td>0.0284871</td><td class='dev-cell'>1.76%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_3</code></td><td>0.0308223</td><td>0.0313871</td><td class='dev-cell'>1.83%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+<tr><td><code>lnbg_4</code></td><td>0.0337693</td><td>0.0344026</td><td class='dev-cell'>1.88%</td><td><span class='badge badge-pass'>PASS</span></td></tr>
+</tbody></table>
 </div>
 <div class='section links'>
 <h2>Inputs used</h2>
-<a href='specs/case_08.1.0_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_08.1.0_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_08.1.0_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_08.1.0_survey_specs.html' target='_blank'>Survey specs (Pessimistic) &rarr;</a>
+<a href='specs/case_08.1.0_yaml_a.html' target='_blank'>CAMB/CLASS YAML A (camb) &rarr;</a><a href='specs/case_08.1.0_yaml_b.html' target='_blank'>CAMB/CLASS YAML B (class) &rarr;</a><a href='specs/case_08.1.0_common_specs.html' target='_blank'>Current common specs source &rarr;</a><a href='specs/case_08.1.0_survey_specs.html' target='_blank'>Survey specs (Pessimistic) &rarr;</a><a href='specs/case_08.1.0_fisher_specs_a.html' target='_blank'>Generated Fisher specs A (camb) &rarr;</a><a href='specs/case_08.1.0_fisher_specs_b.html' target='_blank'>Generated Fisher specs B (class) &rarr;</a>
 </div>
 </body>
 </html>

@@ -215,6 +215,12 @@ class NautilusMixin:
         sampler_kwargs = dict(sampler_kwargs or {})
         run_kwargs = dict(run_kwargs or {})
 
-        sampler = Sampler(prior, self.loglike, **sampler_kwargs, likelihood_kwargs={"prior": prior})
+        sampler = Sampler(
+            prior,
+            self.loglike,
+            **sampler_kwargs,
+            pass_dict=False,
+            likelihood_kwargs={"prior": prior},
+        )
         sampler.run(**run_kwargs)
         return sampler

@@ -246,7 +246,7 @@ class FisherMatrix:
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing photo Fisher matrix",
+                text=f"----> Computing photometric Fisher matrix for {self.observables}",
                 instance=self,
             )
             self.photo_obs_fid = photo_obs.ComputeCls(
@@ -313,7 +313,7 @@ class FisherMatrix:
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing Pk-spectro Fisher matrix",
+                text=f"----> Computing spectroscopic P(k) Fisher matrix for {self.observables}",
                 instance=self,
             )
             self.set_pk_settings()
@@ -396,7 +396,7 @@ class FisherMatrix:
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing CMB Fisher matrix",
+                text=f"----> Computing CMB Fisher matrix for {self.observables}",
                 instance=self,
             )
             CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True, configuration=self)
@@ -635,7 +635,7 @@ class FisherMatrix:
             derivs = lss_obj.compute_derivs(derivative_provider=self.derivative_provider)
         tini = time()
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]
@@ -695,7 +695,7 @@ class FisherMatrix:
         tfin = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=1,
             text="Finished calculation of Fisher Matrix for {} in: ".format(self.observables),
             time_ini=tini,
             time_fin=tfin,
@@ -736,7 +736,7 @@ class FisherMatrix:
 
         tini = time()
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
 
         # compute fisher matrix
@@ -798,7 +798,7 @@ class FisherMatrix:
         tfin = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=2,
             text=f"Photometric Fisher assembly finished for {self.observables} in: ",
             time_ini=tini,
             time_fin=tfin,
@@ -812,7 +812,7 @@ class FisherMatrix:
             derivs = cmb_obj.compute_derivs(derivative_provider=self.derivative_provider)
 
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]

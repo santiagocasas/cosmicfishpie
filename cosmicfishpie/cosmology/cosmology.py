@@ -176,6 +176,12 @@ class boltzmann_code:
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
+                # Respect CosmicFishPie configuration before symbolic backend objects are created.
+                # Empty persistence disables Colossus disk caching but keeps in-memory caching.
+                colossus_persistence = self.settings.get("colossus_persistence", "")
+                if colossus_persistence is None:
+                    colossus_persistence = ""
+                colossus_settings.PERSISTENCE = colossus_persistence
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 

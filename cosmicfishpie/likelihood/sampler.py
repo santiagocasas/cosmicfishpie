@@ -1,4 +1,5 @@
 import json
+import multiprocessing
 import os
 import time
 from datetime import datetime
@@ -9,6 +10,39 @@ from scipy.stats import norm
 
 from cosmicfishpie.configs.context import build_analysis_context
 from cosmicfishpie.likelihood import PhotometricLikelihood
+
+
+_WORKER_LIKELIHOOD = None
+
+
+def _build_context(config):
+    """Build an analysis context from a plain sampler configuration."""
+    options = config["options"]
+    return build_analysis_context(
+        fiducialpars=config["fiducial"],
+        options=options,
+        observables=config["observables"],
+        cosmo_model=options["cosmo_model"],
+        survey_name=options["survey_name"],
+    )
+
+
+def _initialize_likelihood_worker(config, data_cells):
+    """Construct process-local cosmology state in a freshly spawned worker."""
+    global _WORKER_LIKELIHOOD
+    context = _build_context(config)
+    _WORKER_LIKELIHOOD = PhotometricLikelihood(
+        cosmo_data=context,
+        cosmo_theory=context,
+        data_cells=data_cells,
+    )
+
+
+def _worker_loglike(param_dict):
+    """Evaluate a sample using the likelihood initialized in this worker."""
+    if _WORKER_LIKELIHOOD is None:
+        raise RuntimeError("Likelihood worker was not initialized")
+    return _WORKER_LIKELIHOOD.loglike(param_dict=param_dict)
 
 
 def _format_param_label(param_name):
@@ -118,13 +152,7 @@ class NautilusSampler:
         return self.options["survey_name_photo"] or self.options["survey_name_spectro"]
 
     def _setup_cosmology(self):
-        self.cosmo_context = build_analysis_context(
-            fiducialpars=self.fiducial,
-            options=self.options,
-            observables=self.observables,
-            cosmo_model=self.options["cosmo_model"],
-            survey_name=self.options["survey_name"],
-        )
+        self.cosmo_context = _build_context(self.config)
 
     def _setup_priors(self):
         self.prior_chosen = Prior()
@@ -183,38 +211,70 @@ class NautilusSampler:
         return f"{h:02d}:{m:02d}:{s:02d}"
 
     def run(self):
-        # Check if chain file exists (run completed)
         self.chain_file = self.outroot + ".txt"
         self.chain_hdf5 = self.outroot + ".hdf5"
-        # Save initial metadata
         self.tini = time.time()
         self._save_metadata()
-        # Set up sampler with resume capability
-        nautilus_sampler = None
+        worker_pool = None
 
-        def start_sampler():
-            naut = Sampler(
-                prior=self.prior_chosen,
-                likelihood=self.photo_like.loglike,
-                n_live=self.sampler_settings["n_live"],
-                n_networks=self.sampler_settings["n_networks"],
-                n_batch=self.sampler_settings["n_batch"],
-                pool=self.sampler_settings["pool"],
-                pass_dict=False,
-                filepath=self.chain_hdf5,
-                resume=True,  # This handles checkpointing automatically
-                likelihood_kwargs={"prior": self.prior_chosen},
-            )
-            return naut
+        def stop_worker_pool(terminate=False):
+            nonlocal worker_pool
+            if worker_pool is None:
+                return
+            if terminate:
+                worker_pool.terminate()
+            else:
+                worker_pool.close()
+            worker_pool.join()
+            worker_pool = None
+
+        def start_sampler(parallel=True):
+            nonlocal worker_pool
+            pool_size = int(self.sampler_settings["pool"])
+            sampler_kwargs = {
+                "prior": self.prior_chosen,
+                "n_live": self.sampler_settings["n_live"],
+                "n_networks": self.sampler_settings["n_networks"],
+                "n_batch": self.sampler_settings["n_batch"],
+                "filepath": self.chain_hdf5,
+                "resume": True,
+            }
+
+            if parallel and pool_size > 1:
+                # Build heavy CAMB/CLASS state independently in fresh processes.
+                # Only plain config data and NumPy fiducial cells cross the spawn
+                # boundary; the frozen AnalysisContext never does.
+                worker_pool = multiprocessing.get_context("spawn").Pool(
+                    pool_size,
+                    initializer=_initialize_likelihood_worker,
+                    initargs=(self.config, self.photo_like.data_obs),
+                )
+                sampler_kwargs.update(
+                    likelihood=_worker_loglike,
+                    pool=worker_pool,
+                    pass_dict=True,
+                )
+            else:
+                sampler_kwargs.update(
+                    likelihood=self.photo_like.loglike,
+                    pool=None,
+                    pass_dict=False,
+                    likelihood_kwargs={"prior": self.prior_chosen},
+                )
+
+            try:
+                return Sampler(**sampler_kwargs)
+            except Exception:
+                stop_worker_pool(terminate=True)
+                raise
 
         if os.path.exists(self.chain_file):
             print(f"Chain file exists: {self.chain_file}")
             print("Run already completed. Updating metadata only!")
-            # Load existing evidence and timing info
             if os.path.exists(self.chain_hdf5):
                 try:
                     print("Loading sampler to get evidence...")
-                    nautilus_sampler = start_sampler()
+                    nautilus_sampler = start_sampler(parallel=False)
                     evidence = nautilus_sampler.evidence()
                     print(f"Evidence: {evidence:.2f}")
                     self._save_metadata(evidence=evidence, finish_time=time.time())
@@ -225,12 +285,10 @@ class NautilusSampler:
                 self._save_metadata(evidence=None, finish_time=time.time())
                 print("Metadata.json updated")
             return
-        else:
-            print("Starting new run")
-            nautilus_sampler = start_sampler()
 
-        # Run sampler
+        print("Starting new run")
         try:
+            nautilus_sampler = start_sampler()
             print("\n" + "=" * 60)
             print("🚀 Starting Nautilus Sampler Run")
             print("=" * 60)
@@ -262,7 +320,6 @@ class NautilusSampler:
             points, log_w, log_l = nautilus_sampler.posterior()
 
             self.tfin = time.time()
-            # Save chain and final metadata
             sample_wghlkl = np.vstack((points.T, np.exp(log_w), log_l)).T
             outfile_chain = self.outroot + ".txt"
             header = " ".join(self.prior_chosen.keys) + " weights loglike"
@@ -271,5 +328,8 @@ class NautilusSampler:
             self._save_metadata(evidence=evidence, finish_time=self.tfin)
 
         except Exception as e:
+            stop_worker_pool(terminate=True)
             print(f"Sampler error: {e}")
             raise
+        else:
+            stop_worker_pool()

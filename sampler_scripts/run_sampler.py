@@ -1,6 +1,4 @@
 import argparse
-import multiprocessing
-
 import yaml
 
 from cosmicfishpie.likelihood import NautilusSampler
@@ -49,14 +47,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # Use the "spawn" start method for multiprocessing instead of the platform
-    # default ("fork" on Linux). Forking after CAMB/CLASS have already
-    # initialized native threaded state (as happens once the fiducial
-    # cosmology is computed in NautilusSampler.__init__) leaves inherited
-    # locks permanently held in the forked children, deadlocking every pool
-    # worker at 0% CPU. Spawn starts each worker as a fresh interpreter, so
-    # it re-imports this module (guarded by this __main__ check) and
-    # re-pickles the likelihood via nautilus's NautilusPool initializer instead
-    # of inheriting unsafe post-fork state.
-    multiprocessing.set_start_method("spawn", force=True)
+    # Required for spawn workers to import this module safely.
     main()

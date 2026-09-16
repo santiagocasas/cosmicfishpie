@@ -2,40 +2,181 @@ import json
 import multiprocessing
 import os
 import time
+from copy import deepcopy
 from datetime import datetime
+from typing import Protocol
 
 import numpy as np
 from nautilus import Prior, Sampler
 from scipy.stats import norm
 
 from cosmicfishpie.configs.context import build_analysis_context
-from cosmicfishpie.likelihood import PhotometricLikelihood
-
+from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
+from cosmicfishpie.likelihood.base import CompositeLikelihood, Likelihood
+from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
+from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
 
 _WORKER_LIKELIHOOD = None
 
 
-def _build_context(config):
+class LikelihoodComponent(Protocol):
+    """Factory hooks needed to move likelihood data across spawn boundaries."""
+
+    def build(self, config, settings, data=None, context=None) -> Likelihood:
+        """Construct a likelihood around process-local cosmology state."""
+
+    def data_payload(self, likelihood: Likelihood):
+        """Return the serializable fiducial data needed by a spawned worker."""
+
+
+class _PhotometricComponent:
+    def build(self, config, settings, data=None, context=None):
+        observables = settings.get("observables")
+        if observables is None:
+            observables = [obs for obs in config["observables"] if obs in ("WL", "GCph")]
+        if context is None or set(context.observables) != set(observables):
+            context = _build_context(config, observables=observables)
+        return PhotometricLikelihood(
+            cosmo_data=context,
+            cosmo_theory=context,
+            observables=observables,
+            data_cells=data,
+        )
+
+    def data_payload(self, likelihood):
+        return likelihood.data_obs
+
+
+class _SpectroscopicComponent:
+    def build(self, config, settings, data=None, context=None):
+        observables = settings.get("observables")
+        if observables is None:
+            observables = [obs for obs in config["observables"] if obs in ("GCsp", "IM")]
+        context = _build_fisher_context(config, observables)
+        return SpectroLikelihood(
+            cosmoFM_data=context,
+            cosmoFM_theory=context,
+            leg_flag=settings.get("leg_flag", "wedges"),
+            data_obs=data,
+            nuisance_shot=settings.get("nuisance_shot"),
+            covariance_from=settings.get("covariance_from", "theory"),
+        )
+
+    def data_payload(self, likelihood):
+        return likelihood.data_obs
+
+
+LIKELIHOOD_COMPONENTS = {
+    "photometric": _PhotometricComponent(),
+    "spectroscopic": _SpectroscopicComponent(),
+}
+
+
+def register_likelihood_component(name: str, component: LikelihoodComponent) -> None:
+    """Register a likelihood factory for use by serial and spawned samplers."""
+    if not name or not isinstance(name, str):
+        raise ValueError("Likelihood component names must be non-empty strings")
+    if not callable(getattr(component, "build", None)) or not callable(
+        getattr(component, "data_payload", None)
+    ):
+        raise TypeError("Likelihood components must define build() and data_payload()")
+    LIKELIHOOD_COMPONENTS[name] = component
+
+
+def _likelihood_specs(config):
+    configured = config.get("likelihoods")
+    if configured is None:
+        observables = set(config["observables"])
+        has_photo = bool(observables.intersection(("WL", "GCph")))
+        has_spectro = bool(observables.intersection(("GCsp", "IM")))
+        if has_photo and has_spectro:
+            raise ValueError(
+                "Mixed photometric and spectroscopic probes require an explicit "
+                "'likelihoods' list; listing both declares them statistically independent"
+            )
+        if has_photo:
+            return [{"type": "photometric", "settings": {}}]
+        if has_spectro:
+            return [{"type": "spectroscopic", "settings": {}}]
+        raise ValueError("Could not infer a likelihood from the configured observables")
+
+    if isinstance(configured, (str, dict)):
+        configured = [configured]
+    if not configured:
+        raise ValueError("The 'likelihoods' list cannot be empty")
+
+    specs = []
+    for entry in configured:
+        if isinstance(entry, str):
+            spec = {"type": entry}
+        elif isinstance(entry, dict):
+            spec = dict(entry)
+        else:
+            raise TypeError("Each likelihood entry must be a component name or mapping")
+        name = spec.pop("type", None)
+        if name not in LIKELIHOOD_COMPONENTS:
+            available = ", ".join(sorted(LIKELIHOOD_COMPONENTS))
+            raise ValueError(f"Unknown likelihood component '{name}'. Available: {available}")
+        specs.append({"type": name, "settings": spec})
+    return specs
+
+
+def _build_likelihood(specs, config, payloads=None, context=None):
+    if payloads is None:
+        payloads = [None] * len(specs)
+    if len(payloads) != len(specs):
+        raise ValueError("Likelihood component and payload counts do not match")
+
+    likelihoods = []
+    for spec, payload in zip(specs, payloads):
+        component = LIKELIHOOD_COMPONENTS[spec["type"]]
+        shared_context = context if len(specs) == 1 else None
+        likelihoods.append(
+            component.build(config, spec["settings"], payload, context=shared_context)
+        )
+    if len(likelihoods) == 1:
+        return likelihoods[0]
+    return CompositeLikelihood(likelihoods)
+
+
+def _likelihood_payloads(specs, likelihood):
+    likelihoods = (
+        likelihood.likelihoods if isinstance(likelihood, CompositeLikelihood) else (likelihood,)
+    )
+    return [
+        LIKELIHOOD_COMPONENTS[spec["type"]].data_payload(component_likelihood)
+        for spec, component_likelihood in zip(specs, likelihoods)
+    ]
+
+
+def _build_context(config, observables=None):
     """Build an analysis context from a plain sampler configuration."""
     options = config["options"]
     return build_analysis_context(
         fiducialpars=config["fiducial"],
         options=options,
-        observables=config["observables"],
+        observables=observables or config["observables"],
         cosmo_model=options["cosmo_model"],
         survey_name=options["survey_name"],
     )
 
 
-def _initialize_likelihood_worker(config, data_cells):
+def _build_fisher_context(config, observables):
+    """Build mutable runtime state required by spectroscopic likelihoods."""
+    options = config["options"]
+    return FisherMatrix(
+        options=deepcopy(options),
+        observables=list(observables),
+        fiducialpars=deepcopy(config["fiducial"]),
+        surveyName=options["survey_name"],
+        cosmoModel=options["cosmo_model"],
+    )
+
+
+def _initialize_likelihood_worker(config, likelihood_specs, data_payloads):
     """Construct process-local cosmology state in a freshly spawned worker."""
     global _WORKER_LIKELIHOOD
-    context = _build_context(config)
-    _WORKER_LIKELIHOOD = PhotometricLikelihood(
-        cosmo_data=context,
-        cosmo_theory=context,
-        data_cells=data_cells,
-    )
+    _WORKER_LIKELIHOOD = _build_likelihood(likelihood_specs, config, data_payloads)
 
 
 def _worker_loglike(param_dict):
@@ -165,9 +306,11 @@ class NautilusSampler:
                 self.prior_chosen.add_parameter(par, dist)
 
     def _setup_likelihood(self):
-        self.photo_like = PhotometricLikelihood(
-            cosmo_data=self.cosmo_context, cosmo_theory=self.cosmo_context
+        self.likelihood_specs = _likelihood_specs(self.config)
+        self.likelihood = _build_likelihood(
+            self.likelihood_specs, self.config, context=self.cosmo_context
         )
+        self.likelihood_payloads = _likelihood_payloads(self.likelihood_specs, self.likelihood)
 
     def _save_metadata(self, evidence=None, finish_time=None):
 
@@ -242,12 +385,16 @@ class NautilusSampler:
 
             if parallel and pool_size > 1:
                 # Build heavy CAMB/CLASS state independently in fresh processes.
-                # Only plain config data and NumPy fiducial cells cross the spawn
-                # boundary; the frozen AnalysisContext never does.
+                # Only plain component specs and serializable fiducial data cross
+                # the spawn boundary; the frozen AnalysisContext never does.
                 worker_pool = multiprocessing.get_context("spawn").Pool(
                     pool_size,
                     initializer=_initialize_likelihood_worker,
-                    initargs=(self.config, self.photo_like.data_obs),
+                    initargs=(
+                        self.config,
+                        self.likelihood_specs,
+                        self.likelihood_payloads,
+                    ),
                 )
                 sampler_kwargs.update(
                     likelihood=_worker_loglike,
@@ -256,7 +403,7 @@ class NautilusSampler:
                 )
             else:
                 sampler_kwargs.update(
-                    likelihood=self.photo_like.loglike,
+                    likelihood=self.likelihood.loglike,
                     pool=None,
                     pass_dict=False,
                     likelihood_kwargs={"prior": self.prior_chosen},

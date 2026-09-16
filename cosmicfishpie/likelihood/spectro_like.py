@@ -290,7 +290,36 @@ class SpectroLikelihood(Likelihood, NautilusMixin):
 
         return self._data_wedges
 
+    def _ensure_runtime_state(self) -> None:
+        """Initialise grids and covariance without computing Fisher derivatives."""
+        if not hasattr(self.cosmo_data, "pk_cov") or self.cosmo_data.pk_cov is None:
+            if not hasattr(self.cosmo_data, "set_pk_settings"):
+                raise AttributeError("cosmoFM_data cannot initialise spectroscopic runtime state")
+            self.cosmo_data.set_pk_settings()
+            if "IM" in self.cosmo_data.observables and "GCsp" in self.cosmo_data.observables:
+                self.cosmo_data.obs_spectrum = ["I", "g"]
+            elif "IM" in self.cosmo_data.observables:
+                self.cosmo_data.obs_spectrum = ["I", "I"]
+            else:
+                self.cosmo_data.obs_spectrum = ["g", "g"]
+            self.cosmo_data.pk_obs_fid = spobs.ComputeGalSpectro(
+                cosmopars=self.cosmo_data.fiducialcosmopars,
+                fiducial_cosmopars=self.cosmo_data.fiducialcosmopars,
+                spectrobiaspars=self.cosmo_data.Spectrobiaspars,
+                spectrononlinearpars=self.cosmo_data.Spectrononlinpars,
+                IMbiaspars=self.cosmo_data.IMbiaspars,
+                PShotpars=self.cosmo_data.PShotpars,
+                configuration=self.cosmo_data,
+            )
+            self.cosmo_data.pk_cov = spcov.SpectroCov(
+                self.cosmo_data.fiducialcosmopars,
+                fiducial_specobs=self.cosmo_data.pk_obs_fid,
+                bias_samples=self.cosmo_data.obs_spectrum,
+                configuration=self.cosmo_data,
+            )
+
     def compute_data(self) -> np.ndarray:
+        self._ensure_runtime_state()
         if self._preloaded_data is not None:
             data = np.array(self._preloaded_data, copy=False)
             if self.leg_flag == "legendre":
@@ -298,11 +327,6 @@ class SpectroLikelihood(Likelihood, NautilusMixin):
             else:
                 self._data_wedges = data
             return data
-
-        if not hasattr(self.cosmo_data, "pk_cov") or self.cosmo_data.pk_cov is None:
-            raise AttributeError(
-                "cosmoFM_data.pk_cov is not available. Ensure the FisherMatrix was initialised for spectroscopic probes."
-            )
 
         obsPgg = observable_Pgg(
             self.cosmo_data.pk_cov,

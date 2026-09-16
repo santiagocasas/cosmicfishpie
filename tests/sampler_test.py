@@ -10,10 +10,11 @@ class _FakeContext:
     def __init__(self):
         self.freeparams = {}
         self.allparams = {}
+        self.observables = ("WL",)
 
 
 class _FakePhotometricLikelihood:
-    def __init__(self, cosmo_data, cosmo_theory, data_cells=None):
+    def __init__(self, cosmo_data, cosmo_theory, observables=None, data_cells=None):
         self.data_obs = data_cells if data_cells is not None else {"ells": np.array([1.0])}
 
     def loglike(self, *args, **kwargs):
@@ -48,7 +49,7 @@ def _make_sampler(tmp_path, monkeypatch, run_return):
     config = {
         "name": "unit_test",
         "fiducial": {},
-        "observables": [],
+        "observables": ["WL"],
         "options": {
             "code": "symbolic",
             "survey_name_photo": "Euclid",
@@ -112,13 +113,18 @@ class _FakeSpawnContext:
 
 
 def test_worker_initializer_builds_process_local_likelihood(monkeypatch):
-    context = _FakeContext()
     data_cells = {"ells": np.array([1.0, 2.0])}
     sampler_mod._WORKER_LIKELIHOOD = None
-    monkeypatch.setattr(sampler_mod, "_build_context", lambda config: context)
+    monkeypatch.setattr(
+        sampler_mod, "_build_context", lambda config, observables=None: _FakeContext()
+    )
     monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
 
-    sampler_mod._initialize_likelihood_worker({"options": {}}, data_cells)
+    sampler_mod._initialize_likelihood_worker(
+        {"observables": ["WL"]},
+        [{"type": "photometric", "settings": {}}],
+        [data_cells],
+    )
 
     assert sampler_mod._WORKER_LIKELIHOOD.data_obs is data_cells
     assert sampler_mod._worker_loglike({"Omegam": 0.3}) == 0.0
@@ -143,7 +149,7 @@ def test_parallel_run_uses_external_spawn_pool(tmp_path, monkeypatch):
     config = {
         "name": "parallel_test",
         "fiducial": {},
-        "observables": [],
+        "observables": ["WL"],
         "options": {
             "code": "symbolic",
             "survey_name_photo": "Euclid",
@@ -160,9 +166,81 @@ def test_parallel_run_uses_external_spawn_pool(tmp_path, monkeypatch):
 
     assert fake_context.pool_call[0] == 2
     assert fake_context.pool_call[1] is sampler_mod._initialize_likelihood_worker
+    assert fake_context.pool_call[2][1] == naut_sampler.likelihood_specs
+    assert fake_context.pool_call[2][2] == naut_sampler.likelihood_payloads
     assert captured["pool"] is fake_pool
     assert captured["likelihood"] is sampler_mod._worker_loglike
     assert captured["pass_dict"] is True
     assert "likelihood_kwargs" not in captured
     assert fake_pool.closed and fake_pool.joined
     assert not fake_pool.terminated
+
+
+def test_mixed_probes_require_explicit_independence_declaration():
+    config = {"observables": ["WL", "GCsp"]}
+
+    with pytest.raises(ValueError, match="statistically independent"):
+        sampler_mod._likelihood_specs(config)
+
+
+def test_explicit_components_build_composite_and_preserve_settings(monkeypatch):
+    builds = []
+
+    class FakeLikelihood:
+        def __init__(self, value):
+            self.value = value
+            self.data_obs = np.array([value])
+
+        def loglike(self, *args, **kwargs):
+            return self.value
+
+    class FakeComponent:
+        def build(self, config, settings, data=None, context=None):
+            builds.append((settings, data, context))
+            value = settings["value"] if data is None else float(data[0])
+            return FakeLikelihood(value)
+
+        def data_payload(self, likelihood):
+            return likelihood.data_obs
+
+    monkeypatch.setitem(sampler_mod.LIKELIHOOD_COMPONENTS, "fake", FakeComponent())
+    config = {
+        "observables": ["CMB"],
+        "likelihoods": [
+            {"type": "fake", "value": 1.5},
+            {"type": "fake", "value": 2.5},
+        ],
+    }
+
+    specs = sampler_mod._likelihood_specs(config)
+    likelihood = sampler_mod._build_likelihood(specs, config)
+    payloads = sampler_mod._likelihood_payloads(specs, likelihood)
+    rebuilt = sampler_mod._build_likelihood(specs, config, payloads)
+
+    assert likelihood.loglike(param_dict={}) == pytest.approx(4.0)
+    assert rebuilt.loglike(param_dict={}) == pytest.approx(4.0)
+    assert [build[0]["value"] for build in builds[:2]] == [1.5, 2.5]
+    assert all(build[2] is None for build in builds)
+
+
+def test_spectroscopic_component_uses_mutable_fisher_context(monkeypatch):
+    context = object()
+    captured = {}
+
+    class FakeSpectroLikelihood:
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+            self.data_obs = kwargs["data_obs"]
+
+    monkeypatch.setattr(sampler_mod, "_build_fisher_context", lambda config, obs: context)
+    monkeypatch.setattr(sampler_mod, "SpectroLikelihood", FakeSpectroLikelihood)
+    payload = np.array([1.0, 2.0])
+    config = {"observables": ["GCsp"]}
+    specs = sampler_mod._likelihood_specs(config)
+
+    sampler_mod._build_likelihood(specs, config, [payload])
+
+    assert captured["cosmoFM_data"] is context
+    assert captured["cosmoFM_theory"] is context
+    assert captured["data_obs"] is payload
+    assert captured["leg_flag"] == "wedges"

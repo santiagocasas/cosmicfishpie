@@ -1,0 +1,33 @@
+name: "fresh_lcdm_class_small"
+fiducial:
+  Omegam: 0.3191
+  Omegab: 0.049795
+  h: 0.6674
+  ns: 0.96605
+  sigma8: 0.81
+  w0: -1.0
+  wa: 0.0
+  mnu: 0.06
+  Neff: 3.044
+observables: ["GCph", "WL"]
+options:
+  accuracy: 1
+  feedback: 1
+  code: "class"
+  survey_name: "Euclid"
+  survey_name_photo: "Euclid-Photometric-ISTF-Pessimistic"
+  survey_name_spectro: false
+  specs_dir: "cosmicfishpie/configs/default_survey_specifications/"
+  cosmo_model: "LCDM"
+  class_config_yaml: "cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml"
+priors:
+  Omegam: [0.24, 0.4]
+  Omegab:
+    type: gaussian
+    loc: 0.049795
+    scale: 0.00055
+sampler_settings:
+  n_live: 300
+  n_networks: 64
+  n_batch: 32
+  pool: 16

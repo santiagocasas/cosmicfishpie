@@ -1,4 +1,5 @@
 import argparse
+
 import yaml
 
 from cosmicfishpie.likelihood import NautilusSampler
@@ -17,6 +18,12 @@ def main():
     parser.add_argument(
         "--name", type=str, default=None, help="Base name for output files (default: None)"
     )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Directory for sampler chains and checkpoints (default: chains)",
+    )
     args = parser.parse_args()
 
     # Load config
@@ -32,6 +39,9 @@ def main():
     if args.name is not None:
         config["name"] = args.name
         updated = True
+    if args.output_dir is not None:
+        # This is a runtime placement override, not a new benchmark configuration.
+        config["output_dir"] = args.output_dir
 
     # Save updated config only when changes were made
     if updated:

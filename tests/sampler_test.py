@@ -38,7 +38,7 @@ class _FakeNautilusSampler:
         return points, log_w, log_l
 
 
-def _make_sampler(tmp_path, monkeypatch, run_return):
+def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sampler_mod, "build_analysis_context", lambda **kwargs: _FakeContext())
     monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
@@ -65,6 +65,8 @@ def _make_sampler(tmp_path, monkeypatch, run_return):
             "n_batch": 1,
         },
     }
+    if output_dir is not None:
+        config["output_dir"] = str(output_dir)
     return sampler_mod.NautilusSampler(config)
 
 
@@ -84,6 +86,16 @@ def test_completed_run_saves_chain_and_metadata(tmp_path, monkeypatch):
 
     assert (tmp_path / naut_sampler.chain_file).exists()
     assert (tmp_path / (naut_sampler.outroot + "_metadata.json")).exists()
+
+
+def test_output_dir_places_sampler_artifacts_outside_working_directory(tmp_path, monkeypatch):
+    output_dir = tmp_path / "scratch"
+    naut_sampler = _make_sampler(tmp_path, monkeypatch, run_return=True, output_dir=output_dir)
+
+    naut_sampler.run()
+
+    assert (output_dir / "chains_unit_test").exists()
+    assert not (tmp_path / "chains").exists()
 
 
 class _FakePool:

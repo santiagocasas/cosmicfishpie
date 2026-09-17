@@ -272,7 +272,8 @@ class NautilusSampler:
 
         # Setup output path
         self.timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
-        self.folder_name = f"chains/chains_{self.config['name']}"
+        output_dir = self.config.get("output_dir", "chains")
+        self.folder_name = os.path.join(output_dir, f"chains_{self.config['name']}")
         os.makedirs(self.folder_name, exist_ok=True)
 
         self.outroot = f"{self.folder_name}/cosmicjellyfish_{self.options['code']}_{self._get_survey_name()}_{self.config['name']}"

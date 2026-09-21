@@ -174,10 +174,27 @@ def _build_fisher_context(config, observables):
 
 
 def _initialize_likelihood_worker(config, likelihood_specs, data_payloads):
-    """Construct process-local cosmology state in a freshly spawned worker."""
-    global _WORKER_LIKELIHOOD
-    _WORKER_LIKELIHOOD = _build_likelihood(likelihood_specs, config, data_payloads)
+    """Construct process-local cosmology state in a freshly spawned worker.
 
+    Workers rebuild cosmology only from the plain config and run silently
+    (feedback=0); worker 1 stays verbose as a sanity check of placement.
+    """
+    global _WORKER_LIKELIHOOD
+    identity = multiprocessing.current_process()._identity
+    worker_id = identity[0] if identity else 0
+
+    config = deepcopy(config)
+    if worker_id != 1:
+        config["options"]["feedback"] = 0
+    else:
+        cpus = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else "n/a"
+        print(f"[worker 1] pid={os.getpid()} cpus={cpus} "
+              f"OMP_NUM_THREADS={os.environ.get('OMP_NUM_THREADS')}", flush=True)
+
+    t0 = time.perf_counter()
+    _WORKER_LIKELIHOOD = _build_likelihood(likelihood_specs, config, data_payloads)
+    if worker_id == 1:
+        print(f"[worker 1] likelihood built in {time.perf_counter() - t0:.2f} s", flush=True)
 
 def _worker_loglike(param_dict):
     """Evaluate a sample using the likelihood initialized in this worker."""

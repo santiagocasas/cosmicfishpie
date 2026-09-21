@@ -1,0 +1,22 @@
+{
+  "example_type": "truncated_documentation_chain",
+  "description": "First 100 posterior rows from the completed symbolic 2-parameter LCDM validation run. This is a small repository fixture, not a convergence product or resumable checkpoint.",
+  "source_suite": "chains_symbolic_32x1_15623397",
+  "chain_file": "symbolic_2param_first100.txt",
+  "columns": ["Omegam", "Omegab", "weights", "loglike"],
+  "sampled_parameters": {
+    "Omegam": "[0.24, 0.4]",
+    "Omegab": "Gaussian(loc=0.049795, scale=0.00055)"
+  },
+  "original_sampler_settings": {
+    "n_live": 300,
+    "n_networks": 64,
+    "n_batch": 32,
+    "pool": 32
+  },
+  "backend": "symbolic",
+  "cosmology_model": "LCDM",
+  "original_run_elapsed_time": "00:07:03",
+  "full_run_location": "/p/scratch/punch_astro/cosmicfish/chains/chains_symbolic_32x1_15623397",
+  "hdf5_checkpoint_included": false
+}

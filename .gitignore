@@ -4,7 +4,12 @@
 *.png
 *.zip
 *.tar.gz
-chains/
+# Generated chains belong on scratch; only the tiny reference fixture is versioned.
+chains/*
+!chains/README.md
+!chains/example_symbolic_2param/
+!chains/example_symbolic_2param/*.txt
+!chains/example_symbolic_2param/*_metadata.json
 # build artifacts
 
 .eggs/

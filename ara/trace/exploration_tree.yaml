@@ -276,3 +276,207 @@ tree:
   status: resolved
   also_depends_on:
   - N18
+
+# --- V-track: merged from paper-validation ARA (ara.validation-backup/) ---
+- id: V-N01
+  type: decision
+  title: "Archive superseded validations"
+  provenance: user
+  timestamp: "2026-08-19T16:07"
+  choice: "Move superseded validation scripts/configs/YAMLs under scripts/archive and purge stale generated outputs while preserving active dashboard inputs."
+  alternatives: ["permanent deletion", "retain all legacy files in active locations"]
+  evidence: ["approved cleanup plan", "scripts/run_selected_validations.sh maintained case set"]
+  status: resolved
+  children:
+    - id: V-N02
+      type: experiment
+      title: "Verify cleaned validation workflow"
+      provenance: ai-executed
+      timestamp: "2026-08-19T16:07"
+      description: "Run syntax, dashboard, package-data, formatting, lint, and resume checks without launching Fisher calculations."
+      evidence: ["tests/package_data_test.py", "scripts/benchmark_results/dashboard/index.html"]
+      result: "Shell syntax, Python compile, Black, Ruff, and package-data test passed. Dashboard discovered 10 maintained cases; resume checks retained reusable cases 07-12 while case 13 remained incomplete and case 14 stale."
+      status: resolved
+- id: V-N03
+  type: decision
+  title: "Preserve P_cb derivative diagnosis"
+  provenance: user
+  timestamp: "2026-08-31T08:35"
+  choice: "Record the P_mm/P_cb neutrino-response and Fisher-conditioning analysis in a dedicated Markdown artifact for a future notebook or marimo demonstration."
+  alternatives: ["leave the analysis only in chat history", "create the visualization immediately"]
+  evidence: ["scripts/validation_configs/PCB_NEUTRINO_DERIVATIVE_ANALYSIS.md"]
+  status: resolved
+- id: V-N04
+  type: decision
+  title: "Commit validation work by topic"
+  provenance: user
+  timestamp: "2026-08-31T08:35"
+  choice: "Commit the pending validation hierarchy and P_cb analysis as separate topic-focused commits while excluding ara/."
+  alternatives: ["one combined commit", "include ara/ in the commit"]
+  evidence: ["commit 60e4f99", "commit 00d5aee"]
+  status: resolved
+- id: V-N05
+  type: decision
+  title: "Clarify dashboard validation tracks"
+  provenance: user
+  timestamp: "2026-08-31T08:48"
+  choice: "Present the two arXiv validation tracks as separate dashboard sections, simplify model labels, and add a primary P_mm w0waCDM+mnu showcase beyond paper validation."
+  alternatives: ["retain one undifferentiated case table", "keep the P_mm comparison only in alternatives"]
+  evidence: ["scripts/render_validation_dashboard.py", "scripts/validation_configs/compare_run_config.env_09.2_camb_class_photo_pessimistic_w0wa_mnu_Pmm"]
+  status: resolved
+- id: V-N06
+  type: decision
+  title: "Use optional validation variant IDs"
+  provenance: user-revised
+  timestamp: "2026-08-31T09:20"
+  choice: "Normalize stress cases to pessimistic .0 leaves and identify the P_mm counterpart as optional variant 07.2.0.1, with the dashboard exposing P_cb/P_mm in a Variant column."
+  alternatives: ["retain case 09.2 as a separate group", "zero-pad variant identifiers as .001"]
+  evidence: ["scripts/run_selected_validations.sh", "scripts/render_validation_dashboard.py", "scripts/validation_configs/compare_run_config.env_07.2.0.1_camb_class_photo_pessimistic_w0wa_mnu_Pmm"]
+  status: resolved
+- id: V-N07
+  type: decision
+  title: "Expose precision profiles in dashboard"
+  provenance: user
+  timestamp: "2026-08-31T09:32"
+  choice: "Remove nonfunctional Back links from input-file pages and link solver leaf YAML pages to their referenced canonical precision-profile source."
+  alternatives: ["leave profile resolution implicit", "inline the resolved profile into each leaf YAML page"]
+  evidence: ["scripts/render_validation_dashboard.py", "cosmicfishpie/configs/default_boltzmann_yaml_files/precision_profiles.yaml"]
+  status: resolved
+- id: V-N08
+  type: decision
+  title: "Remove legacy root solver configs"
+  provenance: user
+  timestamp: "2026-08-31T09:45"
+  choice: "Delete the superseded root boltzmann_yaml_files directory after migrating its unique fast_spectro profile and updating all notebook/documentation references to packaged configs."
+  alternatives: ["retain duplicate root configs", "delete the unique fast_spectro profile and break its notebook"]
+  evidence: ["cosmicfishpie/configs/default_boltzmann_yaml_files/class/fast_spectro.yaml", "tests/package_data_test.py"]
+  status: resolved
+- id: V-N09
+  type: decision
+  title: "Restore research provenance artifact"
+  provenance: user
+  timestamp: "2026-09-15T11:58"
+  choice: "Restore only ara/ from the pre-main-sync stash into the perf-v2 worktree, leaving unrelated stashed files and generated outputs untouched."
+  alternatives: ["leave ara/ only in the stash", "restore the entire untracked stash payload"]
+  evidence: ["refs/stash^3", "ara/trace/sessions/session_index.yaml"]
+  status: resolved
+- id: V-N10
+  type: decision
+  title: "Publish focused likelihood validation evidence"
+  provenance: user
+  timestamp: "2026-09-16T12:56"
+  choice: "Package the completed 64-worker Euclid WL, GCsp, and joint run as chain-free statistics, compact ChainConsumer figures, and user documentation."
+  alternatives: ["commit raw chains and HDF5 checkpoints", "retain validation evidence only outside the repository"]
+  evidence: ["hpc-results/wl-gcsp-550-64cpu/chain_statistics.json", "docs/source/likelihood_validation.md"]
+  status: resolved
+  children:
+    - id: V-N11
+      type: experiment
+      title: "Render compact Fisher-Nautilus overlays"
+      provenance: ai-executed
+      timestamp: "2026-09-16T12:56"
+      description: "Regenerate per-probe figures from the copied weighted chains while retaining only statistics and figures in the repository."
+      evidence: ["scripts/render_likelihood_validation.py", "scripts/likelihood_validation_results/wl_gcsp_symbolic_euclid_64cpu_statistics.json", "docs/source/_static/likelihood_validation/"]
+      result: "WL, GCsp, and joint figures rendered with two-entry legends. Full-nuisance Nautilus widths agree with marginal Fisher widths within 4.84%; posterior means are within 0.09 chain standard deviations of the fiducial."
+      status: resolved
+- id: V-N12
+  type: decision
+  title: "Record likelihood validation resources"
+  provenance: user
+  timestamp: "2026-09-16T13:21"
+  choice: "Add the recorded case timings and 64-worker Slurm allocation to the validation documentation while linking external JURECA hardware documentation instead of inferring a node class."
+  alternatives: ["omit resource context", "assert a hardware configuration not present in job metadata"]
+  evidence: ["hpc-results/wl-gcsp-550-64cpu/*/case_metadata.json", "docs/source/likelihood_validation.md"]
+  status: resolved
+- id: V-N13
+  type: decision
+  title: "Benchmark CAMB fiducial scaling"
+  provenance: user
+  timestamp: "2026-09-16T13:40"
+  choice: "Create a fresh-process benchmark that varies CAMB OpenMP threads across 1, 2, 4, 8, and 12 using the safe LCDM fiducial and package default CAMB YAML."
+  alternatives: ["profile the live sampler", "benchmark a Fisher calculation instead of fiducial construction"]
+  evidence: ["scripts/benchmark_camb_fiducial_scaling.py", "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml"]
+  status: resolved
+  children:
+    - id: V-N14
+      type: dead_end
+      title: "Do not put CAMB neutrino bookkeeping in shared fiducials"
+      provenance: user-revised
+      timestamp: "2026-09-16T13:58"
+      hypothesis: "The benchmark needed num_nu_massive in its shared CAMB/CLASS fiducial, and CLASS should silently discard it in changebasis_class()."
+      failure_mode: "Validated Fishers use a backend-neutral physical fiducial; CAMB receives num_nu_massive from its solver YAML and CLASS receives N_ncdm from its own YAML. Adding the CAMB-only key to the shared benchmark fiducial caused the CLASS rejection."
+      lesson: "Keep backend bookkeeping in backend YAMLs and pass the same physical mnu/Neff fiducial to CAMB and CLASS; do not broaden the CLASS translator to accept misplaced CAMB options."
+      evidence: ["scripts/validation_configs/common_specs_paper_LCDM_mnu_Neff.json", "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml", "cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml", "scripts/benchmark_fiducial_scaling.py"]
+      status: resolved
+    - id: V-N15
+      type: experiment
+      title: "Diagnose CLASS nonlinear redshift margin"
+      provenance: user
+      timestamp: "2026-09-16T16:48"
+      description: "Reproduce the post-pull CLASS failure directly with classy 3.3.4.0 and sweep nonlinear_min_k_max for the benchmark fiducial with hmcode_2020 and z_max_pk=5."
+      evidence: ["results/fiducial_scaling/20260916T144207Z/trials/omp01_warmup01.log", "classy/source/perturbations.c:1707-1714", "classy/python/classy.pyx:1757-1769"]
+      result: "CLASS deliberately samples to z_max_pk+1, so z_max_pk=5 requests an internal z=6 grid. nonlinear_min_k_max=80 reaches nonlinear validity only to z=5.348928; the user-reported cluster sweep found 120 as the passing threshold, with 150 proposed as a safety margin."
+      status: resolved
+    - id: V-N16
+      type: question
+      title: "Match CAMB and CLASS high-k work"
+      provenance: user
+      timestamp: "2026-09-16T16:55"
+      description: "Should CAMB's default k ceiling also be raised when CLASS needs nonlinear_min_k_max=150, so fiducial-construction timings compare equivalent calculations?"
+      evidence: ["cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml", "cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml", "classy/include/precisions.h:515-523", "camb/model.py:951-986"]
+      status: resolved
+    - id: V-N17
+      type: decision
+      title: "Raise default CLASS nonlinear range"
+      provenance: user
+      timestamp: "2026-09-16T16:58"
+      choice: "Set nonlinear_min_k_max=150 in the default CLASS photometric HMcode profile while retaining the shared CAMB/CLASS output ceiling of 50 Mpc^-1."
+      alternatives: ["retain the failing value 80", "raise CAMB's output kmax to 150", "change the validated CLASS profiles"]
+      evidence: [V-N15, V-N16, V-O05, "cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml"]
+      status: resolved
+    - id: V-N18
+      type: experiment
+      title: "Measure three-backend thread scaling"
+      provenance: user
+      timestamp: "2026-09-16T17:28"
+      description: "Run fresh-process fiducial-construction benchmarks for CAMB, CLASS, and symbolic at 1, 2, 4, 8, 12, 16, and 24 OpenMP threads with one warmup and three timed trials."
+      evidence: ["cfp-fiducial-scaling.15629278.out", "cfp-fiducial-scaling.15629279.out", "cfp-fiducial-scaling.15629280.out", "results/fiducial_scaling/cluster_backend_scaling.png"]
+      result: "CAMB fell from 20.662 s to 1.216 s (17.00x at 24 threads); CLASS fell from 33.678 s to its 6.347 s minimum at 8 threads (5.31x) and then saturated; symbolic remained 1.544-1.586 s with no meaningful thread scaling."
+      status: resolved
+- id: V-N19
+  type: decision
+  title: "Generalize spawned likelihood construction"
+  provenance: user
+  timestamp: "2026-09-16T19:49"
+  choice: "Replace NautilusSampler's photometric-only worker adapter with registered likelihood components, independent composites, and explicit mixed-probe declarations while keeping process-local runtime construction."
+  alternatives: ["retain the photometric-only adapter", "silently sum all inferred mixed-probe likelihoods", "pickle AnalysisContext into workers"]
+  evidence: ["cosmicfishpie/likelihood/sampler.py", "cosmicfishpie/likelihood/base.py", "cosmicfishpie/likelihood/spectro_like.py"]
+  status: resolved
+  children:
+    - id: V-N20
+      type: experiment
+      title: "Verify component likelihood architecture"
+      provenance: ai-executed
+      timestamp: "2026-09-16T19:49"
+      description: "Run focused sampler and spectroscopic likelihood tests after implementing component factories, spawn payload reconstruction, and composite likelihoods."
+      evidence: ["tests/sampler_test.py", "tests/spectro_like_test.py"]
+      result: "All 13 focused tests passed in 2.28 seconds; git diff --check reported no whitespace errors."
+      status: resolved
+- id: V-N21
+  type: decision
+  title: "Add generic Nautilus Slurm workflow"
+  provenance: user
+  timestamp: "2026-09-17T08:02"
+  choice: "Provide a direct Slurm launcher and explicit WL+GCsp independent-component YAML for NautilusSampler, with resumable artifacts directed to a caller-selected scratch directory."
+  alternatives: ["reuse the legacy direct-likelihood Slurm pipeline", "run chains from the repository checkout", "submit a cluster job during implementation"]
+  evidence: ["scripts/slurm/nautilus_sampler.sbatch", "sampler_scripts/fresh_wl_gcsp_symbolic_independent_32x1.yaml", "cosmicfishpie/likelihood/sampler.py"]
+  status: resolved
+- id: V-N22
+  type: decision
+  title: "Use JURECA jobs_punch conventions"
+  provenance: user
+  timestamp: "2026-09-17T09:08"
+  choice: "Provide the generic WL+GCsp Nautilus launch script in the DagsHub-managed jobs_punch repository, using its common.sh module and virtual-environment setup."
+  alternatives: ["retain a site-neutral CFP_ENV_SETUP placeholder", "reuse the legacy direct-likelihood scripts", "submit a job while preparing the script"]
+  evidence: ["../cosmicfishpie-validation/jobs_punch/common.sh", "../cosmicfishpie-validation/jobs_punch/sample_wl_gcsp_symbolic_independent_32x1.sbatch", "../cosmicfishpie-validation/jobs_punch/README.md"]
+  status: resolved

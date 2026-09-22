@@ -43,3 +43,39 @@ sessions:
   events_count: 4
   claims_touched: []
   open_threads: 1
+- id: 2026-08-19_001
+  date: '2026-08-19'
+  summary: Archived superseded validation tooling, purged stale outputs, and preserved numerical resume checks.
+  turn_count: 1
+  events_count: 3
+  claims_touched: []
+  open_threads: 1
+- id: 2026-08-31_001
+  date: '2026-08-31'
+  summary: Consolidated validation provenance and solver configuration under packaged, directly inspectable inputs.
+  turn_count: 6
+  events_count: 7
+  claims_touched:
+  - V-C01
+  open_threads: 1
+- id: 2026-09-15_001-val
+  date: '2026-09-15'
+  summary: Restored the ARA provenance artifact and staged its curation for a future main release.
+  turn_count: 2
+  events_count: 2
+  claims_touched: []
+  open_threads: 1
+- id: 2026-09-16_001-val
+  date: '2026-09-16'
+  summary: Packaged likelihood evidence, measured backend scaling, and generalized Nautilus to spawn-safe registered likelihood components.
+  turn_count: 10
+  events_count: 17
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-17_001-val
+  date: '2026-09-17'
+  summary: Added generic spawn-safe Nautilus workflow support and a ready-to-run JURECA jobs_punch WL+GCsp launcher.
+  turn_count: 2
+  events_count: 2
+  claims_touched: []
+  open_threads: 2

@@ -1,0 +1,38 @@
+session:
+  id: "2026-09-15_001-val"
+  date: "2026-09-15"
+  started: "2026-09-15T11:58"
+  last_turn: "2026-09-15T12:02"
+  turn_count: 2
+  summary: "Restored the ARA provenance artifact and staged its curation for a future main release."
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: V-N09
+    routing: direct
+    provenance: user
+    summary: "Restore only ara/ from pre-sync untracked stash payload"
+  - turn: 2
+    type: observation
+    id: V-O03
+    routing: staged
+    provenance: user
+    summary: "Curate and commit ARA provenance artifact to main for release"
+
+ai_actions:
+  - turn: 1
+    action: "Restored ara/ from refs/stash^3 with git restore --worktree"
+    provenance: ai-executed
+    files_changed: ["ara/"]
+
+claims_touched: []
+
+key_context:
+  - turn: 1
+    excerpt: "didnt we have an ara/ folder tracking changes"
+
+open_threads: []
+
+ai_suggestions_pending:
+  - "Define the release curation policy for ara/ before committing it to main."

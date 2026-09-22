@@ -81,3 +81,100 @@ observations:
   promoted_to: logic/solution/heuristics.md:H03
   crystallized_via: artifact-commitment
   stale: false
+- id: V-O01
+  timestamp: 2026-08-19T16:07
+  provenance: ai-suggested
+  content: Resume validity should track numerical Python code, survey/config data, dependencies, and each case's exact YAML/common specs rather than the entire package tree.
+  context: Archiving unrelated Boltzmann YAMLs caused the broad cosmicfishpie path check to mark every saved Fisher result stale.
+  potential_type: heuristic
+  bound_to:
+  - V-N02
+  promoted: true
+  promoted_to: logic/solution/heuristics.md:V-H01
+  crystallized_via: artifact-commitment
+  stale: false
+- id: V-O02
+  timestamp: 2026-08-31T08:35
+  provenance: user-revised
+  content: For massive-neutrino galaxy observables, P_cb yields a larger, monotonic mnu response and reduces Fisher marginalization amplification relative to P_mm; the measured model-2 photo deviation fell from 10.06% to 5.53%.
+  context: The user affirmed the completed P_mm/P_cb derivative analysis and requested a reusable Markdown artifact for a future notebook or marimo visualization.
+  potential_type: claim
+  bound_to:
+  - V-N03
+  promoted: true
+  promoted_to: logic/claims.md:V-C01
+  crystallized_via: verbal-affirmation
+  stale: false
+- id: V-O03
+  timestamp: 2026-09-15T12:02
+  provenance: user
+  content: Commit ara/ to main as a curated release provenance artifact tracking project development.
+  context: The recovered ARA directory records validation and development decisions but is currently untracked.
+  potential_type: architecture
+  bound_to:
+  - V-N09
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: V-O04
+  timestamp: 2026-09-16T12:56
+  provenance: ai-executed
+  content: For the tested symbolic flat-LCDM Euclid ISTF pessimistic WL, GCsp, and joint wedge likelihoods with all Fisher nuisances sampled, weighted Nautilus widths match marginal Fisher widths within 4.84%, correlations within 0.0122, and means within 0.09 chain standard deviations of the fiducial.
+  context: A 64-worker HPC run with n_live=500 and n_eff=2000 was reduced to chain-free statistics and ChainConsumer figures for release documentation.
+  potential_type: claim
+  bound_to:
+  - V-N10
+  - V-N11
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: V-O05
+  timestamp: 2026-09-16T16:48
+  provenance: ai-suggested
+  content: For the default CLASS photometric hmcode_2020 profile with z_max_pk=5, nonlinear_min_k_max should be 150; CLASS intentionally samples to z_max_pk+1, the measured passing threshold is 120 for the benchmark fiducial, and 150 preserves a safety margin.
+  context: The post-pull default changed z_max_pk from 4 to 5 and nonlinear_min_k_max from 50 to 80; CLASS then rejected nonlinear grid extraction because its padded z=6 endpoint exceeded the z=5.348928 nonlinear-valid range.
+  potential_type: heuristic
+  bound_to:
+  - V-N15
+  promoted: true
+  promoted_to: logic/solution/heuristics.md:V-H02
+  crystallized_via: artifact-commitment
+  stale: false
+- id: V-O06
+  timestamp: 2026-09-16T16:48
+  provenance: ai-suggested
+  content: A nonlinear_min_k_max value is valid only for its nonlinear prescription and padded redshift range; the successful validation matrix does not establish that 80 is sufficient for HMcode 2020 with z_max_pk=5.
+  context: Packaged CLASS profiles pair Halofit with z_max_pk=5 and nonlinear_min_k_max=80, HMcode 2020 photo with z_max_pk=4 and 80, and HMcode 2020 spectro with z_max_pk=2 and 5.
+  potential_type: constraint
+  bound_to:
+  - V-N15
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: V-O07
+  timestamp: 2026-09-16T16:55
+  provenance: ai-suggested
+  content: Backend timing fairness should match the exposed scientific P(k,z) domain, nonlinear prescription, and accuracy intent rather than force equal backend-internal k cutoffs. CAMB kmax=50 and CLASS P_k_max_1/Mpc=50 already request the same physical output ceiling; CLASS nonlinear_min_k_max=150 would be an HMcode consistency floor while its output remains capped at 50.
+  context: The user asked whether CAMB should also reach k=150 after the proposed CLASS fix. Installed solver documentation distinguishes CLASS's internal nonlinear floor from both backends' output ceilings.
+  potential_type: constraint
+  bound_to:
+  - V-N16
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: V-O08
+  timestamp: 2026-09-16T17:28
+  provenance: ai-suggested
+  content: On the measured cluster allocation, CAMB benefits through 24 OpenMP threads, CLASS reaches its useful scaling limit around 8 threads, and symbolic should run single-threaded; CAMB overtakes symbolic in absolute fiducial-construction time between 12 and 16 threads.
+  context: Three fresh-process backend scaling jobs each supplied three timed trials for 1, 2, 4, 8, 12, 16, and 24 threads.
+  potential_type: claim
+  bound_to:
+  - V-N18
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false

@@ -1,0 +1,52 @@
+session:
+  id: "2026-08-19_001"
+  date: "2026-08-19"
+  started: "2026-08-19T16:07"
+  last_turn: "2026-08-19T16:07"
+  turn_count: 1
+  summary: "Archived superseded validation tooling, purged stale outputs, and preserved numerical resume checks."
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: V-N01
+    routing: direct
+    provenance: user
+    summary: "Approved archival cleanup with active dashboard/resume outputs preserved."
+  - turn: 1
+    type: experiment
+    id: V-N02
+    routing: direct
+    provenance: ai-executed
+    summary: "Fast verification passed; dashboard reduced to 10 maintained cases."
+  - turn: 1
+    type: heuristic
+    id: V-H01
+    routing: crystallized
+    provenance: ai-suggested
+    summary: "Resume checks now scope changes to numerical code and exact case inputs."
+
+ai_actions:
+  - turn: 1
+    action: "Moved legacy scripts/configs/YAMLs into scripts/archive and updated documentation."
+    provenance: ai-executed
+    files_changed: ["scripts/archive/", "scripts/README.md", "scripts/validation_configs/PAPER_NEUTRINO_VALIDATION.md"]
+  - turn: 1
+    action: "Purged stale benchmark outputs while retaining the dashboard, latest selected logs, and dashboard-backed compare directories."
+    provenance: ai-executed
+    files_changed: ["scripts/benchmark_results/"]
+  - turn: 1
+    action: "Refined resume path checks after unrelated YAML moves invalidated all results."
+    provenance: ai-executed
+    files_changed: ["scripts/render_validation_dashboard.py"]
+
+claims_touched: []
+
+key_context:
+  - turn: 1
+    excerpt: "User authorized the approved cleanup with 'go!'."
+
+open_threads:
+  - "A concurrent case-13 validation created compare_photo_camb_vs_class_cfg_83c710f9e1 and was still incomplete at final inspection."
+
+ai_suggestions_pending: []

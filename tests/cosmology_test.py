@@ -72,6 +72,4 @@ def test_class_pk_grid_uses_explicit_array_samples():
         FakeClass(), np.array([0.1, 1.0]), np.array([0.0, 1.0, 2.0]), nonlinear=True
     )
 
-    np.testing.assert_array_equal(
-        result, np.array([[1.0, 3.0, 5.0], [2.0, 4.0, 6.0]])
-    )
+    np.testing.assert_array_equal(result, np.array([[1.0, 3.0, 5.0], [2.0, 4.0, 6.0]]))

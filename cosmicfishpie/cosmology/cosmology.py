@@ -193,6 +193,7 @@ class boltzmann_code:
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
+
                 # Respect CosmicFishPie configuration before symbolic backend objects are created.
                 # Empty persistence disables Colossus disk caching but keeps in-memory caching.
                 colossus_persistence = self.settings.get("colossus_persistence", "")
@@ -956,9 +957,7 @@ class boltzmann_code:
         # bulk getter rejects that entire grid when HMcode cannot reach the
         # padded endpoint, even though P(k,z) remains available at the sampled
         # redshifts. Evaluate the same grid through CLASS's array API instead.
-        Pk_nl = _class_pk_grid(
-            classres, k, z, nonlinear=self.settings["nonlinear"]
-        )
+        Pk_nl = _class_pk_grid(classres, k, z, nonlinear=self.settings["nonlinear"])
         self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
 
         tk, k, z = classres.get_transfer_and_k_and_z()

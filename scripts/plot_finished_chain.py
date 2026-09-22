@@ -17,7 +17,6 @@ import pandas as pd
 
 from cosmicfishpie.analysis.fishconsumer import make_triangle_plot
 
-
 PREFERRED_COSMOLOGY_PARAMS = ("Omegam", "Omegab", "h", "ns", "sigma8", "w0", "wa")
 NON_SAMPLE_COLUMNS = {"weight", "weights", "loglike", "log_posterior", "posterior"}
 COLORS = (
@@ -140,7 +139,9 @@ def select_parameters(args: argparse.Namespace, available: list[list[str]]) -> l
         if any(name not in names for name in params)
     }
     if missing_by_chain:
-        raise ValueError(f"Requested parameters are not available in every chain: {missing_by_chain}")
+        raise ValueError(
+            f"Requested parameters are not available in every chain: {missing_by_chain}"
+        )
     if not params:
         raise ValueError("The chains have no shared parameters to plot")
     return params

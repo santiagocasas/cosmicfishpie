@@ -116,10 +116,11 @@ pipeline work.
 
 ## Reproduction
 
-The shared wrapper defaults to `main` versus `perf-v2`:
+The shared wrapper is maintained outside this repository and defaults to `main`
+versus `perf-v2`. Run it from your checkout of the shared tools:
 
 ```bash
-bash /home/casas/Cosmo/dev-cosmicfishpie/shared-tools/compare_photo_fisher.sh
+bash /path/to/shared-tools/compare_photo_fisher.sh
 ```
 
 The wrapper's logs and snapshots are written to a timestamped directory under

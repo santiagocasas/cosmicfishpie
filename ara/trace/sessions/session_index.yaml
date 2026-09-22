@@ -2,23 +2,23 @@ sessions:
 - id: 2026-09-15_001
   date: '2026-09-15'
   summary: Completed and analyzed the symbolic 32x1 smoke chain after validating job templates.
-  turn_count: 5
-  events_count: 6
+  turn_count: 3
+  events_count: 4
   claims_touched: []
   open_threads: 2
 - id: 2026-09-16_001
   date: '2026-09-16'
   summary: Validated symbolic spawn progress, then identified the need for a probe-agnostic sampler architecture.
-  turn_count: 3
-  events_count: 5
+  turn_count: 2
+  events_count: 4
   claims_touched:
   - C01
   open_threads: 5
 - id: 2026-09-17_001
   date: '2026-09-17'
   summary: Completed, analyzed, and plotted the independent WL+GCsp symbolic spawn chain; corrected future Slurm stdout buffering.
-  turn_count: 2
-  events_count: 4
+  turn_count: 5
+  events_count: 5
   claims_touched: []
   open_threads: 2
 - id: 2026-09-17_002

@@ -287,9 +287,10 @@ def run_profile(
             prof_bin = prefix + ".prof"
             prof_txt = prefix + ".txt"
             stats.dump_stats(prof_bin)
-            with open(prof_txt, "w"):
-                stats.sort_stats("cumulative").print_stats("photo_obs")
-                stats.print_stats("photo_cov")
+            with open(prof_txt, "w") as handle:
+                report_stats = pstats.Stats(pr, stream=handle)
+                report_stats.sort_stats("cumulative").print_stats("photo_obs")
+                report_stats.print_stats("photo_cov")
         runs.append(
             {
                 "repeat": r + 1,

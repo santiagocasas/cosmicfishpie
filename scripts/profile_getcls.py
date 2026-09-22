@@ -44,7 +44,7 @@ def _discover_specs_dir():
             return cand
     # Fallback: relative to installed package
     pkg_root = _P(cfg.__file__).resolve().parent
-    candidate = pkg_root / "configs" / "default_survey_specifications"
+    candidate = pkg_root / "default_survey_specifications"
     if candidate.is_dir():
         return str(candidate) + os.sep
     return ""

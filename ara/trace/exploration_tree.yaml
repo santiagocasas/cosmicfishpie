@@ -77,16 +77,16 @@ tree:
   status: resolved
   also_depends_on:
   - N05
-  - id: N07
-    type: experiment
-    title: Review project-style smooth posterior rendering
-    provenance: user
-    timestamp: 2026-09-17T16:05
-    description: Compare the original 30-bin, smooth=3 triangle with the same chain rendered using 12 bins and smooth=5.
-    result: User reported that the 12-bin, smooth=5 plot looks much better; no additional sampler convergence run was requested.
-    evidence:
-      - chains/wl_gcsp_symbolic_independent_15631246/chains_fresh_wl_gcsp_symbolic_independent_32x1/wl_gcsp_independent_posterior_triangle_smooth12x5.png
-    status: resolved
+- id: N07
+  type: experiment
+  title: Review project-style smooth posterior rendering
+  provenance: user
+  timestamp: 2026-09-17T16:05
+  description: Compare the original 30-bin, smooth=3 triangle with the same chain rendered using 12 bins and smooth=5.
+  result: User reported that the 12-bin, smooth=5 plot looks much better; no additional sampler convergence run was requested.
+  evidence:
+    - chains/wl_gcsp_symbolic_independent_15631246/chains_fresh_wl_gcsp_symbolic_independent_32x1/wl_gcsp_independent_posterior_triangle_smooth12x5.png
+  status: resolved
 - id: N08
   type: decision
   title: Run 128-worker 3x2pt Fisher-Nautilus comparison suite

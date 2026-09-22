@@ -92,5 +92,5 @@ copying chains into the repository:
 
 ```bash
 uv run python scripts/render_likelihood_validation.py \
-  --run-dir hpc-results/wl-gcsp-550-64cpu
+  --run-dir hpc-results/wl-gcsp-64cpu
 ```

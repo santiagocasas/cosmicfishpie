@@ -202,3 +202,8 @@ entries:
   - "Routed the user's site-specific jobs_punch implementation request as decision V-N22."
   - "Recorded the JURECA wrapper as an AI action; no Slurm test allocation or sampling run was submitted."
   - "Did not stage a performance or scientific claim because the new component workflow has not yet executed on the cluster."
+- turn: 2026-09-22_001#3
+  notes:
+  - Recorded N20 as a direct user decision because multi-chain overlay behavior was implemented in the validation utility.
+  - Validation compiled the script and loaded two completed chains in dry-run mode; no figure was rendered and no Slurm work
+    was submitted.

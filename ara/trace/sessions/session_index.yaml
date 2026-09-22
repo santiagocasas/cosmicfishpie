@@ -38,9 +38,9 @@ sessions:
   open_threads: 2
 - id: 2026-09-22_001
   date: '2026-09-22'
-  summary: Corrected GCsp semantics, restored nonlinear defaults, and fixed CLASS padded-grid retrieval.
-  turn_count: 2
-  events_count: 4
+  summary: Corrected nonlinear CLASS retrieval and added multi-chain contour overlays.
+  turn_count: 3
+  events_count: 5
   claims_touched: []
   open_threads: 1
 - id: 2026-08-19_001

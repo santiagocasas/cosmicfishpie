@@ -480,3 +480,19 @@ tree:
   alternatives: ["retain a site-neutral CFP_ENV_SETUP placeholder", "reuse the legacy direct-likelihood scripts", "submit a job while preparing the script"]
   evidence: ["../cosmicfishpie-validation/jobs_punch/common.sh", "../cosmicfishpie-validation/jobs_punch/sample_wl_gcsp_symbolic_independent_32x1.sbatch", "../cosmicfishpie-validation/jobs_punch/README.md"]
   status: resolved
+- id: N20
+  type: decision
+  title: Support multi-chain contour overlays
+  provenance: user
+  timestamp: 2026-09-22T12:20
+  choice: Extend the finished-chain metadata plotter to accept several chains and overplot their shared parameters in one triangle figure.
+  alternatives:
+  - Render each finished chain separately
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/plot_finished_chain.py
+  - ../cosmicfishpie-validation/jobs_punch/README.md
+  - Two-chain 128x1 versus 256-SMT dry-run validation
+  status: resolved
+  also_depends_on:
+  - N11
+  - N12

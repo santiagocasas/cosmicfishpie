@@ -90,3 +90,24 @@ def test_photometric_cell_entry_matches_theory(photometric_likelihood):
     nb_val = 9.974414863747675e-14
     assert theory_val == data_val
     assert theory_val == pytest.approx(nb_val, rel=1e-12, abs=1e-18)
+
+
+def test_photometric_likelihood_uses_preloaded_cells(photometric_fiducial_obs, monkeypatch):
+    fm = photometric_fiducial_obs
+    monkeypatch.setattr(fm, "photo_obs_fid", object(), raising=False)
+    monkeypatch.setattr(fm, "photo_LSS", object(), raising=False)
+
+    ells = np.array([50.0, 100.0, 150.0])
+    cell_gg = np.full((ells.size, 3, 3), 2.0)
+
+    likelihood = PhotometricLikelihood(
+        cosmo_data=fm,
+        cosmo_theory=fm,
+        observables=["GCph"],
+        data_cells={"ells": ells, "Cell_GG": cell_gg},
+    )
+
+    cells = likelihood.data_obs
+    assert cells is likelihood._preloaded_cells
+    np.testing.assert_array_equal(cells["ells"], ells)
+    np.testing.assert_array_equal(cells["Cell_GG"], cell_gg)

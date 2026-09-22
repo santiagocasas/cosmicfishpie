@@ -48,6 +48,15 @@ def _thaw(value):
     return deepcopy(value)
 
 
+def _normalize_camb_import_path(camb_path):
+    """Return the directory that must be on ``sys.path`` to import CAMB."""
+
+    resolved_path = os.path.realpath(os.path.join(os.getcwd(), camb_path))
+    if os.path.isfile(os.path.join(resolved_path, "__init__.py")):
+        return os.path.dirname(resolved_path)
+    return resolved_path
+
+
 def _backend_parameters(configuration, code):
     """Return a mutable backend-parameter snapshot owned by ``configuration``."""
 
@@ -159,8 +168,9 @@ class boltzmann_code:
         upr.SUPPRESS_WARNINGS = self.settings["SUPPRESS_WARNINGS"]
         self.set_cosmicfish_defaults()
         if code == "camb":
-            camb_path = os.path.realpath(os.path.join(os.getcwd(), self.settings["camb_path"]))
-            sys.path.insert(0, camb_path)
+            camb_path = _normalize_camb_import_path(self.settings["camb_path"])
+            if camb_path not in sys.path:
+                sys.path.insert(0, camb_path)
             import camb as camb
 
             self.boltzmann_cambpars = _backend_parameters(self.configuration, code)

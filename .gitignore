@@ -4,6 +4,8 @@
 *.png
 *.zip
 *.tar.gz
+# ...except small, versioned documentation figures.
+!docs/source/_static/likelihood_validation/*.png
 # Generated chains belong on scratch; only the tiny reference fixture is versioned.
 chains/*
 !chains/README.md

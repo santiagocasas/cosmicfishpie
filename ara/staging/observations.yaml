@@ -1,0 +1,83 @@
+observations:
+- id: O01
+  timestamp: 2026-09-15T12:32
+  provenance: ai-suggested
+  content: Use sample_symbolic_32x1.sbatch with fresh_lcdm_symbolic_small.yaml as
+    the first post-install smoke chain; historical comparable symbolic runs completed
+    in about 40 minutes and showed no benefit above pool 32.
+  context: User asked which quick Slurm job to run after environment setup and recalled
+    a roughly 30-minute symbolic chain.
+  potential_type: heuristic
+  bound_to:
+  - N01
+  promoted: true
+  promoted_to: logic/solution/heuristics.md:H01
+  crystallized_via: empirical-resolution
+  stale: false
+- id: O02
+  timestamp: 2026-09-16T18:38
+  provenance: user
+  content: The explicit spawn pool with worker-local likelihood construction runs
+    symbolic likelihood evaluations without mappingproxy serialization failure or
+    fork deadlock.
+  context: User reviewed the live two-worker smoke-test logs; job 15629768 had advanced
+    beyond 132 likelihood calls with no stderr errors.
+  potential_type: claim
+  bound_to:
+  - N03
+  promoted: true
+  promoted_to: logic/claims.md:C01
+  crystallized_via: empirical-resolution
+  stale: false
+- id: O03
+  timestamp: 2026-09-16T18:47
+  provenance: user
+  content: 'The multiprocessing sampler architecture must be probe-agnostic: it must
+    support photometric, spectroscopic, joint, and future likelihood families such
+    as CMB rather than constructing PhotometricLikelihood directly.'
+  context: User identified that the new worker initializer hard-codes PhotometricLikelihood
+    while CosmicFishPie already has SpectroLikelihood and may gain joint/CMB likelihoods.
+  potential_type: architecture
+  bound_to:
+  - N04
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O04
+  timestamp: 2026-09-17T11:40
+  provenance: ai-executed
+  content: Nautilus verbose progress uses carriage-return status updates; launching through srun without --unbuffered makes the live Slurm stdout appear stalled even while workers run and the checkpoint grows.
+  context: Live inspection of independent WL+GCsp symbolic job 15631246 found one initial Nautilus table, 32 busy spawn workers, and a growing HDF5 checkpoint.
+  potential_type: heuristic
+  bound_to:
+  - N05
+  - N06
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O05
+  timestamp: 2026-09-17T15:54
+  provenance: user
+  content: The WL+GCsp posterior triangle from the n_eff=2000 run is visibly wobbly and bubbly; it should not yet be treated as a converged presentation-quality contour.
+  context: User reviewed the generated triangle plot for completed job 15631246.
+  potential_type: heuristic
+  bound_to:
+  - N05
+  promoted: true
+  promoted_to: logic/solution/heuristics.md:H02
+  crystallized_via: empirical-resolution
+  stale: false
+- id: O06
+  timestamp: 2026-09-17T18:17
+  provenance: ai-suggested
+  content: For a sampler that varies only YAML-prior parameters and fixes all omitted nuisances, the like-for-like Fisher overlay is the conditional cosmology sub-block with Gaussian YAML priors added once after independent photo and spectro Fishers are combined; the nuisance-marginal forecast should be retained separately.
+  context: The 128-worker GCsp, WL+GCph, and independent-combination suite driver and postprocessor were created.
+  potential_type: heuristic
+  bound_to:
+  - N08
+  promoted: true
+  promoted_to: logic/solution/heuristics.md:H03
+  crystallized_via: artifact-commitment
+  stale: false

@@ -1,0 +1,66 @@
+session:
+  id: 2026-09-22_001
+  date: '2026-09-22'
+  started: 2026-09-22T10:19
+  last_turn: 2026-09-22T12:30
+  turn_count: 2
+  summary: Corrected GCsp semantics, restored probe-independent nonlinear defaults, and fixed CLASS padded-grid retrieval.
+events_logged:
+- turn: 1
+  type: decision
+  id: N16
+  routing: direct
+  provenance: user
+  summary: Specified that CAMB and CLASS GCsp throughput runs must use only linear power.
+- turn: 1
+  type: experiment
+  id: N17
+  routing: direct
+  provenance: ai-executed
+  summary: Confirmed the nonlinear flag mismatch and passed a CLASS prior-corner likelihood evaluation after correction.
+- turn: 2
+  type: decision
+  id: N18
+  routing: direct
+  provenance: user-revised
+  summary: 'Corrected N16: retain nonlinear Boltzmann defaults across probes; GCsp_linear is not a backend power switch.'
+- turn: 2
+  type: experiment
+  id: N19
+  routing: direct
+  provenance: ai-executed
+  summary: Replaced strict CLASS padded-grid retrieval with explicit nonlinear array sampling and passed a prior-corner likelihood
+    evaluation.
+ai_actions:
+- turn: 1
+  action: Inspected job 15642354 logs and the CLASS backend path, corrected active and generated performance YAMLs to nonlinear
+    false and GCsp_linear true, and evaluated a prior-corner likelihood directly.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb_updated.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class_updated.yaml
+- turn: 2
+  action: Restored all CAMB/CLASS performance YAMLs to nonlinear true and GCsp_linear false, traced the CLASS z_max_pk+1 bulk-getter
+    failure, implemented explicit get_pk_array grid evaluation, and validated a nonlinear prior-corner likelihood.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb_updated.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class_updated.yaml
+  - cosmicfishpie/cosmology/cosmology.py
+  - tests/cosmology_test.py
+claims_touched: []
+key_context:
+- turn: 1
+  excerpt: These are spectro runs; we use only the linear Pk there.
+- turn: 2
+  excerpt: Use the same default Boltzmann configs for GCsp, GCph, or WL and produce nonlinear P(k) at the desired redshift;
+    GCsp_linear may mean something else.
+open_threads:
+- The throughput sbatch launchers still use || true, so Slurm records a failed srun step as a completed batch job.
+ai_suggestions_pending:
+- Change throughput launcher error handling so real sampler failures propagate while the intentional 110-minute timeout remains
+  accepted.

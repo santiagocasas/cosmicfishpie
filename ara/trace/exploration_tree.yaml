@@ -1,0 +1,278 @@
+tree:
+- id: N01
+  type: experiment
+  title: Validate migrated JURECA sampling jobs
+  provenance: ai-executed
+  timestamp: 2026-09-15T12:27
+  evidence:
+  - bash -n passed for common.sh, setup_environment.sh, and all four sbatch scripts
+  - PyYAML parsed all six fresh sampler configurations
+  - sbatch --test-only accepted all four job scripts under account punch_astro
+  - squeue confirmed that no jobs were submitted
+  result: Static configuration and scheduler admission checks passed; runtime environment
+    installation and a real smoke sample remain untested.
+  status: resolved
+- id: N02
+  type: experiment
+  title: Run symbolic 32x1 smoke chain
+  provenance: user
+  timestamp: 2026-09-15T13:10
+  evidence:
+  - evidence/tables/job_15623397_summary.csv
+  - chains/chains_symbolic_32x1_15623397/*_metadata.json
+  - Slurm accounting for job 15623397
+  result: Job completed successfully in 7m50s wall time; sampler elapsed 7m03s, used
+    2h07m58s aggregate CPU and about 8.84 GiB MaxRSS, with 15,936 likelihood calls,
+    ESS 10,003.77, and log Z -5.64313.
+  status: resolved
+  also_depends_on:
+  - N01
+- id: N03
+  type: experiment
+  title: Validate spawn-safe two-worker symbolic sampling
+  provenance: user
+  timestamp: 2026-09-16T18:38
+  evidence:
+  - jobs_punch/logs/cfp-symbolic-spawn-2x1-smoke.15629768.out
+  - jobs_punch/logs/cfp-symbolic-spawn-2x1-smoke.15629768.err
+  - Slurm accounting for job 15629768
+  result: While still running, the job advanced beyond 132 likelihood calls in two-call
+    increments with no stderr errors, demonstrating successful spawn initialization
+    and parallel evaluation.
+  status: open
+- id: N04
+  type: question
+  title: Generalize spawn-safe sampling across probe likelihoods
+  provenance: user
+  timestamp: 2026-09-16T18:47
+  description: Define a serializable likelihood factory/payload protocol that supports
+    photo, spectro, joint, and future CMB likelihoods without embedding probe-specific
+    logic in NautilusSampler.
+  status: open
+- id: N05
+  type: experiment
+  title: Run independent WL+GCsp symbolic spawn sampler
+  provenance: user
+  timestamp: 2026-09-17T11:38
+  evidence:
+  - jobs_punch/logs/cfp-wl-gcsp-symbolic-32x1.15631246.out
+  - jobs_punch/logs/cfp-wl-gcsp-symbolic-32x1.15631246.err
+  - Slurm job 15631246 process inspection and sacct accounting
+  - chains/wl_gcsp_symbolic_independent_15631246/chains_fresh_wl_gcsp_symbolic_independent_32x1/*
+  result: Job completed successfully in 44m22s with 32 active spawn workers, 2,560 posterior rows, N_eff 2011.22, and evidence log Z -10.20869. The initial 33 FisherMatrix construction banners were worker-local runtime initializations; the log contains zero 'Computing Fisher matrix' derivative messages.
+  status: resolved
+  also_depends_on:
+  - N04
+- id: N06
+  type: decision
+  title: Preserve Nautilus progress in future Slurm logs
+  provenance: ai-executed
+  timestamp: 2026-09-17T11:40
+  choice: Add --unbuffered and an explicit 32-CPU step request to the WL+GCsp symbolic batch launcher.
+  alternatives:
+  - Leave the existing buffered srun invocation
+  evidence:
+  - jobs_punch/sample_wl_gcsp_symbolic_independent_32x1.sbatch
+  - jobs_punch/logs/cfp-wl-gcsp-symbolic-32x1.15631246.out
+  status: resolved
+  also_depends_on:
+  - N05
+  - id: N07
+    type: experiment
+    title: Review project-style smooth posterior rendering
+    provenance: user
+    timestamp: 2026-09-17T16:05
+    description: Compare the original 30-bin, smooth=3 triangle with the same chain rendered using 12 bins and smooth=5.
+    result: User reported that the 12-bin, smooth=5 plot looks much better; no additional sampler convergence run was requested.
+    evidence:
+      - chains/wl_gcsp_symbolic_independent_15631246/chains_fresh_wl_gcsp_symbolic_independent_32x1/wl_gcsp_independent_posterior_triangle_smooth12x5.png
+    status: resolved
+- id: N08
+  type: decision
+  title: Run 128-worker 3x2pt Fisher-Nautilus comparison suite
+  provenance: user
+  timestamp: 2026-09-17T18:17
+  choice: Run GCsp, WL+GCph photometric 3x2pt, and their explicitly independent combination with n_live=2000, 128 single-threaded spawn workers, and a 24-hour wall limit per case; compute matched Fisher references and postprocess plots.
+  alternatives:
+  - Continue the previous n_live=500 independent WL+GCsp chain
+  - Run a single mixed FisherMatrix for the photo-spectro combination
+  evidence:
+  - sampler_scripts/fresh_gcsp_symbolic_128x1_nlive2000.yaml
+  - sampler_scripts/fresh_wl_gcph_symbolic_128x1_nlive2000.yaml
+  - sampler_scripts/fresh_wl_gcph_gcsp_symbolic_independent_128x1_nlive2000.yaml
+  - sampler_scripts/run_3x2pt_fisher_nautilus_case.py
+  - jobs_punch/sample_3x2pt_fisher_nautilus_128x1.sbatch
+  status: resolved
+  also_depends_on:
+  - N04
+  - N05
+- id: N09
+  type: decision
+  title: Separate JURECA sampler artifacts from source control
+  provenance: user
+  timestamp: 2026-09-21T12:03
+  choice: Keep only the compact two-parameter symbolic sampler reference and a 100-row documentation fixture in the source checkout; put operational jobs and all test sampler assets in the validation checkout; retain complete chains on scratch and copy selected suites only by explicit rsync request.
+  alternatives:
+  - Keep jobs and generated chains in the source checkout
+  - Archive every scratch suite to the validation repository
+  evidence:
+  - jobs_punch/common.sh
+  - jobs_punch/sync_selected_chains.sh
+  - chains/README.md
+  - chains/example_symbolic_2param/symbolic_2param_first100_metadata.json
+  status: resolved
+
+- id: N10
+  type: decision
+  title: Group validation Slurm launchers in sbatch_files
+  provenance: user
+  timestamp: 2026-09-21T12:30
+  choice: Move all validation .sbatch launchers into jobs_punch/sbatch_files and update shell submitters to invoke those new paths.
+  alternatives:
+  - Leave Slurm launchers at the jobs_punch root
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/sbatch_files/
+  - ../cosmicfishpie-validation/jobs_punch/submit_3x2pt_fisher_nautilus.sh
+  - ../cosmicfishpie-validation/jobs_punch/submit_fiducial_scaling_all.sh
+  status: resolved
+
+- id: N11
+  type: decision
+  title: Add metadata-driven finished-chain contour plotter
+  provenance: user
+  timestamp: 2026-09-21T17:04
+  choice: Provide a one-command utility that accepts a completed Nautilus metadata file, follows chain_file, and renders weighted posterior contours with a compact cosmology default.
+  alternatives:
+  - Require case-specific postprocessing scripts
+  - Manually load text chains in notebooks
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/plot_finished_chain.py
+  - ../cosmicfishpie-validation/jobs_punch/README.md
+  - completed GCsp metadata dry run
+  status: resolved
+
+
+- id: N12
+  type: experiment
+  title: Validate source-CWD-independent finished-chain plotting
+  provenance: ai-executed
+  timestamp: 2026-09-21T17:11
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/common.sh:plot_finished_chain
+  - ../cosmicfishpie-validation/jobs_punch/plot_finished_chain.py
+  - bash -n common.sh
+  - GCsp metadata wrapper dry run from the source checkout
+  result: The common.sh plot_finished_chain wrapper resolves the validation utility through JOBS_PUNCH_DIR after prepare_cfp_environment changes to the source checkout; metadata dry run completed without rendering.
+  status: resolved
+  also_depends_on:
+  - N11
+
+
+- id: N13
+  type: experiment
+  title: Diagnose active Boltzmann throughput failures
+  provenance: ai-executed
+  timestamp: 2026-09-21T18:05
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/logs/perf-camb-b128x2smt.15642252.err
+  - ../cosmicfishpie-validation/jobs_punch/logs/perf-class-b128x2smt.15642255.err
+  - cosmicfishpie/cosmology/cosmology.py:161-164
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
+  result: CAMB spawned workers import camb.py as a top-level module after cosmology.py prepends the installed camb package directory to sys.path, causing relative-import failure. CLASS uses the explicitly selected historical mpvalidation_hp profile with nonlinear_min_k_max=80, which cannot provide nonlinear P(k,z) through the internally requested z=6; its b128x2smt job failed after initialization. No jobs were cancelled and no code was changed.
+  status: resolved
+
+- id: N14
+  type: decision
+  title: Reset throughput jobs onto default Boltzmann profiles
+  provenance: user
+  timestamp: 2026-09-21T18:22
+  choice: The user cancelled all current throughput jobs and selected camb/default.yaml and class/default.yaml for future CAMB and CLASS performance runs.
+  alternatives:
+  - Retain the historical camb/mpvalidation_p3.yaml and class/mpvalidation_hp.yaml profiles
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class.yaml
+  status: resolved
+  also_depends_on:
+  - N13
+
+- id: N15
+  type: experiment
+  title: Repair CAMB package-directory import handling
+  provenance: ai-executed
+  timestamp: 2026-09-21T18:22
+  evidence:
+  - cosmicfishpie/cosmology/cosmology.py:_normalize_camb_import_path
+  - tests/cosmology_test.py:test_camb_package_directory_uses_parent_as_import_root
+  - direct CAMB import regression command in the JURECA source environment
+  result: A configured CAMB package directory is normalized to its site-packages parent before insertion into sys.path, so import camb resolves camb/__init__.py rather than camb/camb.py. The direct regression check passed without submitting a job.
+  status: resolved
+  also_depends_on:
+  - N13
+  - N14
+
+# CONFLICT: N16 was corrected by N18; GCsp_linear is an observable-model switch.
+- id: N16
+  type: decision
+  title: Keep Boltzmann throughput GCsp runs linear
+  provenance: user
+  timestamp: 2026-09-22T10:19
+  choice: Configure the CAMB and CLASS GCsp throughput benchmarks for linear spectroscopic power only, with nonlinear false and GCsp_linear true.
+  alternatives:
+  - Continue nonlinear HMcode evaluations and increase nonlinear_min_k_max further
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class.yaml
+  status: resolved
+  also_depends_on:
+  - N13
+  - N14
+
+- id: N17
+  type: experiment
+  title: Validate linear CLASS at a prior corner
+  provenance: ai-executed
+  timestamp: 2026-09-22T10:19
+  evidence:
+  - CLASS job 15642354 logs showing nonlinear retrieval failure after fiducial initialization
+  - Direct single-process likelihood evaluation at Omegam 0.22, h 0.55, ns 0.88, sigma8 0.72
+  result: The failed job used nonlinear true and GCsp_linear false despite being intended as a linear spectroscopic benchmark. After correcting both flags, CLASS built the fiducial and evaluated the selected prior-corner sample successfully with loglike -70966.32348863786; no Slurm job was submitted.
+  status: resolved
+  also_depends_on:
+  - N16
+
+# CONFLICT: N18 corrects the prior interpretation recorded in N16.
+- id: N18
+  type: decision
+  title: Keep nonlinear Boltzmann defaults probe-independent
+  provenance: user
+  timestamp: 2026-09-22T10:50
+  choice: Use the same default CAMB or CLASS backend profile for GCsp, GCph, and WL, retaining nonlinear power support; do not use GCsp_linear as a backend nonlinear-power switch.
+  alternatives:
+  - Disable nonlinear backend power for spectroscopic throughput runs
+  - Maintain probe-specific Boltzmann profiles
+  evidence:
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_camb.yaml
+  - ../cosmicfishpie-validation/jobs_punch/sampler_scripts/perf_gcsp_5cosmo_nuis_class.yaml
+  - cosmicfishpie/configs/config.py:125-140
+  - cosmicfishpie/LSSsurvey/spectro_obs.py:270
+  status: resolved
+  also_depends_on:
+  - N14
+  - N16
+
+- id: N19
+  type: experiment
+  title: Bypass CLASS padded nonlinear-grid rejection
+  provenance: ai-executed
+  timestamp: 2026-09-22T10:50
+  evidence:
+  - classy/python/classy.pyx:get_pk_and_k_and_z
+  - classy/source/perturbations.c:z_max_pk interpolation padding
+  - cosmicfishpie/cosmology/cosmology.py:_class_pk_grid
+  - tests/cosmology_test.py:test_class_pk_grid_uses_explicit_array_samples
+  - Direct nonlinear prior-corner GCsp likelihood evaluation
+  result: The failure came from CLASS get_pk_and_k_and_z rejecting the complete internal grid because it includes the z_max_pk+1 interpolation endpoint. The explicit array API matches the bulk nonlinear grid to 3.1e-14 relative error where the bulk getter is valid and allowed the nonlinear true, GCsp_linear false prior-corner likelihood to complete with loglike -48240.475202878006. No Slurm job was submitted.
+  status: resolved
+  also_depends_on:
+  - N18

@@ -1,0 +1,113 @@
+entries:
+- turn: 2026-09-15_001#1
+  notes:
+  - Routed verification as a resolved experiment because it produced direct command evidence.
+  - 'Did not crystallize claims: no runtime sample or performance benchmark was executed.'
+- turn: 2026-09-15_001#2
+  notes:
+  - Staged the symbolic 32x1 recommendation as O01 because the user has not yet run or affirmed it.
+  - Did not treat the recalled 30-minute duration as exact; historical measured runs were closer to 40 minutes.
+- turn: 2026-09-15_001#3
+  notes:
+  - Recorded job 15623397 as resolved experiment N02 with scheduler and posterior evidence.
+  - Promoted O01 to H01 via empirical resolution because the recommended smoke chain completed successfully and the user reported
+    the result.
+- turn: 2026-09-16_001#1
+  notes:
+  - Recorded live smoke execution as open experiment N03 because the job has not completed.
+  - 'Crystallized O02 to C01 via empirical resolution: the researcher commented on sustained likelihood progress and logs
+    show no multiprocessing errors.'
+  - Scoped C01 to symbolic pool=2; CAMB and larger pools remain untested.
+- turn: 2026-09-16_001#2
+  notes:
+  - 'Staged O03 as architecture rather than crystallizing: the requirement is explicit, but the replacement protocol has not
+    been selected or committed.'
+  - Opened N04 to track the design question across existing photo/spectro and future joint/CMB implementations.
+  - 'No conflict with C01: that claim is explicitly scoped to the successful symbolic photometric pool=2 experiment.'
+- turn: 2026-09-17_001#1
+  notes:
+  - Recorded N05 as an open experiment because job 15631246 is still running; no convergence or posterior result is available.
+  - Recorded N06 as a direct implementation decision because the launcher was changed after live evidence that Nautilus progress
+    uses carriage-return output.
+  - Staged O04 as a heuristic pending confirmation from a subsequent --unbuffered job log.
+- turn: 2026-09-17_001#2
+  notes:
+  - Resolved N05 through empirical completion: sacct, metadata, and posterior file independently agree on successful completion.
+  - Did not promote O04: no subsequent --unbuffered run has empirically confirmed the live-log behavior yet.
+  - Recorded generated plots as run artifacts, not source changes.
+- turn: 2026-09-17_001#3
+  notes:
+  - Staged O05 rather than treating visual roughness as a direct convergence failure: the original plot used an unnecessarily
+      fine 30-bin histogram at N_eff about 2000.
+  - Recommended both a conventional smoother re-render and a higher n_eff continuation; neither was run this turn.
+- turn: 2026-09-17_001#4
+  notes:
+  - Recorded N06 as user-revised: the user preferred evaluating a more appropriate density rendering over immediately consuming
+      more sampling allocation.
+  - The generated figure changes only the 2D histogram presentation (bins=12, smooth=5); it is not evidence of improved sampler
+    convergence.
+- turn: 2026-09-17_001#5
+  notes:
+  - Promoted O05 to H02 through empirical resolution: the user compared the generated rendering and found the project-style
+      coarser smoothing substantially better.
+  - This resolves the visual-presentation question only; it does not claim a general posterior-convergence proof.
+- turn: 2026-09-17_002#1
+  notes:
+  - Recorded N08 as a direct user decision because the requested sampling allocation, probes, and Fisher comparison were implemented
+    as concrete artifacts.
+  - Crystallized O06 to H03 through artifact commitment: the driver saves both conditional and marginal Fishers and labels
+      the conditional result as the sampler reference.
+  - Did not run a Fisher, sampler, static validation, or Slurm submission; the new suite remains untested and uncommitted.
+- turn: 2026-09-21_001#1
+  notes:
+  - Recorded N09 as a direct user decision because the approved separation was implemented as concrete filesystem artifacts.
+  - 'Did not stage or crystallize a performance or correctness claim: static shell and path validation passed, but no post-reorganization
+    sampler was submitted.'
+- turn: 2026-09-21_001#2
+  notes:
+  - Recorded N10 as a direct user decision because the requested batch-file layout was implemented and shell submitters were
+    rewired.
+  - 'Did not record a runtime sampling claim: bash syntax and path assertions passed, but no Slurm submission was made.'
+- turn: 2026-09-21_001#3
+  notes:
+  - Recorded N11 as a direct user decision because the requested simple plotting workflow was committed as a validation utility.
+  - The GCsp metadata dry run verified a readable completed chain with 11729 positive-weight samples; no plot render or new
+    Slurm job was launched.
+- turn: 2026-09-21_001#4
+  notes:
+  - 'Recorded N12 as a resolved AI-executed experiment: the failure was caused by prepare_cfp_environment intentionally changing
+    the CWD, and the common.sh wrapper was exercised from that CWD.'
+  - 'Did not record a rendered-plot result: the wrapper validation used --dry-run and did not submit Slurm work.'
+- turn: 2026-09-21_001#5
+  notes:
+  - 'Recorded N13 as a resolved diagnostic experiment: the user requested log analysis only, and no running or pending job
+    was interrupted.'
+  - Kept remediation as an open thread because the two source fixes would affect live experiment setup and the user has not
+    authorized cancellation or edits.
+- turn: 2026-09-21_001#6
+  notes:
+  - 'Recorded N14 as a direct user decision: the user reported cancelling all throughput jobs and explicitly selected default.yaml
+    for both active backend configurations.'
+  - Validated YAML parsing and profile paths only; did not resubmit, render, or run a sampler. The independent CAMB spawned-worker
+    import-path defect remains outside this profile-only change.
+- turn: 2026-09-21_001#7
+  notes:
+  - 'Recorded N15 as a resolved AI-executed experiment: the installed CAMB package directory now normalizes to its parent
+    import root before import.'
+  - The focused direct regression test passed. pytest is not installed in the JURECA runtime environment, so no pytest execution
+    was possible and no Slurm job was submitted.
+- turn: 2026-09-22_001#1
+  notes:
+  - Recorded N16 as a direct user decision because the user explicitly stated the spectroscopic throughput runs should use
+    only linear P(k).
+  - 'Recorded N17 as resolved empirical validation: the corrected CLASS configuration evaluated a deliberately extreme prior-corner
+    cosmology without the nonlinear z-range error.'
+  - 'Did not treat job 15642354 batch COMPLETED state as success: sacct shows its srun step FAILED and the launcher masks
+    that status with || true.'
+- turn: 2026-09-22_001#2
+  notes:
+  - Recorded N18 as a user-revised correction and preserved the explicit conflict with N16 rather than silently replacing
+    it.
+  - 'Recorded N19 as resolved empirical validation: explicit CLASS nonlinear array sampling matched the bulk getter to 3.1e-14
+    where valid and completed the prior-corner likelihood.'
+  - Restored CAMB because changing it had no evidentiary basis; no Slurm job was submitted.

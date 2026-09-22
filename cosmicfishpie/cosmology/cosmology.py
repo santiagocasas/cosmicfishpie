@@ -57,6 +57,13 @@ def _normalize_camb_import_path(camb_path):
     return resolved_path
 
 
+def _class_pk_grid(classres, k, z, *, nonlinear):
+    """Evaluate CLASS P(k, z) on explicit samples without padded-grid checks."""
+
+    values = classres.get_pk_array(k, z, len(k), len(z), nonlinear)
+    return np.asarray(values).reshape((len(z), len(k))).T
+
+
 def _backend_parameters(configuration, code):
     """Return a mutable backend-parameter snapshot owned by ``configuration``."""
 
@@ -945,7 +952,13 @@ class boltzmann_code:
         self.results.zgrid = z[::-1]
 
         ## interpolating function Pk_nl (k,z)
-        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=self.settings["nonlinear"])
+        # CLASS pads its internal z grid above z_max_pk for interpolation. The
+        # bulk getter rejects that entire grid when HMcode cannot reach the
+        # padded endpoint, even though P(k,z) remains available at the sampled
+        # redshifts. Evaluate the same grid through CLASS's array API instead.
+        Pk_nl = _class_pk_grid(
+            classres, k, z, nonlinear=self.settings["nonlinear"]
+        )
         self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
 
         tk, k, z = classres.get_transfer_and_k_and_z()

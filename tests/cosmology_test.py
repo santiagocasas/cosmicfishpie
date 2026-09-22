@@ -5,8 +5,10 @@ import sys
 from pathlib import Path
 
 import camb
+import numpy as np
 
 from cosmicfishpie.cosmology.cosmology import (
+    _class_pk_grid,
     _normalize_camb_import_path,
     boltzmann_code,
 )
@@ -58,3 +60,18 @@ def test_camb_package_directory_uses_parent_as_import_root(monkeypatch):
 
     assert import_root == str(package_directory.parent)
     assert Path(reloaded_camb.__file__).parent == package_directory
+
+
+def test_class_pk_grid_uses_explicit_array_samples():
+    class FakeClass:
+        def get_pk_array(self, k, z, k_size, z_size, nonlinear):
+            assert (k_size, z_size, nonlinear) == (2, 3, True)
+            return np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+
+    result = _class_pk_grid(
+        FakeClass(), np.array([0.1, 1.0]), np.array([0.0, 1.0, 2.0]), nonlinear=True
+    )
+
+    np.testing.assert_array_equal(
+        result, np.array([[1.0, 3.0, 5.0], [2.0, 4.0, 6.0]])
+    )

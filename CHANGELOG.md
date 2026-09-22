@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Vectorize the photometric Cl pipeline (row-wise `sqrtP_limber`, cached kernels
+  and window factors) for up to ~6x faster Fisher matrix computation with the
+  symbolic backend; see `docs/source/photometric_optimization_results.md`.
+- Generalize the Nautilus sampler to a registered-likelihood-component
+  architecture, fix spawn-safety for multiprocessing worker pools, and add
+  Slurm launch scripts for HPC runs.
+- Validate WL/GCsp/joint Nautilus likelihoods against Fisher forecasts; see
+  `docs/source/likelihood_validation.md`.
+- Fix a CLASS/HMcode nonlinear power spectrum error at z=6, normalize CAMB
+  input paths, and various spectro/base likelihood and job-handling fixes.
 - Add explicit analysis context runtime isolation and refresh the comprehensive guide.
 
 ## 1.3.1

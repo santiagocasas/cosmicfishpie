@@ -1,0 +1,69 @@
+session:
+  id: 2026-09-16_001
+  date: '2026-09-16'
+  started: 2026-09-16T18:38
+  last_turn: 2026-09-16T18:47
+  turn_count: 2
+  summary: Validated symbolic spawn progress, then identified the need for a probe-agnostic
+    sampler architecture.
+events_logged:
+- turn: 1
+  type: experiment
+  id: N03
+  routing: direct
+  provenance: user
+  summary: Job 15629768 advanced beyond 132 calls with two spawned workers and no
+    stderr errors.
+- turn: 1
+  type: claim
+  id: C01
+  routing: crystallized
+  provenance: user
+  summary: Symbolic worker-local spawn execution is empirically supported at pool
+    size two.
+- turn: 2
+  type: observation
+  id: O03
+  routing: staged
+  provenance: user
+  summary: Sampler worker construction must support photo, spectro, joint, and future
+    CMB likelihoods.
+- turn: 2
+  type: question
+  id: N04
+  routing: direct
+  provenance: user
+  summary: Design a serializable probe-agnostic likelihood factory and payload protocol.
+ai_actions:
+- turn: 1
+  action: Inspected Slurm accounting and live stdout/stderr for job 15629768.
+  provenance: ai-executed
+  files_changed: []
+- turn: 2
+  action: Inspected current likelihood implementations and confirmed that NautilusSampler
+    is photometric-only, SpectroLikelihood exists, and no joint/CMB likelihood class
+    currently exists.
+  provenance: ai-executed
+  files_changed: []
+claims_touched:
+- id: C01
+  action: crystallized
+  turn: 1
+key_context:
+- turn: 1
+  excerpt: User reported that the logs indicate the new spawn-safe implementation
+    is working well.
+- turn: 2
+  excerpt: User warned that the architecture must account for spectroscopic, joint,
+    CMB, and future likelihoods.
+open_threads:
+- Wait for symbolic smoke job 15629768 to complete and record final accounting.
+- Refactor NautilusSampler around a probe-agnostic likelihood factory/payload protocol
+  before scaling production runs.
+- Define joint-likelihood semantics, including whether probes are independent or require
+  cross-covariance.
+- Validate the generalized architecture with photo and spectro before CAMB pool=32.
+- Fix benchmark cache marker commit propagation on compute nodes.
+ai_suggestions_pending:
+- Use component payloads plus a composite likelihood rather than branching directly
+  inside multiprocessing code.

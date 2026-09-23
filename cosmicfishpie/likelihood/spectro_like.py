@@ -74,7 +74,9 @@ def compute_covariance_legendre(P_ell, cosmoFM: cosmicfish.FisherMatrix):
     k_grid = cosmoFM.Pk_kgrid
     P_ell_broad = P_ell[:, :, :, None, None]
     n_k, n_z, n_ell = P_ell.shape
-    volume_survey = cosmoFM.pk_cov.volume_survey_array
+    # SpectroCov exposes volume_survey(ibin) as a per-bin method, not a
+    # precomputed array attribute (see cosmicfishpie/LSSsurvey/spectro_cov.py).
+    volume_survey = np.array([cosmoFM.pk_cov.volume_survey(ibin) for ibin in range(n_z)])
 
     # Compute auto and cross terms
     P00 = (P_ell_broad[:, :, 0]) ** 2 * lgt.m00[None, None, :, :]
@@ -140,7 +142,12 @@ def compute_chi2_legendre(P_ell_data, P_ell_theory, inv_covariance):
     return chi2
 
 
-def compute_wedge_chi2(P_obs_data, P_obs_theory, cosmoFM_data: cosmicfish.FisherMatrix):
+def compute_wedge_chi2(
+    P_obs_data,
+    P_obs_theory,
+    cosmoFM_data: cosmicfish.FisherMatrix,
+    covariance_spectrum=None,
+):
     """
     Compute χ² for wedges using fully vectorized operations.
     Matches the loop implementation exactly.
@@ -151,6 +158,13 @@ def compute_wedge_chi2(P_obs_data, P_obs_theory, cosmoFM_data: cosmicfish.Fisher
         Synthetic data power spectrum (n_z, n_mu, n_k)
     P_obs_theory : array_like
         Theory power spectrum (n_z, n_mu, n_k)
+    cosmoFM_data : cosmicfish.FisherMatrix
+        Configuration providing the k and mu grids and the survey volumes.
+    covariance_spectrum : array_like, optional
+        Spectrum used to build the Gaussian covariance. Defaults to
+        ``P_obs_theory``, following Eq. (9) of arXiv:2303.09451. Pass
+        ``P_obs_data`` to freeze the covariance at the fiducial instead.
+
     Returns:
     -------
     float
@@ -166,10 +180,21 @@ def compute_wedge_chi2(P_obs_data, P_obs_theory, cosmoFM_data: cosmicfish.Fisher
 
     # Prepare terms for broadcasting:
     k_term = k_grid[None, None, :] ** 2  # (1, 1, n_k)
-    V_term = cosmoFM_data.pk_cov.volume_survey_array[:, None, None]  # (n_z, 1, 1)
+    # SpectroCov exposes volume_survey(ibin) as a per-bin method, not a
+    # precomputed array attribute (see cosmicfishpie/LSSsurvey/spectro_cov.py).
+    n_z = len(cosmoFM_data.pk_cov.global_z_bin_mids)
+    volume_survey_array = np.array([cosmoFM_data.pk_cov.volume_survey(ibin) for ibin in range(n_z)])
+    V_term = volume_survey_array[:, None, None]  # (n_z, 1, 1)
 
     # Compute covariance (n_z, n_mu, n_k)
-    covariance = (prefactor / (k_term * V_term)) * P_obs_data**2
+    # The covariance is built from the THEORY spectrum, following Eq. (9) of
+    # arXiv:2303.09451. Using the data spectrum instead freezes the covariance
+    # at the fiducial: it gives the same chi2 and the same Fisher/Hessian *at*
+    # the fiducial, but differs away from it and whenever the data are not
+    # exactly the noiseless theory realisation.
+    if covariance_spectrum is None:
+        covariance_spectrum = P_obs_theory
+    covariance = (prefactor / (k_term * V_term)) * np.asarray(covariance_spectrum) ** 2
 
     # Compute k_integrand for all points simultaneously
     k_integrand = delta**2 / covariance
@@ -244,7 +269,13 @@ class SpectroLikelihood(Likelihood, NautilusMixin):
         leg_flag: str = "wedges",
         data_obs: Optional[np.ndarray] = None,
         nuisance_shot: Optional[Iterable[float]] = None,
+        covariance_from: str = "theory",
     ) -> None:
+        if covariance_from not in ("theory", "data"):
+            raise ValueError(
+                f"Unknown covariance_from '{covariance_from}'. Use 'theory' or 'data'."
+            )
+        self.covariance_from = covariance_from
         self._preloaded_data = None if data_obs is None else np.array(data_obs)
         self._nuisance_shot = (
             None if nuisance_shot is None else np.array(nuisance_shot, dtype=float)
@@ -259,43 +290,78 @@ class SpectroLikelihood(Likelihood, NautilusMixin):
 
         return self._data_wedges
 
+    def _ensure_runtime_state(self) -> None:
+        """Initialise grids and covariance without computing Fisher derivatives."""
+        if not hasattr(self.cosmo_data, "pk_cov") or self.cosmo_data.pk_cov is None:
+            if not hasattr(self.cosmo_data, "set_pk_settings"):
+                raise AttributeError("cosmoFM_data cannot initialise spectroscopic runtime state")
+            self.cosmo_data.set_pk_settings()
+            if "IM" in self.cosmo_data.observables and "GCsp" in self.cosmo_data.observables:
+                self.cosmo_data.obs_spectrum = ["I", "g"]
+            elif "IM" in self.cosmo_data.observables:
+                self.cosmo_data.obs_spectrum = ["I", "I"]
+            else:
+                self.cosmo_data.obs_spectrum = ["g", "g"]
+            self.cosmo_data.pk_obs_fid = spobs.ComputeGalSpectro(
+                cosmopars=self.cosmo_data.fiducialcosmopars,
+                fiducial_cosmopars=self.cosmo_data.fiducialcosmopars,
+                spectrobiaspars=self.cosmo_data.Spectrobiaspars,
+                spectrononlinearpars=self.cosmo_data.Spectrononlinpars,
+                IMbiaspars=self.cosmo_data.IMbiaspars,
+                PShotpars=self.cosmo_data.PShotpars,
+                configuration=self.cosmo_data,
+            )
+            self.cosmo_data.pk_cov = spcov.SpectroCov(
+                self.cosmo_data.fiducialcosmopars,
+                fiducial_specobs=self.cosmo_data.pk_obs_fid,
+                bias_samples=self.cosmo_data.obs_spectrum,
+                configuration=self.cosmo_data,
+            )
+
     def compute_data(self) -> np.ndarray:
+        self._ensure_runtime_state()
         if self._preloaded_data is not None:
             data = np.array(self._preloaded_data, copy=False)
             if self.leg_flag == "legendre":
-                _, self._inv_cov_legendre = compute_covariance_legendre(data, self.cosmoFM_data)
+                _, self._inv_cov_legendre = compute_covariance_legendre(data, self.cosmo_data)
             else:
                 self._data_wedges = data
             return data
 
-        if not hasattr(self.cosmoFM_data, "pk_cov") or self.cosmoFM_data.pk_cov is None:
-            raise AttributeError(
-                "cosmoFM_data.pk_cov is not available. Ensure the FisherMatrix was initialised for spectroscopic probes."
-            )
-
         obsPgg = observable_Pgg(
-            self.cosmoFM_data.pk_cov,
-            self.cosmoFM_data,
+            self.cosmo_data.pk_cov,
+            self.cosmo_data,
             nuisance_shot=self._nuisance_shot,
         )
         self._data_wedges = obsPgg
         if self.leg_flag == "legendre":
-            p_ell = legendre_Pgg(obsPgg, self.cosmoFM_data)
-            _, self._inv_cov_legendre = compute_covariance_legendre(p_ell, self.cosmoFM_data)
+            p_ell = legendre_Pgg(obsPgg, self.cosmo_data)
+            _, self._inv_cov_legendre = compute_covariance_legendre(p_ell, self.cosmo_data)
             return p_ell
         return obsPgg
 
     def compute_theory(self, param_dict: Dict[str, Any]) -> np.ndarray:
-        return compute_theory_spectro(param_dict, self.cosmoFM_theory, self.leg_flag)
+        return compute_theory_spectro(param_dict, self.cosmo_theory, self.leg_flag)
 
     def compute_chi2(self, theory_obs: np.ndarray) -> float:
+        use_theory_cov = self.covariance_from == "theory"
+
         if self.leg_flag == "wedges":
-            return compute_wedge_chi2(self.data_obs, theory_obs, self.cosmoFM_data)
+            return compute_wedge_chi2(
+                self.data_obs,
+                theory_obs,
+                self.cosmo_data,
+                covariance_spectrum=None if use_theory_cov else self.data_obs,
+            )
+
+        if use_theory_cov:
+            # Rebuilt every call: the Legendre covariance depends on the theory
+            # multipoles, so it cannot be cached across parameter evaluations.
+            _, inv_cov = compute_covariance_legendre(theory_obs, self.cosmo_data)
+            return compute_chi2_legendre(self.data_obs, theory_obs, inv_cov)
 
         if self._inv_cov_legendre is None:
-            _, self._inv_cov_legendre = compute_covariance_legendre(
-                self.data_obs, self.cosmoFM_data
-            )
+            _, self._inv_cov_legendre = compute_covariance_legendre(self.data_obs, self.cosmo_data)
         return compute_chi2_legendre(self.data_obs, theory_obs, self._inv_cov_legendre)
 
 

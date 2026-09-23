@@ -11,10 +11,13 @@ COSMO_SETTINGS:
   'P_k_max_1/Mpc': 50.
   'output': 'mPk,mTk'
   'non linear': 'hmcode_2020'
-  'z_max_pk': 4.0
+  # The photometric lensing kernels request P(k,z) through z=5. CLASS samples
+  # internally through z_max_pk + 1, so HMcode needs this range to remain valid
+  # through the padded z=6 endpoint.
+  'z_max_pk': 5.0
   'N_ncdm': 1
   'T_cmb': 2.7255
-  'nonlinear_min_k_max': 50.
+  'nonlinear_min_k_max': 150.
   'k_pivot': 0.05
   'YHe': 0.2454006
 LCDM:

@@ -173,6 +173,30 @@ class Likelihood(ABC):
         return -0.5 * chi2
 
 
+class CompositeLikelihood:
+    """Sum independent likelihood contributions for a shared parameter set."""
+
+    def __init__(self, likelihoods: Sequence[Likelihood]) -> None:
+        if not likelihoods:
+            raise ValueError("CompositeLikelihood requires at least one likelihood")
+        self.likelihoods = tuple(likelihoods)
+
+    def loglike(
+        self,
+        param_vec: Optional[Iterable[float]] = None,
+        *,
+        param_dict: Optional[Dict[str, Any]] = None,
+        prior: Optional[Any] = None,
+    ) -> float:
+        """Return the sum of statistically independent log-likelihoods."""
+        return float(
+            sum(
+                likelihood.loglike(param_vec=param_vec, param_dict=param_dict, prior=prior)
+                for likelihood in self.likelihoods
+            )
+        )
+
+
 class NautilusMixin:
     """Mixin class for running Nautilus samplers."""
 
@@ -215,6 +239,12 @@ class NautilusMixin:
         sampler_kwargs = dict(sampler_kwargs or {})
         run_kwargs = dict(run_kwargs or {})
 
-        sampler = Sampler(prior, self.loglike, **sampler_kwargs, likelihood_kwargs={"prior": prior})
+        sampler = Sampler(
+            prior,
+            self.loglike,
+            **sampler_kwargs,
+            pass_dict=False,
+            likelihood_kwargs={"prior": prior},
+        )
         sampler.run(**run_kwargs)
         return sampler

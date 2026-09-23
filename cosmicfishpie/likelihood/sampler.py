@@ -1,14 +1,210 @@
 import json
+import multiprocessing
 import os
 import time
+from copy import deepcopy
 from datetime import datetime
+from typing import Protocol
 
 import numpy as np
 from nautilus import Prior, Sampler
 from scipy.stats import norm
 
 from cosmicfishpie.configs.context import build_analysis_context
-from cosmicfishpie.likelihood import PhotometricLikelihood
+from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
+from cosmicfishpie.likelihood.base import CompositeLikelihood, Likelihood
+from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
+from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+
+_WORKER_LIKELIHOOD = None
+
+
+class LikelihoodComponent(Protocol):
+    """Factory hooks needed to move likelihood data across spawn boundaries."""
+
+    def build(self, config, settings, data=None, context=None) -> Likelihood:
+        """Construct a likelihood around process-local cosmology state."""
+
+    def data_payload(self, likelihood: Likelihood):
+        """Return the serializable fiducial data needed by a spawned worker."""
+
+
+class _PhotometricComponent:
+    def build(self, config, settings, data=None, context=None):
+        observables = settings.get("observables")
+        if observables is None:
+            observables = [obs for obs in config["observables"] if obs in ("WL", "GCph")]
+        if context is None or set(context.observables) != set(observables):
+            context = _build_context(config, observables=observables)
+        return PhotometricLikelihood(
+            cosmo_data=context,
+            cosmo_theory=context,
+            observables=observables,
+            data_cells=data,
+        )
+
+    def data_payload(self, likelihood):
+        return likelihood.data_obs
+
+
+class _SpectroscopicComponent:
+    def build(self, config, settings, data=None, context=None):
+        observables = settings.get("observables")
+        if observables is None:
+            observables = [obs for obs in config["observables"] if obs in ("GCsp", "IM")]
+        context = _build_fisher_context(config, observables)
+        return SpectroLikelihood(
+            cosmoFM_data=context,
+            cosmoFM_theory=context,
+            leg_flag=settings.get("leg_flag", "wedges"),
+            data_obs=data,
+            nuisance_shot=settings.get("nuisance_shot"),
+            covariance_from=settings.get("covariance_from", "theory"),
+        )
+
+    def data_payload(self, likelihood):
+        return likelihood.data_obs
+
+
+LIKELIHOOD_COMPONENTS = {
+    "photometric": _PhotometricComponent(),
+    "spectroscopic": _SpectroscopicComponent(),
+}
+
+
+def register_likelihood_component(name: str, component: LikelihoodComponent) -> None:
+    """Register a likelihood factory for use by serial and spawned samplers."""
+    if not name or not isinstance(name, str):
+        raise ValueError("Likelihood component names must be non-empty strings")
+    if not callable(getattr(component, "build", None)) or not callable(
+        getattr(component, "data_payload", None)
+    ):
+        raise TypeError("Likelihood components must define build() and data_payload()")
+    LIKELIHOOD_COMPONENTS[name] = component
+
+
+def _likelihood_specs(config):
+    configured = config.get("likelihoods")
+    if configured is None:
+        observables = set(config["observables"])
+        has_photo = bool(observables.intersection(("WL", "GCph")))
+        has_spectro = bool(observables.intersection(("GCsp", "IM")))
+        if has_photo and has_spectro:
+            raise ValueError(
+                "Mixed photometric and spectroscopic probes require an explicit "
+                "'likelihoods' list; listing both declares them statistically independent"
+            )
+        if has_photo:
+            return [{"type": "photometric", "settings": {}}]
+        if has_spectro:
+            return [{"type": "spectroscopic", "settings": {}}]
+        raise ValueError("Could not infer a likelihood from the configured observables")
+
+    if isinstance(configured, (str, dict)):
+        configured = [configured]
+    if not configured:
+        raise ValueError("The 'likelihoods' list cannot be empty")
+
+    specs = []
+    for entry in configured:
+        if isinstance(entry, str):
+            spec = {"type": entry}
+        elif isinstance(entry, dict):
+            spec = dict(entry)
+        else:
+            raise TypeError("Each likelihood entry must be a component name or mapping")
+        name = spec.pop("type", None)
+        if name not in LIKELIHOOD_COMPONENTS:
+            available = ", ".join(sorted(LIKELIHOOD_COMPONENTS))
+            raise ValueError(f"Unknown likelihood component '{name}'. Available: {available}")
+        specs.append({"type": name, "settings": spec})
+    return specs
+
+
+def _build_likelihood(specs, config, payloads=None, context=None):
+    if payloads is None:
+        payloads = [None] * len(specs)
+    if len(payloads) != len(specs):
+        raise ValueError("Likelihood component and payload counts do not match")
+
+    likelihoods = []
+    for spec, payload in zip(specs, payloads):
+        component = LIKELIHOOD_COMPONENTS[spec["type"]]
+        shared_context = context if len(specs) == 1 else None
+        likelihoods.append(
+            component.build(config, spec["settings"], payload, context=shared_context)
+        )
+    if len(likelihoods) == 1:
+        return likelihoods[0]
+    return CompositeLikelihood(likelihoods)
+
+
+def _likelihood_payloads(specs, likelihood):
+    likelihoods = (
+        likelihood.likelihoods if isinstance(likelihood, CompositeLikelihood) else (likelihood,)
+    )
+    return [
+        LIKELIHOOD_COMPONENTS[spec["type"]].data_payload(component_likelihood)
+        for spec, component_likelihood in zip(specs, likelihoods)
+    ]
+
+
+def _build_context(config, observables=None):
+    """Build an analysis context from a plain sampler configuration."""
+    options = config["options"]
+    return build_analysis_context(
+        fiducialpars=config["fiducial"],
+        options=options,
+        observables=observables or config["observables"],
+        cosmo_model=options["cosmo_model"],
+        survey_name=options["survey_name"],
+    )
+
+
+def _build_fisher_context(config, observables):
+    """Build mutable runtime state required by spectroscopic likelihoods."""
+    options = config["options"]
+    return FisherMatrix(
+        options=deepcopy(options),
+        observables=list(observables),
+        fiducialpars=deepcopy(config["fiducial"]),
+        surveyName=options["survey_name"],
+        cosmoModel=options["cosmo_model"],
+    )
+
+
+def _initialize_likelihood_worker(config, likelihood_specs, data_payloads):
+    """Construct process-local cosmology state in a freshly spawned worker.
+
+    Workers rebuild cosmology only from the plain config and run silently
+    (feedback=0); worker 1 stays verbose as a sanity check of placement.
+    """
+    global _WORKER_LIKELIHOOD
+    identity = multiprocessing.current_process()._identity
+    worker_id = identity[0] if identity else 0
+
+    config = deepcopy(config)
+    if worker_id != 1:
+        config.setdefault("options", {})["feedback"] = 0
+    else:
+        cpus = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else "n/a"
+        print(
+            f"[worker 1] pid={os.getpid()} cpus={cpus} "
+            f"OMP_NUM_THREADS={os.environ.get('OMP_NUM_THREADS')}",
+            flush=True,
+        )
+
+    t0 = time.perf_counter()
+    _WORKER_LIKELIHOOD = _build_likelihood(likelihood_specs, config, data_payloads)
+    if worker_id == 1:
+        print(f"[worker 1] likelihood built in {time.perf_counter() - t0:.2f} s", flush=True)
+
+
+def _worker_loglike(param_dict):
+    """Evaluate a sample using the likelihood initialized in this worker."""
+    if _WORKER_LIKELIHOOD is None:
+        raise RuntimeError("Likelihood worker was not initialized")
+    return _WORKER_LIKELIHOOD.loglike(param_dict=param_dict)
 
 
 def _format_param_label(param_name):
@@ -97,7 +293,8 @@ class NautilusSampler:
 
         # Setup output path
         self.timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
-        self.folder_name = f"chains/chains_{self.config['name']}"
+        output_dir = self.config.get("output_dir", "chains")
+        self.folder_name = os.path.join(output_dir, f"chains_{self.config['name']}")
         os.makedirs(self.folder_name, exist_ok=True)
 
         self.outroot = f"{self.folder_name}/cosmicjellyfish_{self.options['code']}_{self._get_survey_name()}_{self.config['name']}"
@@ -118,13 +315,7 @@ class NautilusSampler:
         return self.options["survey_name_photo"] or self.options["survey_name_spectro"]
 
     def _setup_cosmology(self):
-        self.cosmo_context = build_analysis_context(
-            fiducialpars=self.fiducial,
-            options=self.options,
-            observables=self.observables,
-            cosmo_model=self.options["cosmo_model"],
-            survey_name=self.options["survey_name"],
-        )
+        self.cosmo_context = _build_context(self.config)
 
     def _setup_priors(self):
         self.prior_chosen = Prior()
@@ -137,9 +328,11 @@ class NautilusSampler:
                 self.prior_chosen.add_parameter(par, dist)
 
     def _setup_likelihood(self):
-        self.photo_like = PhotometricLikelihood(
-            cosmo_data=self.cosmo_context, cosmo_theory=self.cosmo_context
+        self.likelihood_specs = _likelihood_specs(self.config)
+        self.likelihood = _build_likelihood(
+            self.likelihood_specs, self.config, context=self.cosmo_context
         )
+        self.likelihood_payloads = _likelihood_payloads(self.likelihood_specs, self.likelihood)
 
     def _save_metadata(self, evidence=None, finish_time=None):
 
@@ -183,38 +376,74 @@ class NautilusSampler:
         return f"{h:02d}:{m:02d}:{s:02d}"
 
     def run(self):
-        # Check if chain file exists (run completed)
         self.chain_file = self.outroot + ".txt"
         self.chain_hdf5 = self.outroot + ".hdf5"
-        # Save initial metadata
         self.tini = time.time()
         self._save_metadata()
-        # Set up sampler with resume capability
-        nautilus_sampler = None
+        worker_pool = None
 
-        def start_sampler():
-            naut = Sampler(
-                prior=self.prior_chosen,
-                likelihood=self.photo_like.loglike,
-                n_live=self.sampler_settings["n_live"],
-                n_networks=self.sampler_settings["n_networks"],
-                n_batch=self.sampler_settings["n_batch"],
-                pool=self.sampler_settings["pool"],
-                pass_dict=False,
-                filepath=self.chain_hdf5,
-                resume=True,  # This handles checkpointing automatically
-                likelihood_kwargs={"prior": self.prior_chosen},
-            )
-            return naut
+        def stop_worker_pool(terminate=False):
+            nonlocal worker_pool
+            if worker_pool is None:
+                return
+            if terminate:
+                worker_pool.terminate()
+            else:
+                worker_pool.close()
+            worker_pool.join()
+            worker_pool = None
+
+        def start_sampler(parallel=True):
+            nonlocal worker_pool
+            pool_size = int(self.sampler_settings["pool"])
+            sampler_kwargs = {
+                "prior": self.prior_chosen,
+                "n_live": self.sampler_settings["n_live"],
+                "n_networks": self.sampler_settings["n_networks"],
+                "n_batch": self.sampler_settings["n_batch"],
+                "filepath": self.chain_hdf5,
+                "resume": True,
+            }
+
+            if parallel and pool_size > 1:
+                # Build heavy CAMB/CLASS state independently in fresh processes.
+                # Only plain component specs and serializable fiducial data cross
+                # the spawn boundary; the frozen AnalysisContext never does.
+                worker_pool = multiprocessing.get_context("spawn").Pool(
+                    pool_size,
+                    initializer=_initialize_likelihood_worker,
+                    initargs=(
+                        self.config,
+                        self.likelihood_specs,
+                        self.likelihood_payloads,
+                    ),
+                )
+                sampler_kwargs.update(
+                    likelihood=_worker_loglike,
+                    pool=worker_pool,
+                    pass_dict=True,
+                )
+            else:
+                sampler_kwargs.update(
+                    likelihood=self.likelihood.loglike,
+                    pool=None,
+                    pass_dict=False,
+                    likelihood_kwargs={"prior": self.prior_chosen},
+                )
+
+            try:
+                return Sampler(**sampler_kwargs)
+            except Exception:
+                stop_worker_pool(terminate=True)
+                raise
 
         if os.path.exists(self.chain_file):
             print(f"Chain file exists: {self.chain_file}")
             print("Run already completed. Updating metadata only!")
-            # Load existing evidence and timing info
             if os.path.exists(self.chain_hdf5):
                 try:
                     print("Loading sampler to get evidence...")
-                    nautilus_sampler = start_sampler()
+                    nautilus_sampler = start_sampler(parallel=False)
                     evidence = nautilus_sampler.evidence()
                     print(f"Evidence: {evidence:.2f}")
                     self._save_metadata(evidence=evidence, finish_time=time.time())
@@ -225,12 +454,10 @@ class NautilusSampler:
                 self._save_metadata(evidence=None, finish_time=time.time())
                 print("Metadata.json updated")
             return
-        else:
-            print("Starting new run")
-            nautilus_sampler = start_sampler()
 
-        # Run sampler
+        print("Starting new run")
         try:
+            nautilus_sampler = start_sampler()
             print("\n" + "=" * 60)
             print("🚀 Starting Nautilus Sampler Run")
             print("=" * 60)
@@ -262,7 +489,6 @@ class NautilusSampler:
             points, log_w, log_l = nautilus_sampler.posterior()
 
             self.tfin = time.time()
-            # Save chain and final metadata
             sample_wghlkl = np.vstack((points.T, np.exp(log_w), log_l)).T
             outfile_chain = self.outroot + ".txt"
             header = " ".join(self.prior_chosen.keys) + " weights loglike"
@@ -271,5 +497,8 @@ class NautilusSampler:
             self._save_metadata(evidence=evidence, finish_time=self.tfin)
 
         except Exception as e:
+            stop_worker_pool(terminate=True)
             print(f"Sampler error: {e}")
             raise
+        else:
+            stop_worker_pool()

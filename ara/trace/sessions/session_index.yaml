@@ -1,0 +1,81 @@
+sessions:
+- id: 2026-09-15_001
+  date: '2026-09-15'
+  summary: Completed and analyzed the symbolic 32x1 smoke chain after validating job templates.
+  turn_count: 3
+  events_count: 4
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-16_001
+  date: '2026-09-16'
+  summary: Validated symbolic spawn progress, then identified the need for a probe-agnostic sampler architecture.
+  turn_count: 2
+  events_count: 4
+  claims_touched:
+  - C01
+  open_threads: 5
+- id: 2026-09-17_001
+  date: '2026-09-17'
+  summary: Completed, analyzed, and plotted the independent WL+GCsp symbolic spawn chain; corrected future Slurm stdout buffering.
+  turn_count: 5
+  events_count: 5
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-17_002
+  date: '2026-09-17'
+  summary: Prepared a 128-worker n_live=2000 3x2pt Fisher-Nautilus comparison suite without submission.
+  turn_count: 1
+  events_count: 2
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-21_001
+  date: '2026-09-21'
+  summary: Reorganized JURECA artifacts, streamlined chain plotting, reset performance profiles, and repaired CAMB import
+    handling.
+  turn_count: 7
+  events_count: 7
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-22_001
+  date: '2026-09-22'
+  summary: Corrected nonlinear CLASS retrieval and added multi-chain contour overlays.
+  turn_count: 3
+  events_count: 5
+  claims_touched: []
+  open_threads: 1
+- id: 2026-08-19_001
+  date: '2026-08-19'
+  summary: Archived superseded validation tooling, purged stale outputs, and preserved numerical resume checks.
+  turn_count: 1
+  events_count: 3
+  claims_touched: []
+  open_threads: 1
+- id: 2026-08-31_001
+  date: '2026-08-31'
+  summary: Consolidated validation provenance and solver configuration under packaged, directly inspectable inputs.
+  turn_count: 6
+  events_count: 7
+  claims_touched:
+  - V-C01
+  open_threads: 1
+- id: 2026-09-15_001-val
+  date: '2026-09-15'
+  summary: Restored the ARA provenance artifact and staged its curation for a future main release.
+  turn_count: 2
+  events_count: 2
+  claims_touched: []
+  open_threads: 1
+- id: 2026-09-16_001-val
+  date: '2026-09-16'
+  summary: Packaged likelihood evidence, measured backend scaling, and generalized Nautilus to spawn-safe registered likelihood components.
+  turn_count: 10
+  events_count: 17
+  claims_touched: []
+  open_threads: 2
+- id: 2026-09-17_001-val
+  date: '2026-09-17'
+  summary: Added generic spawn-safe Nautilus workflow support and a ready-to-run JURECA jobs_punch WL+GCsp launcher.
+  turn_count: 2
+  events_count: 2
+  claims_touched: []
+  open_threads: 2

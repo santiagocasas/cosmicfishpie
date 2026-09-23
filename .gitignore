@@ -4,7 +4,14 @@
 *.png
 *.zip
 *.tar.gz
-chains/
+# ...except small, versioned documentation figures.
+!docs/source/_static/likelihood_validation/*.png
+# Generated chains belong on scratch; only the tiny reference fixture is versioned.
+chains/*
+!chains/README.md
+!chains/example_symbolic_2param/
+!chains/example_symbolic_2param/*.txt
+!chains/example_symbolic_2param/*_metadata.json
 # build artifacts
 
 .eggs/
@@ -70,3 +77,6 @@ results/
 # local benchmark artifacts
 scripts/benchmark_results/
 scripts/benchmark_results.zip
+
+# HPC run outputs (chains, plots, logs) synced from cluster runs
+hpc-results/

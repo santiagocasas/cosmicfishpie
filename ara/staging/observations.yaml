@@ -178,3 +178,27 @@ observations:
   promoted_to: null
   crystallized_via: null
   stale: false
+- id: O07
+  timestamp: 2026-09-25T11:55
+  provenance: ai-executed
+  content: The default SYREN-NEW total-matter symbolic provider operationally produces GCsp and coupled GCph+WL Fisher matrix artifacts with the existing forecast runner.
+  context: Focused initialization test, GCsp and photo Fisher runs, and focused Ruff check completed after implementation of the new symbolic provider.
+  potential_type: claim
+  bound_to:
+  - N22
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O08
+  timestamp: 2026-09-25T12:17
+  provenance: ai-executed
+  content: "For the executed upstream-style linear comparison at z=1 over 0.009-3 h/Mpc, the maximum absolute SYREN-NEW versus CLASS fractional difference was 0.0030801 and the median was 0.0001673; the matched GCsp Fisher Frobenius norm ratio (SYREN-NEW/CLASS HMcode 2020) was 1.01468."
+  context: "The new notebook executed a direct minimal CLASS linear-spectrum check followed by matched GCsp forecasts. The forecast paths retain different nonlinear prescriptions and CosmicFishPie's public CLASS neutrino translation differs from the direct comparison."
+  potential_type: claim
+  bound_to:
+  - N23
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false

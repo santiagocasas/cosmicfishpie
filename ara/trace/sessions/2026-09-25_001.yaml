@@ -1,0 +1,227 @@
+session:
+  id: '2026-09-25_001'
+  date: '2026-09-25'
+  started: '2026-09-25T11:55'
+  last_turn: '2026-09-25T13:27'
+  turn_count: 12
+  summary: Corrected provider wiring, prepared matched profiles, exercised derivatives, refactored to unified CFP interfaces, and guarded against mixed-checkout kernels.
+
+events_logged:
+- turn: 1
+  type: experiment
+  id: N21
+  routing: direct
+  provenance: ai-executed
+  summary: Initial Fisher artifacts were legacy-backed; the provider selector was not wired.
+- turn: 1
+  type: observation
+  id: O07
+  routing: staged
+  provenance: ai-executed
+  summary: Operational forecast output exists; scientific reference agreement remains untested.
+- turn: 2
+  type: experiment
+  id: N22
+  routing: direct
+  provenance: ai-executed
+  summary: Wired SYREN-NEW provider generated GCsp and coupled GCph+WL Fisher artifacts.
+- turn: 3
+  type: experiment
+  id: N23
+  routing: direct
+  provenance: ai-executed
+  summary: Executed an upstream-style CLASS linear check and finite matched CLASS HMcode 2020/SYREN-NEW GCsp Fishers.
+- turn: 3
+  type: observation
+  id: O08
+  routing: staged
+  provenance: ai-executed
+  summary: Recorded linear residual and Fisher norm ratio without treating HMcode 2020 as an EE2 validation reference.
+- turn: 4
+  type: decision
+  id: N24
+  routing: direct
+  provenance: user
+  summary: Add Fisher and nonlinear-power visualizations while leaving notebook execution to the user.
+- turn: 5
+  type: experiment
+  id: N25
+  routing: direct
+  provenance: ai-executed
+  summary: Repaired the non-scalar Matplotlib linewidth failure in the Fisher bars plot and passed a synthetic plot smoke test.
+- turn: 6
+  type: experiment
+  id: N26
+  routing: direct
+  provenance: ai-executed
+  summary: Reproduced the full error-plot path and fixed compare_to_index=True Boolean broadcasting by normalizing it to baseline index zero.
+- turn: 6
+  type: decision
+  id: N27
+  routing: direct
+  provenance: ai-executed
+  summary: Preserved the diagnostic correction trail rather than overwriting the initial linewidth hypothesis.
+- turn: 7
+  type: decision
+  id: N28
+  routing: direct
+  provenance: user
+  summary: Use copied notebook with minimal matched profiles and all shared LCDM/w0waCDM response parameters.
+- turn: 7
+  type: experiment
+  id: N29
+  routing: direct
+  provenance: ai-executed
+  summary: Focused translation test, YAML parsing, lint, and unexecuted notebook JSON checks passed.
+- turn: 8
+  type: experiment
+  id: N30
+  routing: direct
+  provenance: ai-executed
+  summary: Real 3-point GCsp derivative runs for CLASS and SYREN-NEW LCDM/w0waCDM completed with finite derivative arrays.
+- turn: 8
+  type: decision
+  id: N31
+  routing: direct
+  provenance: user
+  summary: Add an all-parameter response canvas with color by parameter and line style by backend.
+- turn: 9
+  type: decision
+  id: N32
+  routing: direct
+  provenance: user
+  summary: Replace notebook-local spectrum and response calculations with CFP unified providers and derivative dictionaries.
+- turn: 9
+  type: experiment
+  id: N33
+  routing: direct
+  provenance: ai-executed
+  summary: Refactored notebook JSON and code-cell syntax passed static validation without execution.
+- turn: 10
+  type: decision
+  id: N34
+  routing: direct
+  provenance: user
+  summary: Use AnalysisContext rather than FisherMatrix to configure spectrum-only calls.
+- turn: 10
+  type: experiment
+  id: N35
+  routing: direct
+  provenance: ai-executed
+  summary: Context-based notebook helper passed JSON and Python compile validation without execution.
+- turn: 11
+  type: decision
+  id: N36
+  routing: direct
+  provenance: user
+  summary: Restrict further notebook validation to necessary checks unless additional experiments are explicitly requested.
+- turn: 12
+  type: experiment
+  id: N37
+  routing: direct
+  provenance: ai-executed
+  summary: Diagnosed CLASS failure as a symbolic_overhaul-profile and perf-v2-package mismatch.
+- turn: 12
+  type: decision
+  id: N38
+  routing: direct
+  provenance: ai-executed
+  summary: Add a fail-fast imported-package versus notebook-profile root check.
+
+ai_actions:
+- turn: 1
+  action: Wrote the approved overhaul plan, implemented the SYREN-NEW provider, installed the optional emulator environment, and ran initial Fisher workflows.
+  provenance: ai-executed
+  files_changed:
+  - PLAN_SYMBOLIC_OVERHAUL.md
+  - cosmicfishpie/cosmology/symbolic_new.py
+  - cosmicfishpie/cosmology/cosmology.py
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml
+  - pyproject.toml
+  - uv.lock
+- turn: 2
+  action: Wired the YAML provider selector to SyrenNewProvider, constrained NumPy for Astropy compatibility, and ran the corrected GCsp and coupled GCph+WL Fisher workflows.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/cosmology/cosmology.py
+  - pyproject.toml
+  - uv.lock
+  - tests/cosmology_test.py
+- turn: 3
+  action: Created and executed the minimal CLASS HMcode 2020 versus SYREN-NEW GCsp comparison notebook.
+  provenance: ai-executed
+  files_changed:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW.ipynb
+- turn: 4
+  action: Added Fisher error/contour plotting and CLASS HMcode 2020 versus SYREN-NEW nonlinear P(k) plotting cells without executing the notebook.
+  provenance: ai-executed
+  files_changed:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW.ipynb
+- turn: 5
+  action: Passed the scalar plotting linewidth directly to all Fisher bar calls in both active checkouts and ran a synthetic non-notebook plot test.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie-perf-v2/cosmicfishpie/analysis/plot_comparison.py
+  - cosmicfishpie/analysis/plot_comparison.py
+- turn: 6
+  action: Corrected Boolean baseline-index handling in both plotter copies, changed the notebook to explicit index zero, and ran full post-processing against existing matrices.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie-perf-v2/cosmicfishpie/analysis/plot_comparison.py
+  - cosmicfishpie/analysis/plot_comparison.py
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW.ipynb
+- turn: 7
+  action: Copied and rewrote a manual-only matched-profile notebook, added minimal CLASS and symbolic YAML profiles, and added opt-in three-degenerate CLASS translation coverage.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/cosmology/cosmology.py
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/class/syren_new_minimal_matched.yaml
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren_new_minimal_matched.yaml
+  - tests/cosmology_test.py
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+- turn: 8
+  action: Ran the temporary matched derivative harness with eight OpenMP threads, added mTk to the minimal CLASS profile after the wrapper failure, and added an unexecuted aggregate response plot cell.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/class/syren_new_minimal_matched.yaml
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+- turn: 9
+  action: Replaced direct notebook backends and local response differences with YAML-backed cosmo_functions calls and FisherMatrix.derivs_dict plotting, then cleared obsolete outputs.
+  provenance: ai-executed
+  files_changed:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+- turn: 10
+  action: Replaced the spectrum-only FisherMatrix configuration bootstrap with build_analysis_context.
+  provenance: ai-executed
+  files_changed:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+- turn: 12
+  action: Added an imported-package versus notebook-profile root guard after diagnosing the mixed-checkout CLASS mapper failure.
+  provenance: ai-executed
+  files_changed:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+
+claims_touched: []
+
+key_context:
+- turn: 1
+  excerpt: User requested the approved plan be written exactly, then asked for RALPH-loop execution until new-SYREN GCsp and WL Fisher matrices existed.
+- turn: 4
+  excerpt: User explicitly requested that notebook execution be left to them.
+- turn: 9
+  excerpt: User required both spectrum comparisons and derivative plots to use the CosmicFishPie unified interfaces instead of notebook-local implementations.
+- turn: 10
+  excerpt: User pointed out the merged AnalysisContext factory as the more appropriate spectrum-only configuration path.
+- turn: 11
+  excerpt: User requested proportionate validation rather than further exploratory experiments.
+- turn: 12
+  excerpt: User supplied a CLASS error showing the notebook kernel imported cosmicfishpie from a different checkout.
+
+open_threads:
+- Complete the planned numerical and CLASS/EE2 scientific validation before making accuracy claims.
+- Implement the CLASS+EuclidEmulator2 adapter before treating nonlinear Fisher differences as emulator validation.
+- Run the refactored unified spectrum, Fisher, and derivative cells manually to inspect the new results.
+- Resolve the provenance conflict between the initial linewidth hypothesis and the Boolean-index diagnosis if a curated record is needed.
+- Run the new aggregate response canvas manually and compare shared parameter responses before drawing conclusions from Fisher contours.
+
+ai_suggestions_pending: []

@@ -79,3 +79,10 @@ sessions:
   events_count: 2
   claims_touched: []
   open_threads: 2
+- id: 2026-09-25_001
+  date: '2026-09-25'
+  summary: Corrected provider wiring, prepared matched profiles, exercised derivatives, refactored to unified CFP interfaces, and guarded against mixed-checkout kernels.
+  turn_count: 12
+  events_count: 20
+  claims_touched: []
+  open_threads: 5

@@ -496,3 +496,280 @@ tree:
   also_depends_on:
   - N11
   - N12
+- # CONFLICT: N21's initial attribution was corrected by N22 after tracing the provider selector.
+- id: N21
+  type: experiment
+  title: Diagnose initial symbolic Fisher provider attribution
+  provenance: ai-executed
+  timestamp: 2026-09-25T11:55
+  evidence:
+  - PLAN_SYMBOLIC_OVERHAUL.md
+  - cosmicfishpie/cosmology/symbolic_new.py
+  - /tmp/opencode/syren_gcsp/CosmicFish_v1.3.1_compare_spectro_20260925_115219_A__GCsp_FM.txt
+  - /tmp/opencode/syren_wl/CosmicFish_v1.3.1_compare_photo_20260925_115305_A__GCphWL_FM.txt
+  result: "The initial GCsp and coupled GCph+WL artifacts were legacy-backed: cosmology.py did not instantiate SyrenNewProvider or honor the YAML provider selector. They are not evidence for SYREN-NEW."
+  status: resolved
+- id: N22
+  type: experiment
+  title: Run wired SYREN-NEW symbolic Fisher matrices
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:06
+  evidence:
+  - cosmicfishpie/cosmology/cosmology.py:boltzmann_code.__init__
+  - cosmicfishpie/cosmology/symbolic_new.py:SyrenNewProvider
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml
+  - uv run pytest tests/cosmology_test.py::test_symbolic_backend_none_colossus_persistence -q
+  - uv run ruff check cosmicfishpie/cosmology/cosmology.py cosmicfishpie/cosmology/symbolic_new.py tests/cosmology_test.py
+  - /tmp/opencode/syren_gcsp_new/CosmicFish_v1.3.1_compare_spectro_20260925_120515_A__GCsp_FM.txt
+  - /tmp/opencode/syren_wl_new/CosmicFish_v1.3.1_compare_photo_20260925_120603_A__GCphWL_FM.txt
+  result: "With provider: syren_new selecting SyrenNewProvider before legacy imports, the focused backend test and lint passed, then the existing runner exported GCsp and coupled GCph+WL Fisher matrices. This establishes operational output only; scientific agreement with the planned CLASS/EE2 reference remains unvalidated."
+  status: resolved
+  also_depends_on:
+  - N21
+- id: N23
+  type: experiment
+  title: Run minimal CLASS HMcode 2020 versus SYREN-NEW GCsp comparison
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:17
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW.ipynb
+  - results/syren_new_class_hmcode2020_gcsp/CosmicFish_v1.3.1_class_hmcode2020_gcsp__GCsp_FM.txt
+  - results/syren_new_class_hmcode2020_gcsp/CosmicFish_v1.3.1_syren_new_gcsp__GCsp_FM.txt
+  result: "The executed notebook reproduced an upstream-style CLASS linear comparison and exported finite matched 13x13 GCsp Fisher matrices for CLASS HMcode 2020 and wired SYREN-NEW. CLASS+EuclidEmulator2 is not implemented, so HMcode 2020 is only an interim nonlinear reference."
+  status: resolved
+  also_depends_on:
+  - N22
+- id: N24
+  type: decision
+  title: Add notebook Fisher visualizations without automatic execution
+  provenance: user
+  timestamp: 2026-09-25T12:22
+  choice: Add parameterwise marginal-error and Gaussian-contour visualizations, plus a direct CLASS HMcode 2020 versus SYREN-NEW nonlinear P(k) plot, but leave notebook execution to the user.
+  alternatives:
+  - Automatically execute the notebook after editing
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW.ipynb
+  status: resolved
+  also_depends_on:
+  - N23
+# CONFLICT: N25's initial linewidth diagnosis was corrected by N26 after reproducing the full compare_errors path.
+- id: N25
+  type: experiment
+  title: Repair Fisher bar-plot linewidth handling
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:29
+  evidence:
+  - ../cosmicfishpie-perf-v2/cosmicfishpie/analysis/plot_comparison.py:plot_shades
+  - cosmicfishpie/analysis/plot_comparison.py:plot_shades
+  - Synthetic Agg plot_shades smoke test in cosmicfishpie-perf-v2
+  result: "The bars plot path relied on Matplotlib's active patch linewidth, which was non-scalar in the user's notebook session. Passing plot_shades' scalar LW explicitly to all bar calls makes the parameter-error comparison independent of that session state; the synthetic smoke test passed. The user has not rerun the notebook cell yet."
+  status: resolved
+  also_depends_on:
+  - N24
+- id: N26
+  type: experiment
+  title: Diagnose compare-to-index Boolean broadcasting
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:29
+  evidence:
+  - ../cosmicfishpie-perf-v2/cosmicfishpie/analysis/plot_comparison.py:process_fish_errs
+  - ../cosmicfishpie-perf-v2/cosmicfishpie/analysis/fisher_plotting.py:compare_errors
+  - Post-processing reproduction with existing CLASS HMcode 2020 and SYREN-NEW Fisher files
+  result: "compare_to_index=True reached rel_error_to_index as a Boolean index, adding an array axis and yielding two-dimensional error data. Normalizing True to index 0 and requiring an explicit non-negative integer otherwise made the full compare_errors post-processing call pass."
+  status: resolved
+  also_depends_on:
+  - N25
+- id: N27
+  type: decision
+  title: Preserve the corrected Fisher plotter diagnosis
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:29
+  choice: Preserve both the initial linewidth hypothesis and the subsequent Boolean-index root-cause evidence.
+  alternatives:
+  - Replace the initial diagnostic record without retaining the correction trail
+  evidence:
+  - N25
+  - N26
+  status: unresolved
+- id: N28
+  type: decision
+  title: Match Fisher solver profiles to the SYREN-NEW reference convention
+  provenance: user
+  timestamp: 2026-09-25T12:45
+  choice: Copy the prior comparison notebook and use explicit minimal CLASS and symbolic
+    profiles with the direct comparison's three-degenerate-neutrino convention; compare
+    all shared LCDM and w0waCDM parameter responses before interpreting contours.
+  alternatives:
+  - Retain the default backend YAML profiles and the narrower parameter set
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/class/syren_new_minimal_matched.yaml
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren_new_minimal_matched.yaml
+  status: resolved
+  also_depends_on:
+  - N23
+  - N24
+- id: N29
+  type: experiment
+  title: Validate matched-profile translation and notebook structure
+  provenance: ai-executed
+  timestamp: 2026-09-25T12:45
+  evidence:
+  - tests/cosmology_test.py:test_class_three_degenerate_translation_matches_syren_example
+  - uv run pytest tests/cosmology_test.py::test_class_three_degenerate_translation_matches_syren_example -q
+  - uv run ruff check cosmicfishpie/cosmology/cosmology.py tests/cosmology_test.py
+  - YAML safe-load of both syren_new_minimal_matched profiles
+  - JSON validation of notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  result: The opt-in CLASS translation emits the requested three degenerate neutrino
+    settings and the two profiles and copied notebook pass structural validation. No
+    notebook cell or Fisher calculation was executed.
+  status: resolved
+  also_depends_on:
+  - N28
+- id: N30
+  type: experiment
+  title: Exercise matched GCsp derivatives through the CosmicFishPie engine
+  provenance: ai-executed
+  timestamp: 2026-09-25T13:08
+  evidence:
+  - /tmp/opencode/run_matched_gcsp_derivatives.py
+  - /tmp/opencode/matched_gcsp_derivative_check/CosmicFish_v1.3.1_derivative_check_class_lcdm_GCsp_FM.txt
+  - /tmp/opencode/matched_gcsp_derivative_check/CosmicFish_v1.3.1_derivative_check_syren_lcdm_GCsp_FM.txt
+  - /tmp/opencode/matched_gcsp_derivative_check/CosmicFish_v1.3.1_derivative_check_class_w0wa_GCsp_FM.txt
+  - /tmp/opencode/matched_gcsp_derivative_check/CosmicFish_v1.3.1_derivative_check_syren_w0wa_GCsp_FM.txt
+  - cosmicfishpie/fishermatrix/derivatives.py:compute_derivatives
+  - cosmicfishpie/LSSsurvey/spectro_cov.py:SpectroDerivs.compute_derivs
+  result: With OMP_NUM_THREADS=8 set before backend initialization, CLASS and SYREN-NEW
+    completed 3-point GCsp derivatives for all shared LCDM and w0waCDM parameters,
+    four bias nuisance parameters, and four analytic shot-noise parameters; every
+    checked numerical derivative was finite. The run exposed a missing mTk output
+    requirement in the minimal CLASS profile, which was fixed before the successful
+    four-case run. The temporary report serializer failed after completion because
+    it sorted mixed integer and string mapping keys.
+  status: resolved
+  also_depends_on:
+  - N28
+  - N29
+- id: N31
+  type: decision
+  title: Overlay all parameter responses on one derivative canvas
+  provenance: user
+  timestamp: 2026-09-25T13:08
+  choice: Add one deliberately busy response canvas with a stable color per parameter,
+    solid CLASS lines, dashed SYREN-NEW lines, and finite-step-normalized responses.
+  alternatives:
+  - Retain one panel per parameter
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  status: resolved
+  also_depends_on:
+  - N30
+- id: N32
+  type: decision
+  title: Route spectra and derivative plots through CosmicFishPie
+  provenance: user
+  timestamp: 2026-09-25T13:17
+  choice: Remove notebook-local CLASS/emulator spectrum calls and local finite-difference
+    responses. Use the minimal YAML profiles through cosmo_functions for both providers
+    and plot the derivatives.py results retained in FisherMatrix.derivs_dict.
+  alternatives:
+  - Retain direct Class/emulator calls for spectra or local parameter differences for responses
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  - cosmicfishpie/cosmology/cosmology.py:cosmo_functions
+  - cosmicfishpie/fishermatrix/derivatives.py:compute_derivatives
+  status: resolved
+  also_depends_on:
+  - N28
+  - N30
+- id: N33
+  type: experiment
+  title: Validate unified notebook refactor without cell execution
+  provenance: ai-executed
+  timestamp: 2026-09-25T13:17
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  - JSON and compile validation of all 15 notebook cells
+  - Static notebook search for cosmo_functions, derivs_dict, and plot_all_fisher_derivatives
+  result: The refactored notebook has no direct Class constructor, direct SYREN emulator,
+    or local parameter-response implementation. It builds both spectrum providers through
+    the YAML-backed CFP interface and its aggregate response plot reads retained native
+    Fisher derivative dictionaries. Obsolete rendered output was cleared; no refactored
+    cell was executed.
+  status: resolved
+  also_depends_on:
+  - N32
+- id: N34
+  type: decision
+  title: Use AnalysisContext for spectrum-only notebook setup
+  provenance: user
+  timestamp: 2026-09-25T13:22
+  choice: Replace the spectrum-only FisherMatrix bootstrap with build_analysis_context,
+    while retaining FisherMatrix only for actual GCsp derivative and Fisher calculations.
+  alternatives:
+  - Use FisherMatrix as a configuration factory for spectrum-only calls
+  evidence:
+  - cosmicfishpie/configs/context.py:build_analysis_context
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  status: resolved
+  also_depends_on:
+  - N32
+- id: N35
+  type: experiment
+  title: Validate context-based spectrum bootstrap syntax
+  provenance: ai-executed
+  timestamp: 2026-09-25T13:22
+  evidence:
+  - JSON and compile validation of notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  result: The spectrum helper imports build_analysis_context and creates the explicit
+    context with its backend-specific minimal YAML before passing it to cosmo_functions.
+    No backend or notebook cell was executed.
+  status: resolved
+  also_depends_on:
+  - N34
+- id: N36
+  type: decision
+  title: Keep notebook validation proportional
+  provenance: user
+  timestamp: 2026-09-25T13:22
+  choice: Treat the merged context API as an out-of-the-box notebook dependency;
+    use structural checks after edits and run additional backend experiments only on
+    explicit request.
+  alternatives:
+  - Add independent exploratory backend experiments for each notebook refactor
+  evidence:
+  - User instruction to avoid excessive experiments
+  status: resolved
+  also_depends_on:
+  - N34
+- id: N37
+  type: experiment
+  title: Diagnose three-neutrino CLASS initialization failure
+  provenance: ai-executed
+  timestamp: 2026-09-25T13:27
+  evidence:
+  - User traceback importing cosmicfishpie from cosmicfishpie-perf-v2
+  - cosmicfishpie-perf-v2/cosmicfishpie/cosmology/cosmology.py:changebasis_class
+  - cosmicfishpie-symbolic_overhaul/cosmicfishpie/cosmology/cosmology.py:changebasis_class
+  result: The notebook resolved the three-degenerate profile from symbolic_overhaul but
+    the active kernel imported the older perf-v2 package. That mapper sets scalar
+    Omega_ncdm from mnu while the profile requests N_ncdm=3, causing CLASS to reject
+    the one-versus-three entries. This is a checkout/kernel mismatch, not a numerical
+    profile result.
+  status: resolved
+  also_depends_on:
+  - N34
+- id: N38
+  type: decision
+  title: Fail fast on notebook package-profile mismatch
+  provenance: ai-executed
+  timestamp: 2026-09-25T13:27
+  choice: Compare the imported cosmicfishpie package root with the notebook profile
+    root and raise a clear restart-kernel error before the backend is initialized.
+  alternatives:
+  - Allow mixed checkout imports to fail later inside CLASS
+  evidence:
+  - notebooks/GCsp_CLASS_HMcode2020_vs_SYREN_NEW_minimal_matched.ipynb
+  status: resolved
+  also_depends_on:
+  - N37

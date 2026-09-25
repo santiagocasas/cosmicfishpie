@@ -51,6 +51,25 @@ def test_class_w0wa_keeps_dark_energy_evolution_parameters():
     assert translated["wa_fld"] == 0.0
 
 
+def test_class_three_degenerate_translation_matches_syren_example():
+    translator = _translator("LCDM")
+    translator.boltzmann_classpars = {
+        "PARAMETER_TRANSLATION": {
+            "neutrino_scheme": "three_degenerate",
+            "N_ur": 0.00641,
+            "neutrino_mass_fac": 93.14,
+        }
+    }
+
+    translated = translator.changebasis_class(_parameters())
+
+    assert translated["N_ur"] == 0.00641
+    assert translated["m_ncdm"] == "0.02,0.02,0.02"
+    assert "T_ncdm" not in translated
+    assert "Omega_ncdm" not in translated
+    assert translated["Omega_cdm"] == pytest.approx(0.314571 - 0.049199 - 0.06 / 93.14 / 0.6737**2)
+
+
 def test_camb_package_directory_uses_parent_as_import_root(monkeypatch):
     package_directory = Path(camb.__file__).parent
     monkeypatch.delitem(sys.modules, "camb")
@@ -178,3 +197,6 @@ def test_symbolic_backend_none_colossus_persistence():
 
     assert fm.settings["colossus_persistence"] is None
     assert fm.fiducialcosmo.results is not None
+    assert "As" in fm.fiducialcosmo.symbcosmopars
+    assert not hasattr(fm.fiducialcosmo.results, "Pk_cb_l")
+    assert np.isfinite(fm.fiducialcosmo.results.Pk_nl(0.5, 1e-2))

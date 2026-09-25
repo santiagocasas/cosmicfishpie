@@ -190,6 +190,26 @@ class boltzmann_code:
             self.class_setparams(self.cosmopars)
             self.class_results(Class)
         elif code == "symbolic":
+            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
+            provider_name = self.boltzmann_symbolicpars["ACCURACY"].get("provider", "legacy")
+            if provider_name == "syren_new":
+                from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider
+
+                provider = SyrenNewProvider(
+                    self.cosmopars,
+                    self.boltzmann_symbolicpars,
+                    self.settings["cosmo_model"],
+                )
+                self.symbcosmopars = provider.cosmopars
+                self.h_now = self.symbcosmopars["h"]
+                self.results = provider.build()
+                self.zgrid = self.results.zgrid
+                self.kgrid_1Mpc = self.results.kgrid
+                return
+            if provider_name != "legacy":
+                raise ValueError(
+                    f"Unknown symbolic provider {provider_name!r}; expected 'syren_new' or 'legacy'."
+                )
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
@@ -210,7 +230,6 @@ class boltzmann_code:
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
-            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
             self.halofit_version = self.boltzmann_symbolicpars["COSMO_SETTINGS"][
                 "halofit_version"
             ]  # 'syren' or 'halofit+' or 'takahashi'
@@ -849,11 +868,20 @@ class boltzmann_code:
             classpars["H0"] = classpars.pop("H0")
             h = classpars["H0"] / 100.0
 
+        parameter_translation = getattr(self, "boltzmann_classpars", {}).get(
+            "PARAMETER_TRANSLATION", {}
+        )
+        neutrino_scheme = parameter_translation.get("neutrino_scheme", "cosmicfishpie")
         shareDeltaNeff = self.settings["ShareDeltaNeff"]
         fidNeff = boltzmann_code.hardcoded_Neff
         Neff = classpars.pop("Neff", fidNeff)
 
-        if shareDeltaNeff:
+        if neutrino_scheme == "three_degenerate":
+            classpars["N_ur"] = parameter_translation["N_ur"]
+            neutrino_mass_fac = parameter_translation["neutrino_mass_fac"]
+        elif neutrino_scheme != "cosmicfishpie":
+            raise ValueError(f"Unsupported CLASS neutrino_scheme={neutrino_scheme!r}.")
+        elif shareDeltaNeff:
             classpars["N_ur"] = (
                 2.0 / 3.0 * Neff
             )  # This version does not have the discontinuity at Nur = 1.99
@@ -862,27 +890,26 @@ class boltzmann_code:
             classpars["N_ur"] = Neff - fidNeff / 3.0
             g_factor = fidNeff / 3.0
 
-        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-
+        omega_ncdm = 0.0
         if "mnu" in classpars:
-            classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
-            classpars["Omega_ncdm"] = (
-                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
-            )
-            classpars.pop("mnu")
-            # classpars['m_ncdm'] = classpars.pop('mnu')
-            # Om_ncdm = classpars['m_ncdm'] / 93.13858 /h/h
+            mnu = classpars.pop("mnu")
+            if neutrino_scheme == "three_degenerate":
+                classpars["m_ncdm"] = ",".join(f"{mnu / 3.0:g}" for _ in range(3))
+                omega_ncdm = mnu / neutrino_mass_fac / h**2
+            else:
+                classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
+                classpars["Omega_ncdm"] = mnu * g_factor ** (0.75) / neutrino_mass_fac / h**2
+                omega_ncdm = classpars["Omega_ncdm"]
         elif "Omeganu" in classpars:
-            classpars["Omega_ncdm"] = classpars.pop("Omeganu")
+            omega_ncdm = classpars.pop("Omeganu")
+            classpars["Omega_ncdm"] = omega_ncdm
 
         if "100omega_b" in classpars:
             classpars["omega_b"] = (1 / 100) * classpars.pop("100omega_b")
         if "Omegab" in classpars:
             classpars["Omega_b"] = classpars.pop("Omegab")
         if "Omegam" in classpars:
-            classpars["Omega_cdm"] = (
-                classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
-            )
+            classpars["Omega_cdm"] = classpars.pop("Omegam") - classpars["Omega_b"] - omega_ncdm
 
         if self.settings["cosmo_model"] == "LCDM":
             # CLASS rejects dark-energy evolution parameters in LCDM mode,
@@ -1824,6 +1851,10 @@ class cosmo_functions:
         Returns:
             The value of the CB power spectrum at the given redshift and wavenumber.
         """
+        if self.code == "symbolic" and not hasattr(self.results, "Pk_cb_l"):
+            raise ValueError(
+                "SYREN-NEW provides total-matter power only; tracer='clustering' is unsupported."
+            )
         if nonlinear is True:
             power = self.results.Pk_cb_nl(z, k, grid=False)
         elif nonlinear is False:

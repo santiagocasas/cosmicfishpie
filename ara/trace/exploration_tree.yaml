@@ -503,7 +503,7 @@ tree:
   provenance: ai-executed
   timestamp: 2026-09-25T11:55
   evidence:
-  - PLAN_SYMBOLIC_OVERHAUL.md
+  - docs/source/symbolic_overhaul_provenance.md
   - cosmicfishpie/cosmology/symbolic_new.py
   - /tmp/opencode/syren_gcsp/CosmicFish_v1.3.1_compare_spectro_20260925_115219_A__GCsp_FM.txt
   - /tmp/opencode/syren_wl/CosmicFish_v1.3.1_compare_photo_20260925_115305_A__GCphWL_FM.txt
@@ -773,3 +773,74 @@ tree:
   status: resolved
   also_depends_on:
   - N37
+- id: N39
+  type: decision
+  title: Add a compact SYREN-NEW GCsp and GCph+WL likelihood runner
+  provenance: user
+  timestamp: 2026-09-25T15:04
+  choice: Base a short script on the existing likelihood scripts and evaluate both
+    the GCsp and the coupled WL+GCph fiducial likelihoods with the SYREN-NEW symbolic
+    backend, without computing Fisher derivatives.
+  alternatives:
+  - Reuse nautilus or grid-walk scripts that also sample parameters
+  evidence:
+  - scripts/run_syren_new_likelihoods.py
+  status: resolved
+  also_depends_on:
+  - N32
+- id: N40
+  type: experiment
+  title: Run SYREN-NEW fiducial GCsp and WL+GCph likelihoods
+  provenance: ai-executed
+  timestamp: 2026-09-25T15:04
+  evidence:
+  - scripts/run_syren_new_likelihoods.py
+  - uv run python scripts/run_syren_new_likelihoods.py --probe gcsp
+  - uv run python scripts/run_syren_new_likelihoods.py --probe photo
+  - uv run python scripts/run_syren_new_likelihoods.py
+  - uv run ruff check scripts/run_syren_new_likelihoods.py
+  result: With OMP_NUM_THREADS=1 the runner produced GCsp log L(fiducial) = -0 and
+    WL+GCph log L(fiducial) = 1.38888570787e-10 in single-probe and combined runs.
+    A post-run probe at Omegam+0.01 gave -1419.566039900048 and h+0.01 gave
+    -647.8380169671809, showing the likelihood responds to parameter changes rather
+    than returning a constant. One positional-argument defect in loglike was fixed
+    before the successful runs.
+  status: resolved
+  also_depends_on:
+  - N39
+- id: N41
+  type: experiment
+  title: Trace intermittent HMcode photometric NaNs
+  provenance: ai-executed
+  timestamp: 2026-09-29T03:00
+  evidence:
+  - /tmp/opencode/probe_w0_nan.py
+  - cosmicfishpie/cosmology/cosmology.py:_class_pk_grid
+  - notebooks/Photo_CLASS_EE2_vs_SYREN_NEW_minimal_matched.ipynb
+  result: A failing w0=-1.01 evaluation returned one infinite nonlinear total-matter
+    grid value and 115 infinite nonlinear cb values from the CLASS array API. Fitting
+    those values with RectBivariateSpline propagated 35,700 NaNs into the photometric
+    spectra. Identical reruns were clean, disproving deterministic dependence on the
+    previously evaluated parameter and establishing a sporadic padded-grid failure.
+  status: resolved
+  also_depends_on:
+  - N19
+- id: N42
+  type: decision
+  title: Exclude CLASS padding from nonlinear splines
+  provenance: ai-executed
+  timestamp: 2026-09-29T03:00
+  choice: Build native CLASS nonlinear splines only from samples inside the configured
+    P_k_max_1/Mpc and z_max_pk domain, and raise FloatingPointError for non-finite
+    values inside that domain.
+  alternatives:
+  - Replace non-finite values silently
+  - Fit the full padded grid and accept intermittent spline corruption
+  - Reject every nonlinear run that has invalid padding
+  evidence:
+  - N41
+  - cosmicfishpie/cosmology/cosmology.py:_class_nonlinear_pk_grid
+  - tests/cosmology_test.py:test_class_nonlinear_pk_grid_excludes_class_padding
+  status: resolved
+  also_depends_on:
+  - N41

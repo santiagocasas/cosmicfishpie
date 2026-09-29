@@ -257,3 +257,14 @@ entries:
   notes:
   - Recorded N37 from the supplied traceback and source comparison: the failure is caused by a mixed checkout, not a new numerical experiment or a profile accuracy conclusion.
   - Recorded N38 for the minimal fail-fast notebook guard. No backend rerun was performed, following N36.
+- turn: 2026-09-25_001#13
+  notes:
+  - Recorded N39 as the user's direct request to base a short runner on existing likelihood scripts, and N40 as the executed GCsp plus WL+GCph fiducial evaluation.
+  - Staged O09 rather than crystallizing it: zero fiducial chi-squared follows from deriving data and theory from the same runtime, and shifted-parameter values are only a responsiveness check, not a scientific comparison.
+  - Kept the run narrow under N36: no derivative recomputation, no sampler, and no extra backend experiments beyond the single responsiveness probe needed to confirm the likelihood path is live.
+- turn: 2026-09-29_001#1
+  notes:
+  - Recorded N41 as a resolved diagnostic experiment because staged probes localized the first non-finite values to CLASS nonlinear padded-grid retrieval and disproved deterministic prior-parameter causation.
+  - Recorded N42 as the committed numerical-boundary decision; silent value replacement was rejected because it would conceal unsupported physics.
+  - Crystallized O10 to C02 via artifact commitment because the new helper and focused tests directly encode the diagnosed boundary.
+  - Kept the absent w0wa HMcode output as an operational notebook issue, not part of the numerical claim.

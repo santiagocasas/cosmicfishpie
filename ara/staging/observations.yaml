@@ -202,3 +202,32 @@ observations:
   promoted_to: null
   crystallized_via: null
   stale: false
+- id: O09
+  timestamp: 2026-09-25T15:04
+  provenance: ai-executed
+  content: "SYREN-NEW fiducial likelihoods evaluated through the shared runtime give GCsp log L = -0 and WL+GCph log L = 1.38888570787e-10; Omegam+0.01 gives -1419.566039900048 and h+0.01 gives -647.8380169671809."
+  context: "Data and theory both derive from the same fiducial runtime, so the fiducial chi-squared is zero by construction. The shifted-parameter values only demonstrate that the likelihood path responds to inputs; they are not a scientific accuracy comparison."
+  potential_type: claim
+  bound_to:
+  - N40
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O10
+  timestamp: 2026-09-29T03:00
+  provenance: ai-executed
+  content: CLASS HMcode 2020 can sporadically return non-finite nonlinear power at
+    internally padded k or z samples outside the configured output domain; admitting
+    those samples to RectBivariateSpline can corrupt the complete photometric result.
+  context: Controlled w0wa photometric probes isolated the first non-finite values at
+    _class_pk_grid, then the implemented domain filter removed padded samples and the
+    focused real-backend probe completed with zero NaNs.
+  potential_type: claim
+  bound_to:
+  - N41
+  - N42
+  promoted: true
+  promoted_to: logic/claims.md:C02
+  crystallized_via: artifact-commitment
+  stale: false

@@ -1,0 +1,49 @@
+session:
+  id: 2026-09-29_001
+  date: '2026-09-29'
+  started: 2026-09-29T03:00
+  last_turn: 2026-09-29T03:00
+  turn_count: 1
+  summary: Isolated intermittent HMcode NaNs to unsupported CLASS padding and implemented a finite, configured-domain nonlinear spline path.
+
+events_logged:
+- turn: 1
+  type: experiment
+  id: N41
+  routing: direct
+  provenance: ai-executed
+  summary: Captured CLASS nonlinear infinities before the 35,700-NaN photometric propagation and established that the failure is sporadic.
+- turn: 1
+  type: decision
+  id: N42
+  routing: direct
+  provenance: ai-executed
+  summary: Restricted native CLASS nonlinear spline inputs to configured k and z support and rejected in-domain non-finite values.
+- turn: 1
+  type: claim
+  id: C02
+  routing: crystallized
+  provenance: ai-executed
+  summary: Padded HMcode samples can intermittently corrupt complete photometric spline results.
+
+ai_actions:
+- turn: 1
+  action: Instrumented CLASS grid retrieval, inspected notebook artifacts, implemented the nonlinear-domain filter and finite-value guard, and ran focused unit and real-backend checks.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/cosmology/cosmology.py
+  - tests/cosmology_test.py
+
+claims_touched:
+- id: C02
+  action: crystallized
+  turn: 1
+
+key_context:
+- turn: 1
+  excerpt: The user's disappearing HMcode derivatives agree with sporadic nonlinear spline corruption, while the later missing-parameter contour error is independently caused by a missing w0wa HMcode output file.
+
+open_threads:
+- Regenerate the w0wa HMcode Fisher output and rerun notebook comparison cells from fresh artifacts.
+
+ai_suggestions_pending: []

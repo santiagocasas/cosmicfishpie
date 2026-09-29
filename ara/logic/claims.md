@@ -21,3 +21,14 @@
 - **Dependencies**: []
 - **Tags**: massive-neutrinos, P_cb, P_mm, Fisher-conditioning, CAMB, CLASS
 - **From staging**: V-O02
+
+## C02: Padded CLASS HMcode samples can corrupt photometric splines
+- **Statement**: With the matched CLASS HMcode 2020 profile, the explicit array API can sporadically return non-finite nonlinear total-matter or cb power at CLASS-added samples beyond `P_k_max_1/Mpc` or `z_max_pk`; fitting those samples can propagate NaNs through the photometric spectra.
+- **Status**: supported
+- **Provenance**: ai-executed
+- **Crystallized via**: artifact-commitment
+- **Falsification criteria**: A captured failing run places every non-finite sample inside the configured nonlinear domain, or preserving the padded samples while excluding non-finite values fails to remove the downstream NaNs.
+- **Proof**: [`trace/exploration_tree.yaml:N41`, `/tmp/opencode/probe_w0_nan.py`, `cosmicfishpie/cosmology/cosmology.py:_class_nonlinear_pk_grid`]
+- **Dependencies**: []
+- **Tags**: CLASS, HMcode-2020, nonlinear-power, interpolation, photometric-Fisher
+- **From staging**: O10

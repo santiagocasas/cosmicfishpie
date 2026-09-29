@@ -81,8 +81,16 @@ sessions:
   open_threads: 2
 - id: 2026-09-25_001
   date: '2026-09-25'
-  summary: Corrected provider wiring, prepared matched profiles, exercised derivatives, refactored to unified CFP interfaces, and guarded against mixed-checkout kernels.
-  turn_count: 12
-  events_count: 20
+  summary: Corrected provider wiring, prepared matched profiles, exercised derivatives, refactored to unified CFP interfaces, guarded against mixed-checkout kernels, and ran SYREN-NEW GCsp and WL+GCph fiducial likelihoods.
+  turn_count: 13
+  events_count: 23
   claims_touched: []
-  open_threads: 5
+  open_threads: 6
+- id: 2026-09-29_001
+  date: '2026-09-29'
+  summary: Isolated intermittent HMcode NaNs to unsupported CLASS padding and implemented a finite, configured-domain nonlinear spline path.
+  turn_count: 1
+  events_count: 3
+  claims_touched:
+  - C02
+  open_threads: 1

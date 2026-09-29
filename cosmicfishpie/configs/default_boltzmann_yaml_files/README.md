@@ -26,7 +26,7 @@ validating against the high-precision profiles below.
 | `class/nuvalidation_uhp.yaml` | CLASS UHP, spectroscopic probe (deeper neutrino-perturbation treatment) |
 
 These reproduce the neutrino-sector validation's Appendix settings and are what the
-`scripts/validation_configs/compare_run_config.env_*` paper-validation cases use. The
+`scripts/validation/configs/compare_run_config.env_*` paper-validation cases use. The
 CLASS photo (HP) and spectro (UHP) tiers intentionally differ -- the paper validates each
 probe with its own precision tier; CAMB does not need the split.
 
@@ -50,4 +50,4 @@ Need a small tweak to one of the profiles above (e.g. a precision-sensitivity te
 Copy the file and change the values you need -- there is nothing to "inherit" or point
 back at. Such files should live with the experiment that needs them, not among the package
 defaults. For example, the strict CLASS photo neutrino-precision sensitivity test lives at
-`scripts/validation_configs/alternatives/class_photo_strict.yaml`.
+`scripts/validation/configs/alternatives/class_photo_strict.yaml`.

@@ -280,3 +280,10 @@ entries:
   - Crystallized O11 to C03 from the user's explicit endorsement, retaining the limits on causal attribution.
   - Staged O12 without a physics or interpolation explanation; further numerical investigation needs permission.
   - User declined cached notebook execution on resumption. Source review is not an execution check, and notebook outputs remain empty.
+- turn: 2026-09-29_001#4
+  notes:
+  - Captured the plan-mode analysis turn and the implementation turn in a single epilogue because plan mode forbade ara writes.
+  - 'Routed N46 as a user-revised decision: the user authored requirements A-G verbatim and selected every offered clarification option before answering "yes, implement!!".'
+  - Routed N47 as a direct experiment; its by-product environment constraint (broken default python3 kernelspec) is staged as O13 rather than a claim, since only one host was observed.
+  - Corrected 02's Schur-complement wording after reading eliminate_columns_rows: it is a conditional sub-block, and the fix is already inside N46's file changes, so no separate node.
+  - No closure signals on O12/O13; neither promoted. Claims untouched.

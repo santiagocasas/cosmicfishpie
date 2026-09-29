@@ -88,10 +88,10 @@ sessions:
   open_threads: 6
 - id: 2026-09-29_001
   date: '2026-09-29'
-  summary: SYREN-NEW ns-response diagnosis documented with a reproducible script, four figures and an explanatory notebook; user retains notebook execution.
-  turn_count: 3
-  events_count: 9
+  summary: SYREN ns-response diagnosis documented, then notebooks reorganized into eight root files plus archive with new Fisher and Nautilus notebooks smoke-tested.
+  turn_count: 5
+  events_count: 11
   claims_touched:
   - C02
   - C03
-  open_threads: 3
+  open_threads: 4

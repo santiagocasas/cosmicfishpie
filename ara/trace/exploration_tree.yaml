@@ -900,3 +900,56 @@ tree:
   - notebooks/Power_ns_response_EE2_HMcode_SYREN.ipynb
   status: resolved
   also_depends_on: [N44]
+- id: N46
+  type: decision
+  title: Reorganize notebooks to eight root files plus archive
+  provenance: user-revised
+  timestamp: '2026-09-29'
+  choice: >-
+    Reduce notebooks/ to eight root files per the user's A-G spec: 01 backends,
+    02 spectro standard-vs-all-GCsp-nuisance as one notebook two sections,
+    03 photometric GCph/WL/cross for Paper-Pessimistic vs Paper-Optimistic with
+    ISTF reference, 04 CMB Planck (standard CMB Fisher merged from notebook 6
+    plus the covmat diagnostics), 05 Fisher contours/addition/marginalisation
+    reading committed Fishers from notebooks/results/, 06 Nautilus GCsp+WL
+    two-cosmo-plus-nuisance chains via fishconsumer, and the two SYREN
+    investigation notebooks kept under intuitive SYREN-investigation names.
+    Everything else (ten root files plus old/ and legacy/) moves under
+    notebooks/archive/; .gitignore gains negation rules so notebooks/results
+    Fishers can be committed. User choices: one notebook with two sections for
+    B, Euclid-Photometric-Paper-Optimistic for C, merge notebook 6's CMB
+    section into 04, single archive/ folder, smoke-test only 01 and 05,
+    01-06 + SYREN naming. Deleted GCsp/Photo HMcode-vs-SYREN notebooks (commit
+    aaeb95b) stay deleted. Docs links in syren_ns_response.md repointed to the
+    renamed SYREN notebooks.
+  alternatives:
+  - keep old and legacy folders separate
+  - two separate spectroscopic notebooks
+  - keep notebook 6 as a tenth root file
+  evidence:
+  - notebooks/archive/
+  - .gitignore
+  - docs/source/syren_ns_response.md
+  status: resolved
+- id: N47
+  type: experiment
+  title: Static and smoke validation of the reorganized notebooks
+  provenance: ai-executed
+  timestamp: '2026-09-29'
+  result: >-
+    All eight root notebooks pass nbformat validation and per-cell ast parsing.
+    Executed a copy of 01 with the repository kernel cosmicfishpie-symbolic-overhaul:
+    11 cells, no errors. Executed a copy of 05 expecting no Fishers: the gate cell
+    raised the intended RuntimeError listing which notebooks produce Fishers.
+    The default python3 kernelspec resolves to a miniforge env whose pydantic
+    (core 2.41.5 vs required 2.46.4) fails when importing the analysis stack;
+    the repository-specific kernel imports cleanly. eliminate_parameters was
+    confirmed to drop rows/columns (conditional sub-block, not a Schur
+    complement), so the 02 wording was corrected. gitignore exception verified:
+    notebooks/results/ is reported as untracked-visible and check-ignore does
+    not ignore it. Smoke copies deleted; no notebook output committed.
+  evidence:
+  - /tmp/opencode/edit_nbs_01_04.py
+  - /tmp/opencode/build_nbs_05_06.py
+  status: resolved
+  also_depends_on: [N46]

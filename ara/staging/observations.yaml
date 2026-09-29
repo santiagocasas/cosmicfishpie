@@ -265,3 +265,21 @@ observations:
   promoted_to: null
   crystallized_via: null
   stale: false
+- id: O13
+  timestamp: '2026-09-29'
+  provenance: ai-executed
+  content: >-
+    For this repo the default python3 kernelspec points at a miniforge
+    environment whose pydantic/pydantic-core versions conflict when importing
+    cosmicfishpie.analysis; the cosmicfishpie-symbolic-overhaul kernel
+    (repository .venv) is required to run the notebooks.
+  context: >-
+    Smoke execution of a copied notebook under the python3 kernel failed in the
+    imports cell with a pydantic-core incompatibility while the same imports
+    worked under the repository venv.
+  potential_type: constraint
+  bound_to: [N47]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false

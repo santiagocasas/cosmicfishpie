@@ -11,6 +11,7 @@ cmb_benchmarks
 photometric_optimization_results
 likelihood_validation
 backend_validation
+syren_ns_response
 scripts_reference
 symbolic_overhaul_provenance
 cosmicfishpie

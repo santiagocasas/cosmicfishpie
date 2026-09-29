@@ -28,6 +28,7 @@ To publish the dashboard and landing page to GitHub Pages, run `bash scripts/val
 
 ## Validation notes
 
+- [SYREN-NEW spectral-tilt response](syren_ns_response.md) compares linear and nonlinear ns responses for CLASS+EE2, CLASS+HMcode2020 and SYREN-NEW, with reproducible figures and an analysis of the photometric Fisher differences.
 - [Historical comparison with Casas et al. (2023)](validation_comparison.md) preserves an earlier investigation snapshot and its reported deviations; it is not the current case runner or a substitute for reviewing the case configuration and generated results.
 - The maintained paper-validation case rationale and inputs are documented alongside [`scripts/validation/configs/`](../../scripts/validation/configs/).
 - The [scripts reference](scripts_reference.md) describes the validation commands and their usage.

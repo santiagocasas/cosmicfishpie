@@ -274,3 +274,9 @@ entries:
   - Staged O11; formula cancellation and ns-fixed inversions support a diagnosis but do not prove sole derivative causality or a transcription bug.
   - The user has not assessed this turn's numerical interpretation; no new claim was crystallized.
   - Closed the missing-output rerun thread. Source and notebook were not edited, and no CLASS run or forecast was launched.
+- turn: 2026-09-29_001#3
+  notes:
+  - Recovered the unfinished documentation-turn epilogue after interruption; N45 binds the approved run to persistent spectra and report artifacts.
+  - Crystallized O11 to C03 from the user's explicit endorsement, retaining the limits on causal attribution.
+  - Staged O12 without a physics or interpolation explanation; further numerical investigation needs permission.
+  - User declined cached notebook execution on resumption. Source review is not an execution check, and notebook outputs remain empty.

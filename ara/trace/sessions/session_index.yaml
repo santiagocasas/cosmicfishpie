@@ -88,9 +88,10 @@ sessions:
   open_threads: 6
 - id: 2026-09-29_001
   date: '2026-09-29'
-  summary: Successful notebook rerun followed by SYREN-NEW ns-response and saved-Fisher degeneracy diagnosis.
-  turn_count: 2
-  events_count: 6
+  summary: SYREN-NEW ns-response diagnosis documented with a reproducible script, four figures and an explanatory notebook; user retains notebook execution.
+  turn_count: 3
+  events_count: 9
   claims_touched:
   - C02
-  open_threads: 2
+  - C03
+  open_threads: 3

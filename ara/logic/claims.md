@@ -32,3 +32,14 @@
 - **Dependencies**: []
 - **Tags**: CLASS, HMcode-2020, nonlinear-power, interpolation, photometric-Fisher
 - **From staging**: O10
+
+## C03: SYREN nonlinear tilt response contributes to the Fisher discrepancy
+- **Statement**: At the recorded fiducial, SYREN-NEW has a substantially suppressed low-redshift nonlinear ns response relative to EE2, with strong cancellation from explicit ns dependence in term3. Fixing ns reduces several saved LCDM marginalized-error differences, supporting an important ns-degeneracy contribution without establishing sole causality or a transcription bug.
+- **Status**: supported
+- **Provenance**: user-revised
+- **Crystallized via**: verbal-affirmation
+- **Falsification criteria**: Reproducing the documented fiducial calculations fails to recover the response deficit, differentiated term3 cancellation, or reduction in saved-Fisher error differences after fixing ns.
+- **Proof**: [`ara/evidence/tables/syren_ns_response_2026-09-29.yaml`, `docs/source/syren_ns_response.md`, `docs/source/_static/ns_response/ns_response.npz`]
+- **Dependencies**: []
+- **Tags**: SYREN-NEW, ns, nonlinear-response, Fisher-degeneracies
+- **From staging**: O11

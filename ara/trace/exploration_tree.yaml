@@ -879,3 +879,24 @@ tree:
   - cosmicfishpie/cosmology/symbolic_new.py
   status: resolved
   also_depends_on: [N43]
+- id: N45
+  type: experiment
+  title: Package three-backend tilt responses and explanatory notebook
+  provenance: ai-executed
+  timestamp: '2026-09-29'
+  result: >-
+    User-approved nine-cosmology run produced linear, nonlinear, boost-response,
+    and fiducial-spectrum figures with saved arrays and metadata. At z=0,
+    k=0.5 h/Mpc and half-step 0.0096, nonlinear responses are EE2 1.070631,
+    HMcode2020 1.022561, and SYREN-NEW 0.442848. Report and notebook distinguish
+    these public-interface values from the earlier direct-formula calculations.
+    On resumption, reviewed saved notebook source and report links; user chose
+    to execute the notebook themselves. No additional solver run was performed.
+  evidence:
+  - scripts/validation/plot_ns_power_response.py
+  - docs/source/syren_ns_response.md
+  - docs/source/_static/ns_response/ns_response.npz
+  - docs/source/_static/ns_response/ns_response_metadata.json
+  - notebooks/Power_ns_response_EE2_HMcode_SYREN.ipynb
+  status: resolved
+  also_depends_on: [N44]

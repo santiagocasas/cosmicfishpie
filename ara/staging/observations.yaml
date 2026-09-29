@@ -247,6 +247,20 @@ observations:
     and no transcription or amplitude-convention bug was found.
   potential_type: claim
   bound_to: [N44]
+  promoted: true
+  promoted_to: logic/claims.md:C03
+  crystallized_via: verbal-affirmation
+  stale: false
+- id: O12
+  timestamp: '2026-09-29'
+  provenance: ai-executed
+  content: >-
+    The saved public-interface HMcode nonlinear ns response is substantially
+    lower than EE2 at high k and z=2; at k=1 h/Mpc it is 1.393950 versus 2.432370.
+    Its cause and step-size convergence remain unresolved.
+  context: Nine-cosmology response comparison; finite sampled power within spline support.
+  potential_type: unknown
+  bound_to: [N45]
   promoted: false
   promoted_to: null
   crystallized_via: null

@@ -178,3 +178,108 @@ observations:
   promoted_to: null
   crystallized_via: null
   stale: false
+- id: O07
+  timestamp: 2026-09-25T11:55
+  provenance: ai-executed
+  content: The default SYREN-NEW total-matter symbolic provider operationally produces GCsp and coupled GCph+WL Fisher matrix artifacts with the existing forecast runner.
+  context: Focused initialization test, GCsp and photo Fisher runs, and focused Ruff check completed after implementation of the new symbolic provider.
+  potential_type: claim
+  bound_to:
+  - N22
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O08
+  timestamp: 2026-09-25T12:17
+  provenance: ai-executed
+  content: "For the executed upstream-style linear comparison at z=1 over 0.009-3 h/Mpc, the maximum absolute SYREN-NEW versus CLASS fractional difference was 0.0030801 and the median was 0.0001673; the matched GCsp Fisher Frobenius norm ratio (SYREN-NEW/CLASS HMcode 2020) was 1.01468."
+  context: "The new notebook executed a direct minimal CLASS linear-spectrum check followed by matched GCsp forecasts. The forecast paths retain different nonlinear prescriptions and CosmicFishPie's public CLASS neutrino translation differs from the direct comparison."
+  potential_type: claim
+  bound_to:
+  - N23
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O09
+  timestamp: 2026-09-25T15:04
+  provenance: ai-executed
+  content: "SYREN-NEW fiducial likelihoods evaluated through the shared runtime give GCsp log L = -0 and WL+GCph log L = 1.38888570787e-10; Omegam+0.01 gives -1419.566039900048 and h+0.01 gives -647.8380169671809."
+  context: "Data and theory both derive from the same fiducial runtime, so the fiducial chi-squared is zero by construction. The shifted-parameter values only demonstrate that the likelihood path responds to inputs; they are not a scientific accuracy comparison."
+  potential_type: claim
+  bound_to:
+  - N40
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O10
+  timestamp: 2026-09-29T03:00
+  provenance: ai-executed
+  content: CLASS HMcode 2020 can sporadically return non-finite nonlinear power at
+    internally padded k or z samples outside the configured output domain; admitting
+    those samples to RectBivariateSpline can corrupt the complete photometric result.
+  context: Controlled w0wa photometric probes isolated the first non-finite values at
+    _class_pk_grid, then the implemented domain filter removed padded samples and the
+    focused real-backend probe completed with zero NaNs.
+  potential_type: claim
+  bound_to:
+  - N41
+  - N42
+  promoted: true
+  promoted_to: logic/claims.md:C02
+  crystallized_via: artifact-commitment
+  stale: false
+- id: O11
+  timestamp: '2026-09-29'
+  provenance: ai-suggested
+  content: >-
+    SYREN-NEW's nonlinear ns response differs substantially from EE2 at sampled
+    low-redshift nonlinear scales. The explicit ns-sensitive term3 denominator
+    produces strong cancellation. The associated ns degeneracies likely explain
+    much of the large LCDM marginalized-error discrepancy; smaller w0wa relative
+    discrepancies need not imply more accurate derivatives.
+  context: >-
+    User suspected ns from saved plots. Direct formula differentiation, an EE2
+    boost-response comparison and ns-fixed saved-Fisher inversions support the
+    diagnosis. No isolated derivative-swap forecast has established sole causality,
+    and no transcription or amplitude-convention bug was found.
+  potential_type: claim
+  bound_to: [N44]
+  promoted: true
+  promoted_to: logic/claims.md:C03
+  crystallized_via: verbal-affirmation
+  stale: false
+- id: O12
+  timestamp: '2026-09-29'
+  provenance: ai-executed
+  content: >-
+    The saved public-interface HMcode nonlinear ns response is substantially
+    lower than EE2 at high k and z=2; at k=1 h/Mpc it is 1.393950 versus 2.432370.
+    Its cause and step-size convergence remain unresolved.
+  context: Nine-cosmology response comparison; finite sampled power within spline support.
+  potential_type: unknown
+  bound_to: [N45]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O13
+  timestamp: '2026-09-29'
+  provenance: ai-executed
+  content: >-
+    For this repo the default python3 kernelspec points at a miniforge
+    environment whose pydantic/pydantic-core versions conflict when importing
+    cosmicfishpie.analysis; the cosmicfishpie-symbolic-overhaul kernel
+    (repository .venv) is required to run the notebooks.
+  context: >-
+    Smoke execution of a copied notebook under the python3 kernel failed in the
+    imports cell with a pydantic-core incompatibility while the same imports
+    worked under the repository venv.
+  potential_type: constraint
+  bound_to: [N47]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false

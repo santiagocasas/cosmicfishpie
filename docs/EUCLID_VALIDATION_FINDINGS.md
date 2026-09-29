@@ -162,7 +162,7 @@ uv run python -c "import camb; print('CAMB installed:', camb.__version__)"
 ### Phase 3: Re-run Case 01
 ```bash
 # Run just the problem case with updated CLASS config
-uv run python scripts/run_fisher_compare_backends.py \
+uv run python scripts/validation/run_fisher_compare_backends.py \
   --case 01 \
   --profile hp-updated \
   --verbose
@@ -213,7 +213,7 @@ Upgrade CLASS to HP, and Case 01 will pass just like Case 02.
 
 ## Supporting Documents
 
-1. **PAPER_COMPARISON.md** — High-level cross-reference with published results
+1. **[PAPER_COMPARISON](source/validation_comparison.md)** — Historical high-level cross-reference with published results
 2. **CONFIG_DIAGNOSIS.md** — Detailed configuration analysis and fix protocol
 3. **VALIDATION_SUMMARY.md** — Your current test results (existing)
 

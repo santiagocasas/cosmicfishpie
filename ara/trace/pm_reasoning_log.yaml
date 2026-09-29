@@ -207,3 +207,83 @@ entries:
   - Recorded N20 as a direct user decision because multi-chain overlay behavior was implemented in the validation utility.
   - Validation compiled the script and loaded two completed chains in dry-run mode; no figure was rendered and no Slurm work
     was submitted.
+- turn: 2026-09-25_001#1
+  notes:
+  - Recorded N21 as a resolved AI-executed experiment because both requested Fisher outputs were generated and the focused initialization and lint checks passed.
+  - Staged O07 as an operational claim rather than crystallizing it: the runs establish artifact generation, not scientific agreement with the planned CLASS/EE2 reference.
+- turn: 2026-09-25_001#2
+  notes:
+  - Corrected N21 rather than retaining its unsupported SYREN-NEW attribution after source tracing showed the original runs fell through to the legacy provider.
+  - Recorded N22 as the resolved operational experiment because provider: syren_new now instantiates SyrenNewProvider before legacy initialization and both requested Fisher artifacts exist.
+  - Kept O07 staged and moved its binding to N22: successful matrix export does not establish numerical agreement with the planned CLASS/EE2 reference.
+- turn: 2026-09-25_001#3
+  notes:
+  - Recorded N23 as a resolved experiment because the notebook executed end-to-end and produced finite matched GCsp Fisher matrices.
+  - Staged O08 rather than crystallizing it: the direct linear check is upstream-style, but the forecast compares SYREN-NEW nonlinear power with CLASS HMcode 2020 rather than the intended CLASS+EE2 reference.
+- turn: 2026-09-25_001#4
+  notes:
+  - Recorded N24 as a direct user decision because the user explicitly required notebook execution to remain manual.
+  - Added no scientific observation: the new nonlinear P(k), parameter-error, and contour cells were structurally validated but not executed.
+- turn: 2026-09-25_001#5
+  notes:
+  - Recorded N25 as a resolved implementation experiment: the reported failure occurred in the bars renderer when Matplotlib inherited a non-scalar session patch linewidth.
+  - Kept notebook execution manual and did not stage a scientific or visualization-success claim; the synthetic Agg smoke test verifies only the repaired code path.
+- turn: 2026-09-25_001#6
+  notes:
+  - The full post-processing reproduction contradicted N25's initial root-cause interpretation: compare_to_index=True is a Boolean NumPy index and adds an extra data dimension.
+  - Recorded N26 with the passing full post-processing result, preserved the conflict through N27 rather than overwriting N25, and kept notebook execution manual.
+- turn: 2026-09-25_001#7
+  notes:
+  - Recorded N28 as a direct user decision because the user explicitly rejected the nonmatching default solver profiles and required a copied, minimal matched notebook.
+  - Recorded N29 as structural validation only: the focused translation test, YAML parsing, lint, and notebook JSON check passed; no numerical cell or Fisher calculation was run.
+  - Did not stage a spectrum, derivative, or contour claim because the user retained execution of the new notebook.
+- turn: 2026-09-25_001#8
+  notes:
+  - Recorded N30 as a resolved experiment because the user authorized actual derivative execution and all four matched GCsp cases reached the native 3-point derivative engine with finite checked arrays.
+  - Recorded the mTk profile correction as implementation evidence, not as a cosmological result; it fixes the CosmicFishPie CLASS wrapper's transfer-output requirement.
+  - Recorded N31 as a direct visualization decision and kept its new notebook cell unexecuted. No spectrum-agreement or contour-agreement claim was staged.
+- turn: 2026-09-25_001#9
+  notes:
+  - Recorded N32 as a direct user correction: the prior notebook's direct solver/emulator functions and local finite differences did not satisfy the requested unified-interface provenance.
+  - Recorded N33 as structural validation only. Clearing obsolete direct/manual plot output avoids presenting it as output from the refactored code, and no numerical conclusion was added.
+- turn: 2026-09-25_001#10
+  notes:
+  - Recorded N34 as the user-supplied architecture refinement: AnalysisContext is the appropriate configuration snapshot for spectrum-only use.
+  - Recorded N35 as static validation only. The new helper was compiled but not instantiated, preserving the user's manual execution boundary.
+- turn: 2026-09-25_001#11
+  notes:
+  - Recorded N36 as a direct user validation-policy decision. Future notebook work should rely on established APIs and avoid extra backend experiments unless the user requests them.
+- turn: 2026-09-25_001#12
+  notes:
+  - Recorded N37 from the supplied traceback and source comparison: the failure is caused by a mixed checkout, not a new numerical experiment or a profile accuracy conclusion.
+  - Recorded N38 for the minimal fail-fast notebook guard. No backend rerun was performed, following N36.
+- turn: 2026-09-25_001#13
+  notes:
+  - Recorded N39 as the user's direct request to base a short runner on existing likelihood scripts, and N40 as the executed GCsp plus WL+GCph fiducial evaluation.
+  - Staged O09 rather than crystallizing it: zero fiducial chi-squared follows from deriving data and theory from the same runtime, and shifted-parameter values are only a responsiveness check, not a scientific comparison.
+  - Kept the run narrow under N36: no derivative recomputation, no sampler, and no extra backend experiments beyond the single responsiveness probe needed to confirm the likelihood path is live.
+- turn: 2026-09-29_001#1
+  notes:
+  - Recorded N41 as a resolved diagnostic experiment because staged probes localized the first non-finite values to CLASS nonlinear padded-grid retrieval and disproved deterministic prior-parameter causation.
+  - Recorded N42 as the committed numerical-boundary decision; silent value replacement was rejected because it would conceal unsupported physics.
+  - Crystallized O10 to C02 via artifact commitment because the new helper and focused tests directly encode the diagnosed boundary.
+  - Kept the absent w0wa HMcode output as an operational notebook issue, not part of the numerical claim.
+- turn: 2026-09-29_001#2
+  notes:
+  - Recorded user-reported notebook success as N43 and direct response/matrix calculations as N44.
+  - Staged O11; formula cancellation and ns-fixed inversions support a diagnosis but do not prove sole derivative causality or a transcription bug.
+  - The user has not assessed this turn's numerical interpretation; no new claim was crystallized.
+  - Closed the missing-output rerun thread. Source and notebook were not edited, and no CLASS run or forecast was launched.
+- turn: 2026-09-29_001#3
+  notes:
+  - Recovered the unfinished documentation-turn epilogue after interruption; N45 binds the approved run to persistent spectra and report artifacts.
+  - Crystallized O11 to C03 from the user's explicit endorsement, retaining the limits on causal attribution.
+  - Staged O12 without a physics or interpolation explanation; further numerical investigation needs permission.
+  - User declined cached notebook execution on resumption. Source review is not an execution check, and notebook outputs remain empty.
+- turn: 2026-09-29_001#4
+  notes:
+  - Captured the plan-mode analysis turn and the implementation turn in a single epilogue because plan mode forbade ara writes.
+  - 'Routed N46 as a user-revised decision: the user authored requirements A-G verbatim and selected every offered clarification option before answering "yes, implement!!".'
+  - Routed N47 as a direct experiment; its by-product environment constraint (broken default python3 kernelspec) is staged as O13 rather than a claim, since only one host was observed.
+  - Corrected 02's Schur-complement wording after reading eliminate_columns_rows: it is a conditional sub-block, and the fix is already inside N46's file changes, so no separate node.
+  - No closure signals on O12/O13; neither promoted. Claims untouched.

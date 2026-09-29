@@ -503,14 +503,15 @@ class ComputeCls:
             if not np.any(mask):
                 continue
             kn = col[mask]
-            sqrtPmm = np.sqrt(self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear))
+            Pmm_val = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear)
+            sqrtPmm = np.sqrt(np.maximum(Pmm_val, 0.0))
             self.sqrtPell["WL"][iz, mask] = self.cosmo.SigmaMG(self.z[iz], kn) * sqrtPmm / chi[iz]
             self.sqrtPell["WL_IA"][iz, mask] = sqrtPmm / chi[iz]
             if self.tracer == "matter":
                 self.sqrtPell["GCph"][iz, mask] = sqrtPmm / chi[iz]
             else:
                 Pgcph = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear, tracer=self.tracer)
-                self.sqrtPell["GCph"][iz, mask] = np.sqrt(Pgcph) / chi[iz]
+                self.sqrtPell["GCph"][iz, mask] = np.sqrt(np.maximum(Pgcph, 0.0)) / chi[iz]
         return None
 
     def galaxy_kernel(self, z, i):

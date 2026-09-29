@@ -79,3 +79,19 @@ sessions:
   events_count: 2
   claims_touched: []
   open_threads: 2
+- id: 2026-09-25_001
+  date: '2026-09-25'
+  summary: Corrected provider wiring, prepared matched profiles, exercised derivatives, refactored to unified CFP interfaces, guarded against mixed-checkout kernels, and ran SYREN-NEW GCsp and WL+GCph fiducial likelihoods.
+  turn_count: 13
+  events_count: 23
+  claims_touched: []
+  open_threads: 6
+- id: 2026-09-29_001
+  date: '2026-09-29'
+  summary: SYREN ns-response diagnosis documented, then notebooks reorganized into eight root files plus archive with new Fisher and Nautilus notebooks smoke-tested.
+  turn_count: 5
+  events_count: 11
+  claims_touched:
+  - C02
+  - C03
+  open_threads: 4

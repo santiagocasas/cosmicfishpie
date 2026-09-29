@@ -7,6 +7,7 @@ from cosmicfishpie.utilities.utils import printing as cpr
 def test_FisherMatrix_GCsp(spectro_fisher_matrix):
     cpr.debug = False
     fish = spectro_fisher_matrix.compute(max_z_bins=1)
+    assert set(spectro_fisher_matrix.freeparams) <= set(spectro_fisher_matrix.derivs_dict)
     print("Fisher name: ", fish.name)
     print("Fisher parameters: ", fish.get_param_names())
     print("Fisher fiducial values: ", fish.get_param_fiducial())

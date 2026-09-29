@@ -1,0 +1,149 @@
+{
+  "created_utc": "2026-09-29T01:56:06.633012+00:00",
+  "script": {
+    "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/scripts/validation/plot_ns_power_response.py",
+    "sha256": "f83eac7f009be44bce80d6a7e8313a80569078bd4b8e87f6764b326f1acd3cf9"
+  },
+  "fiducial": {
+    "10^9As": 2.1,
+    "Omegam": 0.32,
+    "Omegab": 0.05,
+    "h": 0.67,
+    "ns": 0.96,
+    "mnu": 0.06
+  },
+  "cosmo_model": "LCDM",
+  "ns_step": 0.0096,
+  "redshifts": [
+    0.0,
+    1.0,
+    2.0
+  ],
+  "k_hmpc": {
+    "min": 0.01,
+    "max": 3.0,
+    "samples": 243
+  },
+  "power_axes": [
+    "backend",
+    "minus/fiducial/plus",
+    "linear/nonlinear",
+    "z",
+    "k"
+  ],
+  "power_units": "(Mpc/h)^3",
+  "response_definition": "[ln P(ns+step) - ln P(ns-step)] / (2 step), fixed As",
+  "profiles": {
+    "CLASS + EE2": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost_photo.yaml",
+      "sha256": "bfae3fbfb64e6bac353d5057412f5943888d90cf5d9661c6bee8a9d8d93c32a6",
+      "contents": "# CLASS linear spectra multiplied by the EuclidEmulator2 total-matter boost for photometric forecasts.\n# EE2 is calibrated for z <= 10 and k <= ~9.4 h/Mpc. P_k_max_1/Mpc = 5.0 matches EE2's native boundary.\nPARAMETER_TRANSLATION:\n  'neutrino_scheme': 'three_degenerate'\n  'N_ur': 0.00641\n  'neutrino_mass_fac': 93.14\nNONLINEAR:\n  'model': 'ee2'\nACCURACY: {}\nCOSMO_SETTINGS:\n  'P_k_max_1/Mpc': 5.0\n  'output': 'mPk,mTk'\n  'non linear': 'none'\n  'z_max_pk': 3.0\n  'N_ncdm': 3\n  'tau_reio': 0.0561\nLCDM:\n  'Omega_Lambda': 0.0\n  'Omega_k': 0.0\nw0waCDM:\n  'Omega_Lambda': 0.0\n  'Omega_k': 0.0\n"
+    },
+    "CLASS + HMcode2020": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/configs/default_boltzmann_yaml_files/class/hmcode2020_photo.yaml",
+      "sha256": "2fbf7f3fd431a065a6e87e2a71314679c24882fb089571c98c7264b30b4a70b5",
+      "contents": "# CLASS HMcode2020 profile for photometric forecasts matched to the emulator calibrated limit.\n# P_k_max_1/Mpc = 5.0 matches the k_max of EE2 (~9.4 h/Mpc) and SYREN-NEW (9 h/Mpc).\nPARAMETER_TRANSLATION:\n  'neutrino_scheme': 'three_degenerate'\n  'N_ur': 0.00641\n  'neutrino_mass_fac': 93.14\nACCURACY: {}\nCOSMO_SETTINGS:\n  'P_k_max_1/Mpc': 5.0\n  'output': 'mPk,mTk'\n  'non linear': 'hmcode_2020'\n  'nonlinear_min_k_max': 5.0\n  'z_max_pk': 3.0\n  'N_ncdm': 3\n  'tau_reio': 0.0561\nLCDM:\n  'Omega_Lambda': 0.0\n  'Omega_k': 0.0\nw0waCDM:\n  'Omega_Lambda': 0.0\n  'Omega_k': 0.0\n"
+    },
+    "SYREN-NEW": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren_new_photo.yaml",
+      "sha256": "68d1ed93b873d4702d210699e8a542efff296e6b1b587bf8944419d51c17e598",
+      "contents": "# SYREN-NEW profile for photometric forecasts up to its optimistic calibrated limit (kmax = 9 h/Mpc).\nACCURACY:\n  'provider': 'syren_new'\nNUMERICS:\n  'kmin_pk': 1.0e-3  # h/Mpc\n  'kmax_pk': 9.0     # h/Mpc (optimistic calibrated limit)\n  'zmin_pk': 0.0\n  'zmax_pk': 3.0\n  'z_samples': 100\n  'k_samples': 400\n  'extrapolate': False\nCOSMO_SETTINGS: {}\nLCDM: {}\nw0waCDM: {}\n"
+    }
+  },
+  "resolved_fiducial_backend_parameters": {
+    "CLASS + EE2": {
+      "P_k_max_1/Mpc": 5.0,
+      "output": "mPk,mTk",
+      "non linear": "none",
+      "z_max_pk": 3.0,
+      "N_ncdm": 3,
+      "tau_reio": 0.0561,
+      "Omega_Lambda": 0.0,
+      "Omega_k": 0.0,
+      "h": 0.67,
+      "N_ur": 0.00641,
+      "m_ncdm": "0.02,0.02,0.02",
+      "Omega_b": 0.05,
+      "Omega_cdm": 0.26856495535839214,
+      "A_s": 2.1e-09,
+      "n_s": 0.96
+    },
+    "CLASS + HMcode2020": {
+      "P_k_max_1/Mpc": 5.0,
+      "output": "mPk,mTk",
+      "non linear": "hmcode_2020",
+      "nonlinear_min_k_max": 5.0,
+      "z_max_pk": 3.0,
+      "N_ncdm": 3,
+      "tau_reio": 0.0561,
+      "Omega_Lambda": 0.0,
+      "Omega_k": 0.0,
+      "h": 0.67,
+      "N_ur": 0.00641,
+      "m_ncdm": "0.02,0.02,0.02",
+      "Omega_b": 0.05,
+      "Omega_cdm": 0.26856495535839214,
+      "A_s": 2.1e-09,
+      "n_s": 0.96
+    },
+    "SYREN-NEW": {
+      "As": 2.1,
+      "Omegam": 0.32,
+      "Omegab": 0.05,
+      "h": 0.67,
+      "ns": 0.96,
+      "mnu": 0.06,
+      "w0": -1.0,
+      "wa": 0.0
+    }
+  },
+  "packages": {
+    "cosmicfishpie": {
+      "version": "1.3.1",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/__init__.py"
+    },
+    "classy": {
+      "version": "3.3.4.0",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/.venv/lib/python3.12/site-packages/classy/__init__.py"
+    },
+    "euclidemu2": {
+      "version": "1.4.3",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/.venv/lib/python3.12/site-packages/euclidemu2/__init__.py"
+    },
+    "symbolic_pofk": {
+      "version": "0.1.0",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/symbolic_pofk/symbolic_pofk/__init__.py"
+    },
+    "numpy": {
+      "version": "1.26.4",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/.venv/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    "scipy": {
+      "version": "1.17.0",
+      "module_path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/.venv/lib/python3.12/site-packages/scipy/__init__.py"
+    }
+  },
+  "sources": {
+    "cosmicfishpie.cosmology.cosmology": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/cosmology/cosmology.py",
+      "sha256": "0db7a1ab95843f3433e72bc2766c0feed685cb5c46fb5412f9a69f0b20914525"
+    },
+    "cosmicfishpie.cosmology.symbolic_new": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/cosmology/symbolic_new.py",
+      "sha256": "16adaef6a79f385ce9cbf883bca5c3e899bc0f47bae5f08e24996549112a8872"
+    },
+    "cosmicfishpie.cosmology.ee2": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-symbolic_overhaul/cosmicfishpie/cosmology/ee2.py",
+      "sha256": "bf34ce0748d3b15677521de6b413e749652fa0a7d48aa29efea8033711e99f1c"
+    },
+    "symbolic_pofk.syren_new": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/symbolic_pofk/symbolic_pofk/syren_new.py",
+      "sha256": "3615ab2e2760cdffc5c10c4d9273a374797756b0003fa9e83b37b3be11ce08b7"
+    },
+    "symbolic_pofk.linear_new": {
+      "path": "/home/casas/Cosmo/dev-cosmicfishpie/symbolic_pofk/symbolic_pofk/linear_new.py",
+      "sha256": "2ba4883c9e758dc5a558953394f39eab95c010efbf815fd6e1da2a344e700de4"
+    }
+  },
+  "OMP_NUM_THREADS": "1"
+}

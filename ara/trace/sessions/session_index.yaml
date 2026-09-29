@@ -88,9 +88,9 @@ sessions:
   open_threads: 6
 - id: 2026-09-29_001
   date: '2026-09-29'
-  summary: Isolated intermittent HMcode NaNs to unsupported CLASS padding and implemented a finite, configured-domain nonlinear spline path.
-  turn_count: 1
-  events_count: 3
+  summary: Successful notebook rerun followed by SYREN-NEW ns-response and saved-Fisher degeneracy diagnosis.
+  turn_count: 2
+  events_count: 6
   claims_touched:
   - C02
-  open_threads: 1
+  open_threads: 2

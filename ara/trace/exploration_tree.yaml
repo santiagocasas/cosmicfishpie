@@ -844,3 +844,38 @@ tree:
   status: resolved
   also_depends_on:
   - N41
+- id: N43
+  type: experiment
+  title: User confirms successful photometric notebook rerun
+  provenance: user
+  timestamp: '2026-09-29'
+  result: User reports the notebook ran well; saved LCDM and w0wa outputs now include HMcode.
+  evidence:
+  - notebooks/Photo_CLASS_EE2_vs_SYREN_NEW_minimal_matched.ipynb
+  status: resolved
+  also_depends_on: [N42]
+- id: N44
+  type: experiment
+  title: Diagnose SYREN-NEW spectral-tilt response and Fisher degeneracies
+  provenance: ai-executed
+  timestamp: '2026-09-29'
+  result: >-
+    At the notebook fiducial, z=0 and k=0.5 h/Mpc, dlnP/dns is 0.443050 for
+    SYREN-NEW and 1.074483 for exact linear tilt plus the EE2 boost response.
+    Explicit ns dependence in symbolic term3 contributes -1.912424, cancelling
+    the linear contribution +1.902108. Across sampled k,z, changing the ns step
+    from 0.0096 to 0.0001 changes the SYREN response by at most 0.000788.
+    Fixing ns in saved LCDM Fishers reduces SYREN-versus-EE2 marginalized-error
+    differences for As from -34.73% to -4.84% and h from -33.76% to -7.37%.
+    No new CLASS calculation or forecast was run. The notebook error plot uses
+    HMcode as reference despite an EE2 label; its unmarginal shading already
+    marginalizes omitted nuisance parameters.
+  evidence:
+  - evidence/tables/syren_ns_response_2026-09-29.yaml
+  - /tmp/opencode/analyze_syren_ns.py
+  - /tmp/opencode/decompose_syren_ns.py
+  - /tmp/opencode/inspect_photo_ns.py
+  - ../symbolic_pofk/symbolic_pofk/syren_new.py
+  - cosmicfishpie/cosmology/symbolic_new.py
+  status: resolved
+  also_depends_on: [N43]

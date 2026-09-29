@@ -260,7 +260,7 @@ The fix is straightforward: 6 parameter changes in one YAML file.
 
 **Document prepared:** 2026-08-17  
 **Related files:**
-- PAPER_COMPARISON.md (high-level findings)
+- [Historical PAPER_COMPARISON](source/validation_comparison.md) (high-level findings)
 - VALIDATION_SUMMARY.md (current results)
 - cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
 - cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml

@@ -213,7 +213,7 @@ Upgrade CLASS to HP, and Case 01 will pass just like Case 02.
 
 ## Supporting Documents
 
-1. **PAPER_COMPARISON.md** — High-level cross-reference with published results
+1. **[PAPER_COMPARISON](source/validation_comparison.md)** — Historical high-level cross-reference with published results
 2. **CONFIG_DIAGNOSIS.md** — Detailed configuration analysis and fix protocol
 3. **VALIDATION_SUMMARY.md** — Your current test results (existing)
 

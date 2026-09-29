@@ -1,5 +1,10 @@
 # Euclid w0waCDM Validation: Your Results vs. Casas et al. (2303.09451)
 
+> **Historical validation-tracking note (2026-08-17).** This records the comparison
+> snapshot and investigation at that date; use the current
+> [backend validation guide](backend_validation.md) for the maintained workflow and
+> dashboard, and consult the linked case configurations for current results.
+
 **Document Date:** 2026-08-17  
 **Your Case:** Case 01 (CLASS ↔ CAMB, Photometric w0waCDM)  
 **Reference Paper:** Casas et al., "Euclid: Validation of the MontePython forecasting tools" (arXiv 2303.09451)  
@@ -160,7 +165,7 @@ Apply the exact precision settings from **Casas et al., Section 6.1 and Appendix
 ### Step 3: Re-run Case 01
 ```bash
 # After updating config:
-uv run python scripts/run_fisher_compare_backends.py \
+uv run python scripts/validation/run_fisher_compare_backends.py \
   --case 01 \
   --check-precision-settings
 ```

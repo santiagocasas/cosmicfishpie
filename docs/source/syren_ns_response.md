@@ -21,7 +21,7 @@ operational issue is separate from the finite response discrepancy studied here.
 ## Inputs and numerical definitions
 
 The originating notebook is
-[`Photo_CLASS_EE2_vs_SYREN_NEW_minimal_matched.ipynb`](../../notebooks/Photo_CLASS_EE2_vs_SYREN_NEW_minimal_matched.ipynb).
+[`SYREN-investigation_Photo-EE2-vs-matched.ipynb`](../../notebooks/SYREN-investigation_Photo-EE2-vs-matched.ipynb).
 Despite its historical filename, the inspected run uses the following **photo** profiles:
 
 | Case | Packaged profile |
@@ -69,7 +69,7 @@ support and positive, finite output are checked. No extrapolated points are used
 The maintained script is
 [`scripts/validation/plot_ns_power_response.py`](../../scripts/validation/plot_ns_power_response.py).
 An executable companion with explanations, displayed figures and response tables is
-[`Power_ns_response_EE2_HMcode_SYREN.ipynb`](../../notebooks/Power_ns_response_EE2_HMcode_SYREN.ipynb).
+[`SYREN-investigation_ns-response.ipynb`](../../notebooks/SYREN-investigation_ns-response.ipynb).
 Its default path reads the saved artifacts; the optional recomputation cell invokes
 the same script rather than reimplementing the backends.
 It uses `build_analysis_context` and `cosmo_functions.Pmm` for **all three cases**,

@@ -705,7 +705,7 @@ requires-dist = [
     { name = "sphinx-autodoc-typehints", marker = "extra == 'dev'", specifier = "==1.23.3" },
     { name = "sphinx-copybutton", marker = "extra == 'dev'", specifier = "==0.5.2" },
     { name = "sphinx-rtd-theme", marker = "extra == 'dev'", specifier = ">=3.1.0" },
-    { name = "symbolic-pofk", editable = "../symbolic_pofk" },
+    { name = "symbolic-pofk", url = "https://github.com/DeaglanBartlett/symbolic_pofk/archive/cb4d2bb5a759d0c682dc1499cf3aad1c496436ac.tar.gz" },
     { name = "twine", marker = "extra == 'dev'", specifier = ">=1.11.0" },
     { name = "wheel", marker = "extra == 'dev'" },
 ]
@@ -3277,7 +3277,7 @@ wheels = [
 [[package]]
 name = "symbolic-pofk"
 version = "0.1.0"
-source = { editable = "../symbolic_pofk" }
+source = { url = "https://github.com/DeaglanBartlett/symbolic_pofk/archive/cb4d2bb5a759d0c682dc1499cf3aad1c496436ac.tar.gz" }
 dependencies = [
     { name = "colossus" },
     { name = "matplotlib" },
@@ -3285,6 +3285,7 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
+sdist = { hash = "sha256:fc7c73c15cef5e010ef092322749c00b618247124bd1b1c152517b335980a2cd" }
 
 [package.metadata]
 requires-dist = [

@@ -81,9 +81,6 @@ dev = [
     "packaging",
 ]
 
-[tool.uv.sources]
-symbolic-pofk = { path = "../symbolic_pofk", editable = true }
-
 [tool.setuptools.packages.find]
 exclude = [
     "*.tests",

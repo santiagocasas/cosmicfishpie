@@ -34,7 +34,7 @@ cd "$REPO_ROOT"
 FREE_PARAMS="${FREE_PARAMS//;/,}"
 
 args=(
-    scripts/run_wl_gcsp_nautilus_case.py
+    scripts/likelihood/nautilus/run_wl_gcsp_nautilus_case.py
     --case "$CASE"
     --run-dir "$RUN_DIR"
     --free-params "$FREE_PARAMS"

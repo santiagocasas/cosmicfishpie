@@ -4,8 +4,8 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-CONFIG_DIR="${REPO_ROOT}/scripts/validation_configs"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+CONFIG_DIR="${SCRIPT_DIR}/configs"
 
 # Validation cases are discovered automatically from config files named
 # compare_run_config.env_<ID>_<description> in CONFIG_DIR -- adding a new case
@@ -55,20 +55,20 @@ case_description() {
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/run_selected_validations.sh --cases LIST [OPTIONS]
-  bash scripts/run_selected_validations.sh --all [OPTIONS]
+  bash scripts/validation/run_selected_validations.sh --cases LIST [OPTIONS]
+  bash scripts/validation/run_selected_validations.sh --all [OPTIONS]
 
 Select cases with comma-separated dotted case IDs, for example:
-  bash scripts/run_selected_validations.sh --cases 03.1.0,03.2.0
-  bash scripts/run_selected_validations.sh --cases 03.2 --omp-threads 4
-  bash scripts/run_selected_validations.sh --all
+  bash scripts/validation/run_selected_validations.sh --cases 03.1.0,03.2.0
+  bash scripts/validation/run_selected_validations.sh --cases 03.2 --omp-threads 4
+  bash scripts/validation/run_selected_validations.sh --all
 
 A group prefix (e.g. 03) expands to every discovered case under it (03.1.0,
 03.1.1, 03.2.0, ...). A probe prefix (e.g. 03.2) selects both survey scenarios.
 An exact canonical leaf (e.g. 07.2.0) selects only that case. Optional fourth
 segments identify variants (e.g. 07.2.0.1); use 07.2 to select both.
 
-Cases (auto-discovered from scripts/validation_configs/compare_run_config.env_<ID>_*):
+Cases (auto-discovered from scripts/validation/configs/compare_run_config.env_<ID>_*):
 EOF
   local case_number
   for case_number in "${CASE_ORDER[@]}"; do
@@ -95,7 +95,7 @@ The script continues after a failed case and exits nonzero if any selected
 case fails or cannot be started.
 
 To add a new validation case, drop a new
-scripts/validation_configs/compare_run_config.env_<ID>_<description> file --
+      scripts/validation/configs/compare_run_config.env_<ID>_<description> file --
 no changes to this script are required. <ID> is a dotted hierarchical case
 number, e.g. 06.1.0 or 03.2.1; the leading root segment is zero-padded to 2
 digits.
@@ -278,7 +278,7 @@ for case_number in "${SELECTED_CASES[@]}"; do
   else
     if [[ "${force}" != true ]]; then
       check_output="$(
-        uv run python "${REPO_ROOT}/scripts/render_validation_dashboard.py" \
+        uv run python "${SCRIPT_DIR}/render_validation_dashboard.py" \
           --check-completed "${case_number}" 2>&1
       )"
       check_status=$?
@@ -296,7 +296,7 @@ for case_number in "${SELECTED_CASES[@]}"; do
     status_line "${COLOR_YELLOW}" "[${case_number}] running (details: ${log_file})"
     # Run the complete comparison in a separate process session. This makes
     # Ctrl-C kill the whole nested backend process tree, not just one child.
-    setsid bash "${REPO_ROOT}/scripts/compare_backends_report.sh" \
+    setsid bash "${SCRIPT_DIR}/compare_backends_report.sh" \
       --config "${config_path}" >"${log_file}" 2>&1 &
     current_case_pid=$!
     if [[ "${verbose}" == true ]]; then
@@ -332,7 +332,7 @@ echo "Selected validation run finished in ${overall_elapsed}s."
 echo "Skipped unchanged completed cases: ${skipped}"
 echo "Logs and batch artifacts: ${BATCH_DIR}"
 
-if uv run python "${REPO_ROOT}/scripts/render_validation_dashboard.py"; then
+if uv run python "${SCRIPT_DIR}/render_validation_dashboard.py"; then
   echo "Validation dashboard: ${REPO_ROOT}/scripts/benchmark_results/dashboard/index.html"
 else
   echo "WARNING: validation dashboard generation failed." >&2

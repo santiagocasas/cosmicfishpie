@@ -2,7 +2,7 @@
 # Submit independent WL, GCsp, and joint Nautilus jobs plus dependent plotting.
 # Usage example:
 #   RUN_DIR=/scratch/$USER/cfp/wl-gcsp-500 N_LIVE=500 N_EFF=2000 \
-#   CPUS_PER_TASK=16 WALLTIME=24:00:00 scripts/slurm/submit_wl_gcsp_nautilus.sh
+#   CPUS_PER_TASK=16 WALLTIME=24:00:00 scripts/hpc/slurm/submit_wl_gcsp_nautilus.sh
 #
 # Set SAMPLE_NUISANCES=0 for the cheaper conditional-debugging run. The default
 # is 1, which samples all Fisher nuisances and compares to marginal Fishers.
@@ -95,7 +95,7 @@ exports+=",NUISANCE_SIGMA=$NUISANCE_SIGMA,FREE_PARAMS=$FREE_PARAMS_EXPORT"
 submit_case() {
     local case="$1"
     sbatch "${common[@]}" --job-name="cfp-${case}" --export="$exports,CASE=$case" \
-        "$REPO_ROOT/scripts/slurm/wl_gcsp_nautilus_case.sbatch"
+        "$REPO_ROOT/scripts/hpc/slurm/wl_gcsp_nautilus_case.sbatch"
 }
 
 wl_job="$(submit_case wl)"
@@ -106,7 +106,7 @@ post_job="$(sbatch --parsable --ntasks=1 --cpus-per-task=1 --mem=8G --time=01:00
     --job-name=cfp-postprocess --dependency="$dependency" \
     --output="$RUN_DIR/logs/%x-%j.out" --error="$RUN_DIR/logs/%x-%j.err" \
     --export="ALL,REPO_ROOT=$REPO_ROOT,RUN_DIR=$RUN_DIR" \
-    "$REPO_ROOT/scripts/slurm/wl_gcsp_nautilus_postprocess.sbatch")"
+    "$REPO_ROOT/scripts/hpc/slurm/wl_gcsp_nautilus_postprocess.sbatch")"
 
 cat <<INNEREOF
 Submitted:
@@ -119,8 +119,8 @@ Run directory: $RUN_DIR
 Logs:          $RUN_DIR/logs/
 
 Check status (safe to run anytime, read-only):
-  $REPO_ROOT/scripts/slurm/check_wl_gcsp_status.sh "$RUN_DIR" $wl_job $gcsp_job $joint_job $post_job
+  $REPO_ROOT/scripts/hpc/slurm/check_wl_gcsp_status.sh "$RUN_DIR" $wl_job $gcsp_job $joint_job $post_job
 
 Live status (refresh every 30 seconds; Ctrl-C to stop):
-  $REPO_ROOT/scripts/slurm/check_wl_gcsp_status.sh --watch 30 "$RUN_DIR" $wl_job $gcsp_job $joint_job $post_job
+  $REPO_ROOT/scripts/hpc/slurm/check_wl_gcsp_status.sh --watch 30 "$RUN_DIR" $wl_job $gcsp_job $joint_job $post_job
 INNEREOF

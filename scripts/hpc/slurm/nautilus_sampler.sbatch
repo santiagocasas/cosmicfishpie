@@ -4,7 +4,7 @@
 # Submit from the repository root, for example:
 #   sbatch --cpus-per-task=32 --export=ALL,REPO_ROOT=$PWD,\
 #   CONFIG_FILE=sampler_scripts/fresh_wl_gcsp_symbolic_independent_32x1.yaml,\
-#   OUTPUT_DIR=$SCRATCH/cfp/wl-gcsp-r001 scripts/slurm/nautilus_sampler.sbatch
+#   OUTPUT_DIR=$SCRATCH/cfp/wl-gcsp-r001 scripts/hpc/slurm/nautilus_sampler.sbatch
 #
 # CFP_ENV_SETUP may name a site-local shell script that activates the project
 # environment. The YAML pool must equal the Slurm CPU allocation.

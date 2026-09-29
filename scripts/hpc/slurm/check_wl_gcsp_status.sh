@@ -7,8 +7,8 @@
 # cancels, or waits on anything. Run it yourself, as many times as you like.
 #
 # Usage:
-#   scripts/slurm/check_wl_gcsp_status.sh <RUN_DIR> <WL_JOBID> <GCSP_JOBID> <JOINT_JOBID> <POST_JOBID>
-#   scripts/slurm/check_wl_gcsp_status.sh --watch [SECONDS] <RUN_DIR> <WL_JOBID> <GCSP_JOBID> <JOINT_JOBID> <POST_JOBID>
+#   scripts/hpc/slurm/check_wl_gcsp_status.sh <RUN_DIR> <WL_JOBID> <GCSP_JOBID> <JOINT_JOBID> <POST_JOBID>
+#   scripts/hpc/slurm/check_wl_gcsp_status.sh --watch [SECONDS] <RUN_DIR> <WL_JOBID> <GCSP_JOBID> <JOINT_JOBID> <POST_JOBID>
 #
 # submit_wl_gcsp_nautilus.sh prints a ready-to-copy invocation of this script
 # with the real job IDs after every submission.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export CFP_ROOT="$ROOT"
 
 PLANCK_DIR_DEFAULT="$ROOT/Planck-Results/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3.00/base/plikHM_TTTEEE_lowl_lowE"
@@ -26,7 +26,7 @@ for file in "${REQUIRED_FILES[@]}"; do
 done
 
 echo "== Legacy full (2..2508, T+E) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \
@@ -37,7 +37,7 @@ uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
   --outdir "$ROOT/tmp/planck_bestfit_theta"
 
 echo "== Knox full (2..2508, T+E) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \
@@ -50,7 +50,7 @@ uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
   --outdir "$ROOT/tmp/planck_bestfit_theta_knox_full"
 
 echo "== Knox full lmax=1500 (2..1500, T+E) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \
@@ -63,7 +63,7 @@ uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
   --outdir "$ROOT/tmp/planck_bestfit_theta_knox_full_l1500"
 
 echo "== Knox 3-part: high (30..2508, T+E) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \
@@ -76,7 +76,7 @@ uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
   --outdir "$ROOT/tmp/planck_bestfit_theta_knox_3part/high_te"
 
 echo "== Knox 3-part: low TT (2..29) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \
@@ -89,7 +89,7 @@ uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
   --outdir "$ROOT/tmp/planck_bestfit_theta_knox_3part/low_t"
 
 echo "== Knox 3-part: low EE (2..29) =="
-uv run python "$ROOT/scripts/run_planck_bestfit_fisher.py" \
+uv run python "$ROOT/scripts/planck/run_planck_bestfit_fisher.py" \
   --planck-dir "$PLANCK_DIR" \
   --chain-root "$CHAIN_ROOT" \
   --parameterization theta \

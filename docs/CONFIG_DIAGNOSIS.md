@@ -175,7 +175,7 @@ comparison, and `camb/mpvalidation_p3.yaml` is the CAMB P3 profile.
 cd /home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-main
 
 # Run just Case 01 with the updated settings
-uv run python scripts/run_fisher_compare_backends.py \
+uv run python scripts/validation/run_fisher_compare_backends.py \
   --case 01 \
   --profile hp  # Optional: tag output as high-precision test
 ```

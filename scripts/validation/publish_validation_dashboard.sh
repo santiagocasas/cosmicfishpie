@@ -6,14 +6,14 @@ set -euo pipefail
 
 repo_root=$(git rev-parse --show-toplevel)
 dashboard_dir="${DASHBOARD_DIR:-$repo_root/scripts/benchmark_results/dashboard}"
-landing_dir="${LANDING_DIR:-$repo_root/scripts/github_pages}"
+landing_dir="${LANDING_DIR:-$repo_root/scripts/validation/github_pages}"
 branch="${PAGES_BRANCH:-gh-pages}"
 remote="${PAGES_REMOTE:-origin}"
 target_dir="${PAGES_SUBPATH:-dashboard}"
 
 if [[ ! -f "$dashboard_dir/index.html" ]]; then
     printf 'Dashboard not found: %s/index.html\n' "$dashboard_dir" >&2
-    printf 'Run: uv run python scripts/render_validation_dashboard.py\n' >&2
+    printf 'Run: uv run python scripts/validation/render_validation_dashboard.py\n' >&2
     exit 1
 fi
 

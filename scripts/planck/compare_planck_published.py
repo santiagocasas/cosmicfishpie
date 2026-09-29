@@ -8,7 +8,7 @@ This script compares marginalized 1-sigma constraints between:
 - Planck GetDist `.margestats` published in the PLA products.
 
 Current parameter mapping focuses on the h-based 6-parameter primary basis used
-by `scripts/run_planck_bestfit_fisher.py`:
+by `scripts/planck/run_planck_bestfit_fisher.py`:
 
 - `ombh2`  <-> `omegabh2`
 - `omch2`  <-> `omegach2`

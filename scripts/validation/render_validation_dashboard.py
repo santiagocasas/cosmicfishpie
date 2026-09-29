@@ -3,7 +3,7 @@
 
 """Render a clean HTML dashboard for the CAMB-vs-CLASS backend validation cases.
 
-Reads the case definitions from ``scripts/validation_configs/compare_run_config.env_*``
+Reads the case definitions from ``scripts/validation/configs/compare_run_config.env_*``
 and the matching outputs from ``scripts/benchmark_results/compare_*`` (as produced by
 ``compare_backends_report.sh`` / ``run_fisher_compare_backends.py``), and writes:
 
@@ -44,7 +44,7 @@ from pathlib import Path
 from typing import Any
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent
+REPO_ROOT = SCRIPT_DIR.parent.parent
 
 COSMO_PARAM_ORDER = ["Omegam", "Omegab", "h", "ns", "sigma8", "mnu", "Neff", "w0", "wa"]
 COSMO_PARAM_SET = set(COSMO_PARAM_ORDER)
@@ -542,8 +542,8 @@ def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
         "pyproject.toml",
         "requirements.txt",
         "uv.lock",
-        "scripts/run_fisher_compare_backends.py",
-        "scripts/compare_fishers_in_dir.py",
+        "scripts/validation/run_fisher_compare_backends.py",
+        "scripts/validation/compare_fishers_in_dir.py",
     ]
     for input_path in (
         case.yaml_a,
@@ -1017,7 +1017,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--config-dir",
-        default=str(REPO_ROOT / "scripts" / "validation_configs"),
+        default=str(REPO_ROOT / "scripts" / "validation" / "configs"),
         help="Directory with compare_run_config.env_* case definitions",
     )
     parser.add_argument(

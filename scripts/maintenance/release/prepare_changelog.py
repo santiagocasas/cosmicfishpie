@@ -5,7 +5,8 @@ from cosmicfishpie.version import VERSION
 
 
 def main():
-    changelog = Path("CHANGELOG.md")
+    repo_root = Path(__file__).resolve().parents[3]
+    changelog = repo_root / "CHANGELOG.md"
 
     with changelog.open() as f:
         lines = f.readlines()

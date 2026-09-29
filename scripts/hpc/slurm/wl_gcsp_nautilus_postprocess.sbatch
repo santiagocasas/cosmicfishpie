@@ -26,4 +26,4 @@ export NUMEXPR_NUM_THREADS=1
 # is single-threaded (just reads chains and makes plots); submit_wl_gcsp_
 # nautilus.sh overrides --cpus-per-task=1 --mem=8G on the sbatch command
 # line for this job, so the "32" above is only a fallback if run standalone.
-srun python -u scripts/postprocess_wl_gcsp_nautilus.py --run-dir "$RUN_DIR"
+srun python -u scripts/likelihood/nautilus/postprocess_wl_gcsp_nautilus.py --run-dir "$RUN_DIR"

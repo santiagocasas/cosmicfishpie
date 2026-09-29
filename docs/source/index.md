@@ -10,6 +10,7 @@ derivatives
 cmb_benchmarks
 photometric_optimization_results
 likelihood_validation
+scripts_reference
 cosmicfishpie
 ```
 

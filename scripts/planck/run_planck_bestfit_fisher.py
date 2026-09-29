@@ -48,7 +48,7 @@ DEFAULT_CHAIN_ROOT = "base_plikHM_TTTEEE_lowl_lowE"
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[2]
 
 
 def _timestamp_id() -> str:

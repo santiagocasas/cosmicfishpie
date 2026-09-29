@@ -8,7 +8,7 @@ Examples
 Photometric (GCph+WL), CLASS HP vs CAMB HP paper-validated profiles
 (arXiv:2405.06047v1):
 
-  uv run python scripts/run_fisher_compare_backends.py \
+  uv run python scripts/validation/run_fisher_compare_backends.py \
     --mode photo \
     --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml \
     --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
@@ -16,7 +16,7 @@ Photometric (GCph+WL), CLASS HP vs CAMB HP paper-validated profiles
 
 Spectroscopic (GCsp), CLASS UHP vs CAMB HP paper-validated profiles:
 
-  uv run python scripts/run_fisher_compare_backends.py \
+  uv run python scripts/validation/run_fisher_compare_backends.py \
     --mode spectro \
     --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml \
     --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
@@ -60,7 +60,7 @@ DEFAULT_FREEPARS = {
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[2]
 
 
 def _infer_yaml_key(code: str) -> str:
@@ -342,12 +342,12 @@ def main() -> int:
     parser.add_argument(
         "--compare",
         action="store_true",
-        help="Run scripts/compare_fishers_in_dir.py after computing both Fishers",
+        help="Run scripts/validation/compare_fishers_in_dir.py after computing both Fishers",
     )
     parser.add_argument(
         "--plot",
         action="store_true",
-        help="Run scripts/plot_compare_fishers.py on the produced compare JSON (requires --compare)",
+        help="Run scripts/validation/plot_compare_fishers.py on the produced compare JSON (requires --compare)",
     )
     parser.add_argument(
         "--fom-params",
@@ -555,13 +555,13 @@ def main() -> int:
         _update_run_metadata(meta_path, phase_timing=phase_timing)
         print("[compare] Done. To compare:")
         print(
-            f"  uv run python scripts/compare_fishers_in_dir.py {outdir} --fom-params {args.fom_params}"
+            f"  uv run python scripts/validation/compare_fishers_in_dir.py {outdir} --fom-params {args.fom_params}"
         )
         return 0
 
     compare_cmd = [
         sys.executable,
-        str(repo_root / "scripts" / "compare_fishers_in_dir.py"),
+        str(repo_root / "scripts" / "validation" / "compare_fishers_in_dir.py"),
         str(outdir),
         "--fom-params",
         args.fom_params,
@@ -638,7 +638,7 @@ def main() -> int:
 
     plot_cmd = [
         sys.executable,
-        str(repo_root / "scripts" / "plot_compare_fishers.py"),
+        str(repo_root / "scripts" / "validation" / "plot_compare_fishers.py"),
         str(latest),
     ]
     print("[compare] Plotting comparison:")

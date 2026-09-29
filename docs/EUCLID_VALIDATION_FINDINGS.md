@@ -162,7 +162,7 @@ uv run python -c "import camb; print('CAMB installed:', camb.__version__)"
 ### Phase 3: Re-run Case 01
 ```bash
 # Run just the problem case with updated CLASS config
-uv run python scripts/run_fisher_compare_backends.py \
+uv run python scripts/validation/run_fisher_compare_backends.py \
   --case 01 \
   --profile hp-updated \
   --verbose

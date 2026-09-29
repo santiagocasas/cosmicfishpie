@@ -9,7 +9,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../../.." && pwd)"
 
 # Commit that produced the validated 0.05-0.93% agreement in
 # scripts/archive/run_case01_full7_class_hp_vs_camb.py / _dp_vs_camb.py. This HEAD

@@ -27,7 +27,7 @@ as an approximation.
 Use the CAMB backend and a spec YAML:
 
 ```bash
-uv run python scripts/run_cmb_fisher_smoke.py \
+uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
@@ -43,7 +43,7 @@ Tips:
 ## Run The Standard Presets
 
 ```bash
-uv run python scripts/run_cmb_benchmarks.py \
+uv run python scripts/archive/cmb/run_cmb_benchmarks.py \
   --outdir tmp/cmb_bench \
   --which planck,so,s4
 ```

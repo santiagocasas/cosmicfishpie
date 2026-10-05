@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix a CLASS/HMcode nonlinear power spectrum error at z=6, normalize CAMB
   input paths, and various spectro/base likelihood and job-handling fixes.
 - Add explicit analysis context runtime isolation and refresh the comprehensive guide.
+- Symbolic backend overhaul to the new syren emulators, pinning the `symbolic-pofk`
+  GitHub tarball in CI instead of a local editable path.
+- Expose derivatives on `FisherMatrix`, add CLASS EE2 profiles, and harden nonlinear
+  spectra handling.
+- Reorganize `scripts/` into category subfolders and notebooks into a numbered workflow
+  (legacy notebooks archived); add backend validation and symbolic provenance docs pages.
 
 ## 1.3.1
 

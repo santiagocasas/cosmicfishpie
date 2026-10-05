@@ -1,0 +1,52 @@
+session:
+  id: "2026-09-17_001-val"
+  date: "2026-09-17"
+  started: "2026-09-17T08:02"
+  last_turn: "2026-09-17T09:08"
+  turn_count: 2
+  summary: "Added generic spawn-safe Nautilus workflow support and a ready-to-run JURECA jobs_punch WL+GCsp launcher."
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: V-N21
+    routing: direct
+    provenance: user
+    summary: "Add a direct NautilusSampler Slurm workflow with persistent scratch outputs"
+  - turn: 2
+    type: decision
+    id: V-N22
+    routing: direct
+    provenance: user
+    summary: "Use the DagsHub jobs_punch environment and JURECA batch conventions for the generic component run"
+
+ai_actions:
+  - turn: 1
+    action: "Audited post-rebase sampler and legacy Slurm paths; added output-dir support, a generic batch launcher, and an independent WL+GCsp symbolic YAML"
+    provenance: ai-executed
+    files_changed:
+      - "cosmicfishpie/likelihood/sampler.py"
+      - "sampler_scripts/run_sampler.py"
+      - "sampler_scripts/fresh_wl_gcsp_symbolic_independent_32x1.yaml"
+      - "scripts/slurm/nautilus_sampler.sbatch"
+      - "tests/sampler_test.py"
+  - turn: 2
+    action: "Inspected the cluster environment helpers and added a concrete 32-worker symbolic WL+GCsp component sbatch launcher with documentation"
+    provenance: ai-executed
+    files_changed:
+      - "../cosmicfishpie-validation/jobs_punch/sample_wl_gcsp_symbolic_independent_32x1.sbatch"
+      - "../cosmicfishpie-validation/jobs_punch/README.md"
+
+claims_touched: []
+
+key_context:
+  - turn: 1
+    excerpt: "The legacy Slurm scripts bypass NautilusSampler; the new launcher must execute the generic sampler directly without submitting a job."
+  - turn: 2
+    excerpt: "The JURECA jobs_punch common.sh already activates the required modules and project virtual environment; match its established sbatch conventions."
+
+open_threads:
+  - "Submit a symbolic composite smoke or solver-backed production run only with explicit user authorization."
+  - "Update the JURECA CosmicFishPie checkout to perf-v2 before using the new jobs_punch launcher."
+
+ai_suggestions_pending: []

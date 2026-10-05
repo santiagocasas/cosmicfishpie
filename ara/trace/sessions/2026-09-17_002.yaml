@@ -1,0 +1,47 @@
+session:
+  id: "2026-09-17_002"
+  date: "2026-09-17"
+  started: "2026-09-17T18:17"
+  last_turn: "2026-09-17T18:17"
+  turn_count: 1
+  summary: Prepared, but did not submit, a 128-worker n_live=2000 GCsp/WL+GCph/independent-combination Fisher-Nautilus suite.
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: N08
+    routing: direct
+    provenance: user
+    summary: User chose 128-worker n_live=2000 3x2pt cases with 24-hour allocations and Fisher comparisons.
+  - turn: 1
+    type: observation
+    id: O06
+    routing: crystallized
+    provenance: ai-suggested
+    summary: Implemented conditional Fisher references with Gaussian YAML priors to match fixed-nuisance sampling.
+
+ai_actions:
+  - turn: 1
+    action: Created three symbolic 128x1 YAMLs, a per-case Fisher/Nautilus runner, a comparison postprocessor, a throttled Slurm array, and a dependent-submit wrapper without launching a job.
+    provenance: ai-executed
+    files_changed:
+      - sampler_scripts/fresh_gcsp_symbolic_128x1_nlive2000.yaml
+      - sampler_scripts/fresh_wl_gcph_symbolic_128x1_nlive2000.yaml
+      - sampler_scripts/fresh_wl_gcph_gcsp_symbolic_independent_128x1_nlive2000.yaml
+      - sampler_scripts/run_3x2pt_fisher_nautilus_case.py
+      - sampler_scripts/postprocess_3x2pt_fisher_nautilus.py
+      - jobs_punch/sample_3x2pt_fisher_nautilus_128x1.sbatch
+      - jobs_punch/postprocess_3x2pt_fisher_nautilus.sbatch
+      - jobs_punch/submit_3x2pt_fisher_nautilus.sh
+
+claims_touched: []
+
+key_context:
+  - turn: 1
+    excerpt: User requested an n_live=2000, 128-core, 24-hour comparison of GCsp, WLGCph 3x2pt, and their combination with Fishers.
+
+open_threads:
+  - The suite has not been syntax-validated, scheduler-admission-tested, committed, or submitted.
+  - A combined result remains conditional on the no-photo-spectro-cross-covariance independence approximation.
+
+ai_suggestions_pending: []

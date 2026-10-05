@@ -1,0 +1,191 @@
+session:
+  id: "2026-09-16_001-val"
+  date: "2026-09-16"
+  started: "2026-09-16T12:56"
+  last_turn: "2026-09-16T19:49"
+  turn_count: 10
+  summary: "Packaged likelihood evidence, measured backend scaling, and generalized Nautilus to spawn-safe registered likelihood components."
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: V-N10
+    routing: direct
+    provenance: user
+    summary: "Publish chain-free 64-worker likelihood validation evidence"
+  - turn: 1
+    type: experiment
+    id: V-N11
+    routing: direct
+    provenance: ai-executed
+    summary: "Rendered compact per-probe Fisher-Nautilus ChainConsumer overlays"
+  - turn: 1
+    type: observation
+    id: V-O04
+    routing: staged
+    provenance: ai-executed
+    summary: "Staged scope-limited full-nuisance likelihood validation result"
+  - turn: 2
+    type: decision
+    id: V-N12
+    routing: direct
+    provenance: user
+    summary: "Record case timing and 64-worker allocation without inferring node hardware"
+  - turn: 3
+    type: decision
+    id: V-N13
+    routing: direct
+    provenance: user
+    summary: "Benchmark default-CAMB fiducial construction across OpenMP thread counts"
+  - turn: 4
+    type: dead_end
+    id: V-N14
+    routing: direct
+    provenance: user-revised
+    summary: "Rejected passing CAMB-only num_nu_massive through the shared CAMB/CLASS fiducial"
+  - turn: 5
+    type: experiment
+    id: V-N15
+    routing: direct
+    provenance: user
+    summary: "Confirmed CLASS samples to z_max_pk+1 and measured nonlinear_min_k_max=120 as the passing threshold"
+  - turn: 5
+    type: observation
+    id: V-O05
+    routing: staged
+    provenance: ai-suggested
+    summary: "Staged nonlinear_min_k_max=150 as a safety-margin heuristic for the default CLASS profile"
+  - turn: 6
+    type: observation
+    id: V-O06
+    routing: staged
+    provenance: ai-suggested
+    summary: "Staged the nonlinear-prescription and padded-redshift dependency of nonlinear_min_k_max"
+  - turn: 7
+    type: question
+    id: V-N16
+    routing: direct
+    provenance: user
+    summary: "Resolved whether CAMB should match CLASS's proposed internal k=150 floor"
+  - turn: 7
+    type: observation
+    id: V-O07
+    routing: staged
+    provenance: ai-suggested
+    summary: "Staged matched scientific output domain as the backend timing fairness criterion"
+  - turn: 8
+    type: decision
+    id: V-N17
+    routing: direct
+    provenance: user
+    summary: "Raised the default CLASS HMcode internal nonlinear range to 150"
+  - turn: 8
+    type: heuristic
+    id: V-H02
+    routing: crystallized
+    provenance: ai-suggested
+    summary: "Crystallized the CLASS nonlinear-range safety margin through configuration commitment"
+  - turn: 9
+    type: experiment
+    id: V-N18
+    routing: direct
+    provenance: user
+    summary: "Measured CAMB, CLASS, and symbolic scaling through 24 OpenMP threads"
+  - turn: 9
+    type: observation
+    id: V-O08
+    routing: staged
+    provenance: ai-suggested
+    summary: "Staged backend-specific useful thread-count regimes"
+  - turn: 10
+    type: decision
+    id: V-N19
+    routing: direct
+    provenance: user
+    summary: "Generalize spawned Nautilus likelihood construction without silently assuming mixed-probe independence"
+  - turn: 10
+    type: experiment
+    id: V-N20
+    routing: direct
+    provenance: ai-executed
+    summary: "Passed 13 focused component, spawn-pool, and spectroscopic likelihood tests"
+
+ai_actions:
+  - turn: 1
+    action: "Created renderer, statistics bundle, documentation figures, and likelihood-validation page"
+    provenance: ai-executed
+    files_changed:
+      - "scripts/render_likelihood_validation.py"
+      - "scripts/likelihood_validation_results/"
+      - "docs/source/likelihood_validation.md"
+      - "docs/source/_static/likelihood_validation/"
+  - turn: 2
+    action: "Added recorded elapsed time, sampling dimensions, worker count, and ESS to validation documentation"
+    provenance: ai-executed
+    files_changed: ["docs/source/likelihood_validation.md"]
+  - turn: 3
+    action: "Created a fresh-process CAMB fiducial-scaling benchmark and syntax-checked it without executing CAMB"
+    provenance: ai-executed
+    files_changed: ["scripts/benchmark_camb_fiducial_scaling.py"]
+  - turn: 4
+    action: "Reverted the unnecessary CLASS translator change and aligned the benchmark with validation-style physical fiducials plus backend-specific YAML bookkeeping"
+    provenance: ai-executed
+    files_changed: ["scripts/benchmark_fiducial_scaling.py"]
+  - turn: 5
+    action: "Compared the failure log, YAML history, validated profiles, and installed CLASS source without running a solver"
+    provenance: ai-executed
+    files_changed: []
+  - turn: 6
+    action: "Audited every packaged CLASS validation profile's nonlinear model, z_max_pk, and nonlinear_min_k_max combination"
+    provenance: ai-executed
+    files_changed: []
+  - turn: 7
+    action: "Compared CAMB and CLASS output k ranges, nonlinear internal cutoffs, redshift coverage, and interpolation extrapolation from packaged configs and installed solver documentation"
+    provenance: ai-executed
+    files_changed: []
+  - turn: 8
+    action: "Updated the default CLASS photometric profile to nonlinear_min_k_max=150 and documented its padded z=6 rationale"
+    provenance: ai-executed
+    files_changed: ["cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml"]
+  - turn: 9
+    action: "Parsed three cluster logs and generated a reusable median-time, min-max, and speedup comparison plot"
+    provenance: ai-executed
+    files_changed: ["scripts/plot_fiducial_scaling.py", "results/fiducial_scaling/cluster_backend_scaling.png"]
+  - turn: 10
+    action: "Implemented registered photo/spectro likelihood factories, independent composites, process-local worker reconstruction, and focused tests"
+    provenance: ai-executed
+    files_changed:
+      - "cosmicfishpie/likelihood/__init__.py"
+      - "cosmicfishpie/likelihood/base.py"
+      - "cosmicfishpie/likelihood/sampler.py"
+      - "cosmicfishpie/likelihood/spectro_like.py"
+      - "tests/sampler_test.py"
+
+claims_touched: []
+
+key_context:
+  - turn: 1
+    excerpt: "Simply a plot stating that the likelihood (a simple one) was validated"
+  - turn: 4
+    excerpt: "The validated CAMB/CLASS neutrino Fishers agree because num_nu_massive and N_ncdm come from their respective solver YAMLs, not the shared fiducial."
+  - turn: 5
+    excerpt: "CLASS explicitly initializes sampling at tau(z_max_pk+1); z_max_pk=5 therefore exposes nonlinear output through z=6."
+  - turn: 6
+    excerpt: "Halofit validations use z_max_pk=5, while HMcode validations use z_max_pk=4 for photo and 2 for spectro."
+  - turn: 7
+    excerpt: "Both defaults request physical P(k) through 50 Mpc^-1; CLASS's proposed 150 Mpc^-1 value is internal and does not enlarge its output grid."
+  - turn: 8
+    excerpt: "okay then lets fix the default yaml"
+  - turn: 9
+    excerpt: "CAMB reaches 17.00x speedup at 24 threads; CLASS plateaus near 5.3x after 8; symbolic remains flat."
+  - turn: 10
+    excerpt: "Mixed probe families require an explicit likelihoods declaration; only plain configuration and fiducial payloads cross the spawn boundary."
+
+open_threads:
+  - "Curate ara/ for a separate main release provenance commit."
+  - "Run a real CAMB/CLASS spawn smoke only when explicitly requested."
+
+ai_suggestions_pending:
+  - "Promote V-O04 only after the validation-evidence bundle is accepted for release."
+  - "Use matched exposed P(k,z) domains, not equal hidden solver cutoffs, as the primary cross-backend timing criterion."
+  - "Adopt backend-specific production thread counts only after the user accepts the measured scaling interpretation."

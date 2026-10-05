@@ -1,0 +1,122 @@
+session:
+  id: "2026-08-31_001"
+  date: "2026-08-31"
+  started: "2026-08-31T08:35"
+  last_turn: "2026-08-31T09:45"
+  turn_count: 6
+  summary: "Consolidated validation provenance and solver configuration under packaged, directly inspectable inputs."
+
+events_logged:
+  - turn: 1
+    type: decision
+    id: V-N03
+    routing: direct
+    provenance: user
+    summary: "Record the P_cb derivative and Fisher-conditioning analysis in Markdown before building a visualization."
+  - turn: 1
+    type: claim
+    id: V-C01
+    routing: crystallized
+    provenance: user-revised
+    summary: "P_cb reduces mnu Fisher amplification relative to P_mm in the tested photometric validation."
+  - turn: 2
+    type: decision
+    id: V-N04
+    routing: direct
+    provenance: user
+    summary: "Commit hierarchy changes and the P_cb analysis separately by topic, excluding ara/."
+  - turn: 3
+    type: decision
+    id: V-N05
+    routing: direct
+    provenance: user
+    summary: "Separate dashboard tracks, simplify model labels, and add a P_mm showcase case."
+  - turn: 4
+    type: decision
+    id: V-N06
+    routing: direct
+    provenance: user-revised
+    summary: "Use .0 stress-case leaves and optional unpadded fourth-level variant IDs; expose P_cb/P_mm in the dashboard."
+  - turn: 5
+    type: decision
+    id: V-N07
+    routing: direct
+    provenance: user
+    summary: "Remove input-page Back links and expose referenced canonical precision profiles through dashboard links."
+  - turn: 6
+    type: decision
+    id: V-N08
+    routing: direct
+    provenance: user
+    summary: "Remove duplicate root solver configs after migrating the unique spectro profile and all remaining references."
+
+ai_actions:
+  - turn: 1
+    action: "Created the quantitative P_mm/P_cb analysis note and linked it from the main validation documentation."
+    provenance: ai-executed
+    files_changed:
+      - "scripts/validation_configs/PCB_NEUTRINO_DERIVATIVE_ANALYSIS.md"
+      - "scripts/validation_configs/PAPER_NEUTRINO_VALIDATION.md"
+  - turn: 2
+    action: "Created topic-focused commits 60e4f99 and 00d5aee after reviewing staged contents."
+    provenance: ai-executed
+    files_changed: []
+  - turn: 3
+    action: "Updated dashboard presentation, added case 09.2 and its P_mm common specs, regenerated the dashboard, and verified configuration isolation."
+    provenance: ai-executed
+    files_changed:
+      - "scripts/render_validation_dashboard.py"
+      - "scripts/validation_configs/common_specs_paper_w0wa_mnu_fixed_Neff_Pmm.json"
+      - "scripts/validation_configs/compare_run_config.env_09.2_camb_class_photo_pessimistic_w0wa_mnu_Pmm"
+      - "scripts/validation_configs/PAPER_NEUTRINO_VALIDATION.md"
+      - "scripts/validation_configs/PCB_NEUTRINO_DERIVATIVE_ANALYSIS.md"
+  - turn: 4
+    action: "Renamed 07/08 stress cases to pessimistic .0 leaves, moved the P_mm showcase to 07.2.0.1, added dashboard Variant metadata, and updated validation documentation."
+    provenance: ai-executed
+    files_changed:
+      - "scripts/render_validation_dashboard.py"
+      - "scripts/run_selected_validations.sh"
+      - "scripts/validation_configs/PAPER_NEUTRINO_VALIDATION.md"
+      - "scripts/validation_configs/PCB_NEUTRINO_DERIVATIVE_ANALYSIS.md"
+      - "scripts/validation_configs/CASE13_W0WA_MNU_INVESTIGATION.md"
+      - "scripts/validation_configs/PHOTO_MARGINALIZATION_DIAGNOSIS.md"
+  - turn: 5
+    action: "Added generated precision-profile pages and selected-profile links to solver YAML inputs, removed spec-page Back links, and regenerated the dashboard."
+    provenance: ai-executed
+    files_changed:
+      - "scripts/render_validation_dashboard.py"
+  - turn: 6
+    action: "Migrated fast_spectro.yaml into package data, updated notebook and documentation paths, deleted the root Boltzmann YAML tree, and verified packaged configuration parsing."
+    provenance: ai-executed
+    files_changed:
+      - "cosmicfishpie/configs/default_boltzmann_yaml_files/class/fast_spectro.yaml"
+      - "notebooks/Example_Fisher-GCsp-CLASS-Euclid.ipynb"
+      - "notebooks/Example_Fisher-WL_3x2photo-CAMB-Euclid.ipynb"
+      - "notebooks/2-Photometric_probes-tutorial.ipynb"
+      - "notebooks/old/Example_Fisher-WL_3x2photo-Symbolic-Euclid.ipynb"
+      - "docs/source/overview.md"
+      - "tests/package_data_test.py"
+
+claims_touched:
+  - id: V-C01
+    action: crystallized
+    turn: 1
+
+key_context:
+  - turn: 1
+    excerpt: "User: 'yeah, very good analysis, please write this analysis to a file in .md and later on we can use the derivatives to plot this in a notebook or marimo notebook and show it to people'"
+  - turn: 2
+    excerpt: "User: 'perfect, can you commit the changes so far in topic-related'"
+  - turn: 3
+    excerpt: "User requested arXiv-only dashboard track descriptions, simpler model labels, visual track separators, and a w0waCDM+mnu P_mm failure showcase."
+  - turn: 4
+    excerpt: "User requested consistent .0 stress-case scenario IDs and proposed nesting the P_mm comparison under case 07 as an extensible variant."
+  - turn: 5
+    excerpt: "User requested removal of nonfunctional input-page Back links and direct inspection of canonical precision profiles referenced by leaf YAMLs."
+  - turn: 6
+    excerpt: "User proposed deleting the superseded root boltzmann_yaml_files directory because solver configs have long lived under cosmicfishpie/configs."
+
+open_threads:
+  - "Build a Jupyter or marimo visualization that regenerates and plots the P_mm/P_cb mnu derivatives with full numerical provenance."
+
+ai_suggestions_pending: []

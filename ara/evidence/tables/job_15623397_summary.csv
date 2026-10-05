@@ -1,0 +1,12 @@
+metric,value
+state,COMPLETED
+wall_elapsed,00:07:50
+sampler_elapsed,00:07:03
+total_cpu,02:07:58
+max_rss_kib,9265676
+calls,15936
+stored_rows,11136
+positive_weight_rows,11051
+effective_sample_size,10003.77
+log_evidence,-5.643129673483542
+max_loglike,-0.000135

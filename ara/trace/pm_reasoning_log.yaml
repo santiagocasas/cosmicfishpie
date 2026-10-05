@@ -1,0 +1,289 @@
+entries:
+- turn: 2026-09-15_001#1
+  notes:
+  - Routed verification as a resolved experiment because it produced direct command evidence.
+  - 'Did not crystallize claims: no runtime sample or performance benchmark was executed.'
+- turn: 2026-09-15_001#2
+  notes:
+  - Staged the symbolic 32x1 recommendation as O01 because the user has not yet run or affirmed it.
+  - Did not treat the recalled 30-minute duration as exact; historical measured runs were closer to 40 minutes.
+- turn: 2026-09-15_001#3
+  notes:
+  - Recorded job 15623397 as resolved experiment N02 with scheduler and posterior evidence.
+  - Promoted O01 to H01 via empirical resolution because the recommended smoke chain completed successfully and the user reported
+    the result.
+- turn: 2026-09-16_001#1
+  notes:
+  - Recorded live smoke execution as open experiment N03 because the job has not completed.
+  - 'Crystallized O02 to C01 via empirical resolution: the researcher commented on sustained likelihood progress and logs
+    show no multiprocessing errors.'
+  - Scoped C01 to symbolic pool=2; CAMB and larger pools remain untested.
+- turn: 2026-09-16_001#2
+  notes:
+  - 'Staged O03 as architecture rather than crystallizing: the requirement is explicit, but the replacement protocol has not
+    been selected or committed.'
+  - Opened N04 to track the design question across existing photo/spectro and future joint/CMB implementations.
+  - 'No conflict with C01: that claim is explicitly scoped to the successful symbolic photometric pool=2 experiment.'
+- turn: 2026-09-17_001#1
+  notes:
+  - Recorded N05 as an open experiment because job 15631246 is still running; no convergence or posterior result is available.
+  - Recorded N06 as a direct implementation decision because the launcher was changed after live evidence that Nautilus progress
+    uses carriage-return output.
+  - Staged O04 as a heuristic pending confirmation from a subsequent --unbuffered job log.
+- turn: 2026-09-17_001#2
+  notes:
+  - Resolved N05 through empirical completion: sacct, metadata, and posterior file independently agree on successful completion.
+  - Did not promote O04: no subsequent --unbuffered run has empirically confirmed the live-log behavior yet.
+  - Recorded generated plots as run artifacts, not source changes.
+- turn: 2026-09-17_001#3
+  notes:
+  - Staged O05 rather than treating visual roughness as a direct convergence failure: the original plot used an unnecessarily
+      fine 30-bin histogram at N_eff about 2000.
+  - Recommended both a conventional smoother re-render and a higher n_eff continuation; neither was run this turn.
+- turn: 2026-09-17_001#4
+  notes:
+  - Recorded N06 as user-revised: the user preferred evaluating a more appropriate density rendering over immediately consuming
+      more sampling allocation.
+  - The generated figure changes only the 2D histogram presentation (bins=12, smooth=5); it is not evidence of improved sampler
+    convergence.
+- turn: 2026-09-17_001#5
+  notes:
+  - Promoted O05 to H02 through empirical resolution: the user compared the generated rendering and found the project-style
+      coarser smoothing substantially better.
+  - This resolves the visual-presentation question only; it does not claim a general posterior-convergence proof.
+- turn: 2026-09-17_002#1
+  notes:
+  - Recorded N08 as a direct user decision because the requested sampling allocation, probes, and Fisher comparison were implemented
+    as concrete artifacts.
+  - Crystallized O06 to H03 through artifact commitment: the driver saves both conditional and marginal Fishers and labels
+      the conditional result as the sampler reference.
+  - Did not run a Fisher, sampler, static validation, or Slurm submission; the new suite remains untested and uncommitted.
+- turn: 2026-09-21_001#1
+  notes:
+  - Recorded N09 as a direct user decision because the approved separation was implemented as concrete filesystem artifacts.
+  - 'Did not stage or crystallize a performance or correctness claim: static shell and path validation passed, but no post-reorganization
+    sampler was submitted.'
+- turn: 2026-09-21_001#2
+  notes:
+  - Recorded N10 as a direct user decision because the requested batch-file layout was implemented and shell submitters were
+    rewired.
+  - 'Did not record a runtime sampling claim: bash syntax and path assertions passed, but no Slurm submission was made.'
+- turn: 2026-09-21_001#3
+  notes:
+  - Recorded N11 as a direct user decision because the requested simple plotting workflow was committed as a validation utility.
+  - The GCsp metadata dry run verified a readable completed chain with 11729 positive-weight samples; no plot render or new
+    Slurm job was launched.
+- turn: 2026-09-21_001#4
+  notes:
+  - 'Recorded N12 as a resolved AI-executed experiment: the failure was caused by prepare_cfp_environment intentionally changing
+    the CWD, and the common.sh wrapper was exercised from that CWD.'
+  - 'Did not record a rendered-plot result: the wrapper validation used --dry-run and did not submit Slurm work.'
+- turn: 2026-09-21_001#5
+  notes:
+  - 'Recorded N13 as a resolved diagnostic experiment: the user requested log analysis only, and no running or pending job
+    was interrupted.'
+  - Kept remediation as an open thread because the two source fixes would affect live experiment setup and the user has not
+    authorized cancellation or edits.
+- turn: 2026-09-21_001#6
+  notes:
+  - 'Recorded N14 as a direct user decision: the user reported cancelling all throughput jobs and explicitly selected default.yaml
+    for both active backend configurations.'
+  - Validated YAML parsing and profile paths only; did not resubmit, render, or run a sampler. The independent CAMB spawned-worker
+    import-path defect remains outside this profile-only change.
+- turn: 2026-09-21_001#7
+  notes:
+  - 'Recorded N15 as a resolved AI-executed experiment: the installed CAMB package directory now normalizes to its parent
+    import root before import.'
+  - The focused direct regression test passed. pytest is not installed in the JURECA runtime environment, so no pytest execution
+    was possible and no Slurm job was submitted.
+- turn: 2026-09-22_001#1
+  notes:
+  - Recorded N16 as a direct user decision because the user explicitly stated the spectroscopic throughput runs should use
+    only linear P(k).
+  - 'Recorded N17 as resolved empirical validation: the corrected CLASS configuration evaluated a deliberately extreme prior-corner
+    cosmology without the nonlinear z-range error.'
+  - 'Did not treat job 15642354 batch COMPLETED state as success: sacct shows its srun step FAILED and the launcher masks
+    that status with || true.'
+- turn: 2026-09-22_001#2
+  notes:
+  - Recorded N18 as a user-revised correction and preserved the explicit conflict with N16 rather than silently replacing
+    it.
+  - 'Recorded N19 as resolved empirical validation: explicit CLASS nonlinear array sampling matched the bulk getter to 3.1e-14
+    where valid and completed the prior-corner likelihood.'
+  - Restored CAMB because changing it had no evidentiary basis; no Slurm job was submitted.
+- turn: "2026-09-17_001-val#1"
+  notes:
+  - "Routed the user's request for the generic batch workflow as decision V-N21."
+  - "Recorded implementation as an AI action; shell and YAML syntax checks completed without launching a solver or Slurm job."
+- turn: "2026-08-19_001#1"
+  notes:
+  - "Routed the user-approved cleanup as decision V-N01 and verification as experiment V-N02."
+  - "Staged V-O01 as a heuristic, then crystallized it via artifact commitment because the resume-check implementation now depends on it."
+  - "Did not treat the concurrent case-13 run as resolved evidence because it had only metadata and no A/B pair."
+- turn: "2026-08-31_001#1"
+  notes:
+  - "Routed the user's request for a reusable analysis artifact as decision V-N03."
+  - "Staged V-O02 and crystallized it as V-C01 because the user explicitly affirmed the analysis and committed it to a Markdown artifact."
+  - "Kept the future notebook/marimo visualization as an open thread; no notebook was created this turn."
+- turn: "2026-08-31_001#2"
+  notes:
+  - "Routed the user's topic-focused commit request as decision V-N04."
+  - "Recorded commits 60e4f99 and 00d5aee as evidence; ara/ remained excluded and untracked."
+- turn: "2026-08-31_001#3"
+  notes:
+  - "Routed the dashboard grouping and P_mm showcase request as decision V-N05."
+  - "Did not stage a new scientific claim: case 09.2 is configured but has not yet produced a Fisher result."
+- turn: "2026-08-31_001#4"
+  notes:
+  - "Routed the user's hierarchy refinement as decision V-N06; the requested nesting was adopted with an unpadded variant segment to match runner normalization semantics."
+  - "Did not stage a scientific claim: the P_mm variant remains configured but unexecuted."
+- turn: "2026-08-31_001#5"
+  notes:
+  - "Routed the dashboard input-transparency request as decision V-N07."
+  - "Recorded only a presentation/provenance decision; no scientific result or claim changed."
+- turn: "2026-08-31_001#6"
+  notes:
+  - "Routed root configuration cleanup as decision V-N08 after reference auditing found active notebook dependencies."
+  - "Preserved the unique fast_spectro profile in package data instead of treating all root files as duplicates."
+- turn: "2026-09-15_001-val#1"
+  notes:
+  - "Routed the user's provenance-artifact recovery request as decision V-N09."
+  - "Restored only ara/ from the stash's untracked-files parent; the unrelated colon artifact and comparison script remain preserved in the stash."
+- turn: "2026-09-15_001-val#2"
+  notes:
+  - "Staged V-O03 rather than creating a release decision because the user expressed intent, not a completed curation policy or commit request."
+- turn: "2026-09-16_001-val#1"
+  notes:
+  - "Routed the user's request to package the representative 64-worker result as decision V-N10 and the completed rendering as experiment V-N11."
+  - "Staged V-O04 as a scoped validation claim; it is evidence-backed but remains unpromoted until the user accepts the release bundle."
+- turn: "2026-09-16_001-val#2"
+  notes:
+  - "Recorded V-N12 as a reproducibility decision because the user requested allocation and elapsed-time context while explicitly declining undocumented hardware claims."
+- turn: "2026-09-16_001-val#3"
+  notes:
+  - "Recorded V-N13 as an implementation decision: each CAMB trial uses a fresh process so OMP_NUM_THREADS is applied before CAMB initializes."
+  - "Did not stage a performance claim because the benchmark has not yet been run."
+- turn: "2026-09-16_001-val#4"
+  notes:
+  - "Routed the corrected backend-input diagnosis as dead end V-N14 because the proposed CLASS translator relaxation was reverted."
+  - "The user's supplied passing case established that backend-specific neutrino counts belong in solver YAMLs while shared fiducials carry mnu and Neff."
+  - "Did not stage a new claim: this is a resolved configuration-boundary lesson embodied directly in the benchmark correction."
+- turn: "2026-09-16_001-val#5"
+  notes:
+  - "Routed the user-reported direct classy sweep as experiment V-N15; installed source independently confirms the intentional z_max_pk+1 sampling margin."
+  - "Staged V-O05 as a heuristic because nonlinear_min_k_max=150 is a proposed safety margin, not yet an accepted or committed configuration."
+  - "Did not alter the solver YAML or execute CLASS; the user asked for diagnosis and the prior task constrained assistant-side benchmark runs."
+- turn: "2026-09-16_001-val#6"
+  notes:
+  - "Staged V-O06 as a constraint after the complete profile audit showed that the validated value 80 belongs to different nonlinear-model/redshift pairings."
+  - "Did not treat shared numeric values across Halofit and HMcode profiles as interchangeable evidence."
+- turn: "2026-09-16_001-val#7"
+  notes:
+  - "Routed the user's fairness question as resolved question V-N16 after static comparison of both solver APIs and package defaults."
+  - "Staged V-O07 as a constraint: equivalent scientific domains do not imply equal backend-internal numerical cutoffs."
+  - "Did not promote V-O05 or V-O07 because the user has not yet accepted or committed either proposed configuration rule."
+- turn: "2026-09-16_001-val#8"
+  notes:
+  - "Routed the accepted default-profile fix as decision V-N17."
+  - "Crystallized V-O05 as V-H02 via artifact commitment because the CLASS YAML now implements its value and rationale."
+  - "Left V-O06 and V-O07 staged: the edit is consistent with them, but only V-O05 directly specified the committed value."
+- turn: "2026-09-16_001-val#9"
+  notes:
+  - "Routed the user-supplied three-backend cluster run as experiment V-N18 and bound the generated plot as evidence."
+  - "Staged V-O08 as a cluster-specific scaling claim rather than generalizing backend thread optima across hardware."
+  - "Did not crystallize V-O08 because the user has not yet commented on or adopted the interpretation."
+- turn: "2026-09-16_001-val#10"
+  notes:
+  - "Routed the supplied probe-agnostic, spawn-safe implementation direction as decision V-N19."
+  - "Routed the user-approved focused test run as experiment V-N20; all 13 tests passed."
+  - "Did not stage a separate architecture observation because V-N19 records the concrete design choice and no broader capability claim was made."
+- turn: "2026-09-17_001-val#2"
+  notes:
+  - "Routed the user's site-specific jobs_punch implementation request as decision V-N22."
+  - "Recorded the JURECA wrapper as an AI action; no Slurm test allocation or sampling run was submitted."
+  - "Did not stage a performance or scientific claim because the new component workflow has not yet executed on the cluster."
+- turn: 2026-09-22_001#3
+  notes:
+  - Recorded N20 as a direct user decision because multi-chain overlay behavior was implemented in the validation utility.
+  - Validation compiled the script and loaded two completed chains in dry-run mode; no figure was rendered and no Slurm work
+    was submitted.
+- turn: 2026-09-25_001#1
+  notes:
+  - Recorded N21 as a resolved AI-executed experiment because both requested Fisher outputs were generated and the focused initialization and lint checks passed.
+  - Staged O07 as an operational claim rather than crystallizing it: the runs establish artifact generation, not scientific agreement with the planned CLASS/EE2 reference.
+- turn: 2026-09-25_001#2
+  notes:
+  - Corrected N21 rather than retaining its unsupported SYREN-NEW attribution after source tracing showed the original runs fell through to the legacy provider.
+  - Recorded N22 as the resolved operational experiment because provider: syren_new now instantiates SyrenNewProvider before legacy initialization and both requested Fisher artifacts exist.
+  - Kept O07 staged and moved its binding to N22: successful matrix export does not establish numerical agreement with the planned CLASS/EE2 reference.
+- turn: 2026-09-25_001#3
+  notes:
+  - Recorded N23 as a resolved experiment because the notebook executed end-to-end and produced finite matched GCsp Fisher matrices.
+  - Staged O08 rather than crystallizing it: the direct linear check is upstream-style, but the forecast compares SYREN-NEW nonlinear power with CLASS HMcode 2020 rather than the intended CLASS+EE2 reference.
+- turn: 2026-09-25_001#4
+  notes:
+  - Recorded N24 as a direct user decision because the user explicitly required notebook execution to remain manual.
+  - Added no scientific observation: the new nonlinear P(k), parameter-error, and contour cells were structurally validated but not executed.
+- turn: 2026-09-25_001#5
+  notes:
+  - Recorded N25 as a resolved implementation experiment: the reported failure occurred in the bars renderer when Matplotlib inherited a non-scalar session patch linewidth.
+  - Kept notebook execution manual and did not stage a scientific or visualization-success claim; the synthetic Agg smoke test verifies only the repaired code path.
+- turn: 2026-09-25_001#6
+  notes:
+  - The full post-processing reproduction contradicted N25's initial root-cause interpretation: compare_to_index=True is a Boolean NumPy index and adds an extra data dimension.
+  - Recorded N26 with the passing full post-processing result, preserved the conflict through N27 rather than overwriting N25, and kept notebook execution manual.
+- turn: 2026-09-25_001#7
+  notes:
+  - Recorded N28 as a direct user decision because the user explicitly rejected the nonmatching default solver profiles and required a copied, minimal matched notebook.
+  - Recorded N29 as structural validation only: the focused translation test, YAML parsing, lint, and notebook JSON check passed; no numerical cell or Fisher calculation was run.
+  - Did not stage a spectrum, derivative, or contour claim because the user retained execution of the new notebook.
+- turn: 2026-09-25_001#8
+  notes:
+  - Recorded N30 as a resolved experiment because the user authorized actual derivative execution and all four matched GCsp cases reached the native 3-point derivative engine with finite checked arrays.
+  - Recorded the mTk profile correction as implementation evidence, not as a cosmological result; it fixes the CosmicFishPie CLASS wrapper's transfer-output requirement.
+  - Recorded N31 as a direct visualization decision and kept its new notebook cell unexecuted. No spectrum-agreement or contour-agreement claim was staged.
+- turn: 2026-09-25_001#9
+  notes:
+  - Recorded N32 as a direct user correction: the prior notebook's direct solver/emulator functions and local finite differences did not satisfy the requested unified-interface provenance.
+  - Recorded N33 as structural validation only. Clearing obsolete direct/manual plot output avoids presenting it as output from the refactored code, and no numerical conclusion was added.
+- turn: 2026-09-25_001#10
+  notes:
+  - Recorded N34 as the user-supplied architecture refinement: AnalysisContext is the appropriate configuration snapshot for spectrum-only use.
+  - Recorded N35 as static validation only. The new helper was compiled but not instantiated, preserving the user's manual execution boundary.
+- turn: 2026-09-25_001#11
+  notes:
+  - Recorded N36 as a direct user validation-policy decision. Future notebook work should rely on established APIs and avoid extra backend experiments unless the user requests them.
+- turn: 2026-09-25_001#12
+  notes:
+  - Recorded N37 from the supplied traceback and source comparison: the failure is caused by a mixed checkout, not a new numerical experiment or a profile accuracy conclusion.
+  - Recorded N38 for the minimal fail-fast notebook guard. No backend rerun was performed, following N36.
+- turn: 2026-09-25_001#13
+  notes:
+  - Recorded N39 as the user's direct request to base a short runner on existing likelihood scripts, and N40 as the executed GCsp plus WL+GCph fiducial evaluation.
+  - Staged O09 rather than crystallizing it: zero fiducial chi-squared follows from deriving data and theory from the same runtime, and shifted-parameter values are only a responsiveness check, not a scientific comparison.
+  - Kept the run narrow under N36: no derivative recomputation, no sampler, and no extra backend experiments beyond the single responsiveness probe needed to confirm the likelihood path is live.
+- turn: 2026-09-29_001#1
+  notes:
+  - Recorded N41 as a resolved diagnostic experiment because staged probes localized the first non-finite values to CLASS nonlinear padded-grid retrieval and disproved deterministic prior-parameter causation.
+  - Recorded N42 as the committed numerical-boundary decision; silent value replacement was rejected because it would conceal unsupported physics.
+  - Crystallized O10 to C02 via artifact commitment because the new helper and focused tests directly encode the diagnosed boundary.
+  - Kept the absent w0wa HMcode output as an operational notebook issue, not part of the numerical claim.
+- turn: 2026-09-29_001#2
+  notes:
+  - Recorded user-reported notebook success as N43 and direct response/matrix calculations as N44.
+  - Staged O11; formula cancellation and ns-fixed inversions support a diagnosis but do not prove sole derivative causality or a transcription bug.
+  - The user has not assessed this turn's numerical interpretation; no new claim was crystallized.
+  - Closed the missing-output rerun thread. Source and notebook were not edited, and no CLASS run or forecast was launched.
+- turn: 2026-09-29_001#3
+  notes:
+  - Recovered the unfinished documentation-turn epilogue after interruption; N45 binds the approved run to persistent spectra and report artifacts.
+  - Crystallized O11 to C03 from the user's explicit endorsement, retaining the limits on causal attribution.
+  - Staged O12 without a physics or interpolation explanation; further numerical investigation needs permission.
+  - User declined cached notebook execution on resumption. Source review is not an execution check, and notebook outputs remain empty.
+- turn: 2026-09-29_001#4
+  notes:
+  - Captured the plan-mode analysis turn and the implementation turn in a single epilogue because plan mode forbade ara writes.
+  - 'Routed N46 as a user-revised decision: the user authored requirements A-G verbatim and selected every offered clarification option before answering "yes, implement!!".'
+  - Routed N47 as a direct experiment; its by-product environment constraint (broken default python3 kernelspec) is staged as O13 rather than a claim, since only one host was observed.
+  - Corrected 02's Schur-complement wording after reading eliminate_columns_rows: it is a conditional sub-block, and the fix is already inside N46's file changes, so no separate node.
+  - No closure signals on O12/O13; neither promoted. Claims untouched.

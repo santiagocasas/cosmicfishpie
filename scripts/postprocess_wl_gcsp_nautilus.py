@@ -38,7 +38,9 @@ def _read_case(run_dir: Path, label: str) -> tuple[dict, pd.DataFrame, object]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--run-dir", type=Path, required=True)
+    parser.add_argument(
+        "--run-dir", type=Path, required=True, help="Run directory containing the wl and gcsp cases"
+    )
     args = parser.parse_args()
     run_dir = args.run_dir.resolve()
 

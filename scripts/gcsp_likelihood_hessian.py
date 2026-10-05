@@ -143,7 +143,12 @@ def main():
         default=[0.2, 0.1, 0.05, 0.025],
         help="Absolute steps = fraction times Fisher marginal sigma",
     )
-    parser.add_argument("--outdir", type=Path, default=Path("results/gcsp_diagnostics/hessian"))
+    parser.add_argument(
+        "--outdir",
+        type=Path,
+        default=Path("results/gcsp_diagnostics/hessian"),
+        help="Output directory for Hessian diagnostics",
+    )
     args = parser.parse_args()
     if any(not np.isfinite(v) or v <= 0 for v in args.step_fractions):
         parser.error("Step fractions must be finite and positive")

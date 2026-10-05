@@ -31,13 +31,18 @@ def focused_axis(center, sigma, size, width, focus):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--nx", type=int, default=41)
-    parser.add_argument("--ny", type=int, default=81)
+    parser.add_argument("--nx", type=int, default=41, help="Grid points along x (odd integer >= 5)")
+    parser.add_argument("--ny", type=int, default=81, help="Grid points along y (odd integer >= 5)")
     parser.add_argument("--width", type=float, default=4.0, help="Extent in Fisher marginal sigmas")
     parser.add_argument(
         "--focus", type=float, default=3.0, help="Central concentration; 0 = uniform"
     )
-    parser.add_argument("--outdir", type=Path, default=Path("results/gcsp_diagnostics/grid"))
+    parser.add_argument(
+        "--outdir",
+        type=Path,
+        default=Path("results/gcsp_diagnostics/grid"),
+        help="Output directory for grid diagnostics",
+    )
     args = parser.parse_args()
     if any(n < 5 or n % 2 == 0 for n in (args.nx, args.ny)):
         parser.error("nx and ny must be odd integers >= 5")

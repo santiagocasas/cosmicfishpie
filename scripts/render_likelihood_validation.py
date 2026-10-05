@@ -151,7 +151,9 @@ def _render_joint_overview(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--run-dir", type=Path, required=True)
+    parser.add_argument(
+        "--run-dir", type=Path, required=True, help="Run directory with the Nautilus case outputs"
+    )
     parser.add_argument(
         "--results-dir",
         type=Path,

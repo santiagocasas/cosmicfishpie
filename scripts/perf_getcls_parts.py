@@ -105,9 +105,14 @@ def time_one_point(fm, cosmopars, label):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--points", type=int, default=5)
-    p.add_argument("--observables", nargs="+", default=["GCph", "WL"])
-    p.add_argument("--accuracy", type=float, default=1.0)
+    p.add_argument("--points", type=int, default=5, help="Number of parameter points to time")
+    p.add_argument(
+        "--observables",
+        nargs="+",
+        default=["GCph", "WL"],
+        help="Observables to compute (e.g. GCph WL)",
+    )
+    p.add_argument("--accuracy", type=float, default=1.0, help="Accuracy level (rounded to int)")
     p.add_argument("--json", default=None, help="Write per-part timings to JSON")
     p.add_argument("--ref", default=None, help="npz path to dump fiducial-result reference")
     p.add_argument("--check", default=None, help="npz path of reference to verify against")

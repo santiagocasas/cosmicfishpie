@@ -108,8 +108,8 @@ observations:
 - id: V-O03
   timestamp: 2026-09-15T12:02
   provenance: user
-  content: Commit ara/ to main as a curated release provenance artifact tracking project development.
-  context: The recovered ARA directory records validation and development decisions but is currently untracked.
+  content: "Superseded 2026-10-05: ara/ is NOT committed to main. It lives on the dev branch (worktree ../cfp-dev), is symlinked into the other worktrees, and is ignored there via the shared .git/info/exclude."
+  context: Originally (2026-09-15) the plan was to commit the recovered ARA directory to main as a curated release provenance artifact. After PR #226 review (Sefa76) it was moved to a dev-like branch to keep main clean.
   potential_type: architecture
   bound_to:
   - V-N09

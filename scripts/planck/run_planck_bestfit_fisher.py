@@ -227,7 +227,11 @@ def main() -> int:
         default=None,
         help="Directory containing Planck chain products for one data combo",
     )
-    parser.add_argument("--chain-root", default=DEFAULT_CHAIN_ROOT)
+    parser.add_argument(
+        "--chain-root",
+        default=DEFAULT_CHAIN_ROOT,
+        help="Root directory containing the Planck chain products",
+    )
     parser.add_argument(
         "--bestfit-source",
         choices=["likestats", "minimum"],
@@ -245,17 +249,21 @@ def main() -> int:
         default=None,
         help="Output directory (default: scripts/benchmark_results/planck_bestfit_<timestamp>)",
     )
-    parser.add_argument("--observables", default="CMB_T,CMB_E")
-    parser.add_argument("--lmin", type=int, default=2)
+    parser.add_argument(
+        "--observables",
+        default="CMB_T,CMB_E",
+        help="Comma-separated list from: CMB_T,CMB_E,CMB_B",
+    )
+    parser.add_argument("--lmin", type=int, default=2, help="Minimum ell to include")
     parser.add_argument(
         "--lmax",
         type=int,
         default=2508,
         help="Maximum ell to include (inclusive). Internal lmax_CMB is set to lmax+1",
     )
-    parser.add_argument("--accuracy", type=int, default=1)
-    parser.add_argument("--feedback", type=int, default=1)
-    parser.add_argument("--derivatives", default="3PT")
+    parser.add_argument("--accuracy", type=int, default=1, help="Accuracy level")
+    parser.add_argument("--feedback", type=int, default=1, help="Verbosity level (cfg feedback)")
+    parser.add_argument("--derivatives", default="3PT", help="Derivative method (e.g. 3PT)")
     parser.add_argument(
         "--h-step-abs",
         type=float,
@@ -274,7 +282,12 @@ def main() -> int:
         default=None,
         help="Override f_sky for T/E/B if set",
     )
-    parser.add_argument("--beam-arcmin", type=float, default=None)
+    parser.add_argument(
+        "--beam-arcmin",
+        type=float,
+        default=None,
+        help="Override CMB beam FWHM in arcmin if set",
+    )
     parser.add_argument("--temp-sens", type=float, default=None, help="uK-arcmin")
     parser.add_argument("--pol-sens", type=float, default=None, help="uK-arcmin")
     parser.add_argument(

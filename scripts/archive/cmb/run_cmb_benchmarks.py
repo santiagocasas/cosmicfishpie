@@ -54,9 +54,9 @@ def main() -> int:
         default="CMB_T,CMB_E",
         help="Comma-separated list from: CMB_T,CMB_E,CMB_B",
     )
-    parser.add_argument("--feedback", type=int, default=1)
-    parser.add_argument("--accuracy", type=int, default=1)
-    parser.add_argument("--derivatives", default="3PT")
+    parser.add_argument("--feedback", type=int, default=1, help="Verbosity level (cfg feedback)")
+    parser.add_argument("--accuracy", type=int, default=1, help="Accuracy level")
+    parser.add_argument("--derivatives", default="3PT", help="Derivative method (e.g. 3PT)")
     args = parser.parse_args()
 
     repo = _repo_root()

@@ -159,16 +159,38 @@ def _save_fisher(fisher, case_dir: Path, label: str) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--case", choices=("wl", "gcsp", "joint"), required=True)
-    parser.add_argument("--run-dir", type=Path, required=True)
-    parser.add_argument("--free-params", default="Omegam,sigma8")
-    parser.add_argument("--sample-nuisances", action="store_true")
-    parser.add_argument("--nuisance-sigma", type=float, default=5.0)
-    parser.add_argument("--n-live", type=int, required=True)
-    parser.add_argument("--n-eff", type=int, required=True)
-    parser.add_argument("--workers", type=int, required=True)
+    parser.add_argument(
+        "--case",
+        choices=("wl", "gcsp", "joint"),
+        required=True,
+        help="Likelihood to sample: weak lensing, spectroscopic clustering, or joint",
+    )
+    parser.add_argument(
+        "--run-dir", type=Path, required=True, help="Base run directory (case subfolder is created)"
+    )
+    parser.add_argument(
+        "--free-params",
+        default="Omegam,sigma8",
+        help="Comma-separated free parameters (must be known prior ranges)",
+    )
+    parser.add_argument(
+        "--sample-nuisances",
+        action="store_true",
+        help="Sample nuisance parameters (marginal Fisher) instead of fixing them",
+    )
+    parser.add_argument(
+        "--nuisance-sigma",
+        type=float,
+        default=5.0,
+        help="Nuisance prior half-width in Fisher sigmas (with --sample-nuisances)",
+    )
+    parser.add_argument("--n-live", type=int, required=True, help="Nautilus live points (>= 2)")
+    parser.add_argument("--n-eff", type=int, required=True, help="Target effective sample size")
+    parser.add_argument("--workers", type=int, required=True, help="Number of Nautilus workers")
     parser.add_argument("--resume", action="store_true", help="Resume this exact checkpoint.")
-    parser.add_argument("--quiet-sampler", action="store_true")
+    parser.add_argument(
+        "--quiet-sampler", action="store_true", help="Suppress Nautilus progress output"
+    )
     args = parser.parse_args()
 
     if args.n_live < 2 or args.n_eff < 1 or args.workers < 1:

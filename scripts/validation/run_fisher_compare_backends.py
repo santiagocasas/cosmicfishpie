@@ -296,8 +296,8 @@ def main() -> int:
         default="photo",
         help="Which pipeline to run: photo=GCph+WL, spectro=GCsp",
     )
-    parser.add_argument("--accuracy", type=int, default=1)
-    parser.add_argument("--feedback", type=int, default=1)
+    parser.add_argument("--accuracy", type=int, default=1, help="Accuracy level")
+    parser.add_argument("--feedback", type=int, default=1, help="Verbosity level (cfg feedback)")
     parser.add_argument(
         "--omp-threads",
         type=int,

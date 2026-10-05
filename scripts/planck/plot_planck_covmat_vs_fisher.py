@@ -158,7 +158,11 @@ def main() -> int:
         default=None,
         help="Directory containing Planck chain products for one data combo",
     )
-    parser.add_argument("--chain-root", default=DEFAULT_CHAIN_ROOT)
+    parser.add_argument(
+        "--chain-root",
+        default=DEFAULT_CHAIN_ROOT,
+        help="Root directory containing the Planck chain products",
+    )
     parser.add_argument(
         "--params",
         default="ombh2,omch2,theta,tau,logAs,ns",

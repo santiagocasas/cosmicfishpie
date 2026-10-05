@@ -55,15 +55,25 @@ _SPECS_DIR = _discover_specs_dir()
 
 def parse_args():
     p = argparse.ArgumentParser(description="Profile getcls performance")
-    p.add_argument("--observables", nargs="+", default=["GCph", "WL"])
-    p.add_argument("--code", default="symbolic", choices=["symbolic", "camb", "class"])
-    p.add_argument("--repeats", type=int, default=1)
-    p.add_argument("--profile", action="store_true")
-    p.add_argument("--dump-json", default=None)
-    p.add_argument("--derivatives", default="3PT")
-    p.add_argument("--accuracy", type=float, default=1.0)
-    p.add_argument("--no-wl", action="store_true")
-    p.add_argument("--no-gc", action="store_true")
+    p.add_argument(
+        "--observables",
+        nargs="+",
+        default=["GCph", "WL"],
+        help="Observables to profile (e.g. GCph WL)",
+    )
+    p.add_argument(
+        "--code",
+        default="symbolic",
+        choices=["symbolic", "camb", "class"],
+        help="Boltzmann/cosmology backend",
+    )
+    p.add_argument("--repeats", type=int, default=1, help="Number of repeated getcls calls")
+    p.add_argument("--profile", action="store_true", help="Run under cProfile and print stats")
+    p.add_argument("--dump-json", default=None, help="Write timing results to this JSON path")
+    p.add_argument("--derivatives", default="3PT", help="Derivative method (e.g. 3PT)")
+    p.add_argument("--accuracy", type=float, default=1.0, help="Accuracy level")
+    p.add_argument("--no-wl", action="store_true", help="Skip weak lensing (WL)")
+    p.add_argument("--no-gc", action="store_true", help="Skip galaxy clustering (GCph)")
     return p.parse_args()
 
 

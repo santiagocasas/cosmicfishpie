@@ -120,10 +120,6 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
         super().__init__(cosmo_data=cosmo_data, cosmo_theory=cosmo_theory, leg_flag="cells")
 
     def compute_data(self) -> Dict[str, np.ndarray]:
-        if self._preloaded_cells is not None:
-            self._ells = np.array(self._preloaded_cells.get("ells"), copy=True)
-            return self._preloaded_cells
-
         photo_cls = getattr(self.cosmo_data, "photo_obs_fid", None)
         if photo_cls is None:
             photo_cls = pobs.ComputeCls(
@@ -146,8 +142,12 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
                 configuration=self.cosmo_data,
             )
 
-        cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
-        self._ells = cells["ells"]
+        if self._preloaded_cells is None:
+            cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
+        else:
+            cells = self._preloaded_cells
+
+        self._ells = np.array(cells["ells"], copy=True)
         self._ellmax_WL = self.cosmo_data.specs.get("lmax_WL")
         self._ellmax_GC = self.cosmo_data.specs.get("lmax_GCph")
         if self._ellmax_WL is not None and self._ellmax_GC is not None:

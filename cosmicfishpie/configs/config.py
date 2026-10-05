@@ -146,6 +146,8 @@ def init(
                                   Global rescaling of the amount of points that are used in internal calculations or interpolations for the probes. Defaults to 1
     feedback                    : int
                                   Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
+    timing                      : bool
+                                  If True, print phase timings for Fisher calculations. Defaults to False
     activateMG                  : bool
                                   If True will also consider modified gravity in the calculations of the observables. Defaults to False
     external_activateMG         : bool
@@ -270,6 +272,7 @@ def init(
     settings.setdefault("spectro_Pk_k_samples", 1025)
     settings.setdefault("spectro_Pk_mu_samples", 17)
     settings.setdefault("feedback", 2)
+    settings.setdefault("timing", False)
     settings.setdefault("activateMG", False)
     settings.setdefault("external_activateMG", False)
     settings.setdefault("cosmo_model", cosmoModel)

@@ -48,6 +48,22 @@ def _thaw(value):
     return deepcopy(value)
 
 
+def _normalize_camb_import_path(camb_path):
+    """Return the directory that must be on ``sys.path`` to import CAMB."""
+
+    resolved_path = os.path.realpath(os.path.join(os.getcwd(), camb_path))
+    if os.path.isfile(os.path.join(resolved_path, "__init__.py")):
+        return os.path.dirname(resolved_path)
+    return resolved_path
+
+
+def _class_pk_grid(classres, k, z, *, nonlinear):
+    """Evaluate CLASS P(k, z) on explicit samples without padded-grid checks."""
+
+    values = classres.get_pk_array(k, z, len(k), len(z), nonlinear)
+    return np.asarray(values).reshape((len(z), len(k))).T
+
+
 def _backend_parameters(configuration, code):
     """Return a mutable backend-parameter snapshot owned by ``configuration``."""
 
@@ -159,8 +175,9 @@ class boltzmann_code:
         upr.SUPPRESS_WARNINGS = self.settings["SUPPRESS_WARNINGS"]
         self.set_cosmicfish_defaults()
         if code == "camb":
-            camb_path = os.path.realpath(os.path.join(os.getcwd(), self.settings["camb_path"]))
-            sys.path.insert(0, camb_path)
+            camb_path = _normalize_camb_import_path(self.settings["camb_path"])
+            if camb_path not in sys.path:
+                sys.path.insert(0, camb_path)
             import camb as camb
 
             self.boltzmann_cambpars = _backend_parameters(self.configuration, code)
@@ -176,6 +193,13 @@ class boltzmann_code:
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
+
+                # Respect CosmicFishPie configuration before symbolic backend objects are created.
+                # Empty persistence disables Colossus disk caching but keeps in-memory caching.
+                colossus_persistence = self.settings.get("colossus_persistence", "")
+                if colossus_persistence is None:
+                    colossus_persistence = ""
+                colossus_settings.PERSISTENCE = colossus_persistence
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 
@@ -929,7 +953,11 @@ class boltzmann_code:
         self.results.zgrid = z[::-1]
 
         ## interpolating function Pk_nl (k,z)
-        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=self.settings["nonlinear"])
+        # CLASS pads its internal z grid above z_max_pk for interpolation. The
+        # bulk getter rejects that entire grid when HMcode cannot reach the
+        # padded endpoint, even though P(k,z) remains available at the sampled
+        # redshifts. Evaluate the same grid through CLASS's array API instead.
+        Pk_nl = _class_pk_grid(classres, k, z, nonlinear=self.settings["nonlinear"])
         self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
 
         tk, k, z = classres.get_transfer_and_k_and_z()

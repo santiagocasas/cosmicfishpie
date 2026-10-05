@@ -140,3 +140,48 @@ class TestBaseLikelihood:
         except (ImportError, AttributeError, TypeError):
             # Function might not exist
             pass
+
+
+class TestCompositeLikelihoodAndNautilus:
+    """Targeted tests for CompositeLikelihood validation and Nautilus sampler wiring."""
+
+    def test_empty_composite_likelihood_raises(self):
+        import pytest
+
+        from cosmicfishpie.likelihood.base import CompositeLikelihood
+
+        with pytest.raises(ValueError, match="at least one likelihood"):
+            CompositeLikelihood([])
+
+    def test_run_nautilus_builds_sampler_with_likelihood_kwargs(self, monkeypatch):
+        import cosmicfishpie.likelihood.base as base
+
+        constructed = {}
+
+        class FakeSampler:
+            def __init__(self, prior, loglike, **kwargs):
+                constructed["prior"] = prior
+                constructed["loglike"] = loglike
+                constructed["kwargs"] = kwargs
+
+            def run(self, **kwargs):
+                constructed["run_kwargs"] = kwargs
+
+        monkeypatch.setattr(base, "Sampler", FakeSampler)
+        mixin = base.NautilusMixin()
+        mixin.loglike = lambda **kwargs: -1.0
+        prior = object()
+
+        sampler = mixin.run_nautilus(
+            prior=prior,
+            sampler_kwargs={"nlive": 128},
+            run_kwargs={"verbose": False},
+        )
+
+        assert sampler is not None
+        assert constructed["prior"] is prior
+        assert constructed["loglike"] is mixin.loglike
+        assert constructed["kwargs"]["nlive"] == 128
+        assert constructed["kwargs"]["pass_dict"] is False
+        assert constructed["kwargs"]["likelihood_kwargs"] == {"prior": prior}
+        assert constructed["run_kwargs"] == {"verbose": False}

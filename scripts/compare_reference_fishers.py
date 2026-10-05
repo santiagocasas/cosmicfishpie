@@ -44,10 +44,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("--fisher-a", required=True, type=Path)
-    parser.add_argument("--fisher-b", required=True, type=Path)
-    parser.add_argument("--label-a", default="A")
-    parser.add_argument("--label-b", default="B")
+    parser.add_argument(
+        "--fisher-a", required=True, type=Path, help="Path to the first Fisher matrix file"
+    )
+    parser.add_argument(
+        "--fisher-b", required=True, type=Path, help="Path to the second Fisher matrix file"
+    )
+    parser.add_argument("--label-a", default="A", help="Label for the first Fisher matrix")
+    parser.add_argument("--label-b", default="B", help="Label for the second Fisher matrix")
     parser.add_argument(
         "--params", default=None, help="Comma-separated parameter subset (default: intersection)"
     )

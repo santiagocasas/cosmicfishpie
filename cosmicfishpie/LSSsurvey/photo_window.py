@@ -210,10 +210,7 @@ class GalaxyPhotoDist:
         zint = np.linspace(0.0, self.z_max, 1000)
         dz = self.z_max / 1000
 
-        norm = [
-            trapezoid([self.ngal_photoz(z, i, obs) for z in zint], dx=dz)
-            for i in range(1, len(z_bins))
-        ]
+        norm = [trapezoid(self.ngal_photoz(zint, i, obs), dx=dz) for i in range(1, len(z_bins))]
         norm.insert(0, None)
 
         return norm
@@ -240,4 +237,4 @@ class GalaxyPhotoDist:
         # Using this as romberg was giving crazy normalizations for the first 2
         # bins
 
-        return np.array([self.ngal_photoz(zi, i, obs) for zi in z]) / self.normalization[obs][i]
+        return self.ngal_photoz(z, i, obs) / self.normalization[obs][i]

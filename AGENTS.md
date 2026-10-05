@@ -145,5 +145,16 @@ Follow existing patterns and keep changes minimal and focused.
 - Citation metadata is in `CITATION.cff`.
 - Update `CHANGELOG.md` for user-facing changes.
 
+## ARA research trace (maintainer workflow)
+- The ARA provenance trace (`ara/`) is NOT part of `main` or feature branches. It lives on the
+  `dev` branch, checked out as the sibling worktree `../cfp-dev`.
+- In each worktree, `ara` is a symlink to `../cfp-dev/ara` and is listed in the shared
+  `.git/info/exclude`, so every branch writes to the same single trace.
+- Only run the `research-manager` skill (or write to `ara/`) if the `ara` symlink exists and
+  resolves. If `ara` is missing or dangling, skip it; do NOT create a new `ara/` directory.
+- Never `git add` or commit `ara` outside `../cfp-dev`. Do not add it to `.gitignore`.
+- To sync the trace, commit inside `../cfp-dev` with `git add -f ara` (the exclude rule hides
+  new files from a plain `git add`), then `git commit`. Pushing is done by the maintainer.
+
 ## Cursor and Copilot rules
 - No `.cursor/rules/`, `.cursorrules`, or `.github/copilot-instructions.md` found.

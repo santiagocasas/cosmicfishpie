@@ -31,7 +31,7 @@ dependencies = [
     "getdist==1.7.5",
     "h5py==3.14.0",
     "ipython==8.39.0",
-    "joblib==1.5.3",
+    "joblib==1.6.0",
     "jupyter==1.1.1",
     "matplotlib==3.10.9",
     "nautilus-sampler==1.0.6",

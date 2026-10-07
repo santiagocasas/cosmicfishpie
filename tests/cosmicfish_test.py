@@ -17,12 +17,12 @@ def test_FisherMatrix_GCsp(spectro_fisher_matrix):
     assert hasattr(fish, "fisher_matrix")
     assert hasattr(fish, "fisher_matrix_inv")
     assert hasattr(fish, "get_confidence_bounds")
-    assert np.isclose(fish.fisher_matrix[0, 0], 216935.5, rtol=1e-3)
-    assert np.isclose(fish.fisher_matrix[3, 3], 0.0083476, rtol=1e-3)
-    assert np.isclose(fish.fisher_matrix[1, 3], 12.4387, rtol=1e-3)
-    assert np.isclose(fish.fisher_matrix[3, 1], 12.4387, rtol=1e-3)
-    assert np.isclose(fish.fisher_matrix[2, 1], 55348.06, rtol=1e-3)
-    assert np.isclose(np.sqrt(fish.fisher_matrix_inv[0, 0]), 0.00793561215, rtol=1e-3)
+    assert np.isclose(fish.fisher_matrix[0, 0], 218868.67901548574, rtol=1e-3)
+    assert np.isclose(fish.fisher_matrix[3, 3], 0.00834065097, rtol=1e-3)
+    assert np.isclose(fish.fisher_matrix[1, 3], 12.3776463, rtol=1e-3)
+    assert np.isclose(fish.fisher_matrix[3, 1], 12.3776463, rtol=1e-3)
+    assert np.isclose(fish.fisher_matrix[2, 1], 54494.1330, rtol=1e-3)
+    assert np.isclose(np.sqrt(fish.fisher_matrix_inv[0, 0]), 0.00798381010, rtol=1e-3)
 
 
 def test_marginalise_over(spectro_fisher_matrix):

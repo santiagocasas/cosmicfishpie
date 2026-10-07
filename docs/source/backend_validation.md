@@ -24,11 +24,11 @@ uv run python scripts/validation/render_validation_dashboard.py
 
 Add `--serve` to preview it at `http://127.0.0.1:8000/`. The dashboard summarizes cases and links to case details, solver specifications, and comparison evidence. Result files are generated locally and are gitignored.
 
-To publish the dashboard and landing page to GitHub Pages, run `bash scripts/validation/publish_validation_dashboard.sh` from the intended source branch. This publishes to `gh-pages`; for the full procedure see [`scripts/README.md`](../../scripts/README.md#11-backend-comparisons-and-reports).
+To publish the dashboard and landing page to GitHub Pages, run `bash scripts/validation/publish_validation_dashboard.sh` from the intended source branch. This publishes to `gh-pages`; see the [validation scripts reference](scripts_reference.md) for the publishing command.
 
 ## Validation notes
 
 - [SYREN-NEW spectral-tilt response](syren_ns_response.md) compares linear and nonlinear ns responses for CLASS+EE2, CLASS+HMcode2020 and SYREN-NEW, with reproducible figures and an analysis of the photometric Fisher differences.
 - [Historical comparison with Casas et al. (2023)](validation_comparison.md) preserves an earlier investigation snapshot and its reported deviations; it is not the current case runner or a substitute for reviewing the case configuration and generated results.
-- The maintained paper-validation case rationale and inputs are documented alongside [`scripts/validation/configs/`](../../scripts/validation/configs/).
+- The maintained paper-validation case rationale and inputs are documented in the [validation configuration directory on GitHub](https://github.com/santiagocasas/cosmicfishpie/tree/main/scripts/validation/configs).
 - The [scripts reference](scripts_reference.md) describes the validation commands and their usage.

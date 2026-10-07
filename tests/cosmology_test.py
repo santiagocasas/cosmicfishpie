@@ -1,6 +1,7 @@
 """Focused tests for Boltzmann-code parameter translations."""
 
 import importlib
+from importlib.util import find_spec
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -414,9 +415,10 @@ def test_photometric_yaml_profiles_load_and_run():
 
     profiles = [
         ("symbolic", "symbolic_config_yaml", base_dir / "symbolic/syren_new_photo.yaml"),
-        ("class", "class_config_yaml", base_dir / "class/ee2_boost_photo.yaml"),
         ("class", "class_config_yaml", base_dir / "class/hmcode2020_photo.yaml"),
     ]
+    if find_spec("euclidemu2") is not None:
+        profiles.append(("class", "class_config_yaml", base_dir / "class/ee2_boost_photo.yaml"))
 
     for code, key, path in profiles:
         assert path.is_file(), f"Missing profile {path}"

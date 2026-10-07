@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Run selected CosmicFishPie backend validation cases sequentially.
+# Run selected CosmicFishPie backend validation cases, optionally in parallel.
 
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CONFIG_DIR="${SCRIPT_DIR}/configs"
+RESULTS_DIR="${CFP_VALIDATION_RESULTS_DIR:-${REPO_ROOT}/scripts/benchmark_results}"
 
 # Validation cases are discovered automatically from config files named
 # compare_run_config.env_<ID>_<description> in CONFIG_DIR -- adding a new case
@@ -79,15 +80,17 @@ EOF
 Options:
   --cases LIST          Cases/groups to run, e.g. 03.1.0,07.2.0.1 or 03. May be repeated.
   --all                 Run every discovered case listed above.
-  --omp-threads N       Set OMP_NUM_THREADS (default: existing value or 8).
+  --omp-threads N       Set OMP_NUM_THREADS per case (default: existing value or 8).
+  --jobs N              Maximum concurrent validation cases (default: 1).
   --force               Rerun cases even when an unchanged completed result exists.
   --verbose             Stream detailed backend output; default output is concise.
   --help                Show this help text.
 
 Each case runs through compare_backends_report.sh, writes its own backend
-comparison output, and is logged under scripts/benchmark_results/.
-The HTML dashboard under scripts/benchmark_results/dashboard/ is refreshed
-after all selected cases finish.
+comparison output, and is logged under the configured results directory
+(default: scripts/benchmark_results/).
+The HTML dashboard under <results-directory>/dashboard/ is refreshed after all
+selected cases finish.
 By default, completed cases are reused when their numerical inputs, relevant
 code, backend versions, and saved run configuration still match. Partial or
 stale cases are run again.
@@ -107,6 +110,7 @@ discover_cases || exit 2
 declare -a SELECTED_CASES=()
 declare -A SELECTED_CASE_SET=()
 omp_threads="${OMP_NUM_THREADS:-8}"
+jobs="${VALIDATION_JOBS:-1}"
 all_cases=false
 force=false
 verbose=false
@@ -185,6 +189,15 @@ while [[ $# -gt 0 ]]; do
       omp_threads="${1#*=}"
       shift
       ;;
+    --jobs)
+      [[ $# -ge 2 ]] || { echo "--jobs requires a value" >&2; exit 2; }
+      jobs="$2"
+      shift 2
+      ;;
+    --jobs=*)
+      jobs="${1#*=}"
+      shift
+      ;;
     --force)
       force=true
       shift
@@ -205,6 +218,15 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+[[ "${omp_threads}" =~ ^[1-9][0-9]*$ ]] || {
+  echo "--omp-threads must be a positive integer" >&2
+  exit 2
+}
+[[ "${jobs}" =~ ^[1-9][0-9]*$ ]] || {
+  echo "--jobs must be a positive integer" >&2
+  exit 2
+}
+
 if [[ "${all_cases}" == true ]]; then
   SELECTED_CASES=("${CASE_ORDER[@]}")
 fi
@@ -218,113 +240,139 @@ fi
 export OMP_NUM_THREADS="${omp_threads}"
 export PYTHONUNBUFFERED=1
 
-if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
-  COLOR_BOLD=$'\033[1m'
-  COLOR_GREEN=$'\033[32m'
-  COLOR_RED=$'\033[31m'
-  COLOR_YELLOW=$'\033[33m'
-  COLOR_RESET=$'\033[0m'
-else
-  COLOR_BOLD=""
-  COLOR_GREEN=""
-  COLOR_RED=""
-  COLOR_YELLOW=""
-  COLOR_RESET=""
+allocated_cpus="${SLURM_CPUS_PER_TASK:-${SLURM_CPUS_ON_NODE:-}}"
+if [[ -n "${allocated_cpus}" ]]; then
+  [[ "${allocated_cpus}" =~ ^[1-9][0-9]*$ ]] || {
+    echo "Could not interpret Slurm CPU allocation: ${allocated_cpus}" >&2
+    exit 2
+  }
+  if (( jobs * omp_threads > allocated_cpus )); then
+    echo "Requested ${jobs} cases x ${omp_threads} threads, but Slurm allocated ${allocated_cpus} CPUs." >&2
+    echo "Request at least $((jobs * omp_threads)) CPUs or reduce --jobs/--omp-threads." >&2
+    exit 2
+  fi
 fi
 
-status_line() {
-  printf '%s%s%s\n' "$1" "$2" "${COLOR_RESET}"
-}
-BATCH_ID="selected_validation_$(date -u +%Y%m%d_%H%M%S)"
-BATCH_DIR="${REPO_ROOT}/scripts/benchmark_results/${BATCH_ID}"
+BATCH_ID="selected_validation_$(date -u +%Y%m%d_%H%M%S)_$$"
+BATCH_DIR="${RESULTS_DIR}/${BATCH_ID}"
 mkdir -p "${BATCH_DIR}"
 
 overall_start=$(date +%s)
 failed=0
 skipped=0
-current_case_pid=""
-current_tail_pid=""
 interrupted=false
+declare -a ACTIVE_WORKERS=()
+declare -a STARTED_CASES=()
 
 stop_active_case() {
   interrupted=true
-  if [[ -n "${current_case_pid}" ]] && kill -0 "${current_case_pid}" 2>/dev/null; then
-    # Each comparison runs in its own session, so one signal terminates uv,
-    # Python, and any backend children belonging to the active case.
-    kill -TERM -- "-${current_case_pid}" 2>/dev/null || kill -TERM "${current_case_pid}" 2>/dev/null || true
-  fi
-  if [[ -n "${current_tail_pid}" ]] && kill -0 "${current_tail_pid}" 2>/dev/null; then
-    kill -TERM "${current_tail_pid}" 2>/dev/null || true
-  fi
+  echo "Interrupt received; stopping active validation cases..." >&2
+  for pid in "${ACTIVE_WORKERS[@]}"; do
+    kill -TERM "${pid}" 2>/dev/null || true
+  done
 }
 trap stop_active_case INT TERM
 
-echo "Running cases: ${SELECTED_CASES[*]}"
-echo "OMP_NUM_THREADS=${OMP_NUM_THREADS}"
-echo "Batch directory: ${BATCH_DIR}"
+run_case() (
+  local case_number="$1"
+  local config_file="${CASE_CONFIGS[${case_number}]}"
+  local config_path="${CONFIG_DIR}/${config_file}"
+  local log_file="${BATCH_DIR}/case_${case_number}.log"
+  local status_file="${BATCH_DIR}/case_${case_number}.status"
+  local case_start status=0 check_output check_status case_pid="" tail_pid=""
+  trap 'if [[ -n "${case_pid}" ]]; then kill -TERM -- "-${case_pid}" 2>/dev/null || kill -TERM "${case_pid}" 2>/dev/null || true; fi; if [[ -n "${tail_pid}" ]]; then kill "${tail_pid}" 2>/dev/null || true; fi; exit 143' INT TERM
 
-for case_number in "${SELECTED_CASES[@]}"; do
-  config_file="${CASE_CONFIGS[${case_number}]}"
-  config_path="${CONFIG_DIR}/${config_file}"
-  log_file="${BATCH_DIR}/case_${case_number}.log"
   case_start=$(date +%s)
-
-  echo
-  status_line "${COLOR_BOLD}" "[${case_number}] ${config_file}"
+  echo "[${case_number}] ${config_file} (log: ${log_file})"
 
   if [[ ! -f "${config_path}" ]]; then
-    echo "Missing config: ${config_path}" | tee "${log_file}"
+    echo "Missing config: ${config_path}" >"${log_file}"
     status=2
   else
     if [[ "${force}" != true ]]; then
-      check_output="$(
-        uv run python "${SCRIPT_DIR}/render_validation_dashboard.py" \
-          --check-completed "${case_number}" 2>&1
-      )"
+      check_output="$(uv run python "${SCRIPT_DIR}/render_validation_dashboard.py" \
+        --results-dir "${RESULTS_DIR}" \
+        --check-completed "${case_number}" 2>&1)"
       check_status=$?
       if [[ ${check_status} -eq 0 ]]; then
-        echo "${check_output}" | tee "${log_file}"
-        echo "Case ${case_number}: SKIPPED (unchanged completed result)"
-        skipped=$((skipped + 1))
+        printf '%s\n' "${check_output}" >"${log_file}"
+        echo "[${case_number}] SKIPPED (unchanged completed result)"
+        : >"${BATCH_DIR}/case_${case_number}.skipped"
         if [[ "${check_output}" == *"gate=FAIL"* ]]; then
-          failed=1
+          status=1
         fi
-        continue
+        printf '%s\n' "${status}" >"${status_file}"
+        exit 0
       fi
-      echo "${check_output}"
     fi
-    status_line "${COLOR_YELLOW}" "[${case_number}] running (details: ${log_file})"
-    # Run the complete comparison in a separate process session. This makes
-    # Ctrl-C kill the whole nested backend process tree, not just one child.
+
+    echo "[${case_number}] running"
     setsid bash "${SCRIPT_DIR}/compare_backends_report.sh" \
       --config "${config_path}" >"${log_file}" 2>&1 &
-    current_case_pid=$!
+    case_pid=$!
     if [[ "${verbose}" == true ]]; then
       tail -f "${log_file}" &
-      current_tail_pid=$!
+      tail_pid=$!
     fi
-    wait "${current_case_pid}"
-    status=$?
-    if [[ -n "${current_tail_pid}" ]]; then
-      kill "${current_tail_pid}" 2>/dev/null || true
-      wait "${current_tail_pid}" 2>/dev/null || true
-      current_tail_pid=""
+    wait "${case_pid}" || status=$?
+    case_pid=""
+    if [[ -n "${tail_pid}" ]]; then
+      kill "${tail_pid}" 2>/dev/null || true
+      wait "${tail_pid}" 2>/dev/null || true
+      tail_pid=""
     fi
-    current_case_pid=""
   fi
 
-  elapsed=$(( $(date +%s) - case_start ))
+  printf '%s\n' "${status}" >"${status_file}"
+  local elapsed=$(( $(date +%s) - case_start ))
   if [[ ${status} -eq 0 ]]; then
-    status_line "${COLOR_GREEN}" "[${case_number}] PASS (${elapsed}s)"
+    echo "[${case_number}] PASS (${elapsed}s)"
   else
-    status_line "${COLOR_RED}" "[${case_number}] FAIL (exit ${status}, ${elapsed}s)"
+    echo "[${case_number}] FAIL (exit ${status}, ${elapsed}s; see ${log_file})"
+  fi
+)
+
+echo "Running cases: ${SELECTED_CASES[*]}"
+echo "OMP_NUM_THREADS=${OMP_NUM_THREADS}"
+echo "Concurrent cases: ${jobs} (up to $((jobs * omp_threads)) OpenMP threads)"
+echo "Batch directory: ${BATCH_DIR}"
+
+for case_number in "${SELECTED_CASES[@]}"; do
+  [[ "${interrupted}" == true ]] && break
+  while (( $(jobs -pr | wc -l) >= jobs )); do
+    [[ "${interrupted}" == true ]] && break
+    sleep 1
+  done
+  [[ "${interrupted}" == true ]] && break
+  run_case "${case_number}" &
+  ACTIVE_WORKERS+=("$!")
+  STARTED_CASES+=("${case_number}")
+done
+
+for pid in "${ACTIVE_WORKERS[@]}"; do
+  wait "${pid}" || true
+done
+
+for case_number in "${STARTED_CASES[@]}"; do
+  status_file="${BATCH_DIR}/case_${case_number}.status"
+  if [[ ! -f "${status_file}" ]]; then
+    echo "[${case_number}] interrupted before writing status" >&2
+    failed=1
+    continue
+  fi
+  status="$(<"${status_file}")"
+  if [[ "${status}" == "0" ]]; then
+    if [[ -f "${BATCH_DIR}/case_${case_number}.skipped" ]]; then
+      skipped=$((skipped + 1))
+    fi
+  else
     failed=1
   fi
-  if [[ "${interrupted}" == true ]]; then
-    echo "Validation interrupted; stopping after case ${case_number}." >&2
-    break
-  fi
 done
+
+if [[ "${interrupted}" == true ]]; then
+  failed=1
+fi
 
 overall_elapsed=$(( $(date +%s) - overall_start ))
 echo
@@ -332,8 +380,9 @@ echo "Selected validation run finished in ${overall_elapsed}s."
 echo "Skipped unchanged completed cases: ${skipped}"
 echo "Logs and batch artifacts: ${BATCH_DIR}"
 
-if uv run python "${SCRIPT_DIR}/render_validation_dashboard.py"; then
-  echo "Validation dashboard: ${REPO_ROOT}/scripts/benchmark_results/dashboard/index.html"
+if uv run python "${SCRIPT_DIR}/render_validation_dashboard.py" \
+  --results-dir "${RESULTS_DIR}" --out-dir "${RESULTS_DIR}/dashboard"; then
+  echo "Validation dashboard: ${RESULTS_DIR}/dashboard/index.html"
 else
   echo "WARNING: validation dashboard generation failed." >&2
   failed=1

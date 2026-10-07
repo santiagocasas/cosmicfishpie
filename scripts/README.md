@@ -216,16 +216,36 @@ Use these scripts to run two backends, compare, plot, and render shareable repor
 ### Maintained paper-validation workflow
 
 The maintained validation entry point covers the Casas et al. w0waCDM cases and the
-paper-faithful neutrino cases:
+paper-faithful neutrino cases. Cases run sequentially by default; `--jobs` bounds
+parallel cases, and `--omp-threads` sets the OpenMP thread count for each case:
 
 ```bash
-bash scripts/validation/run_selected_validations.sh --all --omp-threads 8
+bash scripts/validation/run_selected_validations.sh --all --jobs 2 --omp-threads 4
 ```
+
+This uses up to eight OpenMP threads total. On a Slurm allocation, reserve at least
+`--jobs` × `--omp-threads` CPUs. The runner checks `SLURM_CPUS_PER_TASK` or
+`SLURM_CPUS_ON_NODE` when available and rejects requests larger than the allocation.
+Keep the source checkout and `cjfp-data` as sibling directories. The parallel
+convenience wrapper writes Fisher outputs, batch logs, and the dashboard directly to
+`../cjfp-data/validation/fisher/`:
+
+```bash
+uv sync
+bash scripts/validation/run_parallel_validations.sh
+```
+
+It defaults to two concurrent cases with four threads each. Set `CFP_DATA_REPO` if the
+data checkout is elsewhere, or `CFP_VALIDATION_RESULTS_DIR` to choose a different
+output path. Override concurrency with `CFP_VALIDATION_JOBS` and `CFP_OMP_THREADS`.
+This Fisher workflow does not read or require the archived
+Nautilus chains. After reviewing results, use DVC from the data checkout to register
+and upload them if they should be retained remotely.
 
 Completed cases are reused when their numerical inputs and backend provenance still
 match; pass `--force` to recompute them. The command refreshes the clean dashboard at
-`scripts/benchmark_results/dashboard/index.html`. Superseded one-off and batch runners
-are retained for provenance under `scripts/archive/` and are not part of the maintained
+`<results-directory>/dashboard/index.html`. Superseded one-off and batch runners are
+retained for provenance under `scripts/archive/` and are not part of the maintained
 workflow.
 
 To render the dashboard from whatever completed results are currently available:

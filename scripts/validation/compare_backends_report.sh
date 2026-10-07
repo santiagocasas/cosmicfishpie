@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 ENV_OUTDIR="${OUTDIR:-}"
+RESULTS_ROOT="${CFP_VALIDATION_RESULTS_DIR:-${REPO_ROOT}/scripts/benchmark_results}"
 
 CONFIG_FILE=""
 usage() {
@@ -297,7 +298,7 @@ fi
 if [[ -z "${OUTDIR}" ]]; then
   # Every default run is isolated; explicit OUTDIR remains an intentional escape hatch.
   USE_TIMESTAMP=true
-  OUTDIR="${REPO_ROOT}/scripts/benchmark_results/compare_${MODE}_${CODE_A}_vs_${CODE_B}_${NAME_SUFFIX}"
+  OUTDIR="${RESULTS_ROOT}/compare_${MODE}_${CODE_A}_vs_${CODE_B}_${NAME_SUFFIX}"
 fi
 if [[ "${REPORT_SINGLE}" == "true" && -z "${REPORT_SINGLE_FILE}" ]]; then
   REPORT_SINGLE_FILE="${OUTDIR}/report_single.html"

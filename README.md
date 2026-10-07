@@ -114,10 +114,27 @@ For fuller examples and configuration details, see the documentation.
 
 ## Documentation and citation
 
-- Docs: https://cosmicfishpie.readthedocs.io/
+- Docs: https://cosmicfishpie.readthedocs.io/ (Getting started, User guide, Tutorials, API reference, Development)
+- Validation dashboard: https://santiagocasas.github.io/cosmicfishpie/dashboard/
 - Repository: https://github.com/santiagocasas/cosmicfishpie
 - Citation metadata: [`CITATION.cff`](CITATION.cff)
 - Nautilus sampler docs (and citation info): https://nautilus-sampler.readthedocs.io/
+
+### Building the documentation locally
+
+The docs use the PyData Sphinx Theme and have their own dependency extra:
+
+```bash
+uv sync --extra docs
+make docs        # live-reloading server, opens at http://127.0.0.1:8000
+```
+
+For a one-off build that fails on warnings (as in CI and Read the Docs):
+
+```bash
+uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html
+python -m http.server --directory docs/build/html 8000
+```
 
 ## Contributors ✨
 

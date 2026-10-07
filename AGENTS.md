@@ -31,9 +31,12 @@ Follow existing patterns and keep changes minimal and focused.
 - Tests live in `tests/` and are typically named `*_test.py`.
 
 ## Docs
+- Install docs dependencies: `uv sync --extra docs`
 - Live docs build (autobuild): `make docs`
-- Standard Sphinx build: `make -C docs html`
-- API docs are built from module docstrings; keep them clean and complete.
+- Strict build (as in CI and Read the Docs): `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`
+- Link check: `uv run --extra docs sphinx-build -b linkcheck docs/source docs/build/linkcheck`
+- API docs are built from module docstrings with autosummary (`docs/source/api/`); keep them clean and complete.
+- Use raw docstrings (`r"""`) when a docstring contains LaTeX backslashes.
 
 ## Repository layout
 - `cosmicfishpie/` is the main package.

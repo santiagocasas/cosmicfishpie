@@ -39,13 +39,7 @@ class ComputeGalSpectro:
         ----------
         cosmopars            : dict
                               A dictionary containing the cosmological parameters of the sample cosmology
-                              A dictionary containing the cosmological parameters of the sample cosmology
         fiducial_cosmopars   : dict, optional
-                              A dictionary containing the cosmological parameters of the fiducial/reference cosmology
-        spectrobiaspars      : dict, optional
-                              A dictionary containing the specifications for the galaxy biases
-        IMbiaspars          : dict, optional
-                              A dictionary containing the specifications for the intensity mapping biases
                               A dictionary containing the cosmological parameters of the fiducial/reference cosmology
         spectrobiaspars      : dict, optional
                               A dictionary containing the specifications for the galaxy biases
@@ -70,21 +64,15 @@ class ComputeGalSpectro:
         ----------
         feed_lvl                      : int
                                        Number indicating the verbosity of the output. Higher numbers mean more output
-                                       Number indicating the verbosity of the output. Higher numbers mean more output
         observables                   : list
-                                       A list of the observables that the observed power spectrum is computed for
                                        A list of the observables that the observed power spectrum is computed for
         s8terms                       : bool
                                        If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
-                                       If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe
         tracer                        : str
-                                       What Power spectrum should be used when calculating the power spectrum. Either "matter" or "clustering"
                                        What Power spectrum should be used when calculating the power spectrum. Either "matter" or "clustering"
         cosmo                         : cosmicfishpie.cosmology.cosmology.cosmo_functions
                                        An instance of `cosmo_functions` of the sample cosmology
-                                       An instance of `cosmo_functions` of the sample cosmology
         nuisance                      : cosmicfishpie.cosmology.Nuisance.Nuisance
-                                       An instance of `nuisance` that contains the relevant modeling of nuisance parameters
                                        An instance of `nuisance` that contains the relevant modeling of nuisance parameters
         extraPshot                    : dict
                                        A dictionary containing the values of the additional shot noise per bin
@@ -92,28 +80,17 @@ class ComputeGalSpectro:
                                        Lists the redshift bin centers for galaxy clustering
         IM_z_bin_mids                : numpy.ndarray
                                        Lists the redshift bin centers for intensity mapping
-                                       A dictionary containing the values of the additional shot noise per bin
-        gcsp_z_bin_mids              : numpy.ndarray
-                                       Lists the redshift bin centers for galaxy clustering
-        IM_z_bin_mids                : numpy.ndarray
-                                       Lists the redshift bin centers for intensity mapping
         k_grid                        : numpy.ndarray
-                                       Lists all wavenumbers used in the internal calculations
                                        Lists all wavenumbers used in the internal calculations
         dk_grid                       : numpy.ndarray
                                        Lists the numerical distance between all wavenumbers used in the internal calculations
-                                       Lists the numerical distance between all wavenumbers used in the internal calculations
         linear_switch                 : bool
-                                       If False all nonlinear effects will be included in the computation
                                        If False all nonlinear effects will be included in the computation
         FoG_switch                    : bool
                                        If True and `linear_switch` is False, then the finger of god effect will be modelled
-                                       If True and `linear_switch` is False, then the finger of god effect will be modelled
         APbool                        : bool
                                        If True, the Alcock-Paczynski effect will be considered
-                                       If True, the Alcock-Paczynski effect will be considered
         fix_cosmo_nl_terms            : bool
-                                       If True and the nonlinear modeling parameters are not varied, then they will be fixed to the fiducial cosmology values
                                        If True and the nonlinear modeling parameters are not varied, then they will be fixed to the fiducial cosmology values
         dz_err                        : float
                                        Value of the spectroscopic redshift error

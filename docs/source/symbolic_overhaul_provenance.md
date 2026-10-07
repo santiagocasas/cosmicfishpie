@@ -1,5 +1,5 @@
-> # Symbolic overhaul: implementation provenance
->
+# Symbolic overhaul: implementation provenance
+
 > This page preserves the original design, decisions, implementation notes, and
 > remaining validation work for the symbolic-backend overhaul. The status below is
 > a project record, not a claim that every roadmap item or scientific comparison is

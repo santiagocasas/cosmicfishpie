@@ -39,8 +39,6 @@ class GalaxyPhotoDist:
                   minimum redshift of the probes
         z_max   : float
                   maximum redshift of the probes
-        norm    : callable
-                  callable function that when given the redshift bin and a redshift, returns the normalization of the galaxy redshift distribution
         n_i_vec : callable
                   callable function that receives the index of a redshift bin and a numpy.ndarray of redshifts and gives back the binned galaxy redshift distribution without photometric redshift errors
         """

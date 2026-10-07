@@ -152,7 +152,7 @@ def compute_wedge_chi2(
     Compute χ² for wedges using fully vectorized operations.
     Matches the loop implementation exactly.
 
-    Parameters:
+    Parameters
     ----------
     P_obs_data : array_like
         Synthetic data power spectrum (n_z, n_mu, n_k)
@@ -165,7 +165,7 @@ def compute_wedge_chi2(
         ``P_obs_theory``, following Eq. (9) of arXiv:2303.09451. Pass
         ``P_obs_data`` to freeze the covariance at the fiducial instead.
 
-    Returns:
+    Returns
     -------
     float
         χ² value

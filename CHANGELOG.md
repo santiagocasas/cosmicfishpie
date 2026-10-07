@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Migrate the documentation to the PyData Sphinx Theme with a card-based landing
+  page, Getting started / User guide / Tutorials / API / Development sections,
+  autosummary-generated per-module API pages, a new `docs` extra
+  (`uv sync --extra docs`), a build-only docs CI job, and warnings-as-errors
+  builds on Read the Docs. Fix docstrings that broke the API build.
 - Vectorize the photometric Cl pipeline (row-wise `sqrtP_limber`, cached kernels
   and window factors) for up to ~6x faster Fisher matrix computation with the
   symbolic backend; see `docs/source/photometric_optimization_results.md`.

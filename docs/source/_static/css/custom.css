@@ -1,0 +1,130 @@
+/* cosmicfishpie palette for pydata-sphinx-theme: grass green and cosmic blue. */
+
+html[data-theme="light"] {
+  --pst-color-primary: #2a7a3a;
+  --pst-color-secondary: #23469b;
+  --pst-color-accent: #1b9a6a;
+  --pst-color-link: #1f5fbf;
+  --pst-color-link-hover: #2a7a3a;
+  --cfp-hero-from: #eaf5ec;
+  --cfp-hero-to: #e8eefb;
+  --cfp-card-shadow: rgba(35, 70, 155, 0.14);
+}
+
+html[data-theme="dark"] {
+  --pst-color-primary: #8fd694;
+  --pst-color-secondary: #8fb0ff;
+  --pst-color-accent: #5fd4b0;
+  --pst-color-link: #8fb0ff;
+  --pst-color-link-hover: #8fd694;
+  --cfp-hero-from: #12241a;
+  --cfp-hero-to: #141c35;
+  --cfp-card-shadow: rgba(0, 0, 0, 0.45);
+}
+
+/* Landing page hero */
+.cfp-hero {
+  margin: 0 0 2.5rem 0;
+  padding: 0.75rem 2rem 2.5rem 2rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--cfp-hero-from), var(--cfp-hero-to));
+}
+
+/* The landing page title is the page-level H1 (section id "cosmicfishpie"). */
+section#cosmicfishpie > h1 {
+  margin: 0;
+  padding: 2.5rem 1rem 0 1rem;
+  border-radius: 0.75rem 0.75rem 0 0;
+  text-align: center;
+  font-size: 2.75rem;
+  color: var(--pst-color-primary);
+  background: linear-gradient(135deg, var(--cfp-hero-from), var(--cfp-hero-to));
+}
+
+.cfp-hero .cfp-tagline {
+  max-width: 40rem;
+  margin: 0 auto 1.5rem auto;
+  font-size: 1.2rem;
+  color: var(--pst-color-text-base);
+}
+
+.cfp-hero div.highlight {
+  max-width: 22rem;
+  margin: 0 auto 1.5rem auto;
+  text-align: left;
+}
+
+.cfp-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.cfp-buttons p {
+  margin: 0;
+}
+
+.cfp-cards {
+  margin-bottom: 2.5rem;
+}
+
+html {
+  --pst-font-size-h2: 1.9rem;
+}
+
+.bd-article h2 {
+  margin-top: 2rem;
+}
+
+/* Card grid */
+.cfp-cards .sd-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cfp-cards .sd-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1.25rem var(--cfp-card-shadow) !important;
+  border-color: var(--pst-color-secondary);
+}
+
+.cfp-cards .sd-card-title {
+  color: var(--pst-color-primary);
+}
+
+/* Keep hero readable on phones */
+@media (max-width: 575px) {
+  .cfp-hero {
+    padding: 2rem 1rem 1.5rem 1rem;
+  }
+
+  .cfp-hero h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Long dotted API names must wrap instead of being clipped. */
+.bd-article h1,
+.bd-sidebar-primary .nav a {
+  overflow-wrap: anywhere;
+}
+
+.bd-article h1 {
+  font-size: min(var(--pst-font-size-h1), 2.2rem);
+}
+
+.bd-sidebar-secondary a {
+  overflow-wrap: anywhere;
+}
+
+section#cosmicfishpie > h1 {
+  overflow-wrap: normal;
+  font-size: 2.75rem;
+}
+
+@media (max-width: 575px) {
+  section#cosmicfishpie > h1 {
+    font-size: 1.9rem;
+  }
+}

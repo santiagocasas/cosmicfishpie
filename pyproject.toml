@@ -56,6 +56,16 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 emulators = [
     "euclidemu2==1.4.3",
 ]
+docs = [
+    "Sphinx>=7.3,<8.2",
+    "pydata-sphinx-theme>=0.16.1",
+    "sphinx-design>=0.6.1",
+    "sphinx-copybutton>=0.5.2",
+    "myst-parser>=4.0.1,<4.1",
+    "sphinx-autodoc-typehints>=1.23.3",
+    "sphinx-autobuild>=2024.10.3",
+    "packaging",
+]
 dev = [
     "ruff",
     "mypy>=2.3.0,<2.4",
@@ -71,13 +81,10 @@ dev = [
     "setuptools",
     "wheel",
     "Sphinx>=4.3.0,<8.2.0",
-    "furo==2024.1.29",
     "myst-parser>=4.0.1,<4.1",
-    "myst_parser",
     "sphinx-copybutton==0.5.2",
     "sphinx-autobuild==2024.10.3",
     "sphinx-autodoc-typehints==1.23.3",
-    "sphinx_rtd_theme>=3.1.0",
     "packaging",
 ]
 

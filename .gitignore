@@ -83,3 +83,4 @@ scripts/benchmark_results.zip
 
 # HPC run outputs (chains, plots, logs) synced from cluster runs
 hpc-results/
+docs/source/api/generated/

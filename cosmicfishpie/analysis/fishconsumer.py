@@ -226,6 +226,7 @@ def fishtable_to_pandas(
     Converts a fisher matrix table to pandas DataFrames.
     This function takes a list of parameters and a FisherAnalysis object, and returns two pandas DataFrames:
     one for relative errors (as percentages) and one for absolute errors. It can also return data for bar plots.
+
     Parameters
     ----------
     paramstab : list
@@ -245,6 +246,7 @@ def fishtable_to_pandas(
         List of fisher matrix names to filter when returning bar plot data. Default is None.
     return_data_bar : bool, optional
         If True, return data formatted for bar plots instead of DataFrames. Default is False.
+
     Returns
     -------
     tuple or dict
@@ -1175,7 +1177,7 @@ def load_montepython_chains(
     base_path : str
         Path to the folder containing chains and log.param
     chain_root : str
-        Root name of the chain files (e.g., "2024-09-11_200000_")
+        Root name of the chain files (e.g., ``"2024-09-11_200000_"``)
     num_chains : int
         Number of chains to load
     burn_in : float, optional

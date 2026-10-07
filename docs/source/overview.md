@@ -2,7 +2,7 @@
 
 A Comprehensive Tool for Fisher Forecasts in Cosmology
 
-### Introduction
+## Introduction
 
 `Cosmicfishpie` is a cosmological code to help researchers prepare for upcoming missions like Euclid, DESI, or SKAO. It contains a vast tool set to  produce Fisher forecasts for different applications. This code offers you easy access to cosmological quantities from leading Einstein-Boltzmann solvers `Class` and `CAMB` or the ability to directly read precomputed cosmologies from files.
 
@@ -12,9 +12,9 @@ Additionally, `Cosmicfishpie` excels in analysis and visualization. For this use
 
 Whether you're preparing for future cosmological surveys or analyzing existing data, Cosmicfish offers a comprehensive and user-friendly approach to cosmological forecasting. In the following we will present a quick users guide to some of these functionalities.
 
-### Getting Started
+## Getting Started
 
-#### Installing Cosmicfishpie
+### Installing Cosmicfishpie
 To install `cosmicfishpie` please refer to our [installation page](https://cosmicfishpie.readthedocs.io/en/latest/installation.html)
 You can install the code using `pip`
 
@@ -39,7 +39,7 @@ This should compute a two-parameter Fisher and create a corner plot that you can
 
 Now that you have `Cosmicfishpie` installed and running, you can dive deeper into its functionality:
 
-#### Create your first Fisher matrix
+### Create your first Fisher matrix
 
 To compute a fisher matrix you first have to specify your model and your experiment. A typical script of `Cosmicfishpie` starts like this
 
@@ -101,7 +101,7 @@ FA = cosmoFM.compute()
 
 We can pass all parameters to the constructor of the `FisherMatrix`. You then just have to call `compute` and see your numerical derivatives getting computed. The results, a list of varied parameters and nuisance parameter and a summery of all options passed to CF and the EBS. Enjoy the simplicity!
 
-#### Create your first plots
+### Create your first plots
 
 Creating a high-quality plot is very easy with `Cosmicfishpie`. We can use the `fisher_ploting` module and pass to it similarly a set of options for the plot. Additional options can be found in the documentation of the module.
 

@@ -148,7 +148,11 @@ When you're ready to contribute code to address an open issue, please follow the
     See the [Writing docstrings](#writing-docstrings) section below for details on the syntax.
     You should test to make sure the API documentation can build without errors by running
 
+        uv sync --extra docs
         make docs
+
+    CI and Read the Docs treat warnings as errors, so you can reproduce them with
+    `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`.
 
     If the build fails, it's most likely due to small formatting issues. If the error message isn't clear, feel free to comment on this in your pull request.
 

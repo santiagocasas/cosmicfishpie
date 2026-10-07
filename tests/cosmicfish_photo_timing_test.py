@@ -44,6 +44,8 @@ def test_photometric_fisher_compute_with_timing():
     assert fisher.settings["timing"] is True
 
     fishanalysis = fisher.compute()
+    assert fisher.derivs_dict is fisher.photo_derivs
+    assert set(fisher.freeparams) <= set(fisher.derivs_dict)
     fm = fishanalysis.fisher_matrix
 
     assert fm.shape[0] == fm.shape[1]

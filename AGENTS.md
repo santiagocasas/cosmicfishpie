@@ -115,10 +115,10 @@ Follow existing patterns and keep changes minimal and focused.
 - Scripts often create `scripts/benchmark_results/` and `chains/` folders.
 
 ## Scripts and benchmarks
-- `scripts/photometric_benchmark.py` runs photometric benchmarks and FAST vs SLOW checks.
-- `scripts/run_fisher_compare_backends.py` compares Fisher matrices across backends.
+- `scripts/archive/benchmarks/photometric_benchmark.py` retains the historical photometric benchmark.
+- `scripts/validation/run_fisher_compare_backends.py` compares Fisher matrices across backends.
 - Scripts are not imported by the library; keep them CLI-friendly.
-- Prefer `uv run python scripts/<name>.py` to ensure the right environment.
+- Prefer `uv run python scripts/<category>/<name>.py` to ensure the right environment.
 - Benchmark outputs are stored under `scripts/benchmark_results/`.
 
 ## Environment variables

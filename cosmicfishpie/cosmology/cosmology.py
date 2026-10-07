@@ -57,11 +57,32 @@ def _normalize_camb_import_path(camb_path):
     return resolved_path
 
 
-def _class_pk_grid(classres, k, z, *, nonlinear):
-    """Evaluate CLASS P(k, z) on explicit samples without padded-grid checks."""
+def _class_pk_grid(classres, k, z, *, nonlinear, cb=False):
+    """Evaluate CLASS P(k, z) or P_cb(k, z) on explicit samples without padded-grid checks."""
 
-    values = classres.get_pk_array(k, z, len(k), len(z), nonlinear)
+    if cb and hasattr(classres, "get_pk_cb_array"):
+        values = classres.get_pk_cb_array(k, z, len(k), len(z), nonlinear)
+    else:
+        values = classres.get_pk_array(k, z, len(k), len(z), nonlinear)
     return np.asarray(values).reshape((len(z), len(k))).T
+
+
+def _class_nonlinear_pk_grid(classres, k, z, *, cb=False):
+    """Evaluate nonlinear CLASS spectra only inside the configured P(k, z) domain."""
+
+    k_max = float(classres.pars["P_k_max_1/Mpc"])
+    z_max = float(classres.pars["z_max_pk"])
+    supported_k = np.asarray(k)[np.asarray(k) <= k_max]
+    supported_z = np.asarray(z)[np.asarray(z) <= z_max]
+    grid = _class_pk_grid(classres, supported_k, supported_z, nonlinear=True, cb=cb)
+    if not np.isfinite(grid).all():
+        spectrum = "P_cb" if cb else "P_m"
+        bad_count = np.size(grid) - np.count_nonzero(np.isfinite(grid))
+        raise FloatingPointError(
+            f"CLASS returned {bad_count} non-finite {spectrum}(k, z) values "
+            "inside its configured nonlinear domain"
+        )
+    return grid, supported_k, supported_z
 
 
 def _backend_parameters(configuration, code):
@@ -190,6 +211,26 @@ class boltzmann_code:
             self.class_setparams(self.cosmopars)
             self.class_results(Class)
         elif code == "symbolic":
+            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
+            provider_name = self.boltzmann_symbolicpars["ACCURACY"].get("provider", "legacy")
+            if provider_name == "syren_new":
+                from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider
+
+                provider = SyrenNewProvider(
+                    self.cosmopars,
+                    self.boltzmann_symbolicpars,
+                    self.settings["cosmo_model"],
+                )
+                self.symbcosmopars = provider.cosmopars
+                self.h_now = self.symbcosmopars["h"]
+                self.results = provider.build()
+                self.zgrid = self.results.zgrid
+                self.kgrid_1Mpc = self.results.kgrid
+                return
+            if provider_name != "legacy":
+                raise ValueError(
+                    f"Unknown symbolic provider {provider_name!r}; expected 'syren_new' or 'legacy'."
+                )
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
@@ -210,7 +251,6 @@ class boltzmann_code:
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
-            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
             self.halofit_version = self.boltzmann_symbolicpars["COSMO_SETTINGS"][
                 "halofit_version"
             ]  # 'syren' or 'halofit+' or 'takahashi'
@@ -808,6 +848,14 @@ class boltzmann_code:
         This method sets up CLASS parameters and prepares for power spectrum computation.
         """
         tini_basis = time()
+        self.nonlinear_model = self.boltzmann_classpars.get("NONLINEAR", {}).get(
+            "model", "class_native"
+        )
+        if self.nonlinear_model not in ("class_native", "ee2"):
+            raise ValueError(
+                f"Unknown CLASS nonlinear model {self.nonlinear_model!r}; "
+                "expected 'class_native' or 'ee2'."
+            )
         self.classcosmopars = {
             **self.boltzmann_classpars["ACCURACY"],
             **self.boltzmann_classpars["COSMO_SETTINGS"],
@@ -849,11 +897,21 @@ class boltzmann_code:
             classpars["H0"] = classpars.pop("H0")
             h = classpars["H0"] / 100.0
 
+        parameter_translation = getattr(self, "boltzmann_classpars", {}).get(
+            "PARAMETER_TRANSLATION", {}
+        )
+        neutrino_scheme = parameter_translation.get("neutrino_scheme", "cosmicfishpie")
         shareDeltaNeff = self.settings["ShareDeltaNeff"]
         fidNeff = boltzmann_code.hardcoded_Neff
         Neff = classpars.pop("Neff", fidNeff)
 
-        if shareDeltaNeff:
+        neutrino_mass_fac = parameter_translation.get("neutrino_mass_fac", 93.14)
+        if neutrino_scheme == "three_degenerate":
+            classpars["N_ur"] = parameter_translation["N_ur"]
+            neutrino_mass_fac = parameter_translation["neutrino_mass_fac"]
+        elif neutrino_scheme != "cosmicfishpie":
+            raise ValueError(f"Unsupported CLASS neutrino_scheme={neutrino_scheme!r}.")
+        elif shareDeltaNeff:
             classpars["N_ur"] = (
                 2.0 / 3.0 * Neff
             )  # This version does not have the discontinuity at Nur = 1.99
@@ -862,27 +920,26 @@ class boltzmann_code:
             classpars["N_ur"] = Neff - fidNeff / 3.0
             g_factor = fidNeff / 3.0
 
-        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-
+        omega_ncdm = 0.0
         if "mnu" in classpars:
-            classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
-            classpars["Omega_ncdm"] = (
-                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
-            )
-            classpars.pop("mnu")
-            # classpars['m_ncdm'] = classpars.pop('mnu')
-            # Om_ncdm = classpars['m_ncdm'] / 93.13858 /h/h
+            mnu = classpars.pop("mnu")
+            if neutrino_scheme == "three_degenerate":
+                classpars["m_ncdm"] = ",".join(f"{mnu / 3.0:g}" for _ in range(3))
+                omega_ncdm = mnu / neutrino_mass_fac / h**2
+            else:
+                classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
+                classpars["Omega_ncdm"] = mnu * g_factor ** (0.75) / neutrino_mass_fac / h**2
+                omega_ncdm = classpars["Omega_ncdm"]
         elif "Omeganu" in classpars:
-            classpars["Omega_ncdm"] = classpars.pop("Omeganu")
+            omega_ncdm = classpars.pop("Omeganu")
+            classpars["Omega_ncdm"] = omega_ncdm
 
         if "100omega_b" in classpars:
             classpars["omega_b"] = (1 / 100) * classpars.pop("100omega_b")
         if "Omegab" in classpars:
             classpars["Omega_b"] = classpars.pop("Omegab")
         if "Omegam" in classpars:
-            classpars["Omega_cdm"] = (
-                classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
-            )
+            classpars["Omega_cdm"] = classpars.pop("Omegam") - classpars["Omega_b"] - omega_ncdm
 
         if self.settings["cosmo_model"] == "LCDM":
             # CLASS rejects dark-energy evolution parameters in LCDM mode,
@@ -953,30 +1010,37 @@ class boltzmann_code:
         self.results.zgrid = z[::-1]
 
         ## interpolating function Pk_nl (k,z)
-        # CLASS pads its internal z grid above z_max_pk for interpolation. The
-        # bulk getter rejects that entire grid when HMcode cannot reach the
-        # padded endpoint, even though P(k,z) remains available at the sampled
-        # redshifts. Evaluate the same grid through CLASS's array API instead.
-        Pk_nl = _class_pk_grid(classres, k, z, nonlinear=self.settings["nonlinear"])
-        self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
+        z_nl = z
+        k_nl = k
+        if self.nonlinear_model == "ee2" and self.settings["nonlinear"]:
+            from cosmicfishpie.cosmology.ee2 import class_ee2_boost
 
-        tk, k, z = classres.get_transfer_and_k_and_z()
-        T_cb = (f_b * tk["d_b"] + f_cdm * tk["d_cdm"]) / f_cb
-        T_nu = tk["d_ncdm[0]"]
+            boost = class_ee2_boost(classres, k, z)
+            Pk_nl = Pk_l * boost
+            # EE2 supplies a total-matter boost. Reusing it for cb is an
+            # approximation, not a separate cb emulator prediction.
+            Pk_cb_nl = Pk_cb_l * boost
+        else:
+            if self.settings["nonlinear"]:
+                # CLASS pads the returned grids beyond the configured domain.
+                # HMcode can return non-finite values at those unsupported points.
+                Pk_nl, k_nl, z_nl = _class_nonlinear_pk_grid(classres, k, z)
+            else:
+                Pk_nl = _class_pk_grid(classres, k, z, nonlinear=False)
+            if f_nu > 1e-5 and hasattr(classres, "get_pk_cb_array"):
+                if self.settings["nonlinear"]:
+                    Pk_cb_nl, _, _ = _class_nonlinear_pk_grid(classres, k, z, cb=True)
+                else:
+                    Pk_cb_nl = _class_pk_grid(classres, k, z, nonlinear=False, cb=True)
+            else:
+                Pk_cb_nl = Pk_nl.copy()
 
-        pm = classres.get_primordial()
-        pk_prim = (
-            UnivariateSpline(pm["k [1/Mpc]"], pm["P_scalar(k)"])(k)
-            * (2.0 * np.pi**2)
-            / np.power(k, 3)
+        self.results.Pk_nl = RectBivariateSpline(
+            z_nl[::-1], k_nl, (np.flip(Pk_nl, axis=1)).transpose()
         )
 
-        pk_cnu = T_nu * T_cb * pk_prim[:, None]
-        pk_nunu = T_nu * T_nu * pk_prim[:, None]
-        Pk_cb_nl = 1.0 / f_cb**2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
-
         self.results.Pk_cb_nl = RectBivariateSpline(
-            z[::-1], k, (np.flip(Pk_cb_nl, axis=1)).transpose()
+            z_nl[::-1], k_nl, (np.flip(Pk_cb_nl, axis=1)).transpose()
         )
 
         def create_growth():
@@ -1809,7 +1873,7 @@ class cosmo_functions:
             power = self.results.Pk_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_l(z, k, grid=False)
-        return power  # type: ignore
+        return np.maximum(power, 0.0)  # type: ignore
 
     def Pcb(self, z, k, nonlinear=False):
         """
@@ -1824,11 +1888,15 @@ class cosmo_functions:
         Returns:
             The value of the CB power spectrum at the given redshift and wavenumber.
         """
+        if self.code == "symbolic" and not hasattr(self.results, "Pk_cb_l"):
+            raise ValueError(
+                "SYREN-NEW provides total-matter power only; tracer='clustering' is unsupported."
+            )
         if nonlinear is True:
             power = self.results.Pk_cb_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_cb_l(z, k, grid=False)
-        return power
+        return np.maximum(power, 0.0)
 
     def nonwiggle_pow(self, z, k, nonlinear=False, tracer="matter"):
         """

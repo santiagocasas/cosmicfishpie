@@ -1077,6 +1077,11 @@ def main() -> int:
         metavar="CASE",
         help="Check whether a case has a reusable completed result, then exit",
     )
+    parser.add_argument(
+        "--list-failed",
+        action="store_true",
+        help="Print case IDs with a saved FAIL comparison, regardless of Git freshness, then exit",
+    )
     args = parser.parse_args()
 
     config_dir = Path(args.config_dir).expanduser().resolve()
@@ -1087,6 +1092,13 @@ def main() -> int:
     cases = discover_cases(config_dir, REPO_ROOT)
     if not cases:
         raise SystemExit(f"No case configs found in {config_dir}")
+
+    if args.list_failed:
+        for case in cases:
+            result = build_case_result(case, results_dir, REPO_ROOT)
+            if _gate_status(result) == "FAIL":
+                print(case.number)
+        return 0
 
     if args.check_completed is not None:
         requested = _normalize_case_id(args.check_completed)

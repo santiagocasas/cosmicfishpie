@@ -248,6 +248,27 @@ match; pass `--force` to recompute them. The command refreshes the clean dashboa
 retained for provenance under `scripts/archive/` and are not part of the maintained
 workflow.
 
+For a fresh campaign that prioritizes previously failing comparisons:
+
+```bash
+bash scripts/validation/run_parallel_validations.sh --failed-first
+```
+
+This reads saved numerical FAIL gates directly from the result files, runs those cases
+first with the usual concurrency, **waits for that whole phase**, then runs all remaining
+selected cases. It implies `--force`: even previously passing cases are recomputed.
+Use `--cases LIST` to restrict the campaign. With no saved FAIL results, all selected
+cases run in the remaining phase. The intentional P_mm failure control is included
+when selected. A failed case does not prevent the second phase from running.
+
+The campaign records its starting revision in `<batch-directory>/git_commit.txt` and
+stops launching cases if HEAD changes. Keep the checkout unchanged during execution;
+commit the intended numerical changes before launching a single-commit campaign.
+Normal reuse is based on changes to **relevant code/inputs**, not every new Git commit:
+a docs-only commit does not require fresh Fishers. `--failed-first` bypasses reuse.
+The dashboard still shows the latest available completed comparisons, so if a new
+attempt exits before producing results, it can continue to show older results.
+
 To render the dashboard from whatever completed results are currently available:
 
 ```bash

@@ -10,7 +10,8 @@ derivatives
 cmb_benchmarks
 photometric_optimization_results
 likelihood_validation
-backend_validation
+   backend_validation
+   neutrino_cb_regression
 validation_comparison
 syren_ns_response
 scripts_reference

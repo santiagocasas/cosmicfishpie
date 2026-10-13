@@ -85,6 +85,28 @@ def _class_nonlinear_pk_grid(classres, k, z, *, cb=False):
     return grid, supported_k, supported_z
 
 
+def _class_cb_subtraction_grid(classres, pk_nl, k, z):
+    """Matched CAMB/CLASS cb recipe, evaluated on the supported nonlinear grid.
+
+    Neutrino cross and auto spectra remain linear in this approximation. CLASS's
+    native nonlinear cb prediction is a different prescription and is opt-in.
+    """
+    transfer, kt, zt = classres.get_transfer_and_k_and_z()
+    f_b = classres.Omega_b() / classres.Omega_m()
+    f_cdm = classres.Omega0_cdm() / classres.Omega_m()
+    f_cb = f_b + f_cdm
+    f_nu = 1 - f_cb
+    t_cb = (f_b * transfer["d_b"] + f_cdm * transfer["d_cdm"]) / f_cb
+    t_nu = transfer["d_ncdm[0]"]
+    primordial = classres.get_primordial()
+    pk_prim = UnivariateSpline(
+        primordial["k [1/Mpc]"], primordial["P_scalar(k)"]
+    )(kt) * (2 * np.pi**2) / kt**3
+    correction = (2 * f_nu * f_cb * t_nu * t_cb + f_nu**2 * t_nu**2) * pk_prim[:, None]
+    correction_spline = RectBivariateSpline(zt[::-1], kt, correction[:, ::-1].T)
+    return (pk_nl - correction_spline(z[::-1], k).T[:, ::-1]) / f_cb**2
+
+
 def _backend_parameters(configuration, code):
     """Return a mutable backend-parameter snapshot owned by ``configuration``."""
 
@@ -856,6 +878,11 @@ class boltzmann_code:
                 f"Unknown CLASS nonlinear model {self.nonlinear_model!r}; "
                 "expected 'class_native' or 'ee2'."
             )
+        self.cb_prescription = self.boltzmann_classpars.get("NONLINEAR", {}).get(
+            "cb_prescription", "neutrino_subtraction"
+        )
+        if self.cb_prescription not in ("neutrino_subtraction", "class_native"):
+            raise ValueError(f"Unknown CLASS cb_prescription={self.cb_prescription!r}.")
         self.classcosmopars = {
             **self.boltzmann_classpars["ACCURACY"],
             **self.boltzmann_classpars["COSMO_SETTINGS"],
@@ -905,7 +932,9 @@ class boltzmann_code:
         fidNeff = boltzmann_code.hardcoded_Neff
         Neff = classpars.pop("Neff", fidNeff)
 
-        neutrino_mass_fac = parameter_translation.get("neutrino_mass_fac", 93.14)
+        neutrino_mass_fac = parameter_translation.get(
+            "neutrino_mass_fac", boltzmann_code.hardcoded_neutrino_mass_fac
+        )
         if neutrino_scheme == "three_degenerate":
             classpars["N_ur"] = parameter_translation["N_ur"]
             neutrino_mass_fac = parameter_translation["neutrino_mass_fac"]
@@ -1027,11 +1056,15 @@ class boltzmann_code:
                 Pk_nl, k_nl, z_nl = _class_nonlinear_pk_grid(classres, k, z)
             else:
                 Pk_nl = _class_pk_grid(classres, k, z, nonlinear=False)
-            if f_nu > 1e-5 and hasattr(classres, "get_pk_cb_array"):
-                if self.settings["nonlinear"]:
+            if f_nu > 1e-5:
+                if self.settings["nonlinear"] and self.cb_prescription == "neutrino_subtraction":
+                    Pk_cb_nl = _class_cb_subtraction_grid(classres, Pk_nl, k_nl, z_nl)
+                elif self.settings["nonlinear"]:
+                    if not hasattr(classres, "get_pk_cb_array"):
+                        raise ValueError("CLASS native cb prescription requires get_pk_cb_array.")
                     Pk_cb_nl, _, _ = _class_nonlinear_pk_grid(classres, k, z, cb=True)
                 else:
-                    Pk_cb_nl = _class_pk_grid(classres, k, z, nonlinear=False, cb=True)
+                    Pk_cb_nl = Pk_cb_l.copy()
             else:
                 Pk_cb_nl = Pk_nl.copy()
 

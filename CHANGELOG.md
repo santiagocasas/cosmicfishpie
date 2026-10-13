@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Restore matched CAMB/CLASS nonlinear cb subtraction and the shared default
+  neutrino-density factor, retaining nonlinear-grid hardening. Native CLASS cb
+  remains opt-in; see `docs/source/neutrino_cb_regression.md` for local evidence.
 - Vectorize the photometric Cl pipeline (row-wise `sqrtP_limber`, cached kernels
   and window factors) for up to ~6x faster Fisher matrix computation with the
   symbolic backend; see `docs/source/photometric_optimization_results.md`.

@@ -28,6 +28,7 @@ To publish the dashboard and landing page to GitHub Pages, run `bash scripts/val
 
 ## Validation notes
 
+- [Photometric neutrino-response regression](neutrino_cb_regression.md) records the local prescription/density controls and one-Fisher confirmation of the October regression.
 - [SYREN-NEW spectral-tilt response](syren_ns_response.md) compares linear and nonlinear ns responses for CLASS+EE2, CLASS+HMcode2020 and SYREN-NEW, with reproducible figures and an analysis of the photometric Fisher differences.
 - [Historical comparison with Casas et al. (2023)](validation_comparison.md) preserves an earlier investigation snapshot and its reported deviations; it is not the current case runner or a substitute for reviewing the case configuration and generated results.
 - The maintained paper-validation case rationale and inputs are documented in the [validation configuration directory on GitHub](https://github.com/santiagocasas/cosmicfishpie/tree/main/scripts/validation/configs).

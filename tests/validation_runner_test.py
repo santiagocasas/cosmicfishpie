@@ -26,24 +26,24 @@ def test_failed_first_forces_all_cases_and_waits_for_first_phase(tmp_path, saved
     uv = bin_dir / "uv"
     uv.write_text(
         "#!/bin/bash\n"
-        "for arg in \"$@\"; do\n"
+        'for arg in "$@"; do\n'
         "  case $arg in\n"
         "    --list-failed) [[ -z $SAVED_FAILURES ]] || printf '%s\\n' \"$SAVED_FAILURES\"; exit 0 ;;\n"
-        "    --check-completed) echo reuse >> \"$EVENT_LOG\"; exit 0 ;;\n"
+        '    --check-completed) echo reuse >> "$EVENT_LOG"; exit 0 ;;\n'
         "  esac\n"
         "done\n"
-        "echo render >> \"$EVENT_LOG\"\n"
+        'echo render >> "$EVENT_LOG"\n'
     )
     for executable in (git, uv):
         executable.chmod(0o755)
 
     (script_dir / "compare_backends_report.sh").write_text(
         "#!/bin/bash\n"
-        "case_id=$(basename \"$2\"); case_id=${case_id#compare_run_config.env_}; "
+        'case_id=$(basename "$2"); case_id=${case_id#compare_run_config.env_}; '
         "case_id=${case_id%_test}\n"
-        "echo \"start $case_id\" >> \"$EVENT_LOG\"\n"
+        'echo "start $case_id" >> "$EVENT_LOG"\n'
         "sleep 0.2\n"
-        "echo \"end $case_id\" >> \"$EVENT_LOG\"\n"
+        'echo "end $case_id" >> "$EVENT_LOG"\n'
         # One failing first-phase worker must not prevent the remaining phase.
         "[[ $case_id != 01.1.1 ]]\n"
     )
@@ -106,12 +106,12 @@ def test_comparison_setup_uses_project_python_not_shell_python(tmp_path):
     (bin_dir / "python").write_text("#!/bin/bash\necho 'Wrong Python' >&2\nexit 99\n")
     (bin_dir / "uv").write_text(
         "#!/bin/bash\n"
-        "[[ $1 == run && $2 == --project && $3 == \"$TEST_PROJECT\" "
+        '[[ $1 == run && $2 == --project && $3 == "$TEST_PROJECT" '
         "&& $4 == python ]] || exit 98\n"
         "shift 4\n"
-        "if [[ $1 == - ]]; then exec \"$TEST_PYTHON\" \"$@\"; fi\n"
+        'if [[ $1 == - ]]; then exec "$TEST_PYTHON" "$@"; fi\n'
         # Stop at mocked scientific entry points; setup/hashing runs for real.
-        "echo \"$(basename \"$1\")\" >> \"$EVENT_LOG\"\n"
+        'echo "$(basename "$1")" >> "$EVENT_LOG"\n'
     )
     for executable in bin_dir.iterdir():
         executable.chmod(0o755)

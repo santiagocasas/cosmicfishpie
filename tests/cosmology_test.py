@@ -1,8 +1,8 @@
 """Focused tests for Boltzmann-code parameter translations."""
 
 import importlib
-from importlib.util import find_spec
 import sys
+from importlib.util import find_spec
 from pathlib import Path
 from types import SimpleNamespace
 

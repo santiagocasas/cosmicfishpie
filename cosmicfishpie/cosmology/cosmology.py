@@ -99,9 +99,11 @@ def _class_cb_subtraction_grid(classres, pk_nl, k, z):
     t_cb = (f_b * transfer["d_b"] + f_cdm * transfer["d_cdm"]) / f_cb
     t_nu = transfer["d_ncdm[0]"]
     primordial = classres.get_primordial()
-    pk_prim = UnivariateSpline(
-        primordial["k [1/Mpc]"], primordial["P_scalar(k)"]
-    )(kt) * (2 * np.pi**2) / kt**3
+    pk_prim = (
+        UnivariateSpline(primordial["k [1/Mpc]"], primordial["P_scalar(k)"])(kt)
+        * (2 * np.pi**2)
+        / kt**3
+    )
     correction = (2 * f_nu * f_cb * t_nu * t_cb + f_nu**2 * t_nu**2) * pk_prim[:, None]
     correction_spline = RectBivariateSpline(zt[::-1], kt, correction[:, ::-1].T)
     return (pk_nl - correction_spline(z[::-1], k).T[:, ::-1]) / f_cb**2

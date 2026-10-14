@@ -61,7 +61,9 @@ def main():
             (repo / "cosmicfishpie/cosmology/cosmology.py").read_bytes()
         ).hexdigest(),
         "profile_sha256": {
-            code: hashlib.sha256((profiles / code / "nuvalidation_hp.yaml").read_bytes()).hexdigest()
+            code: hashlib.sha256(
+                (profiles / code / "nuvalidation_hp.yaml").read_bytes()
+            ).hexdigest()
             for code in ("camb", "class")
         },
         "runs": [],
@@ -72,7 +74,9 @@ def main():
             profile.setdefault("PARAMETER_TRANSLATION", {})["neutrino_mass_fac"] = factor
             profile.setdefault("NONLINEAR", {})["cb_prescription"] = "class_native"
         settings = dict(specs["options"], feedback=0, camb_path="", memorize_cosmo=False)
-        configuration = SimpleNamespace(settings=settings, input_type=code, backend_parameters=profile)
+        configuration = SimpleNamespace(
+            settings=settings, input_type=code, backend_parameters=profile
+        )
         tag = f"{code}_{factor}"
         spectra = {"mm": [], "cb": []}
         if code == "class":
@@ -85,8 +89,9 @@ def main():
             spectra["cb"].append(runtime.results.Pk_cb_nl(z, k))
             if code == "class":
                 spectra["cb_subtraction"].append(subtraction_spline(runtime)(z, k))
-                provenance["runs"].append({"tag": tag, "mnu": float(mass),
-                                           "class_parameters": runtime.classcosmopars})
+                provenance["runs"].append(
+                    {"tag": tag, "mnu": float(mass), "class_parameters": runtime.classcosmopars}
+                )
                 runtime.Classres.struct_cleanup()
                 runtime.Classres.empty()
         for spectrum, values in spectra.items():
@@ -103,10 +108,18 @@ def main():
             values = arrays[key]
             response = (np.log(values[2]) - np.log(values[0])) / (masses[2] - masses[0])
             summary[key] = {
-                "median_fiducial_difference_percent": float(np.median(abs(values[1] / reference[1] - 1)) * 100),
-                "median_response_difference_percent": float(np.median(abs((response - derivative) / derivative)) * 100),
-                "max_response_difference_percent": float(np.max(abs((response - derivative) / derivative)) * 100),
-                "median_absolute_response_difference_per_eV": float(np.median(abs(response - derivative))),
+                "median_fiducial_difference_percent": float(
+                    np.median(abs(values[1] / reference[1] - 1)) * 100
+                ),
+                "median_response_difference_percent": float(
+                    np.median(abs((response - derivative) / derivative)) * 100
+                ),
+                "max_response_difference_percent": float(
+                    np.max(abs((response - derivative) / derivative)) * 100
+                ),
+                "median_absolute_response_difference_per_eV": float(
+                    np.median(abs(response - derivative))
+                ),
             }
     np.savez_compressed(args.outdir / "spectra.npz", **arrays)
     (args.outdir / "provenance.json").write_text(json.dumps(provenance, indent=2))

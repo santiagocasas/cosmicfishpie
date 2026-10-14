@@ -13,6 +13,6 @@ Regenerate this file and the documentation figures from a copied completed HPC
 run with:
 
 ```bash
-uv run python scripts/render_likelihood_validation.py \
+uv run python scripts/likelihood/postprocess/render_likelihood_validation.py \
   --run-dir hpc-results/wl-gcsp-64cpu
 ```

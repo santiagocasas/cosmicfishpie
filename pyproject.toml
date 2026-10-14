@@ -36,7 +36,7 @@ dependencies = [
     "matplotlib==3.10.9",
     "nautilus-sampler==1.0.6",
     "chainconsumer>=1.3.0,<2.0.0",
-    "numpy",
+    "numpy<2",
     "pandas",
     "PyYAML==6.0.3",
     "scikit-learn==1.7.2",
@@ -53,6 +53,9 @@ Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.
 # Documentation = "https://cosmicfishpie.readthedocs.io/"
 
 [project.optional-dependencies]
+emulators = [
+    "euclidemu2==1.4.3",
+]
 dev = [
     "ruff",
     "mypy>=2.3.0,<2.4",

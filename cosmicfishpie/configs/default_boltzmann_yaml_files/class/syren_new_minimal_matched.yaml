@@ -1,0 +1,21 @@
+# Minimal CLASS profile matched to symbolic_pofk/examples/syren_new_example.ipynb.
+# It is intended for the GCsp comparison notebook, not as a general CLASS default.
+PARAMETER_TRANSLATION:
+  'neutrino_scheme': 'three_degenerate'
+  'N_ur': 0.00641
+  'neutrino_mass_fac': 93.14
+ACCURACY: {}
+COSMO_SETTINGS:
+  'P_k_max_1/Mpc': 3.0
+  'output': 'mPk,mTk'
+  'non linear': 'hmcode_2020'
+  'nonlinear_min_k_max': 3.0
+  'z_max_pk': 3.0
+  'N_ncdm': 3
+  'tau_reio': 0.0561
+LCDM:
+  'Omega_Lambda': 0.0
+  'Omega_k': 0.0
+w0waCDM:
+  'Omega_Lambda': 0.0
+  'Omega_k': 0.0

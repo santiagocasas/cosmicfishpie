@@ -84,13 +84,13 @@ Run the three independent Slurm cases and their dependent post-processing job:
 ```bash
 RUN_DIR=/scratch/$USER/cfp/wl-gcsp-64cpu \
 N_LIVE=500 N_EFF=2000 CPUS_PER_TASK=64 \
-scripts/slurm/submit_wl_gcsp_nautilus.sh
+scripts/hpc/slurm/submit_wl_gcsp_nautilus.sh
 ```
 
 After copying a completed run locally, regenerate the tracked evidence without
 copying chains into the repository:
 
 ```bash
-uv run python scripts/render_likelihood_validation.py \
+uv run python scripts/likelihood/postprocess/render_likelihood_validation.py \
   --run-dir hpc-results/wl-gcsp-64cpu
 ```

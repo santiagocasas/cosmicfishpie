@@ -7,6 +7,7 @@ import numpy as np
 import cosmicfishpie.configs.config as cfg
 from cosmicfishpie.CMBsurvey import CMB_obs
 from cosmicfishpie.CMBsurvey.CMB_cov import CMBCov
+from cosmicfishpie.fishermatrix import cosmicfish as cff
 
 
 def test_cmb_computecls_uses_explicit_context_without_mutation(monkeypatch):
@@ -63,3 +64,32 @@ def test_cmbcov_derivatives_remain_bound_to_context_a(monkeypatch):
     result = cov.compute_derivs()
 
     np.testing.assert_allclose(result["x"]["CMB_TxCMB_T"], [4.0])
+
+
+def test_fishermatrix_exposes_cmb_derivs_dict(monkeypatch):
+    derivatives = {"x": {"CMB_TxCMB_T": np.array([4.0])}}
+
+    class StubCMB:
+        def __init__(self, cosmopars, *, print_info_specs, configuration):
+            assert cosmopars == {"x": 2.0}
+
+        def compute_covmat(self):
+            return {}, {}
+
+        def compute_derivs(self, *, derivative_provider):
+            return derivatives
+
+    monkeypatch.setattr(cff.CMB_cov, "CMBCov", StubCMB)
+    fisher = object.__new__(cff.FisherMatrix)
+    fisher.observables = ["CMB_T"]
+    fisher.fiducialcosmopars = {"x": 2.0}
+    fisher.derivative_provider = None
+    fisher.feed_lvl = 0
+    fisher.parallel = False
+    fisher.CMB_fishermatrix = lambda **kwargs: np.array([[1.0]])
+    fisher.export_fisher = lambda matrix, **kwargs: matrix
+
+    result = fisher.compute()
+
+    assert fisher.derivs_dict is derivatives
+    np.testing.assert_array_equal(result, [[1.0]])

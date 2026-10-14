@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Restore matched CAMB/CLASS nonlinear cb subtraction and the shared default
+  neutrino-density factor, retaining nonlinear-grid hardening. Native CLASS cb
+  remains opt-in; see `docs/source/neutrino_cb_regression.md` for local evidence.
 - Vectorize the photometric Cl pipeline (row-wise `sqrtP_limber`, cached kernels
   and window factors) for up to ~6x faster Fisher matrix computation with the
   symbolic backend; see `docs/source/photometric_optimization_results.md`.
@@ -18,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix a CLASS/HMcode nonlinear power spectrum error at z=6, normalize CAMB
   input paths, and various spectro/base likelihood and job-handling fixes.
 - Add explicit analysis context runtime isolation and refresh the comprehensive guide.
+- Symbolic backend overhaul to the new syren emulators, pinning the `symbolic-pofk`
+  GitHub tarball in CI instead of a local editable path.
+- Expose derivatives on `FisherMatrix`, add CLASS EE2 profiles, and harden nonlinear
+  spectra handling.
+- Reorganize `scripts/` into category subfolders and notebooks into a numbered workflow
+  (legacy notebooks archived); add backend validation and symbolic provenance docs pages.
 
 ## 1.3.1
 

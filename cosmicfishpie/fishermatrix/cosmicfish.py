@@ -128,7 +128,11 @@ class FisherMatrix:
         freeparams        : dict
                              A dictionary containing all names and the corresponding rel. step size for all parameters
         allparams_fidus   : dict
-                            A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
+                             A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
+        derivs_dict       : dict
+                             Derivatives keyed by varied parameter after ``compute()``. Values
+                             retain their probe-specific format: angular spectra for photo/CMB,
+                             redshift-binned power spectra for GCsp/IM.
         """
         if options["feedback"] > 0:
             print("****************************************************************")
@@ -208,6 +212,9 @@ class FisherMatrix:
         }
         self.parallel = parallel
         self.derivative_provider = derivative_provider
+        # Shared derivative entry point for every probe after compute(). The
+        # nested values retain their probe-specific spectra and grid shapes.
+        self.derivs_dict = {}
         self.feed_lvl = self.settings["feedback"]
         allpars = {}
         allpars.update(self.fiducialcosmopars)
@@ -272,6 +279,7 @@ class FisherMatrix:
             self.photo_derivs = self.photo_LSS.compute_derivs(
                 derivative_provider=self.derivative_provider
             )
+            self.derivs_dict = self.photo_derivs
             tderivs_end = time()
             tfisher_start = time()
             photoFM = self.photo_LSS_fishermatrix_einsum(
@@ -401,8 +409,10 @@ class FisherMatrix:
             )
             CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True, configuration=self)
             noisy_cls, covmat = CMB.compute_covmat()
-            derivs = CMB.compute_derivs(derivative_provider=self.derivative_provider)
-            CMB_FM = self.CMB_fishermatrix(noisy_cls=noisy_cls, covmat=covmat, derivs=derivs)
+            self.derivs_dict = CMB.compute_derivs(derivative_provider=self.derivative_provider)
+            CMB_FM = self.CMB_fishermatrix(
+                noisy_cls=noisy_cls, covmat=covmat, derivs=self.derivs_dict
+            )
             finalFisher = deepcopy(CMB_FM)
             # return CMB_FM
         else:

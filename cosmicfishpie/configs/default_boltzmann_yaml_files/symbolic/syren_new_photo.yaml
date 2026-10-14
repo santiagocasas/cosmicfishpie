@@ -1,0 +1,14 @@
+# SYREN-NEW profile for photometric forecasts up to its optimistic calibrated limit (kmax = 9 h/Mpc).
+ACCURACY:
+  'provider': 'syren_new'
+NUMERICS:
+  'kmin_pk': 1.0e-3  # h/Mpc
+  'kmax_pk': 9.0     # h/Mpc (optimistic calibrated limit)
+  'zmin_pk': 0.0
+  'zmax_pk': 3.0
+  'z_samples': 100
+  'k_samples': 400
+  'extrapolate': False
+COSMO_SETTINGS: {}
+LCDM: {}
+w0waCDM: {}

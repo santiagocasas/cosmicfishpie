@@ -33,7 +33,9 @@ Follow existing patterns and keep changes minimal and focused.
 ## Docs
 - Install docs dependencies: `uv sync --extra docs`
 - Live docs build (autobuild): `make docs`
-- Strict build (as in CI and Read the Docs): `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`
+- Docs are published by `.github/workflows/docs.yml` to the `docs/` folder of `gh-pages`
+  (https://www.santicasas.space/cosmicfishpie/docs/) on pushes to `main` and version tags.
+- Strict build (as in CI and the publishing workflow): `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`
 - Link check: `uv run --extra docs sphinx-build -b linkcheck docs/source docs/build/linkcheck`
 - API docs are built from module docstrings with autosummary (`docs/source/api/`); keep them clean and complete.
 - Use raw docstrings (`r"""`) when a docstring contains LaTeX backslashes.

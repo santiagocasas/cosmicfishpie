@@ -579,6 +579,10 @@ class boltzmann_code:
                 raise ValueError(
                     f"mnu is less than {minmassmnu} and num_nu_massive is greater than 0. Check your yaml file."
                 )
+        # Neff is a fixed input unless the user varies it. If neither Neff nor the number of
+        # massless species is given, fall back to the standard value (as the CLASS translation does).
+        if "Neff" not in cambpars and "num_nu_massless" not in cambpars:
+            cambpars["Neff"] = fidNeff
         if "Neff" in cambpars:
             Neff = cambpars.pop("Neff")
             if shareDeltaNeff:

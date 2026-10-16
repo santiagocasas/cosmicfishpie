@@ -24,22 +24,6 @@ from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.version import VERSION
 
 
-def ray_session(num_cpus=4, restart=True, shutdown=False):
-    import ray
-
-    if shutdown:
-        if ray.is_initialized():
-            ray.shutdown()
-            return None
-    elif restart:
-        if ray.is_initialized():
-            print("ray is shutting down...")
-            ray.shutdown()
-        if not ray.is_initialized():
-            ray.init(num_cpus=num_cpus)
-        return None
-
-
 class FisherMatrix:
     # update version at every release
     cf_version = f"CosmicFish_v{VERSION}"
@@ -62,8 +46,6 @@ class FisherMatrix:
         surveyName="Euclid",
         cosmoModel="w0waCDM",
         latexnames=None,
-        parallel=False,
-        parallel_cpus=4,
         derivative_provider=None,
     ):
         """This is the main class of cosmicfishpie that is used to do a Fisher matrix forecast for current and upcoming experiments in cosmology. If you want to compute the Fisher matrix you can pass all specifications and options here.
@@ -98,10 +80,6 @@ class FisherMatrix:
                                A string of the name of the cosmological model used in the calculations. Defaults to flat "w0waCDM" cosmology
         latexnames           : dict, optional
                                A dictionary that contains the Latex names of the cosmological parameters
-        parallel             : bool, optional
-                               If True will compute the Fisher matrix using ray parallelization. Defaults to False
-        parallel_cpus        : int, optional
-                               Number of CPUs that should be used when computing the results using ray parallelization.
         derivative_provider  : object, optional
                                Backend-neutral provider implementing ``compute(DerivativeRequest)``. Defaults to the existing finite-difference provider.
 
@@ -210,7 +188,6 @@ class FisherMatrix:
             **self.IMbiaspars,
             **self.PShotpars,
         }
-        self.parallel = parallel
         self.derivative_provider = derivative_provider
         # Shared derivative entry point for every probe after compute(). The
         # nested values retain their probe-specific spectra and grid shapes.
@@ -227,10 +204,7 @@ class FisherMatrix:
         allpars.update(self.PShotpars)
         self.allparams = allpars
 
-        # self.parallel=True
         self.recap_options()
-        if self.parallel:
-            ray_session(num_cpus=parallel_cpus, restart=True, shutdown=False)
 
     def compute(self, max_z_bins=None):
         """This function will compute the Fisher information matrix and export using the specified settings.
@@ -358,7 +332,6 @@ class FisherMatrix:
                 nbins = len(self.zmids)
             tini = time()
             self.derivs_dict = dict()
-            # if self.parallel == False:
             k_mesh = self.Pk_kmesh
             mu_mesh = self.Pk_mumesh
             self.veff_arr = []
@@ -426,9 +399,6 @@ class FisherMatrix:
             time_fin=tfishend,
         )
         fishMat_object = self.export_fisher(finalFisher, totaltime=tfishend - tfishstart)
-
-        if self.parallel:
-            ray_session(restart=False, shutdown=True)
 
         return fishMat_object
 

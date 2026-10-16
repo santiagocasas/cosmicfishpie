@@ -38,6 +38,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/source/likelihood_validation.md`.
 - Fix a CLASS/HMcode nonlinear power spectrum error at z=6, normalize CAMB
   input paths, and various spectro/base likelihood and job-handling fixes.
+- Remove the unused Ray options `parallel` and `parallel_cpus` of `FisherMatrix`
+  and the `ray_session` helper.
+- Default `survey_name_radio_IM` to the shipped `SKAO-IM-Redbook`, and look up
+  survey specification files in `other_survey_specifications` when they are not
+  found in `specs_dir`.
+- Use the standard `Neff = 3.044` for CAMB when the fiducial cosmology has no `Neff`.
+- Warn when the `POLY` or `STEM` derivative methods are used with non-photometric
+  probes, or `4PT_FWD` with CMB probes.
+- Nautilus sampler: do not modify the caller's config, write the real package
+  version to the metadata, store an evidence of 0.0, warn about priors that are
+  ignored, raise a clear error with fewer than two sampled parameters, add an
+  `overwrite` option to resample an existing run, and export `load_chain_metadata`.
+- Parse MontePython parameter files with `ast.literal_eval` instead of `eval` and
+  fix the `FishConsumer` chain-loading docstrings.
+- Point the validation dashboard links to `https://www.santicasas.space/cosmicfishpie/dashboard/`.
 - Add explicit analysis context runtime isolation and refresh the comprehensive guide.
 - Symbolic backend overhaul to the new syren emulators, pinning the `symbolic-pofk`
   GitHub tarball in CI instead of a local editable path.

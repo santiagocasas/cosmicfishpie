@@ -456,3 +456,12 @@ def test_photometric_yaml_profiles_load_and_run():
         assert np.isfinite(p_nl)
         assert p_nl > 0.0
         assert cosmo.results.kgrid[-1] > 5.0  # extended optimistic photo reach
+
+
+def test_camb_translation_defaults_neff_when_missing():
+    """A fiducial without Neff/num_nu_massless falls back to the standard Neff (as for CLASS)."""
+    translator = _translator("LCDM")
+    pars = {"Omegam": 0.31, "Omegab": 0.049, "h": 0.67, "ns": 0.96, "mnu": 0.06}
+    pars["num_nu_massive"] = 1
+    translated = translator.changebasis_camb(pars, camb)
+    assert translated["num_nu_massless"] == pytest.approx(boltzmann_code.hardcoded_Neff - 1)

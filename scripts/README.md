@@ -466,13 +466,11 @@ The SO/S4 YAMLs use a conservative common `lmax_CMB=3000`.
 
 ### Single run (smoke)
 
-The CMB scripts live in `scripts/archive/cmb/` and still derive their repository root from
-their old location, so pass `--boltzmann-yaml` explicitly:
+The CMB scripts live in `scripts/archive/cmb/`. Run them from the repository root:
 
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --boltzmann-yaml cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
   --lmax 120 \
@@ -482,10 +480,12 @@ uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
 
 ### Run the three presets
 
-`scripts/archive/cmb/run_cmb_benchmarks.py` currently fails with "Missing spec YAML" (it
-looks for the specs under `scripts/archive/` and calls a script path that no longer
-exists). Run the smoke script once per spec YAML instead; see
-[CMB benchmarks](../docs/source/cmb_benchmarks.md).
+```bash
+uv run python scripts/archive/cmb/run_cmb_benchmarks.py \
+  --which planck,so,s4 --observables CMB_T,CMB_E --outdir tmp/cmb_bench
+```
+
+Add `--lmax 120` for a quick test. See [CMB benchmarks](../docs/source/cmb_benchmarks.md).
 
 ---
 

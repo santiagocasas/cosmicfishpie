@@ -91,10 +91,10 @@ which submits the two WL/GCsp `.sbatch` templates for you.
 | `scripts/archive/benchmarks/photometric_benchmark.py` | Times photometric (`GCph`, `WL`) Fisher forecasts and the lensing-efficiency integrators; see below. |
 | `scripts/profiling/photo_obs/profile_photo_obs.py` | Profiles photometric angular spectra and Fisher calculations across backends, accuracies and derivative settings. `--output` is required. |
 | `scripts/archive/cmb/run_cmb_fisher_smoke.py` | Runs one CMB Fisher forecast from a survey-spec YAML; see below. |
-| `scripts/archive/cmb/run_cmb_benchmarks.py` | Intended to run the Planck, Simons Observatory and CMB-S4 presets in one go. Currently broken; see below. |
+| `scripts/archive/cmb/run_cmb_benchmarks.py` | Runs the Planck, Simons Observatory and CMB-S4 presets in one go; see below. |
 
 The photometric and CMB scripts live in `scripts/archive/`, where historical tools are
-kept. They still run (the exception is noted below) but are not part of the maintained
+kept. They still run but are not part of the maintained
 validation workflow. See also {doc}`cmb_benchmarks` for the CMB specifications they use.
 
 ### Photometric benchmark
@@ -121,12 +121,11 @@ relative to the current directory, so run it from the repository root). Useful o
 
 ### CMB Fisher smoke test
 
-Run it with an explicit `--boltzmann-yaml`:
+Run it from the repository root:
 
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --boltzmann-yaml cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E --lmax 120 \
   --outdir tmp/cmb_planck_smoke --write-enabled-yaml
@@ -135,16 +134,11 @@ uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
 `--spec-yaml` can also be `Simons-Observatory-PlanckLowEll.yaml` or
 `CMB-Stage4-PlanckLowEll.yaml` from the same folder. `--observables` takes any of
 `CMB_T`, `CMB_E`, `CMB_B`. `--write-enabled-yaml` saves a copy of the solver YAML with
-CMB outputs switched on in the output directory.
+CMB outputs switched on in the output directory and runs with it; keep it unless your
+own YAML already enables CMB outputs.
 
-:::{warning}
-Both CMB scripts compute the repository root as the parent of their own folder, a
-leftover from before they moved into `scripts/archive/cmb/`. As a result,
-`run_cmb_fisher_smoke.py` fails with "Boltzmann YAML not found" unless you pass
-`--boltzmann-yaml` as above, and `run_cmb_benchmarks.py` always fails with "Missing spec
-YAML". Until that is fixed, run the smoke script once per preset instead of using the
-preset runner.
-:::
+`run_cmb_benchmarks.py --which planck,so,s4` runs the three presets with CAMB; add
+`--lmax 120` for a quick test. `--boltzmann-yaml` selects another solver YAML.
 
 ## Fisher utilities
 

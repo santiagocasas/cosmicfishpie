@@ -59,7 +59,7 @@ from cosmicfishpie.fishermatrix import cosmicfish as cff
 options = {
     "accuracy": 1,
     "feedback": 1,
-    "code": "symbolic",  # or "class" / "camb" (camb also needs "Neff" in fiducial)
+    "code": "symbolic",  # or "class" / "camb"
     "cosmo_model": "LCDM",
     "derivatives": "3PT",
     "ell_sampling": 25,  # coarse grid for speed, not production accuracy
@@ -90,7 +90,7 @@ print(fisher.fisher_matrix.shape, fisher.get_param_names())
 ## Documentation
 
 - [Documentation](https://www.santicasas.space/cosmicfishpie/docs/): getting started, user guide, tutorials, API reference and development notes.
-- [Validation dashboard](https://santiagocasas.github.io/cosmicfishpie/dashboard/)
+- [Validation dashboard](https://www.santicasas.space/cosmicfishpie/dashboard/)
 - [Citation metadata](CITATION.cff) (`CITATION.cff`)
 
 To build the documentation locally:

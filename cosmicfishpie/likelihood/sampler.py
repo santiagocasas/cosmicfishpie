@@ -2,6 +2,7 @@ import json
 import multiprocessing
 import os
 import time
+import warnings
 from copy import deepcopy
 from datetime import datetime
 from typing import Protocol
@@ -15,6 +16,7 @@ from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 from cosmicfishpie.likelihood.base import CompositeLikelihood, Likelihood
 from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
 from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+from cosmicfishpie.version import VERSION
 
 _WORKER_LIKELIHOOD = None
 
@@ -281,13 +283,15 @@ def load_chain_metadata(chain_folder, metadata_filename=None, label_overrides=No
 
 class NautilusSampler:
     def __init__(self, config):
-        self.config = config
+        # Work on a copy so the caller's dictionaries are not modified (e.g. ``outroot``).
+        self.config = dict(config)
+        self.config["options"] = dict(config["options"])
         self.fiducial = config["fiducial"]
         self.observables = config["observables"]
-        self.options = config["options"]
+        self.options = self.config["options"]
         self.prior_dict = config["priors"]
         self.sampler_settings = config["sampler_settings"]
-        self.use_nuisance = config.get("use_nuisance", True)
+        self.overwrite = bool(config.get("overwrite", False))
         self.tini = None
         self.tfin = None
 
@@ -312,7 +316,7 @@ class NautilusSampler:
         self._setup_likelihood()
 
     def _get_survey_name(self):
-        return self.options["survey_name_photo"] or self.options["survey_name_spectro"]
+        return self.options.get("survey_name_photo") or self.options.get("survey_name_spectro")
 
     def _setup_cosmology(self):
         self.cosmo_context = _build_context(self.config)
@@ -326,6 +330,19 @@ class NautilusSampler:
                 else:
                     dist = tuple(prior_range)
                 self.prior_chosen.add_parameter(par, dist)
+        ignored = [par for par in self.prior_dict if par not in self.prior_chosen.keys]
+        if ignored:
+            warnings.warn(
+                f"Priors for {ignored} are ignored: these are not free parameters of the "
+                f"model (free parameters: {list(self.cosmo_context.freeparams)}).",
+                UserWarning,
+                stacklevel=2,
+            )
+        if len(self.prior_chosen.keys) < 2:
+            raise ValueError(
+                "Nautilus needs at least 2 sampled parameters, but only "
+                f"{list(self.prior_chosen.keys)} have a prior that matches a free parameter."
+            )
 
     def _setup_likelihood(self):
         self.likelihood_specs = _likelihood_specs(self.config)
@@ -337,12 +354,12 @@ class NautilusSampler:
     def _save_metadata(self, evidence=None, finish_time=None):
 
         sampled_fiducial = {}
-        for param in self.prior_dict.keys():
+        for param in self.prior_chosen.keys:
             if param in self.cosmo_context.allparams:
                 sampled_fiducial[param] = self.cosmo_context.allparams[param]
 
         metadata = {
-            "cosmicfishpie_version": "1.0.0",  # Replace with actual version
+            "cosmicfishpie_version": VERSION,
             "name": self.config["name"],
             "start_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.tini)),
             "outroot path": self.outroot,
@@ -361,7 +378,7 @@ class NautilusSampler:
                 {
                     "finish_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(finish_time)),
                     "elapsed_time": self._format_time(finish_time - self.tini),
-                    "evidence_log_z": float(evidence) if evidence else None,
+                    "evidence_log_z": float(evidence) if evidence is not None else None,
                     "chain_file": self.chain_file,
                 }
             )
@@ -379,6 +396,11 @@ class NautilusSampler:
         self.chain_file = self.outroot + ".txt"
         self.chain_hdf5 = self.outroot + ".hdf5"
         self.tini = time.time()
+        if self.overwrite:
+            for stale in (self.chain_file, self.chain_hdf5):
+                if os.path.exists(stale):
+                    print(f"overwrite=True: removing {stale}")
+                    os.remove(stale)
         self._save_metadata()
         worker_pool = None
 
@@ -439,7 +461,10 @@ class NautilusSampler:
 
         if os.path.exists(self.chain_file):
             print(f"Chain file exists: {self.chain_file}")
-            print("Run already completed. Updating metadata only!")
+            print(
+                "Run already completed: NOT sampling again. Updating metadata only! "
+                "Use a new `name` or set `overwrite: True` in the config to resample."
+            )
             if os.path.exists(self.chain_hdf5):
                 try:
                     print("Loading sampler to get evidence...")

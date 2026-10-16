@@ -144,41 +144,19 @@ ACCURACY:
 
 ---
 
-## Implementation Roadmap
+## Current state
 
-### Phase 1: Select the explicit profiles
+`class/mpvalidation_hp.yaml` (CLASS) and `camb/mpvalidation_p3.yaml` (CAMB) are already the
+selectors wired into the maintained `01.x.x` case family under
+`scripts/validation/configs/`; `class/mpvalidation_dp.yaml` is the DP control. The
+phased action plan below is kept only as a record of what was investigated at the time;
+it is not a to-do list. To re-run these cases and see current numbers, use the maintained
+runner and dashboard documented in [backend validation](source/backend_validation.md):
 
-Use `class/mpvalidation_hp.yaml` with `camb/mpvalidation_p3.yaml` for the validated
-comparison. Use `class/mpvalidation_dp.yaml` only when intentionally reproducing the DP
-control. All three selectors are self-contained (real settings, no shared registry).
-
-### Phase 2: Verify Environment
 ```bash
-uv sync --extra dev
-uv run python -c "import classy; print('CLASS installed:', classy.__version__)"
-uv run python -c "import camb; print('CAMB installed:', camb.__version__)"
+bash scripts/validation/run_selected_validations.sh --cases 01.2.0,01.2.1 --force
+uv run python scripts/validation/render_validation_dashboard.py
 ```
-
-### Phase 3: Re-run Case 01
-```bash
-# Run just the problem case with updated CLASS config
-uv run python scripts/validation/run_fisher_compare_backends.py \
-  --case 01 \
-  --profile hp-updated \
-  --verbose
-```
-
-### Phase 4: Verify Results
-Expected output:
-- Omegab deviation: **<1%** (was 26.67%)
-- h deviation: **<1%** (was 24.20%)
-- All 6 parameters: **<1%** each
-- Fisher matrix norm difference: **<0.5%** (was 8.5%)
-
-### Phase 5: Update Documentation
-1. Update VALIDATION_SUMMARY.md with new results
-2. Add note to DECISION/SPEC: "Case 01 now passes with HP CLASS settings"
-3. Commit corrected config with message: "Fix: Update CLASS to HP precision for w0waCDM validation"
 
 ---
 
@@ -215,7 +193,7 @@ Upgrade CLASS to HP, and Case 01 will pass just like Case 02.
 
 1. **[PAPER_COMPARISON](source/validation_comparison.md)** — Historical high-level cross-reference with published results
 2. **CONFIG_DIAGNOSIS.md** — Detailed configuration analysis and fix protocol
-3. **VALIDATION_SUMMARY.md** — Your current test results (existing)
+3. **VALIDATION_SUMMARY.md** — the ad hoc test run this analysis was based on (also historical; see its banner)
 
 ---
 
@@ -250,5 +228,4 @@ This will validate your phase-1-validation-integration branch against the Euclid
 
 **Prepared by:** OpenCode Analysis  
 **Reference Paper:** arXiv:2303.09451v1  
-**Your Repository:** `/home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-main`  
-**Status:** Ready for implementation
+**Status:** Historical; superseded (see banner above)

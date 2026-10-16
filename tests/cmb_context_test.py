@@ -85,7 +85,6 @@ def test_fishermatrix_exposes_cmb_derivs_dict(monkeypatch):
     fisher.fiducialcosmopars = {"x": 2.0}
     fisher.derivative_provider = None
     fisher.feed_lvl = 0
-    fisher.parallel = False
     fisher.CMB_fishermatrix = lambda **kwargs: np.array([[1.0]])
     fisher.export_fisher = lambda matrix, **kwargs: matrix
 

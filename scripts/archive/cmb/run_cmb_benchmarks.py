@@ -3,12 +3,12 @@
 
 """Run standard CMB experiment benchmarks (Planck / SO / S4).
 
-This is a thin wrapper around scripts/run_cmb_fisher_smoke.py that selects a
-survey-spec YAML and runs a CAMB CMB Fisher.
+This is a thin wrapper around scripts/archive/cmb/run_cmb_fisher_smoke.py that
+selects a survey-spec YAML and runs a CAMB CMB Fisher.
 
 Example
 -------
-  uv run python scripts/run_cmb_benchmarks.py --outdir tmp/cmb_bench
+  uv run python scripts/archive/cmb/run_cmb_benchmarks.py --outdir tmp/cmb_bench
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from pathlib import Path
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[3]
 
 
 def _ts() -> str:
@@ -80,7 +80,7 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"Unknown --which entries: {unknown} (allowed: {sorted(presets)})")
 
-    smoke = repo / "scripts" / "run_cmb_fisher_smoke.py"
+    smoke = Path(__file__).resolve().parent / "run_cmb_fisher_smoke.py"
     rc = 0
     for w in which:
         spec = presets[w]

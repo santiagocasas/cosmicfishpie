@@ -1,58 +1,50 @@
-> # Symbolic overhaul: implementation provenance
->
+# Symbolic overhaul: implementation provenance
+
 > This page preserves the original design, decisions, implementation notes, and
 > remaining validation work for the symbolic-backend overhaul. The status below is
 > a project record, not a claim that every roadmap item or scientific comparison is
 > complete.
 
-Objective
-- Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie (cosmicfishpie-symbolic_overhaul branch), add CLASS+EuclidEmu2 as a composable nonlinear boost, and validate through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).
-Important Details
-- User decisions: total-matter first (cb requests rejected explicitly); validate through spectra→derivatives→Fisher forecasts; new symbolic is default, explicit legacy mode kept; wider_syren and baryonic corrections are later work.
-- euclidemu2==1.4.3 is already declared as optional `emulators` extra and installed in this branch's .venv. Its native grid spans approximately 8.73e-3–9.41 h/Mpc; calls accept at most 100 redshifts.
-- CLASS+EE2 uses P_nl = P_lin_CLASS × B_EE2 and the same total-matter boost for cb as an explicit approximation. The top-level NONLINEAR.model YAML selector defaults to class_native; it is never passed to CLASS.
-- EE2 k uses h/Mpc (CLASS k in 1/Mpc divided by h). Below the native grid the boost is unity; above the grid the adapter raises ValueError. CLASS's padded redshift grid must fit EE2's z=0–10 range.
-- class/syren_new_minimal_matched.yaml requires output: mPk,mTk; changebasis_class() has opt-in three_degenerate neutrino translation via PARAMETER_TRANSLATION.
-- build_analysis_context is the spectrum-only configuration API; FisherMatrix is for derivatives/Fisher computations. Call likelihood.loglike(param_dict={}) by keyword.
-- Do not execute notebooks; do not commit; do not kill the Nautilus sampler (if running).
-- Keep structural checks after edits; additional backend experiments require an explicit request.
-Work State
-Completed
-- SyrenNewProvider implemented in cosmicfishpie/cosmology/symbolic_new.py; wired into cosmology.py via input_type='symbolic' dispatch; uses Astropy backgrounds, physical-unit Pmm, total-matter only.
-- SYREN-NEW GCsp and WL Fisher matrices produced: results/CosmicFish_v1.3.1_GCsp_symb_demo__GCsp_FM.txt, results/CosmicFish_v1.3.1_WL_symb_demo__WL_FM.txt.
-- Matched CLASS and symbolic YAML profiles, three_degenerate CLASS neutrino scheme, unexecuted GCsp/Photo comparison notebooks, and aggregate derivative plotting are in place.
-- Real 3-point GCsp derivatives run through derivatives.py engine (via temp script /tmp/opencode/run_matched_gcsp_derivatives.py) for all 4 configs (CLASS LCDM/w0wa, SYREN LCDM/w0wa); all derivatives finite; artifacts in /tmp/opencode/matched_gcsp_derivative_check/.
-- scripts/run_syren_new_likelihoods.py created; fiducial loglike(param_dict={}) verified: GCsp=-0, WL+GCph≈1.4e-10; parameter responsiveness confirmed.
-- CLASS+EE2 implemented in cosmicfishpie/cosmology/ee2.py and cosmology.py, with a new class/ee2_boost.yaml profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.
-- Focused adapter and real CLASS+EE2 integration tests passed for both A_s and sigma8 normalization (3 passed); ruff, isort and Black checks passed on touched Python files.
-Active
-- Review the CLASS+EE2 integration in representative spectra/derivatives/forecasts as the broader comparison work proceeds; no notebook or sampler was executed during this implementation.
-Blocked
-- None for CLASS+EE2; the optional dependency is installed and the focused integration test passed.
-Next Move
-1. Select `class_config_yaml=cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml` with `code=class` and `nonlinear=True` for a CLASS+EE2 comparison.
-2. Compare spectra, derivatives and forecasts against the matched CLASS HMcode and SYREN-NEW configurations when that validation is requested.
-Relevant Files
-- cosmicfishpie/cosmology/ee2.py: CLASS→EE2 parameter mapping and boost grid adapter.
-- cosmicfishpie/cosmology/cosmology.py: class_setparams() selector and class_results() multiplication.
-- cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml: opt-in CLASS+EE2 profile.
-- tests/cosmology_test.py: unit and integration checks.
-- docs/source/symbolic_overhaul_provenance.md: full design below this current status.
+## Objective
 
+Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).
 
+## Design decisions
 
+- Total matter first: CDM+baryon (`cb`) requests are rejected explicitly, not silently approximated.
+- Validation proceeds through spectra → derivatives → Fisher forecasts.
+- New symbolic is the default; an explicit legacy mode is kept. Wider-SYREN and baryonic corrections are later work (see [§7](#7-final-optional-additions)).
+- `euclidemu2` is an optional `emulators` extra. Its native grid spans approximately 8.73e-3 - 9.41 h/Mpc; each call accepts at most 100 redshifts.
+- CLASS+EE2 uses `P_nl = P_lin_CLASS x B_EE2`, reusing the same total-matter boost for cb as an explicit approximation. The top-level `NONLINEAR.model` YAML selector defaults to `class_native` and is never passed to CLASS itself.
+- EE2 k is in h/Mpc (CLASS k in 1/Mpc, divided by h). Below the native grid the boost is unity; above it the adapter raises `ValueError`. CLASS's padded redshift grid must fit EE2's z = 0-10 range.
+- `class/syren_new_minimal_matched.yaml` requires `output: mPk,mTk`; `changebasis_class()` has an opt-in `three_degenerate` neutrino translation via `PARAMETER_TRANSLATION`.
+- `build_analysis_context` is the spectrum-only configuration API; `FisherMatrix` is for derivatives/Fisher computations. Call `likelihood.loglike(param_dict={})` by keyword.
 
+## Status at implementation time
 
+**Completed**
 
-**The plan is to make SYREN-NEW the default symbolic backend, separate nonlinear modelling from the underlying cosmology calculation, and validate the result against CLASS-based references through representative forecasts.**
+- `SyrenNewProvider` implemented in `cosmicfishpie/cosmology/symbolic_new.py`; wired into `cosmology.py` via `input_type='symbolic'` dispatch; uses Astropy backgrounds, physical-unit `Pmm`, total-matter only.
+- SYREN-NEW GCsp and WL Fisher matrices produced and matched CLASS/symbolic YAML profiles, the `three_degenerate` CLASS neutrino scheme, and aggregate derivative plotting put in place.
+- 3-point GCsp derivatives run through the `derivatives.py` engine for all 4 matched configs (CLASS LCDM/w0wa, SYREN LCDM/w0wa); all derivatives finite.
+- `scripts/likelihood/diagnostics/run_syren_new_likelihoods.py` created; fiducial `loglike(param_dict={})` verified (GCsp and WL+GCph both finite); parameter responsiveness confirmed.
+- CLASS+EE2 implemented in `cosmicfishpie/cosmology/ee2.py` and `cosmology.py`, with a new `class/ee2_boost.yaml` profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.
+- Focused adapter and CLASS+EE2 integration tests passed for both `A_s` and `sigma8` normalization.
 
-Your decisions are incorporated:
-- **Total matter first**; unsupported CDM+baryon (`clustering`) requests will fail explicitly.
-- **Validation through spectra, derivatives, observables, and Fisher forecasts.**
-- **New symbolic by default**, with an explicit legacy option. Legacy needs basic operational coverage, not an exact-output preservation campaign.
-- **Wider SYREN and baryonic corrections come last**, without a separate scientific-validation campaign.
+**Active / next**
 
-The sections below describe the wider roadmap for `cosmicfishpie-symbolic_overhaul`; the current implementation status is tracked above.
+1. Review the CLASS+EE2 integration in representative spectra/derivatives/forecasts as the broader comparison work proceeds.
+2. Select `class_config_yaml=cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml` with `code=class` and `nonlinear=True` for a CLASS+EE2 comparison.
+3. Compare spectra, derivatives and forecasts against the matched CLASS HMcode and SYREN-NEW configurations.
+
+## Relevant files
+
+- `cosmicfishpie/cosmology/ee2.py`: CLASS to EE2 parameter mapping and boost grid adapter.
+- `cosmicfishpie/cosmology/cosmology.py`: `class_setparams()` selector and `class_results()` multiplication.
+- `cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml`: opt-in CLASS+EE2 profile.
+- `tests/cosmology_test.py`: unit and integration checks.
+
+The plan was to make SYREN-NEW the default symbolic backend, separate nonlinear modelling from the underlying cosmology calculation, and validate the result against CLASS-based references through representative forecasts, per the design decisions above. The sections below describe the wider roadmap that followed from that plan.
 
 ## 1. Design: cosmology provider + nonlinear prescription
 
@@ -240,7 +232,7 @@ Run matched, total-matter cases for:
 - photometric observables and Fisher matrices;
 - spectroscopic observables and Fisher matrices.
 
-Reuse `scripts/run_fisher_compare_backends.py` and the current reporting pipeline. Compare observable derivatives before interpreting differences in marginalized errors.
+Reuse `scripts/validation/run_fisher_compare_backends.py` and the current reporting pipeline (see [scripts reference](scripts_reference.md)). Compare observable derivatives before interpreting differences in marginalized errors.
 
 Define acceptance thresholds separately for each stage before the formal campaign. Any slightly different CLASS settings and survey cuts should be recorded alongside the results.
 
@@ -260,9 +252,9 @@ Relevant files include:
 
 - `cosmicfishpie/configs/config.py` and `configs/context.py`;
 - `configs/default_boltzmann_yaml_files/symbolic/`;
-- `scripts/run_fisher_compare_backends.py`;
-- `scripts/render_validation_dashboard.py`;
-- `scripts/validation_configs/`;
+- `scripts/validation/run_fisher_compare_backends.py`;
+- `scripts/validation/render_validation_dashboard.py`;
+- `scripts/validation/configs/`;
 - focused cosmology and runtime-context tests.
 
 Software tests should cover units, shape/order handling, nonlinear toggles, unsupported cb requests, amplitude conversion, range handling, and configuration isolation.

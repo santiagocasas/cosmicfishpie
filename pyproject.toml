@@ -50,7 +50,7 @@ dependencies = [
 Homepage = "https://github.com/santiagocasas/cosmicfishpie"
 Repository = "https://github.com/santiagocasas/cosmicfishpie"
 Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.md"
-# Documentation = "https://cosmicfishpie.readthedocs.io/"
+Documentation = "https://www.santicasas.space/cosmicfishpie/docs/"
 
 [project.optional-dependencies]
 emulators = [

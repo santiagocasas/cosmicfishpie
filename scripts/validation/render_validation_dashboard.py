@@ -185,6 +185,13 @@ def discover_cases(config_dir: Path, repo_root: Path) -> list[CaseDef]:
         common_specs = (
             Path(parsed["COMMON_SPECS_JSON"]) if parsed.get("COMMON_SPECS_JSON") else None
         )
+        # Older env files use ``scripts/validation_configs`` while the files
+        # now live beside the case definitions in ``scripts/validation/configs``.
+        # Resolve that historical layout by the unique filename in config_dir.
+        if common_specs is not None and not common_specs.is_file():
+            relocated_common_specs = config_dir / common_specs.name
+            if relocated_common_specs.is_file():
+                common_specs = relocated_common_specs
         cases.append(
             CaseDef(
                 number=number,
@@ -283,16 +290,28 @@ def _yaml_path_matches(saved: object, current: str | None) -> bool:
     current_path = Path(current)
     saved_key = (saved_path.parent.name, saved_path.name)
     current_key = (current_path.parent.name, current_path.name)
+    if saved_key == current_key:
+        return True
     return LEGACY_2405_YAML_MIGRATIONS.get(saved_key) == current_key
+
+
+def _common_specs_match(saved: object, current: Path | None, outdir: Path) -> bool:
+    """Match common specs across machines only when the archived settings agree."""
+    if current is None:
+        return True
+    if not isinstance(saved, str) or Path(saved).name != current.name:
+        return False
+    saved_specs = _read_json(outdir / "common_specs.json")
+    current_specs = _read_json(current)
+    return saved_specs is not None and saved_specs == current_specs
 
 
 def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path | None:
     if not results_dir.is_dir():
         return None
-    want_common = str(case.common_specs_json.resolve()) if case.common_specs_json else None
     want_yaml_a = str(case.yaml_a.resolve()) if case.yaml_a else None
     want_yaml_b = str(case.yaml_b.resolve()) if case.yaml_b else None
-    best: tuple[float, Path] | None = None
+    best: tuple[int, str, float, Path] | None = None
     for folder in results_dir.iterdir():
         if not folder.is_dir():
             continue
@@ -312,7 +331,7 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
             continue
         if case.yaml_key_b is not None and args.get("yaml_key_b") != case.yaml_key_b:
             continue
-        if want_common and args.get("common_specs") != want_common:
+        if not _common_specs_match(args.get("common_specs"), case.common_specs_json, folder):
             continue
         if not _yaml_path_matches(args.get("yaml_a"), want_yaml_a):
             continue
@@ -328,10 +347,17 @@ def _find_case_outdir(case: CaseDef, results_dir: Path, repo_root: Path) -> Path
             and resolved.get("survey_name_spectro") != case.survey_name_spectro
         ):
             continue
+        compare_json = _find_compare_json(folder)
+        compare = _read_json(compare_json) if compare_json else None
+        pair = _select_latest_ab_pair(compare) if isinstance(compare, dict) else None
+        has_result = bool(pair and _param_rows(pair))
+        timestamp = meta.get("timestamp")
+        timestamp_key = timestamp if isinstance(timestamp, str) else ""
         mtime = (folder / "run_metadata.json").stat().st_mtime
-        if best is None or mtime > best[0]:
-            best = (mtime, folder)
-    return best[1] if best else None
+        candidate = (int(has_result), timestamp_key, mtime, folder)
+        if best is None or candidate[:3] > best[:3]:
+            best = candidate
+    return best[3] if best else None
 
 
 def _find_compare_json(folder: Path) -> Path | None:

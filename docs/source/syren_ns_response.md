@@ -14,9 +14,9 @@ source of the Fisher differences. EE2 is the comparison reference, not an assume
 exact solution. A controlled derivative-swap experiment remains the cleanest way
 to isolate causality.
 
-Analysis date: 2026-09-29. The user confirmed that the full photometric notebook
-ran successfully after the earlier HMcode non-finite-grid handling fix. That
-operational issue is separate from the finite response discrepancy studied here.
+Analysis date: 2026-09-29. The full photometric notebook runs successfully
+after the earlier HMcode non-finite-grid handling fix; that operational issue
+is unrelated to the finite-response discrepancy studied here.
 
 ## Inputs and numerical definitions
 
@@ -275,11 +275,11 @@ derivative became more accurate.
 
 Two details in the inspected notebook matter when reading its saved plots:
 
-1. `compare_constraints` uses `compare_to_index=1`, selecting **HMcode2020**,
-   although the axis label says EE2. `0` would select EE2. Its printed numerical
-   dictionary does compare with EE2. The spectrum helper also selects HMcode
-   despite introductory prose describing EE2 residuals. All figures on this page
-   explicitly use **CLASS + EE2** as the reference.
+1. The notebook's `compare_constraints` call uses `compare_to_index=1`
+   (**HMcode2020**) even though its axis label and introductory prose say EE2;
+   `compare_to_index=0` would select EE2, and its printed numerical dictionary
+   does compare against EE2. The spectrum helper has the same mismatch. All
+   figures on *this* page explicitly use **CLASS + EE2** as the reference.
 2. The darker “unmarginalized” error shading is computed **after omitted nuisance
    parameters have been marginalized** by the plotting helper. It holds the other
    displayed cosmological parameters fixed; it is not the original full-matrix

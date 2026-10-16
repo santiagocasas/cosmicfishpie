@@ -1,9 +1,12 @@
-# Photometric Pipeline Optimization Results
+# Photometric pipeline optimization results
 
 ## Scope
 
-This document records the performance comparison between `main` and `perf-v2`
-for the photometric Fisher pipeline using the shared comparison tools:
+This is a historical benchmark record, not a reproducible test you can run
+today: the `perf-v2` optimizations below have already landed in the current
+codebase (see `CHANGELOG.md`). It documents the performance comparison that
+justified merging them, using shared comparison tools maintained outside this
+repository:
 
 - `shared-tools/compare_photo_fisher.py`
 - `shared-tools/compare_photo_fisher.sh`
@@ -27,7 +30,7 @@ The window cache stores only Hubble-independent factors. The Hubble factor is
 applied on every `clsintegral` call, so calls with different Hubble arrays
 remain correct.
 
-## Focused Per-Point Benchmark
+## Focused per-point benchmark
 
 For the symbolic backend, GCph+WL, accuracy 1, and two varied parameters, the
 average cost of one repeated `ComputeCls` point decreased from approximately
@@ -44,7 +47,7 @@ The remaining dominant component is symbolic cosmology construction and power
 spectrum generation, which is outside the photometric pipeline optimization
 scope.
 
-## End-to-End CLASS Comparison
+## End-to-end CLASS comparison
 
 Command configuration:
 
@@ -72,7 +75,7 @@ Inverse Fisher matrix max relative difference: 1.116915e-09
 Parameter names: identical
 ```
 
-## End-to-End Symbolic Comparison
+## End-to-end symbolic comparison
 
 The second run used the symbolic backend with the same observable and Fisher
 configuration.
@@ -126,3 +129,7 @@ bash /path/to/shared-tools/compare_photo_fisher.sh
 The wrapper's logs and snapshots are written to a timestamped directory under
 `/tmp/photo-fisher-compare-*`. The recorded runs used the backend selected in
 the shared Python script.
+
+For an in-repo, currently maintained way to compare Fisher matrices across
+backends or branches, see [Backend validation](backend_validation.md) and
+`scripts/validation/run_fisher_compare_backends.py`.

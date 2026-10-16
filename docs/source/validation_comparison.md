@@ -1,226 +1,80 @@
-# Euclid w0waCDM Validation: Your Results vs. Casas et al. (2303.09451)
+# Historical snapshot: CLASS vs CAMB w0waCDM deviation investigation
 
-> **Historical validation-tracking note (2026-08-17).** This records the comparison
-> snapshot and investigation at that date; use the current
+> **Historical validation-tracking note (2026-08-17).** This page is a point-in-time
+> investigation, not current guidance. Use the
 > [backend validation guide](backend_validation.md) for the maintained workflow and
-> dashboard, and consult the linked case configurations for current results.
+> dashboard, and the [validation configuration directory](https://github.com/santiagocasas/cosmicfishpie/tree/main/scripts/validation/configs)
+> for current case definitions and results. Commands below are illustrative of the
+> diagnostic approach, not a guaranteed-current CLI.
 
-**Document Date:** 2026-08-17  
-**Your Case:** Case 01 (CLASS ↔ CAMB, Photometric w0waCDM)  
-**Reference Paper:** Casas et al., "Euclid: Validation of the MontePython forecasting tools" (arXiv 2303.09451)  
-**Reference Authors:** S. Casas, J. Lesgourgues, N. Schöneberg, and the Euclid Collaboration (published March 2023)
-
----
-
-## Executive Summary
-
-**Your validation shows 26.67% deviation in Omegab and >10% deviations in 5 other parameters when comparing CLASS vs CAMB for photometric w0waCDM forecasts.** This is **far above** the Euclid paper's acceptable range of <3% for comparable configurations.
-
-However, the Euclid paper achieved <10% agreement between CLASS and CAMB across all probes by carefully controlling **precision settings** in both solvers. Your current deviation suggests a configuration mismatch, not a fundamental incompatibility.
+**Case investigated:** Case 01 (CLASS vs CAMB, photometric w0waCDM)  
+**Reference:** Casas et al., "Euclid: Validation of the MontePython forecasting tools," arXiv:[2303.09451](https://arxiv.org/abs/2303.09451) (S. Casas, J. Lesgourgues, N. Schöneberg et al., March 2023)
 
 ---
 
-## The Euclid Paper's w0waCDM Validation Results
+## Summary
 
-### Section 4.2: Photometric Likelihood Validation
+The snapshot run showed a 26.67% deviation in Ωb and >10% deviations in five other parameters between CLASS and CAMB for photometric w0waCDM forecasts (Case 01) — far above the Euclid paper's <3% for comparable configurations. The paper itself reaches <1% CLASS/CAMB agreement when both solvers use matched high-precision settings, pointing to a configuration mismatch in that run rather than a fundamental backend incompatibility.
 
-From **Section 4.2.2 (Optimistic Setting)** — the most stringent test:
+## Paper benchmarks (Casas et al., Section 4, optimistic setting)
 
-| Comparison | Maximum Deviation | Probe | Model |
-|---|---|---|---|
-| CF/int/CAMB vs CF/int/CLASS | **0.55%** | Photometric | w0waCDM |
-| CF/int/CAMB vs CF/ext/CAMB | 1.3% | Photometric | w0waCDM |
-| CosmicFish vs MontePython | 4.3% | Photometric | w0waCDM |
-| All methods vs IST:F median | **9% maximum** | Photometric | w0waCDM |
+| Comparison | Max deviation | Probe |
+|---|---:|---|
+| CF/int/CAMB vs CF/int/CLASS (matched HP/P3) | 0.55% | Photometric w0waCDM |
+| CF/int/CAMB vs CF/ext/CAMB | 1.3% | Photometric w0waCDM |
+| CosmicFish vs MontePython | 4.3% | Photometric w0waCDM |
+| All methods vs IST:F median | 9% max | Photometric w0waCDM |
+| CosmicFish/CLASS vs CosmicFish/CAMB | <0.5% | Spectroscopic w0waCDM |
+| MontePython/Fisher vs CosmicFish | 2.5% | Spectroscopic w0waCDM |
 
-**Key insight:** When using identical precision settings (halofit tolerance ~10⁻⁸, CLASS HP), CLASS and CAMB produce **0.55% agreement** on marginalised errors for w0waCDM photometric forecasts. This means your 26.67% deviation is a **48x worse outcome**.
+At matched precision — CLASS high-precision ("HP", halofit tolerance ~10⁻⁸) and CAMB P3 (`accuracy_boost=3`, `l_accuracy_boost=3`, `halofit_tol_sigma=1.e-6`) — linear-power derivatives agree to 0.07%. Section 6.3 reports CLASS DP vs HP differs by 11% in marginalised errors (CAMB P2 vs P3 by ~1%), concluding: *"the CLASS user should employ the 'high-precision' settings when performing Fisher matrix forecasts with MontePython."*
 
-### Section 4.3: Spectroscopic Likelihood Validation
+## Snapshot results vs. paper expectation
 
-From **Section 4.3.2 (Optimistic Setting)**:
+| Case | Backends | Observable | Deviation | Paper expectation |
+|---|---|---|---:|---|
+| 01 | CLASS vs CAMB | Photometric w0waCDM | 26.67% | <1% (HP/P3) or ~5-11% max (DP) |
+| 02 | CLASS vs CAMB | Spectroscopic w0waCDM | 0.7% | <1% — matches paper |
+| 03 | CAMB vs CLASS | Photometric nuCDM | 8.2% | <3% |
 
-| Comparison | Maximum Deviation | Model |
-|---|---|---|
-| CosmicFish/CLASS vs CosmicFish/CAMB | <0.5% | w0waCDM |
-| MontePython/Fisher vs CosmicFish | 2.5% | w0waCDM |
+Spectroscopic agreement (Case 02) matched the paper; photometric w0waCDM (Case 01) and photometric nuCDM (Case 03) did not — consistent with the paper's finding that nonlinear scales and extended dark-energy models need strict, matched precision settings to keep CLASS/CAMB agreement tight.
 
-**Your Case 02 result:** 0.7% (CLASS vs CAMB, spectroscopic w0waCDM) — **matches** the paper's findings exactly.
+### Case 01, parameter by parameter
 
----
+| Parameter | Snapshot deviation | Paper w0waCDM (HP/P3) | Paper w0waCDM (DP) |
+|---|---:|---|---|
+| Omegab | 26.67% | <1% | ~5% max |
+| h | 24.20% | <1% | ~3% max |
+| ns | 16.09% | <1% | ~2% max |
+| sigma8 | 14.02% | <1% | ~4% max |
+| wa | 12.94% | <1% | ~1% max |
+| w0 | 10.07% | <1% | <1% typical |
 
-## Root Cause Analysis: Configuration Gaps
+All six parameters exceeding 10% points to a global accuracy mismatch between the two solver configurations in that run, not an isolated parameter issue.
 
-The Euclid paper's **Section 6** identifies critical accuracy settings that determine whether CLASS and CAMB agree at the <1% level or diverge significantly.
+## Likely configuration gaps identified at the time
 
-### Section 6: Accuracy Settings Impact
+- **CLASS precision:** default/DP settings instead of high-precision (HP) — `non_linear: halofit` with a tightened halofit tolerance (~10⁻⁸) and integration accuracy; the exact knobs depend on the CLASS version (see the CLASS docs for its "high precision" settings).
+- **CAMB precision:** default P0/P1 instead of P3 (`accuracy_boost=3`, `l_accuracy_boost=3`, `halofit_tol_sigma=1.e-6`).
+- **Halofit mismatch:** different halofit versions/tolerances between CLASS and CAMB couple into nonlinear-scale observables, which is where photometric forecasts are most sensitive — consistent with Case 02 (linear-scale dominated) passing while Case 01/03 did not.
 
-#### For Linear Power Spectrum Derivatives:
-- CAMB P3 vs CLASS HP: **0.07% relative difference** ✓
-- This achieved with:
-  - **CAMB P3:** `accuracy_boost = 3`, `l_accuracy_boost = 3`, `halofit_tol_sigma = 1.e-6`
-  - **CLASS HP:** Halofit tolerance **10⁻⁸** (stricter than CAMB's 10⁻⁶)
+## Reproducing and fixing a mismatch like this today
 
-#### For Fisher Matrix (Second Derivatives):
-From **Section 6.3:**
-- **CLASS DP vs CLASS HP:** 11% difference in marginalised errors
-- **CAMB P2 vs CAMB P3:** ~1% difference
-- **Conclusion:** **CLASS HP is REQUIRED for reliable w0waCDM Fisher forecasts**
+1. Compare the run's CLASS and CAMB config YAMLs under `cosmicfishpie/configs/default_boltzmann_yaml_files/` against Casas et al. Appendix A (CLASS HP, Table A.5; CAMB P3).
+2. Re-run the comparison with matched high-precision settings using the maintained [backend validation workflow](backend_validation.md) — `bash scripts/validation/run_selected_validations.sh --help` prints the currently configured case IDs, or run `scripts/validation/run_fisher_compare_backends.py` directly (see the [scripts reference](scripts_reference.md) for its current CLI options).
+3. Expect <1% deviation at matched HP/P3 settings; document any larger residual explicitly (different solver versions, different survey cuts, etc.).
 
-### The Critical Finding
+## References (Casas et al., arXiv:2303.09451)
 
-> "The class DP settings are not accurate enough to produce reliable Fisher matrix forecasts...We conclude that the CLASS user should employ the 'high-precision' settings when performing Fisher matrix forecasts with MontePython."  
-> — Casas et al., Section 6.3
-
----
-
-## Your Configuration: Likely Issues
-
-Based on your VALIDATION_SUMMARY.md indicating >10% deviations in Omegab, h, ns, sigma8, wa, w0, your setup likely has **one or more of:**
-
-### Issue 1: CLASS Precision Settings
-**Likely:** You are running CLASS with **default precision** (DP or lower), not **high-precision (HP)**.
-
-| Setting | Your Result | Euclid HP | Euclid DP |
-|---|---|---|---|
-| Halofit tolerance | ❓ (unknown) | 10⁻⁸ | Unknown |
-| Expected error | **26.67%** (Omegab) | <1% | ~11% deviation possible |
-
-**Fix:** Set CLASS to high-precision settings in your comparison configs:
-```yaml
-# In your CLASS config YAML or code:
-non_linear: halofit
-halofit_k_per_decade: 20  # or 40+ for HP
-halofit_version: mead2020_feedback  # or standard halofit
-# Ensure integration accuracy is strict:
-# (Exact parameter depends on CLASS version; consult CLASS docs for "high-precision")
-```
-
-### Issue 2: CAMB Precision Settings
-**Likely:** You are using CAMB with default **P0** or **P1** settings, not **P3 (high-precision)**.
-
-| Setting | CAMB P3 | CAMB P0/P1 |
-|---|---|---|
-| accuracy_boost | 3 | 1 (default) |
-| l_accuracy_boost | 3 | 1 (default) |
-| halofit_tol_sigma | 1.e-6 | Higher (coarser) |
-| Expected vs CLASS HP | <1% | Could be >10% |
-
-**Fix:** Ensure you are using CAMB P3 settings:
-```python
-# In your CAMB call:
-camb_params.set_for_lmax(lmax=2650, lens_potential_accuracy=3)
-pars.accuracy_boost = 3
-pars.l_accuracy_boost = 3
-pars.halofit_tol_sigma = 1.e-6
-```
-
-### Issue 3: Nonlinear (Halofit) Configuration Mismatch
-The paper identifies that **photometric observables couple nonlinear scales** where halofit implementations diverge. Your Case 01 shows exactly this: large deviations in derivative-sensitive parameters (Omegab, sigma8, h, ns).
-
-**Likely culprit:** CLASS and CAMB using different halofit versions or tolerances.
-
----
-
-## Evidence from Your Own Results
-
-Your validation framework itself provides supporting evidence:
-
-| Case | Backends | Observable | Deviation | Paper Expected |
-|---|---|---|---|---|
-| 01 | CLASS vs CAMB | Photometric w0waCDM | **26.67%** | <1% (HP/P3) or <10% (DP) |
-| 02 | CLASS vs CAMB | Spectroscopic w0waCDM | **0.7%** | <1% ✓ Matches paper |
-| 03 | CAMB vs CLASS | Photometric nuCDM | **8.2%** | <3% (paper found) |
-
-**The pattern:** Spectroscopic passes (0.7%), photometric w0waCDM fails (26.67%), photometric nuCDM is borderline (8.2%).
-
-This **exactly matches** the Euclid paper's finding: **"Fisher matrix forecasts with nonlinear scales and extended dark energy models require strict precision settings to maintain CLASS/CAMB agreement."**
-
----
-
-## Recommended Fix Protocol
-
-### Step 1: Verify Current Settings (Quick Diagnostics)
-```bash
-# Find your validation config files:
-find cosmicfishpie/configs -name "*w0waCDM*" -o -name "*photometric*"
-
-# Check CLASS solver initialization in:
-cosmicfishpie/cosmology/class_solver.py  # or equivalent
-
-# Check CAMB solver initialization in:
-cosmicfishpie/cosmology/camb_solver.py  # or equivalent
-```
-
-### Step 2: Implement Euclid Paper's Settings
-Apply the exact precision settings from **Casas et al., Section 6.1 and Appendix A**:
-
-**For CLASS:**
-- High-precision (HP) halofit settings matching Table A.5 in the paper
-- Tight integration tolerances for nonlinear spectrum
-
-**For CAMB:**
-- Precision level P3 (`accuracy_boost = 3`, `l_accuracy_boost = 3`)
-- Halofit tolerance `1.e-6` (Section A.4 of paper)
-
-### Step 3: Re-run Case 01
-```bash
-# After updating config:
-uv run python scripts/validation/run_fisher_compare_backends.py \
-  --case 01 \
-  --check-precision-settings
-```
-
-### Step 4: Validate Against Paper Benchmarks
-- Expected result: **<1% deviation** (or document why your setup requires looser settings)
-- Document any deviation >3% with explicit justification
-- Update DECISION/SPEC file with findings
-
----
-
-## Detailed Parameter-by-Parameter Analysis
-
-### Your Case 01 Deviations vs. Paper Predictions
-
-| Parameter | Your Deviation | Paper's w0waCDM (HP/P3) | Paper's w0waCDM (DP) | Interpretation |
-|---|---|---|---|---|
-| Omegab (Ω_b) | 26.67% | <1% | ~5% max | **Severe:** Baryon density derivative is very sensitive to halofit |
-| h (H₀/100) | 24.20% | <1% | ~3% max | **Severe:** Hubble parameter couples to growth rate |
-| ns (spectral index) | 16.09% | <1% | ~2% max | **Moderate:** Indirect nonlinear coupling |
-| sigma8 | 14.02% | <1% | ~4% max | **Severe:** Growth-sensitive; halofit-dependent |
-| wa (w_a, CPL) | 12.94% | <1% | ~1% max | **Moderate:** Dark energy parameter; photometric-specific |
-| w0 (w_0, CPL) | 10.07% | <1% | <1% typical | **Moderate:** Slightly below paper's tolerance |
-
-**All six parameters exceeding 10% indicates a **global accuracy failure** in one or both solvers, not isolated parameter issues.**
-
----
-
-## References from Casas et al. (2303.09451)
-
-1. **Section 2.3.2 (MP/Fisher method):** How MontePython computes Fisher derivatives
-2. **Section 4.2.2 (Photometric w0waCDM):** <1% agreement achieved with proper settings
-3. **Section 6.1–6.3 (Accuracy settings):** Critical table of precision requirements
-4. **Appendix A (Settings tables):** Exact CAMB P3 and CLASS HP configurations
-5. **Table 2 (Paper):** Marginalised errors for w0waCDM photometric forecasts
-
----
-
-## Next Actions
-
-1. **Immediate:** Cross-reference your CLASS and CAMB initialization code with Casas et al. Appendix A
-2. **Short-term:** Implement CLASS HP and CAMB P3 settings from the paper
-3. **Validation:** Re-run Case 01 and confirm <1% deviation
-4. **Documentation:** If you document Case 01 as needing >10% tolerances, cite this gap explicitly and explain why (e.g., different solver versions, different implementations)
-
----
+- Section 2.3.2: MontePython/Fisher derivative method.
+- Section 4.2.2: photometric w0waCDM, <1% agreement at matched precision.
+- Sections 6.1-6.3: precision-setting requirements and their impact.
+- Appendix A: CAMB P3 and CLASS HP configuration tables.
 
 ## Conclusion
 
-The Euclid Collaboration (Casas et al., 2023) **proved that CLASS and CAMB can agree to <1% precision on w0waCDM photometric forecasts.** Your current >10% deviation is **not a fundamental incompatibility** but rather **configuration asymmetry** between the solvers.
-
-The paper provides a clear roadmap via Section 6 and Appendix A. Follow it, and you should recover the sub-1% agreement demonstrated in the published work.
+Casas et al. (2023) show CLASS and CAMB can agree to <1% on w0waCDM photometric forecasts at matched precision. The >10% deviation seen in this snapshot's Case 01 is evidence of a configuration asymmetry between the two solver setups at the time, not a fundamental incompatibility — Appendix A and Section 6 of the paper give the settings needed to close the gap.
 
 ---
 
-**Document prepared:** 2026-08-17  
-**Reference URL:** https://arxiv.org/html/2303.09451v1  
-**Your branch:** `phase-1-validation-integration`
+**Snapshot date:** 2026-08-17 · Reference: https://arxiv.org/html/2303.09451v1

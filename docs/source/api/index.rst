@@ -2,8 +2,17 @@ API reference
 =============
 
 Reference documentation generated from the docstrings of the ``cosmicfishpie``
-package. Each module has its own page; classes and functions are listed with
-their signatures and parameters.
+package. For a guided introduction, see :doc:`../getting_started` and
+:doc:`../user_guide`.
+
+Most users only need three modules:
+
+- :mod:`cosmicfishpie.fishermatrix.cosmicfish`: ``FisherMatrix``, which runs a
+  forecast.
+- :mod:`cosmicfishpie.configs.config`: the options that control a forecast.
+- :mod:`cosmicfishpie.analysis.fisher_plotting`: triangle plots of Fisher matrices.
+
+The full package tree follows. Also see the :ref:`modindex`.
 
 .. autosummary::
    :toctree: generated
@@ -18,5 +27,3 @@ their signatures and parameters.
    cosmicfishpie.likelihood
    cosmicfishpie.LSSsurvey
    cosmicfishpie.utilities
-
-See also the :ref:`modindex`.

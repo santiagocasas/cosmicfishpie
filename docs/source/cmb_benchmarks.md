@@ -28,14 +28,12 @@ as an approximation.
 
 ## Run a single CMB Fisher (smoke test)
 
-The CMB scripts live in `scripts/archive/cmb/`, where historical tools are kept. They
-compute their repository root from their own location, so pass the solver YAML
-explicitly. Run from the repository root:
+The CMB scripts live in `scripts/archive/cmb/`, where historical tools are kept.
+Run from the repository root:
 
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --boltzmann-yaml cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
   --lmax 120 \
@@ -46,28 +44,24 @@ uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
 With `--lmax 120` this takes under a minute. Tips:
 
 - Drop `--lmax` to use the `lmax_CMB` of the spec YAML.
-- `--write-enabled-yaml` writes a copy of the CAMB YAML with CMB outputs enabled
-  into the output directory for provenance.
-- Without `--boltzmann-yaml` the script fails with "Boltzmann YAML not found".
+- Keep `--write-enabled-yaml`: it writes a copy of the solver YAML with CMB outputs
+  enabled into the output directory and uses it for the run. The shipped default
+  YAML does not enable them, so the run fails without the flag.
+- `--boltzmann-yaml` selects another CAMB or CLASS configuration; the default is the
+  package's `default.yaml` for the chosen `--code`.
 
 ## Run the standard presets
 
-`scripts/archive/cmb/run_cmb_benchmarks.py` is meant to run the Planck, Simons
-Observatory and Stage-IV presets in one go, but it does not currently work: it looks
-for the spec files under `scripts/archive/`, fails with "Missing spec YAML", and has
-no option to point it elsewhere. It also calls a smoke script path
-(`scripts/run_cmb_fisher_smoke.py`) that no longer exists. Until it is fixed, run
-the smoke script once per spec:
+`scripts/archive/cmb/run_cmb_benchmarks.py` runs the Planck, Simons Observatory and
+Stage-IV specs in turn, each through the smoke script with CAMB:
 
 ```bash
-for spec in Planck Simons-Observatory-PlanckLowEll CMB-Stage4-PlanckLowEll; do
-  uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
-    --code camb \
-    --boltzmann-yaml cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
-    --spec-yaml cosmicfishpie/configs/default_survey_specifications/${spec}.yaml \
-    --observables CMB_T,CMB_E \
-    --outdir tmp/cmb_bench/${spec}
-done
+uv run python scripts/archive/cmb/run_cmb_benchmarks.py \
+  --which planck,so,s4 --observables CMB_T,CMB_E --outdir tmp/cmb_bench
 ```
+
+Add `--lmax 120` for a quick test. Each preset writes its Fisher matrix to
+`<outdir>/<preset>/`. Without `--outdir`, results go to
+`scripts/benchmark_results/cmb_bench_<timestamp>/`, which is git-ignored.
 
 See also the [scripts reference](scripts_reference.md).

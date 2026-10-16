@@ -37,5 +37,5 @@ photometric_optimization_results
 
 License <https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE>
 GitHub repository <https://github.com/santiagocasas/cosmicfishpie>
-Validation dashboard <https://santiagocasas.github.io/cosmicfishpie/dashboard/>
+Validation dashboard <https://www.santicasas.space/cosmicfishpie/dashboard/>
 ```

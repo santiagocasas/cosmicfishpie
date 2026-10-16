@@ -158,6 +158,8 @@ guaranteed to work everywhere today.
 | `POLY` | yes | no — assumes an `ells` key; `GCsp`/`IM` use `z_bins` and raise `KeyError` | yes — also keyed by `ells` | untested |
 | `STEM` | yes | no — raises `ValueError("STEM derivative not availabe")` | no | untested |
 
+Creating a `derivatives` object with `POLY` or `STEM` for a non-photometric probe,
+or with `4PT_FWD` for a CMB probe, emits a `UserWarning` pointing to `3PT`.
 Use `3PT` (or `4PT_FWD` for `GCsp`/`IM`) outside the photometric probes until
 these gaps are closed; see
 {func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly` and

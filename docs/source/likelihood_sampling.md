@@ -103,11 +103,11 @@ a resumable checkpoint (`*.hdf5`) and `*_metadata.json`.
 Mistakes to avoid:
 
 - **Re-running with the same `name` does not resample.** If the chain `.txt`
-  exists, `run()` only refreshes the metadata. Change `name` for a fresh run.
-- **`options` needs both `survey_name_photo` and `survey_name_spectro`**, with
-  `False` for the unused one.
+  exists, `run()` only refreshes the metadata and says so. Change `name`, or set
+  `"overwrite": True` in the config to delete the old chain and sample again.
 - **Only the model's default free parameters can be sampled** (`LCDM`: `Omegam`,
-  `Omegab`, `h`, `ns`, `sigma8`). A prior on any other name is silently ignored.
+  `Omegab`, `h`, `ns`, `sigma8`). A prior on any other name is ignored with a
+  warning, and fewer than two sampled parameters raises a `ValueError`.
 - If sampling stops early (`n_like_max`, `timeout`), `run()` raises but keeps the
   checkpoint; re-running resumes.
 
@@ -133,7 +133,8 @@ make_triangle_plot(chains=[chain], chain_labels=["Nautilus"], params=columns,
                    truth_values=sampled_fiducial, param_labels=labels, savefile="triangle.png")
 ```
 
-In the DataFrame the `posterior` column actually holds the log-likelihood. To
+In the DataFrame the `posterior` column (name kept for ChainConsumer) holds the
+log-likelihood. To
 overlay a Fisher forecast, also pass `fishers=[...]` and `fisher_labels=[...]`;
 a chain that samples only cosmology fixes the nuisance parameters, so compare it
 with the *conditional* Fisher, not the marginal one. From the shell,

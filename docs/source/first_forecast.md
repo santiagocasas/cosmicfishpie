@@ -62,11 +62,9 @@ contain the package version, the output root and the observables.
 
 ## Use CAMB or CLASS instead
 
-Change `"code"` to `"class"` and nothing else needs to change. For `"camb"`, also add
-`"Neff": 3.044` to `fiducial`; without it the CAMB setup stops with a
-`KeyError: 'num_nu_massless'`. Both are slower than `symbolic`, because they run a
-Boltzmann solver for every derivative step. `CAMB` and `CLASS` are installed with the
-package.
+Change `"code"` to `"class"` or `"camb"` and nothing else needs to change. Both are
+slower than `symbolic`, because they run a Boltzmann solver for every derivative step.
+`CAMB` and `CLASS` are installed with the package.
 
 ## Next steps
 

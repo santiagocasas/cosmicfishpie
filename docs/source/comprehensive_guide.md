@@ -32,13 +32,12 @@ Boltzmann solver for every derivative step and are therefore slower than
 `symbolic`. Omit the YAML path to use the default configurations in
 `cosmicfishpie/configs/default_boltzmann_yaml_files/`.
 
-With `code="camb"`, the fiducial cosmology must include `Neff` (for example
-`"Neff": 3.044`); without it the CAMB setup stops with
-`KeyError: 'num_nu_massless'`. CLASS does not need it.
+If the fiducial cosmology has no `Neff`, both solvers use the standard value
+3.044. It is a fixed input: it is only varied if you put it in `freepars`.
 
 The examples in this guide use `symbolic` so that they run quickly. To use
-CAMB or CLASS, change `code` (and add `Neff` for CAMB); check a small forecast
-against your solver setup before using it for science.
+CAMB or CLASS, change `code`; check a small forecast against your solver
+setup before using it for science.
 
 (observables)=
 ## Observables and survey settings
@@ -66,9 +65,10 @@ For a custom survey, pass a complete `specifications` dictionary to
 ### Shipped survey files
 
 Pass a file name (without `.yaml`) as `survey_name_photo`, `survey_name_spectro`
-or `survey_name_radio_IM`, and set `specs_dir` to the folder that contains it.
-Both folders live in `cosmicfishpie/configs/`; `default_survey_specifications`
-is the default, while `other_survey_specifications` must be set explicitly.
+or `survey_name_radio_IM`. Cosmicfishpie looks in `specs_dir` first (by default
+`cosmicfishpie/configs/default_survey_specifications`) and then in
+`cosmicfishpie/configs/other_survey_specifications`, so every shipped file below
+can be selected by name alone.
 
 `default_survey_specifications/`
 
@@ -97,15 +97,11 @@ is the default, while `other_survey_specifications` must be set explicitly.
 | `SKAO-IM-Redbook` | SKAO HI intensity mapping (`IM`): 5000 deg². |
 | `MeerKlass-IM-Ze` | MeerKLASS `IM`: 7500 deg², 60 dishes. |
 
-Always set `survey_name_radio_IM` explicitly for `IM` forecasts. Its default
-name (`SKA1-IM-Redbook-Optimistic`) matches no shipped file: Cosmicfishpie warns,
-falls back to a Euclid spectroscopic file, and stops with
-`KeyError: 'IM_bias_model'`.
+For `IM` forecasts, `survey_name_radio_IM` defaults to `SKAO-IM-Redbook`.
 
 ```python
 options = {
-    "specs_dir": "cosmicfishpie/configs/other_survey_specifications",
-    "survey_name_radio_IM": "SKAO-IM-Redbook",
+    "survey_name_radio_IM": "SKAO-IM-Redbook",  # the default
     "survey_name_photo": False,
     "survey_name_spectro": False,
 }
@@ -280,12 +276,6 @@ takes the same arguments as `config.init` and returns an immutable
 `COSMICFISH_FAST_EFF`, `COSMICFISH_FAST_P` and `COSMICFISH_FAST_KERNEL` enable
 fast implementations in the photometric calculations. They are on by default;
 set one to `0` to compare against the slower path.
-
-`FisherMatrix(..., parallel=True, parallel_cpus=8)` (experimental) starts a
-[Ray](https://docs.ray.io/en/latest/) session with `parallel_cpus` CPUs
-(default 4) and shuts it down at the end of `compute()`. Ray is not a
-dependency; install it with `pip install ray`. Currently no part of the
-calculation is sent to Ray, so expect no speed-up.
 
 ## Project status and citation
 

@@ -52,9 +52,6 @@ uv sync --extra emulators                # from a source checkout
 uv sync --extra docs --extra dev         # several extras
 ```
 
-Ray, used by `FisherMatrix(..., parallel=True)`, is not an extra. Run `pip install ray`
-before using `parallel=True`.
-
 ## Survey data
 
 The survey specifications and the Euclid luminosity-ratio file (used for intrinsic

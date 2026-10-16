@@ -170,20 +170,17 @@ The exact Casas et al. Appendix A settings are self-contained in
 `class/mpvalidation_hp.yaml`; `class/mpvalidation_dp.yaml` retains the historical DP
 comparison, and `camb/mpvalidation_p3.yaml` is the CAMB P3 profile.
 
-### Step 3: Re-run Case 01
-```bash
-cd /home/casas/Cosmo/dev-cosmicfishpie/cosmicfishpie-main
+### Re-running the mpvalidation case
 
-# Run just Case 01 with the updated settings
-uv run python scripts/validation/run_fisher_compare_backends.py \
-  --case 01 \
-  --profile hp  # Optional: tag output as high-precision test
+`run_fisher_compare_backends.py` has no `--case`/`--profile` flags; cases are selected by
+case ID through the runner used by the maintained workflow:
+
+```bash
+bash scripts/validation/run_selected_validations.sh --cases 01.2.0,01.2.1 --force
 ```
 
-### Step 4: Verify Convergence
-Expected result: **<1% deviation** (or at worst <3%) for CLASS vs CAMB w0waCDM photometric.
-
-Update VALIDATION_SUMMARY.md with new results.
+See [backend validation](source/backend_validation.md) for the current case IDs and the
+dashboard that reports results.
 
 ---
 
@@ -261,7 +258,7 @@ The fix is straightforward: 6 parameter changes in one YAML file.
 **Document prepared:** 2026-08-17  
 **Related files:**
 - [Historical PAPER_COMPARISON](source/validation_comparison.md) (high-level findings)
-- VALIDATION_SUMMARY.md (current results)
+- VALIDATION_SUMMARY.md (the ad hoc run this analysis was based on; also historical)
 - cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
 - cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml
 - cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml

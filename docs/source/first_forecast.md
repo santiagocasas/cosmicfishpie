@@ -1,14 +1,19 @@
 (first-forecast)=
 # A verified first forecast
 
+This page runs a complete photometric Fisher forecast (weak lensing plus
+photometric galaxy clustering) for two cosmological parameters. It uses the
+built-in `symbolic` backend, so you need no Einstein-Boltzmann solver setup, and
+it finishes in well under a minute. It is the same compact configuration the
+test suite exercises.
 
-Run the following script from the repository root. It uses the same compact
-configuration exercised by the test suite. `ell_sampling` keeps the tutorial
-fast; it is not a production-accuracy setting.
+## Run it
+
+Save the script as `first_fisher.py` and run it with `python first_fisher.py`
+(inside a source checkout, `uv run python first_fisher.py`). Any working
+directory will do; the script creates `results/` there.
 
 ```python
-from pathlib import Path
-
 from cosmicfishpie.fishermatrix import cosmicfish as cff
 
 options = {
@@ -17,26 +22,19 @@ options = {
     "code": "symbolic",
     "cosmo_model": "LCDM",
     "derivatives": "3PT",
-    "ell_sampling": 25,
+    "ell_sampling": 25,  # coarse ell grid: fast, but not production accuracy
     "nonlinear": True,
     "outroot": "first_forecast",
     "results_dir": "results",
-    "specs_dir": "cosmicfishpie/configs/default_survey_specifications",
     "survey_name": "Euclid",
     "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
     "survey_name_spectro": False,
 }
 
-fiducial = {
-    "Omegam": 0.32,
-    "h": 0.67,
-}
+fiducial = {"Omegam": 0.32, "h": 0.67}
 
-# Values are relative finite-difference step sizes for non-zero parameters.
-freepars = {
-    "Omegam": 0.01,
-    "h": 0.01,
-}
+# Relative finite-difference step size for each free parameter.
+freepars = {"Omegam": 0.01, "h": 0.01}
 
 forecast = cff.FisherMatrix(
     fiducialpars=fiducial,
@@ -50,23 +48,29 @@ forecast = cff.FisherMatrix(
 fisher = forecast.compute()
 print("Fisher matrix shape:", fisher.fisher_matrix.shape)
 print("Parameter names:", fisher.get_param_names())
-
-# `compute()` creates the output directory when outroot is non-empty.
-print("Results directory:", Path(options["results_dir"]).resolve())
 ```
 
-Run it with:
+The output is a `fisher_matrix` object (not a dictionary). The matrix itself is
+`fisher.fisher_matrix`, and `fisher.get_param_names()` lists its parameters. Besides
+`Omegam` and `h` the list includes nuisance parameters (galaxy bias, intrinsic
+alignment) that the survey specification adds automatically, so the matrix is
+larger than 2 x 2.
 
-```bash
-uv run python first_fisher.py
-```
+Because `outroot` is non-empty, `compute()` also writes a Fisher matrix text file, a
+`.paramnames` file and run-specification files to `results_dir`. File names
+contain the package version, the output root and the observables.
 
-`compute()` returns a `fisher_matrix` object, not a dictionary. Its matrix is
-available as `fisher.fisher_matrix`; use methods such as
-`fisher.get_param_names()` to inspect its metadata. Depending on the selected
-survey specification, the result can also include automatically configured
-nuisance parameters in addition to the two cosmological parameters above.
+## Use CAMB or CLASS instead
 
-With a non-empty `outroot`, Cosmicfishpie writes a versioned Fisher matrix text
-file, a `.paramnames` sidecar, and run-specification files below `results_dir`.
-The exact filename includes the package version, output root, and observables.
+Change `"code"` to `"class"` and nothing else needs to change. For `"camb"`, also add
+`"Neff": 3.044` to `fiducial`; without it the CAMB setup stops with a
+`KeyError: 'num_nu_massless'`. Both are slower than `symbolic`, because they run a
+Boltzmann solver for every derivative step. `CAMB` and `CLASS` are installed with the
+package.
+
+## Next steps
+
+- Plot and compare the result: {doc}`overview`.
+- Choose other observables, surveys and options: {doc}`comprehensive_guide`.
+- Sample the full posterior instead of the Gaussian approximation:
+  {doc}`likelihood_sampling`.

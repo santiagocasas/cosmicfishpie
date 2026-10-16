@@ -1,4 +1,4 @@
-# Derivative Methods
+# Derivative methods
 
 CosmicFishPie computes Fisher matrices from numerical derivatives of
 observables (angular power spectra, galaxy power spectra, etc.) with respect
@@ -11,9 +11,9 @@ This page documents the algorithm behind each method, the relative cost of
 using them, and an empirical comparison across two different backends
 (`symbolic` and `camb`) that motivated a bug fix to the `POLY` method
 (see [Historical note: the POLY bug](#historical-note-the-poly-bug) below).
-It also documents `scripts/compare_derivative_methods.py`, the regression
-script used to produce these results, so the comparison can be reproduced or
-extended.
+It also documents `scripts/archive/backend-validation/compare_derivative_methods.py`,
+the regression script used to produce these results, so the comparison can be
+reproduced or extended.
 
 ## 1. `3PT` — central three-point finite difference
 
@@ -144,11 +144,78 @@ Cost: **11 observable evaluations per parameter** (the most expensive
 method), plus possible extra polynomial refits (free, no extra observable
 calls).
 
+(observable-support-by-method)=
+## Observable support by method
+
+The four methods are not interchangeable across probes: each one dispatches
+on `observables_type` (or doesn't) in a different way, so only `3PT` is
+guaranteed to work everywhere today.
+
+| Method | `GCph` / `WL` | `GCsp` / `IM` | `CMB_T` / `CMB_E` / `CMB_B` | `plain` |
+|---|---|---|---|---|
+| `3PT` | yes | yes | yes | yes |
+| `4PT_FWD` | yes | yes | no — no branch; raises `UnboundLocalError` | yes |
+| `POLY` | yes | no — assumes an `ells` key; `GCsp`/`IM` use `z_bins` and raise `KeyError` | yes — also keyed by `ells` | untested |
+| `STEM` | yes | no — raises `ValueError("STEM derivative not availabe")` | no | untested |
+
+Use `3PT` (or `4PT_FWD` for `GCsp`/`IM`) outside the photometric probes until
+these gaps are closed; see
+{func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly` and
+{func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_stem` for
+the exact dispatch logic.
+
+(custom-derivative-providers)=
+## Custom derivative providers
+
+The four methods above all live in the default provider,
+{class}`~cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider`. To replace
+them (analytic formulae, an emulator, autodiff...), pass any object with a
+`compute(request)` method, i.e. the
+{class}`~cosmicfishpie.fishermatrix.derivatives.DerivativeProvider` protocol, as
+`FisherMatrix(..., derivative_provider=MyProvider())`. If it is `None` (the default),
+`FiniteDifferenceProvider` is used. The *Comprehensive guide* ("Project status") mentions
+this interface; no autodiff backend ships with the package.
+
+`compute` receives a frozen
+{class}`~cosmicfishpie.fishermatrix.derivatives.DerivativeRequest` with these fields:
+`observable` (callable taking a full parameter dict), `fiducial`, `freeparams` (parameter ->
+relative step), `observables_type`, `external_settings`, `feed_lvl`, `method` (the
+`3PT`/`STEM`/... string), `special_deriv_function` and `configuration`. It must return
+`{parameter: derivative}` in the same shape as the default: for `GCph`/`WL`/`CMB_*` a dict per
+parameter holding the `ells` axis plus one derivative array per spectrum (`z_bins` instead of
+`ells` for `GCsp`/`IM`).
+
+```python
+import copy
+
+from cosmicfishpie.fishermatrix.derivatives import DerivativeRequest
+
+
+class MyProvider:
+    def compute(self, request: DerivativeRequest) -> dict:
+        derivs = {}
+        for par, rel_step in request.freeparams.items():
+            fid = request.fiducial[par]
+            h = fid * rel_step if fid != 0.0 else rel_step
+            up, dn = copy.deepcopy(request.fiducial), copy.deepcopy(request.fiducial)
+            up[par], dn[par] = fid + h, fid - h
+            o_up, o_dn = request.observable(up), request.observable(dn)
+            derivs[par] = {
+                key: o_up[key] if key in ("ells", "z_bins") else (o_up[key] - o_dn[key]) / (2 * h)
+                for key in o_up
+            }
+        return derivs
+```
+
+This skeleton ignores `special_deriv_function` and `method`; honour them if you need
+analytic overrides. It was checked against the default `3PT` provider on a toy `GCph`-style
+observable (identical output); passing it through a full `FisherMatrix` run was not tested.
+
 ## Empirical comparison: WL-only Euclid Fisher matrix
 
 To validate the `POLY` fix and understand when `STEM`'s adaptivity actually
-matters, `scripts/compare_derivative_methods.py` builds a fresh WL-only
-Euclid Fisher matrix (5 free LCDM parameters: `Omegam`, `Omegab`, `h`, `ns`,
+matters, `scripts/archive/backend-validation/compare_derivative_methods.py`
+builds a fresh WL-only Euclid Fisher matrix (5 free LCDM parameters: `Omegam`, `Omegab`, `h`, `ns`,
 `sigma8`, each with a 1% step) once per derivative method, using `3PT` as
 the reference baseline, across two backends:
 
@@ -226,13 +293,13 @@ Total wall-clock (all 4 methods): 11m50s (3PT 54.0s, 4PT_FWD 79.2s, POLY
 
 ```bash
 # Default: symbolic backend, all 4 methods
-uv run python scripts/compare_derivative_methods.py
+uv run python scripts/archive/backend-validation/compare_derivative_methods.py
 
 # Only compare a subset of methods against the 3PT baseline
-uv run python scripts/compare_derivative_methods.py --methods 3PT,POLY
+uv run python scripts/archive/backend-validation/compare_derivative_methods.py --methods 3PT,POLY
 
 # Real CAMB backend (fast default yaml, halofit_version=takahashi)
-uv run python scripts/compare_derivative_methods.py --backend camb
+uv run python scripts/archive/backend-validation/compare_derivative_methods.py --backend camb
 ```
 
 The script prints a table of the marginalized 1-sigma bound on each free
@@ -240,5 +307,5 @@ parameter for every requested method, the percent deviation relative to the
 `3PT` baseline, the worst-deviating parameter per method, and per-method
 wall-clock timings. Fisher matrices and metadata are written under
 `scripts/benchmark_results/compare_derivative_methods/` (gitignored, not
-committed). See `scripts/compare_derivative_methods.py`'s module docstring
-and `--help` output for the full set of options.
+committed). See the script's module docstring and `--help` output for the
+full set of options.

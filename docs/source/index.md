@@ -55,7 +55,7 @@ API reference
 :link: installation
 :link-type: doc
 
-Install from PyPI or from source, and fetch the optional external survey data.
+Install from PyPI or from source, choose optional extras, and check the installation.
 ::::
 
 ::::{grid-item-card} {octicon}`rocket;1.5em;sd-mr-1` A verified first forecast
@@ -69,7 +69,7 @@ Run a compact photometric forecast end to end with the built-in `symbolic` backe
 :link: user_guide
 :link-type: doc
 
-Core concepts, derivative schemes, benchmarks and backend background.
+Core concepts, derivative schemes, likelihood sampling with Nautilus, and backend background.
 ::::
 
 ::::{grid-item-card} {octicon}`telescope;1.5em;sd-mr-1` Observables and probes
@@ -90,21 +90,23 @@ Modules, classes and functions generated from the package docstrings.
 :link: development
 :link-type: doc
 
-Contribution guidelines, changelog, validation reports and citation information.
+Contribution guidelines, changelog, validation reports and the scripts reference.
 ::::
 
 :::::
 
 ## Features
 
-- **Multiple backends.** Use CAMB, CLASS, or the built-in `symbolic` backend that needs no
-  external Einstein--Boltzmann solver.
+- **Multiple backends.** Use CAMB, CLASS, the built-in `symbolic` backend that needs no
+  external Einstein--Boltzmann solver, or precomputed `external` tables.
 - **Surveys and observables.** Photometric (`GCph`, `WL`) and spectroscopic (`GCsp`) Euclid
   forecasts, CMB (`CMB_T`, `CMB_E`, `CMB_B`) and intensity mapping (`IM`).
 - **Finite-difference derivatives.** `3PT`, `STEM`, `POLY` and `4PT_FWD` schemes, selected with
   a single option.
 - **Analysis and plotting.** Marginalise, reshuffle and combine Fisher matrices, and draw
   triangle plots to compare surveys and settings.
+- **Likelihood sampling.** Run Nautilus posterior sampling with the same observables and
+  compare chains with Fisher forecasts ({doc}`likelihood_sampling`).
 - **Validated.** CAMB-versus-CLASS Fisher comparisons and likelihood checks are documented and
   reproducible from the repository scripts.
 

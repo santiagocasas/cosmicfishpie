@@ -1,12 +1,14 @@
 # Archived Benchmarks and Maintained Workflows
 
-Photometric benchmark and profiling scripts are archived under `archive/benchmarks/`; profiling-only runners are in `../archive/profiling/`. Maintained validation, Planck, likelihood, HPC, and release workflows live in the categorized subdirectories below.
+Photometric benchmark and profiling scripts are archived under `archive/benchmarks/`; profiling-only runners are in `archive/profiling/`. Maintained validation, Planck, likelihood, HPC, and release workflows live in the categorized subdirectories below.
 
 The historical entry point is `archive/benchmarks/photometric_benchmark.py`, which can:
 - Run a regular Fisher benchmark for selected observables and backend
-- Compare SLOW vs FAST code paths end‑to‑end (SLOW = optimizations off, FAST = optimizations on)
-- Run a single FAST run for profiling (no SLOW), to use with profilers
-- Optionally benchmark the lensing‑efficiency integrators (`bench_efficiency.py`)
+- Compare SLOW vs FAST code paths end‑to‑end (SLOW = optimizations off, FAST = optimizations on) with `--fast-benchmark`
+- Optionally benchmark the lensing‑efficiency integrators with `--efficiency` (see also `archive/benchmarks/bench_efficiency.py`)
+
+Run all commands from the repository root: results go to `scripts/benchmark_results/`
+relative to the current directory.
 
 Below you’ll find setup instructions, usage examples, and details on outputs.
 
@@ -105,11 +107,11 @@ uploaded automatically. Keep the checkout unchanged while the campaign runs.
 
 ## 2) The Benchmark Script: `archive/benchmarks/photometric_benchmark.py`
 
-This script focuses on photometric Fisher matrices. It supports three workflows:
+This script focuses on photometric Fisher matrices. It supports these workflows:
 
-- Regular Fisher benchmark (single run)
-- Flags benchmark (SLOW vs FAST comparison)
-- FAST‑only run (one FAST run, ideal for profiling)
+- Regular Fisher benchmark (single run, with the FAST paths on by default)
+- Flags benchmark (`--fast-benchmark`, SLOW vs FAST comparison)
+- Lensing‑efficiency benchmark (`--efficiency`)
 
 ### Key concepts
 
@@ -127,12 +129,15 @@ These flags are managed by the script; you do not need to set environment variab
 
 - `--accuracy N`  Integer sampling multiplier (affects z/ell grids). Higher means slower, more precise. Default: `1`.
 - `--code {symbolic,class,camb}`  Cosmology backend to use. Default: `symbolic` (fastest).
+- `--codes <list|all>`  Comma‑separated backends (or `all`); overrides `--code` and compares them.
 - `--observables <list>`  Comma‑separated list among `GCph` and `WL`. Examples:
   - `--observables GCph,WL` (default combined photometric)
   - `--observables GCph`
   - `--observables WL`
 
-All runs write results to `scripts/benchmark_results/` by default.
+All runs write results to `scripts/benchmark_results/` by default. Output file names start
+with `Euclid-Photo-ISTF-Pess-Benchmark_<timestamp>_<hash>_`, where the hash identifies the
+command‑line arguments.
 
 ---
 
@@ -141,7 +146,7 @@ All runs write results to `scripts/benchmark_results/` by default.
 Runs a single Fisher for the selected observables and backend, then exports a summary comparison JSON (mainly useful when running multiple combos).
 
 ```bash
-python scripts/photometric_benchmark.py \
+python scripts/archive/benchmarks/photometric_benchmark.py \
   --code symbolic \
   --observables GCph,WL \
   --accuracy 1
@@ -149,7 +154,7 @@ python scripts/photometric_benchmark.py \
 
 Outputs:
 - Fisher matrix text/CSV/paramnames/specs under `scripts/benchmark_results/` with a descriptive filename that includes the backend and observables.
-- Summary JSON: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_fisher_comparison.json`.
+- Timings (`..._timings.json`) and summary (`..._fisher_comparison.json`) JSON files in `scripts/benchmark_results/`.
 
 ---
 
@@ -160,8 +165,8 @@ Runs two full Fisher computations back‑to‑back for the selected observables/
 2) FAST: fast flags on (by default)
 
 ```bash
-python scripts/photometric_benchmark.py \
-  --flags-benchmark \
+python scripts/archive/benchmarks/photometric_benchmark.py \
+  --fast-benchmark \
   --code symbolic \
   --observables GCph,WL \
   --accuracy 1
@@ -176,9 +181,8 @@ This is useful if you want to isolate the effect of one fast path.
 
 Outputs:
 - Two Fisher matrices, clearly tagged in filenames:
-  - `..._SLOW__<obs>_fishermatrix.txt`
-  - `..._FAST__<obs>_fishermatrix.txt`
-- JSON summary: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_flags_fisher_benchmark.json` with:
+  - `..._SLOW_...` and `..._FAST_...` Fisher matrix files (the tag is part of the output root)
+- JSON summary: `..._flags_fisher_benchmark.json` in `scripts/benchmark_results/` with:
   - `accuracy`, `code`, `observables`
   - `runs`: SLOW/FAST timestamps, env flags actually used, exported matrix paths
   - `metrics`: per‑run (trace, Frobenius, robust logdet) and comparisons (entrywise relative max, abs diff near zero, Frobenius relative diff, diagonal ratio stats)
@@ -191,32 +195,24 @@ Interpretation tips:
 
 ---
 
-## 6) FAST‑Only Run (single run, ideal for profiling)
+## 6) Single FAST run (for profiling)
 
-Runs one Fisher with fast flags enabled and stops. Use this with profilers like `cProfile`, `line_profiler`, or `memory_profiler`.
-
-```bash
-python scripts/photometric_benchmark.py \
-  --fast-only \
-  --code symbolic \
-  --observables GCph,WL
-```
-
-Outputs:
-- Fisher matrix with `FASTONLY` tag in filename.
-- JSON summary: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_fast_only.json` with wall‑clock time, flags used, and matrix path.
+There is no separate FAST‑only flag: a regular run (section 4) already has all FAST paths
+enabled unless you turn one off with `--fast-eff off`, `--fast-p off` or
+`--fast-kernel off` (or all at once with `--fast off`). Use it with profilers like
+`cProfile`, `line_profiler`, or `memory_profiler`.
 
 Profiling examples:
 
 - cProfile:
   ```bash
   python -m cProfile -o scripts/benchmark_results/fast.prof \
-    scripts/photometric_benchmark.py --fast-only --code symbolic --observables GCph,WL
+    scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   ```
 - line_profiler:
   ```bash
   kernprof -l -o scripts/benchmark_results/fast.lprof \
-    scripts/photometric_benchmark.py --fast-only --code symbolic --observables GCph,WL
+    scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   python -m line_profiler scripts/benchmark_results/fast.lprof
   ```
 
@@ -224,14 +220,14 @@ Profiling examples:
 
 ## 7) Lensing‑Efficiency Micro‑Benchmark (optional)
 
-`bench_efficiency.py` compares three internal implementations of the WL lensing‑efficiency integral:
+`archive/benchmarks/bench_efficiency.py` compares three internal implementations of the WL lensing‑efficiency integral:
 - `memo_integral_efficiency` (legacy O(N²), corrected reference)
 - `faster_integral_efficiency` (vectorized O(N²))
 - `much_faster_integral_efficiency` (O(N) cumulative trapezoids)
 
 Run:
 ```bash
-python scripts/bench_efficiency.py
+python scripts/archive/benchmarks/bench_efficiency.py
 ```
 
 It prints construction/evaluation timings and agreement metrics (ratios), and uses a `ComputeCls` compatible configuration.
@@ -266,19 +262,19 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
 
 - Regular (symbolic, combined):
   ```bash
-  python scripts/photometric_benchmark.py --code symbolic --observables GCph,WL
+  python scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   ```
 - Compare SLOW vs FAST (class, WL only):
   ```bash
-  python scripts/photometric_benchmark.py --flags-benchmark --code class --observables WL
+  python scripts/archive/benchmarks/photometric_benchmark.py --fast-benchmark --code class --observables WL
   ```
-- FAST‑only for profiling (camb, GCph only):
+- Single run for profiling (camb, GCph only):
   ```bash
-  python scripts/photometric_benchmark.py --fast-only --code camb --observables GCph
+  python scripts/archive/benchmarks/photometric_benchmark.py --code camb --observables GCph
   ```
-- FAST but only enable efficiency fast path:
+- SLOW vs FAST, with only the efficiency fast path enabled in the FAST run:
   ```bash
-  python scripts/photometric_benchmark.py --flags-benchmark --fast-p off --fast-kernel off
+  python scripts/archive/benchmarks/photometric_benchmark.py --fast-benchmark --fast-p off --fast-kernel off
   ```
 
 ---
@@ -470,9 +466,13 @@ The SO/S4 YAMLs use a conservative common `lmax_CMB=3000`.
 
 ### Single run (smoke)
 
+The CMB scripts live in `scripts/archive/cmb/` and still derive their repository root from
+their old location, so pass `--boltzmann-yaml` explicitly:
+
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
+  --boltzmann-yaml cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
   --lmax 120 \
@@ -482,11 +482,10 @@ uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
 
 ### Run the three presets
 
-```bash
-uv run python scripts/archive/cmb/run_cmb_benchmarks.py \
-  --outdir tmp/cmb_bench \
-  --which planck,so,s4
-```
+`scripts/archive/cmb/run_cmb_benchmarks.py` currently fails with "Missing spec YAML" (it
+looks for the specs under `scripts/archive/` and calls a script path that no longer
+exists). Run the smoke script once per spec YAML instead; see
+[CMB benchmarks](../docs/source/cmb_benchmarks.md).
 
 ---
 

@@ -109,7 +109,8 @@ def init(
     camb_path                   : str
                                   Path to camb. Defaults to the camb in your current environment
     specs_dir                   : str
-                                  Path to the survey specifications. Defaults to the `specs_dir_default`
+                                  Path to the survey specifications. Defaults to the `specs_dir_default`.
+                                  Names not found there are also searched in the packaged `other_survey_specifications` folder
     specs_dir_default           : str
                                   Path to the default survey specifications. Defaults to the `survey_specifications` folder in the config directory of cosmicfishpie
     survey_name                 : str
@@ -119,7 +120,7 @@ def init(
     survey_name_spectro         : str
                                   Name of the survey specifications file for a spectrocopic probe
     survey_name_radio_IM        : str
-                                  Name of the survey specifications file for a line intensity mapping probe
+                                  Name of the survey specifications file for a line intensity mapping probe. Defaults to `SKAO-IM-Redbook`
     derivatives                 : str
                                   String of the name of the derivative method. Either `3PT`, `4PT_FWD`, `STEM` or `POLY`. Defaults to `3PT`
     nonlinear                   : bool
@@ -255,7 +256,7 @@ def init(
     settings.setdefault("survey_name_spectro", "Euclid-Spectroscopic-ISTF-Pessimistic")
     # settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
     # settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
-    settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
+    settings.setdefault("survey_name_radio_IM", "SKAO-IM-Redbook")
     settings.setdefault("fail_on_specs_not_found", False)
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
@@ -422,7 +423,20 @@ def init(
 
     # Add additional surveys here
     available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
-    available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
+
+    other_specs_dir = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "other_survey_specifications"
+    )
+
+    def resolve_spec_path(foldername, filename):
+        """Return the YAML path for ``filename``, searching ``foldername`` first and then
+        the packaged ``other_survey_specifications`` folder."""
+        path = os.path.join(foldername, filename + ".yaml")
+        if not os.path.isfile(path):
+            alt_path = os.path.join(other_specs_dir, filename + ".yaml")
+            if os.path.isfile(alt_path):
+                return alt_path
+        return path
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
@@ -434,7 +448,7 @@ def init(
             )
             return photo_dict
         try:
-            ph_file_path = os.path.join(foldername, filename + ".yaml")
+            ph_file_path = resolve_spec_path(foldername, filename)
             if not os.path.isfile(ph_file_path):
                 raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
         except FileNotFoundError as e:
@@ -488,7 +502,7 @@ def init(
             )
             return spec_dict
         try:
-            sp_file_path = os.path.join(foldername, filename + ".yaml")
+            sp_file_path = resolve_spec_path(foldername, filename)
             if not os.path.isfile(sp_file_path):
                 raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
         except FileNotFoundError as e:

@@ -7,6 +7,7 @@ This is the derivatives engine of CosmicFish.
 """
 
 import copy
+import warnings
 from collections.abc import Mapping as MappingABC
 from dataclasses import dataclass
 from time import time
@@ -60,7 +61,7 @@ class DerivativeProvider(Protocol):
 
 
 class derivatives:
-    """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor of this class is called the resulting dictionary with the derivatives are is found in it's `results` attribute."""
+    """This class is the main derivative engine for the different observables. It gives access to different derivative methods. After the constructor is called, the resulting dictionary of derivatives is found in its `result` attribute."""
 
     def __init__(
         self,
@@ -128,6 +129,8 @@ class derivatives:
         )
         self.derivatives_type = self.method
 
+        self._warn_unsupported_method()
+
         # Dispatch to the correct derivative method
         if self.method == "3PT":
             self.result = self.derivative_3pt()
@@ -139,6 +142,26 @@ class derivatives:
             self.result = self.derivative_forward_4pt()
         else:
             raise ValueError(f"ERROR: I don't know this derivative type!!! ({self.method})")
+
+    def _warn_unsupported_method(self):
+        """Warn when a derivative method is used with probes it does not support."""
+        photometric = {"GCph", "WL"}
+        others = [obs for obs in self.observables_type if obs not in photometric | {"plain"}]
+        if self.method in ("POLY", "STEM") and others:
+            warnings.warn(
+                f"Derivative method '{self.method}' is only supported for the photometric "
+                f"probes (GCph, WL), but the observables include {others}. It may fail or "
+                "give wrong results; use '3PT' instead.",
+                UserWarning,
+                stacklevel=3,
+            )
+        elif self.method == "4PT_FWD" and any(obs.startswith("CMB") for obs in others):
+            warnings.warn(
+                "Derivative method '4PT_FWD' is not supported for CMB observables; "
+                "use '3PT' instead.",
+                UserWarning,
+                stacklevel=3,
+            )
 
     # --- 3PT -------------------------------------------------------------
     def der_3pt_stencil(self, fwd, bwd, step):

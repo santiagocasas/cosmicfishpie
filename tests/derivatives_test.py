@@ -262,3 +262,52 @@ def test_compute_derivatives_accepts_backend_neutral_provider():
     assert captured[0].configuration is context
     assert captured[0].freeparams == {"x": 0.1}
     assert captured[0].method == "3PT"
+
+
+@pytest.mark.parametrize("method", ["POLY", "STEM"])
+def test_poly_and_stem_warn_for_non_photometric_probes(method):
+    def spectro_obs(pars):
+        return {"z_bins": np.array([0.5, 1.0]), "Pgg": np.array([pars["x"], 2.0 * pars["x"]])}
+
+    with pytest.warns(UserWarning, match=f"'{method}' is only supported"):
+        try:
+            derivatives(
+                observable=spectro_obs,
+                fiducial={"x": 1.0},
+                freeparams={"x": 0.05},
+                observables_type=["GCsp"],
+                derivatives_type=method,
+                external_settings={"eps_values": [0.01, 0.02, 0.03]},
+                feed_lvl=0,
+            )
+        except (KeyError, ValueError):
+            pass  # these methods are known to fail here; only the warning is under test
+
+
+def test_4pt_fwd_warns_for_cmb_probes():
+    with pytest.warns(UserWarning, match="4PT_FWD"):
+        try:
+            derivatives(
+                observable=lambda p: {"ells": np.array([2, 3]), "TT": np.array([p["x"], p["x"]])},
+                fiducial={"x": 1.0},
+                freeparams={"x": 0.05},
+                observables_type=["CMB_T"],
+                derivatives_type="4PT_FWD",
+                external_settings={},
+                feed_lvl=0,
+            )
+        except (KeyError, ValueError, UnboundLocalError):
+            pass
+
+
+def test_3pt_does_not_warn_for_non_photometric_probes(recwarn):
+    derivatives(
+        observable=lambda p: {"z_bins": np.array([0.5, 1.0]), "Pgg": np.array([p["x"], p["x"]])},
+        fiducial={"x": 1.0},
+        freeparams={"x": 0.05},
+        observables_type=["GCsp"],
+        derivatives_type="3PT",
+        external_settings={},
+        feed_lvl=0,
+    )
+    assert not [w for w in recwarn if "only supported" in str(w.message)]

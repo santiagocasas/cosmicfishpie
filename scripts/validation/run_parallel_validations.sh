@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Parallel convenience entry point: two Fisher validation cases at a time,
 # with four OpenMP threads per case (eight threads total).
+# Pass --failed-first to rerun saved FAIL cases, wait, then rerun the rest.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

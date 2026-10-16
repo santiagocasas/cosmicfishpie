@@ -156,7 +156,7 @@ _default_yaml() {
 }
 
 _abs_path() {
-  TARGET_PATH="$1" python - <<'PY'
+  TARGET_PATH="$1" uv run --project "${REPO_ROOT}" python - <<'PY'
 from pathlib import Path
 import os
 
@@ -206,7 +206,7 @@ fi
 COMMON_SPECS_HASH=""
 if [[ -n "${COMMON_SPECS_JSON}" ]]; then
   COMMON_SPECS_HASH=$(
-    COMMON_SPECS_JSON="${COMMON_SPECS_JSON}" python - <<'PY'
+    COMMON_SPECS_JSON="${COMMON_SPECS_JSON}" uv run --project "${REPO_ROOT}" python - <<'PY'
 import hashlib
 import os
 
@@ -218,7 +218,7 @@ PY
   )
 fi
 SURVEY_SPECS_HASH=$(
-  SURVEY_SPECS_FILE="${SURVEY_SPECS_FILE}" python - <<'PY'
+  SURVEY_SPECS_FILE="${SURVEY_SPECS_FILE}" uv run --project "${REPO_ROOT}" python - <<'PY'
 import hashlib
 import os
 
@@ -228,7 +228,7 @@ PY
 )
 
 _yaml_fingerprint() {
-  YAML_PATH="$1" python - <<'PY'
+  YAML_PATH="$1" uv run --project "${REPO_ROOT}" python - <<'PY'
 import hashlib
 import os
 from pathlib import Path
@@ -279,7 +279,7 @@ FOM_PARAMS=${FOM_PARAMS}
 PLOT=${PLOT}"
 export CONFIG_STRING
 CONFIG_HASH=$(
-  python - <<'PY'
+  uv run --project "${REPO_ROOT}" python - <<'PY'
 import hashlib
 import os
 
@@ -395,7 +395,7 @@ fi
 } > "${RUN_CONFIG_PATH}"
 
 compare_cmd=(
-  uv run python "${SCRIPT_DIR}/run_fisher_compare_backends.py"
+  uv run --project "${REPO_ROOT}" python "${SCRIPT_DIR}/run_fisher_compare_backends.py"
   --mode "${MODE}"
   --code-a "${CODE_A}"
   --code-b "${CODE_B}"
@@ -441,7 +441,7 @@ echo "[compare] Running backends into: ${OUTDIR}"
 "${compare_cmd[@]}"
 
 report_cmd=(
-  uv run python "${SCRIPT_DIR}/render_compare_reports.py"
+  uv run --project "${REPO_ROOT}" python "${SCRIPT_DIR}/render_compare_reports.py"
   "${OUTDIR}"
   --index-dir "${INDEX_DIR}"
 )

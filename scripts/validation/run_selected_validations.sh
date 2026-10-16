@@ -83,6 +83,8 @@ Options:
   --omp-threads N       Set OMP_NUM_THREADS per case (default: existing value or 8).
   --jobs N              Maximum concurrent validation cases (default: 1).
   --force               Rerun cases even when an unchanged completed result exists.
+  --failed-first        Rerun ALL selected cases: saved FAIL cases first, then the
+                        rest after that phase finishes. Implies --force.
   --verbose             Stream detailed backend output; default output is concise.
   --help                Show this help text.
 
@@ -114,6 +116,7 @@ jobs="${VALIDATION_JOBS:-1}"
 all_cases=false
 force=false
 verbose=false
+failed_first=false
 
 # Zero-pad the leading root segment of a dotted case ID (e.g. "3.2" -> "03.2").
 # Prints nothing and returns nonzero if the value isn't a dotted numeric ID.
@@ -202,6 +205,11 @@ while [[ $# -gt 0 ]]; do
       force=true
       shift
       ;;
+    --failed-first)
+      failed_first=true
+      force=true
+      shift
+      ;;
     --verbose)
       verbose=true
       shift
@@ -253,9 +261,32 @@ if [[ -n "${allocated_cpus}" ]]; then
   fi
 fi
 
+BATCH_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)" || exit 2
+declare -a FAILED_CASES=() OTHER_CASES=()
+if [[ "${failed_first}" == true ]]; then
+  # Inspect saved numerical gates before any new result can change classification.
+  failed_output="$(uv run python "${SCRIPT_DIR}/render_validation_dashboard.py" \
+    --results-dir "${RESULTS_DIR}" --list-failed)" || {
+    echo "Could not identify saved FAIL cases; no validations started." >&2
+    exit 2
+  }
+  declare -A PREVIOUSLY_FAILED=()
+  while IFS= read -r case_number; do
+    [[ -n "${case_number}" ]] && PREVIOUSLY_FAILED["${case_number}"]=1
+  done <<< "${failed_output}"
+  for case_number in "${SELECTED_CASES[@]}"; do
+    if [[ -n "${PREVIOUSLY_FAILED[${case_number}]+x}" ]]; then
+      FAILED_CASES+=("${case_number}")
+    else
+      OTHER_CASES+=("${case_number}")
+    fi
+  done
+fi
+
 BATCH_ID="selected_validation_$(date -u +%Y%m%d_%H%M%S)_$$"
 BATCH_DIR="${RESULTS_DIR}/${BATCH_ID}"
 mkdir -p "${BATCH_DIR}"
+printf '%s\n' "${BATCH_COMMIT}" >"${BATCH_DIR}/git_commit.txt"
 
 overall_start=$(date +%s)
 failed=0
@@ -336,22 +367,49 @@ echo "Running cases: ${SELECTED_CASES[*]}"
 echo "OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "Concurrent cases: ${jobs} (up to $((jobs * omp_threads)) OpenMP threads)"
 echo "Batch directory: ${BATCH_DIR}"
+echo "Campaign commit: ${BATCH_COMMIT} (keep this checkout unchanged during the run)"
 
-for case_number in "${SELECTED_CASES[@]}"; do
-  [[ "${interrupted}" == true ]] && break
-  while (( $(jobs -pr | wc -l) >= jobs )); do
+run_phase() {
+  local case_number pid
+  local -a phase_workers=()
+  for case_number in "$@"; do
     [[ "${interrupted}" == true ]] && break
-    sleep 1
+    while (( $(jobs -pr | wc -l) >= jobs )); do
+      [[ "${interrupted}" == true ]] && break
+      sleep 1
+    done
+    [[ "${interrupted}" == true ]] && break
+    if [[ "$(git -C "${REPO_ROOT}" rev-parse HEAD)" != "${BATCH_COMMIT}" ]]; then
+      echo "Git commit changed during campaign; stopping before ${case_number}." >&2
+      stop_active_case
+      break
+    fi
+    run_case "${case_number}" &
+    phase_workers+=("$!")
+    ACTIVE_WORKERS+=("$!")
+    STARTED_CASES+=("${case_number}")
   done
-  [[ "${interrupted}" == true ]] && break
-  run_case "${case_number}" &
-  ACTIVE_WORKERS+=("$!")
-  STARTED_CASES+=("${case_number}")
-done
+  # A true phase barrier: no remaining case starts while a FAIL case is running.
+  for pid in "${phase_workers[@]}"; do
+    wait "${pid}" || true
+  done
+  ACTIVE_WORKERS=()
+}
 
-for pid in "${ACTIVE_WORKERS[@]}"; do
-  wait "${pid}" || true
-done
+if [[ "${failed_first}" == true ]]; then
+  echo "Phase 1 — saved FAIL cases: ${FAILED_CASES[*]:-(none)}"
+  printf '%s\n' "${FAILED_CASES[@]}" >"${BATCH_DIR}/failed_first_cases.txt"
+  run_phase "${FAILED_CASES[@]}"
+  echo "Phase 2 — remaining cases: ${OTHER_CASES[*]:-(none)}"
+  run_phase "${OTHER_CASES[@]}"
+else
+  run_phase "${SELECTED_CASES[@]}"
+fi
+
+if [[ "$(git -C "${REPO_ROOT}" rev-parse HEAD)" != "${BATCH_COMMIT}" ]]; then
+  echo "Campaign commit changed; results must not be treated as a single-commit campaign." >&2
+  failed=1
+fi
 
 for case_number in "${STARTED_CASES[@]}"; do
   status_file="${BATCH_DIR}/case_${case_number}.status"

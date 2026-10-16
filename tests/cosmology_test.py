@@ -1,8 +1,8 @@
 """Focused tests for Boltzmann-code parameter translations."""
 
 import importlib
-from importlib.util import find_spec
 import sys
+from importlib.util import find_spec
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -72,6 +72,16 @@ def test_class_three_degenerate_translation_matches_syren_example():
     assert "T_ncdm" not in translated
     assert "Omega_ncdm" not in translated
     assert translated["Omega_cdm"] == pytest.approx(0.314571 - 0.049199 - 0.06 / 93.14 / 0.6737**2)
+
+
+def test_class_default_neutrino_density_matches_camb_convention():
+    pars = _parameters()
+    translated = _translator("LCDM").changebasis_class(pars)
+    expected_density = pars["mnu"] * (pars["Neff"] / 3) ** 0.75 / 94.07 / pars["h"] ** 2
+    assert translated["Omega_ncdm"] == pytest.approx(expected_density)
+    assert translated["Omega_cdm"] == pytest.approx(
+        pars["Omegam"] - pars["Omegab"] - expected_density
+    )
 
 
 def test_camb_package_directory_uses_parent_as_import_root(monkeypatch):

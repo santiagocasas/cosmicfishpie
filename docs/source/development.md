@@ -18,6 +18,7 @@ CHANGELOG
 
 backend_validation
 likelihood_validation
+neutrino_cb_regression
 syren_ns_response
 scripts_reference
 ```

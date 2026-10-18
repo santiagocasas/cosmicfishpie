@@ -839,6 +839,8 @@ def init(
         "h": r"h",
         "ns": r"n_{\rm s}",
         "tau": r"\tau",
+        "As": r"A_{\rm s}",
+        "10^9As": r"10^9 A_{\rm s}",
         "sigma8": r"\sigma_8",
         "s8": r"\sigma_8",
         "Mnu": r"M_\nu",

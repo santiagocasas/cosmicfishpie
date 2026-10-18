@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Translate public dimensionless `As` to CLASS `A_s` and order-one `10^9As`
+  to CAMB `As` (CLASS/SYREN-NEW already support it), label amplitude coordinates
+  consistently, and preserve small fiducials in Fisher parameter-file exports.
+  EE2 now reads the exact computed CLASS amplitude instead of interpolating
+  primordial-grid values near its hard amplitude bounds.
+
 - Restore matched CAMB/CLASS nonlinear cb subtraction and the shared default
   neutrino-density factor, retaining nonlinear-grid hardening. Native CLASS cb
   remains opt-in; see `docs/source/neutrino_cb_regression.md` for local evidence.

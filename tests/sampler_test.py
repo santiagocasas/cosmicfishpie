@@ -405,6 +405,9 @@ def test_build_likelihood_rejects_payload_count_mismatch():
         ("b1", r"$b_{1}$"),
         ("bx", "bx"),
         ("sigma8", r"$\sigma_8$"),
+        ("As", r"$A_s$"),
+        ("10^9As", r"$10^9 A_s$"),
+        ("A_s", r"$A_s$"),
         ("unknown_param", "unknown_param"),
     ],
 )

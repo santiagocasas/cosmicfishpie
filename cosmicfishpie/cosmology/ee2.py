@@ -19,12 +19,10 @@ def class_ee2_parameters(classres) -> dict[str, float]:
     else:
         mass_sum = float(np.sum(masses))
 
-    primordial = classres.get_primordial()
-    pivot = float(pars.get("k_pivot", 0.05))
-    k_prim = np.asarray(primordial["k [1/Mpc]"])
-    if not k_prim[0] <= pivot <= k_prim[-1]:
-        raise ValueError("CLASS primordial grid does not contain the amplitude pivot.")
-    amplitude = float(np.interp(pivot, k_prim, primordial["P_scalar(k)"]))
+    # Read the exact computed pivot amplitude, including sigma8-normalized runs.
+    # Interpolating the primordial grid introduces a small bias which can push
+    # valid amplitude inputs outside EE2 bounds near its hard-domain edges.
+    amplitude = float(classres.get_current_derived_parameters(["A_s"])["A_s"])
 
     return {
         "h": float(classres.h()),

@@ -108,6 +108,7 @@ def _emulator_class():
         h=lambda: 0.5,
         Omega_b=lambda: 0.05,
         Omega_m=lambda: 0.3,
+        get_current_derived_parameters=lambda names: {"A_s": 2e-9},
         get_primordial=lambda: {
             "k [1/Mpc]": [0.01, 0.05, 0.1],
             "P_scalar(k)": [1e-9, 2e-9, 3e-9],
@@ -121,10 +122,20 @@ def test_ee2_reads_computed_amplitude_summed_mass_and_dark_energy():
     assert parameters["m_ncdm"] == pytest.approx(0.06)
     assert parameters["w0_fld"] == -0.9
     assert parameters["wa_fld"] == 0.1
+
+
+@pytest.mark.parametrize("amplitude", [1.7e-9, 2.1e-9, 2.5e-9])
+def test_ee2_preserves_exact_computed_amplitude_at_domain_edges(amplitude):
     classres = _emulator_class()
-    classres.pars["k_pivot"] = 0.2
-    with pytest.raises(ValueError, match="amplitude pivot"):
-        class_ee2_parameters(classres)
+    # The computed amplitude, not an input default or grid interpolation, is used.
+    classres.pars["sigma8"] = 0.81
+    classres.get_current_derived_parameters = lambda names: {"A_s": amplitude}
+
+    def unexpected_primordial_interpolation():
+        pytest.fail("Read exact CLASS A_s rather than interpolating a primordial grid")
+
+    classres.get_primordial = unexpected_primordial_interpolation
+    assert class_ee2_parameters(classres)["A_s"] == amplitude
 
 
 def test_ee2_missing_extra_has_actionable_error(monkeypatch):

@@ -561,6 +561,9 @@ class boltzmann_code:
             cambpars["omk"] = cambpars.pop("Omegak")
         if "w0" in cambpars:
             cambpars["w"] = cambpars.pop("w0")
+        # Public order-one amplitude; CAMB expects physical dimensionless As.
+        if "10^9As" in cambpars:
+            cambpars["As"] = cambpars.pop("10^9As") * 1.0e-9
         if "logAs" in cambpars:
             cambpars["As"] = np.exp(cambpars.pop("logAs")) * 1.0e-10
 
@@ -984,6 +987,9 @@ class boltzmann_code:
                 classpars["w0_fld"] = classpars.pop("w0")
             if "wa" in classpars:
                 classpars["wa_fld"] = classpars.pop("wa")
+        # Public As is dimensionless; CLASS spells the same amplitude A_s.
+        if "As" in classpars:
+            classpars["A_s"] = classpars.pop("As")
         if "logAs" in classpars:
             classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
         if "10^9As" in classpars:

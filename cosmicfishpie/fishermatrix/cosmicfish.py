@@ -968,7 +968,7 @@ class FisherMatrix:
                         + "    "
                         + str(cfg.latex_names.get(par, str(par)))
                         + "    "
-                        + "{:.6f}".format(self.allparams[par])
+                        + "{:.16E}".format(self.allparams[par])
                     )
                     f.write("\n")
             fishMat_obj = fm.fisher_matrix(file_name=root + ".txt")

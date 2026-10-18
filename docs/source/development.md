@@ -17,6 +17,7 @@ CHANGELOG
 :caption: Validation and tools
 
 backend_validation
+default_vs_hp_profiles
 likelihood_validation
 syren_ns_response
 scripts_reference

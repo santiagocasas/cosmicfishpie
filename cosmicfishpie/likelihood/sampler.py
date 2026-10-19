@@ -149,11 +149,20 @@ def _likelihood_payloads(specs, likelihood):
     ]
 
 
+def _sampler_freepars(config):
+    """Keep sampler contexts in the parameter basis specified by the priors."""
+    if "priors" not in config:
+        return None
+    step = config["options"].get("eps_cosmopars", 0.01)
+    return {par: step for par in config["priors"]}
+
+
 def _build_context(config, observables=None):
     """Build an analysis context from a plain sampler configuration."""
     options = config["options"]
     return build_analysis_context(
         fiducialpars=config["fiducial"],
+        freepars=_sampler_freepars(config),
         options=options,
         observables=observables or config["observables"],
         cosmo_model=options["cosmo_model"],
@@ -168,6 +177,7 @@ def _build_fisher_context(config, observables):
         options=deepcopy(options),
         observables=list(observables),
         fiducialpars=deepcopy(config["fiducial"]),
+        freepars=_sampler_freepars(config),
         surveyName=options["survey_name"],
         cosmoModel=options["cosmo_model"],
     )

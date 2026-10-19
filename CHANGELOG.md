@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Build sampler analysis and worker contexts with the configured prior parameters,
+  preventing nondefault coordinates such as `10^9As` from being dropped.
+
 - Translate public dimensionless `As` to CLASS `A_s` and order-one `10^9As`
   to CAMB `As` (CLASS/SYREN-NEW already support it), label amplitude coordinates
   consistently, and preserve small fiducials in Fisher parameter-file exports.

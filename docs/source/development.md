@@ -19,6 +19,7 @@ CHANGELOG
 backend_validation
 default_vs_hp_profiles
 likelihood_validation
+neutrino_cb_regression
 syren_ns_response
 scripts_reference
 ```

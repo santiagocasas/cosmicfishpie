@@ -574,6 +574,12 @@ class boltzmann_code:
         cambpars["share_delta_neff"] = shareDeltaNeff
         fidNeff = boltzmann_code.hardcoded_Neff
         minmassmnu = boltzmann_code.hardcoded_mnu_massive_min
+        if "nnu" in cambpars:
+            if "Neff" in cambpars:
+                raise ValueError(
+                    "Pass only one of 'nnu' and 'Neff' to specify the effective neutrino count."
+                )
+            cambpars["Neff"] = cambpars.pop("nnu")
         if "mnu" in cambpars:
             if cambpars["mnu"] < minmassmnu and cambpars["num_nu_massive"] > 0:
                 raise ValueError(

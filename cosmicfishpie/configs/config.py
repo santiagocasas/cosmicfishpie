@@ -32,6 +32,16 @@ def _load_boltzmann_yaml(path):
         return yaml.safe_load(yaml_file) or {}
 
 
+def _resolve_spec_path(foldername, filename, other_specs_dir):
+    """Resolve a survey YAML, preferring the requested specs directory."""
+    path = os.path.join(foldername, filename + ".yaml")
+    if not os.path.isfile(path):
+        alt_path = os.path.join(other_specs_dir, filename + ".yaml")
+        if os.path.isfile(alt_path):
+            return alt_path
+    return path
+
+
 def _add_free_ia_parameters(freeparams, ia_params, variation):
     """Add the requested intrinsic-alignment parameters to ``freeparams``."""
     if isinstance(variation, dict):
@@ -428,16 +438,6 @@ def init(
         os.path.dirname(os.path.realpath(__file__)), "other_survey_specifications"
     )
 
-    def resolve_spec_path(foldername, filename):
-        """Return the YAML path for ``filename``, searching ``foldername`` first and then
-        the packaged ``other_survey_specifications`` folder."""
-        path = os.path.join(foldername, filename + ".yaml")
-        if not os.path.isfile(path):
-            alt_path = os.path.join(other_specs_dir, filename + ".yaml")
-            if os.path.isfile(alt_path):
-                return alt_path
-        return path
-
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
         if not filename:
@@ -448,7 +448,7 @@ def init(
             )
             return photo_dict
         try:
-            ph_file_path = resolve_spec_path(foldername, filename)
+            ph_file_path = _resolve_spec_path(foldername, filename, other_specs_dir)
             if not os.path.isfile(ph_file_path):
                 raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
         except FileNotFoundError as e:
@@ -502,7 +502,7 @@ def init(
             )
             return spec_dict
         try:
-            sp_file_path = resolve_spec_path(foldername, filename)
+            sp_file_path = _resolve_spec_path(foldername, filename, other_specs_dir)
             if not os.path.isfile(sp_file_path):
                 raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
         except FileNotFoundError as e:

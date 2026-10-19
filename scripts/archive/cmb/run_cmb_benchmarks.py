@@ -44,6 +44,11 @@ def main() -> int:
         help="Comma-separated list: planck,so,s4",
     )
     parser.add_argument(
+        "--boltzmann-yaml",
+        default=None,
+        help="Solver YAML passed through to run_cmb_fisher_smoke.py",
+    )
+    parser.add_argument(
         "--lmax",
         type=int,
         default=None,
@@ -110,6 +115,8 @@ def main() -> int:
         ]
         if args.lmax is not None:
             cmd += ["--lmax", str(args.lmax)]
+        if args.boltzmann_yaml is not None:
+            cmd += ["--boltzmann-yaml", args.boltzmann_yaml]
 
         print("[cmb-bench] running:")
         print(" ", " ".join(cmd))

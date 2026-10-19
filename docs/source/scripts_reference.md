@@ -138,7 +138,8 @@ CMB outputs switched on in the output directory and runs with it; keep it unless
 own YAML already enables CMB outputs.
 
 `run_cmb_benchmarks.py --which planck,so,s4` runs the three presets with CAMB; add
-`--lmax 120` for a quick test. `--boltzmann-yaml` selects another solver YAML.
+`--lmax 120` for a quick test. `--boltzmann-yaml` selects another solver YAML and is
+forwarded to `run_cmb_fisher_smoke.py`.
 
 ## Fisher utilities
 

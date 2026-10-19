@@ -44,7 +44,7 @@ class _FakeNautilusSampler:
         return points, log_w, log_l
 
 
-def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
+def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None, general_survey_only=False):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sampler_mod, "build_analysis_context", lambda **kwargs: _FakeContext())
     monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
@@ -73,6 +73,9 @@ def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
     }
     if output_dir is not None:
         config["output_dir"] = str(output_dir)
+    if general_survey_only:
+        config["options"].pop("survey_name_photo")
+        config["options"].pop("survey_name_spectro")
     return sampler_mod.NautilusSampler(config)
 
 
@@ -102,6 +105,12 @@ def test_output_dir_places_sampler_artifacts_outside_working_directory(tmp_path,
 
     assert (output_dir / "chains_unit_test").exists()
     assert not (tmp_path / "chains").exists()
+
+
+def test_sampler_outroot_uses_general_survey_name_fallback(tmp_path, monkeypatch):
+    naut_sampler = _make_sampler(tmp_path, monkeypatch, run_return=True, general_survey_only=True)
+
+    assert "cosmicjellyfish_symbolic_Euclid_unit_test" in naut_sampler.outroot
 
 
 class _FakePool:

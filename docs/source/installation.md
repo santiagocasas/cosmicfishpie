@@ -9,8 +9,9 @@ pip install cosmicfishpie
 ```
 
 `camb` and `classy` (the CLASS Python wrapper) are required dependencies, so this already
-gives you both solvers. If you would rather avoid them, for example on a machine without
-a C compiler, the built-in `symbolic` backend (`"code": "symbolic"`) needs no solver. The
+gives you both solvers. The built-in `symbolic` backend (`"code": "symbolic"`) does not
+run a Boltzmann solver at runtime, although CAMB and CLASS are still installed as package
+dependencies. The
 {doc}`first_forecast` uses it.
 
 ## Install from source

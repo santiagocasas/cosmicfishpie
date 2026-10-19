@@ -327,7 +327,11 @@ class NautilusSampler:
         self._setup_likelihood()
 
     def _get_survey_name(self):
-        return self.options.get("survey_name_photo") or self.options.get("survey_name_spectro")
+        return (
+            self.options.get("survey_name_photo")
+            or self.options.get("survey_name_spectro")
+            or self.options.get("survey_name")
+        )
 
     def _setup_cosmology(self):
         self.cosmo_context = _build_context(self.config)

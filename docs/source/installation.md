@@ -8,11 +8,10 @@
 pip install cosmicfishpie
 ```
 
-`camb` and `classy` (the CLASS Python wrapper) are required dependencies, so this already
-gives you both solvers. The built-in `symbolic` backend (`"code": "symbolic"`) does not
-run a Boltzmann solver at runtime, although CAMB and CLASS are still installed as package
-dependencies. The
-{doc}`first_forecast` uses it.
+`camb` and `classy` (the CLASS Python wrapper) are required dependencies, so this already gives
+you both solvers. The built-in `symbolic` backend (`"code": "symbolic"`) does not run a
+Boltzmann solver at runtime, although CAMB and CLASS are still installed as package dependencies.
+The {doc}`first_forecast` uses it.
 
 ## Install from source
 

@@ -477,6 +477,7 @@ def test_camb_translation_accepts_nnu_as_neff_alias():
     translated_neff = _translator("LCDM").changebasis_camb(expected, camb)
 
     assert translated_nnu["num_nu_massless"] == pytest.approx(translated_neff["num_nu_massless"])
+    assert translated_nnu["num_nu_massless"] == pytest.approx(4.0 - 1)
     assert "nnu" not in translated_nnu
 
 

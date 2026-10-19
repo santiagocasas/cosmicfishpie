@@ -778,3 +778,46 @@ def test_load_chain_metadata_is_exported():
     from cosmicfishpie.likelihood import load_chain_metadata
 
     assert callable(load_chain_metadata)
+
+
+@pytest.mark.parametrize("fixed_ns", [False, True])
+@pytest.mark.parametrize("builder", ["_build_context", "_build_fisher_context"])
+@pytest.mark.parametrize("step", [0.01, 0.02])
+def test_sampler_context_preserves_scaled_amplitude_priors(monkeypatch, fixed_ns, builder, step):
+    parameters = ["Omegam", "h", "ns", "10^9As", "w0"]
+    if fixed_ns:
+        parameters.remove("ns")
+    config = {
+        "options": {
+            "survey_name": "Euclid",
+            "cosmo_model": "w0waCDM",
+            "eps_cosmopars": step,
+        },
+        "fiducial": {"Omegam": 0.314571, "h": 0.6737, "ns": 0.96605, "10^9As": 2.1, "w0": -1.0},
+        "observables": ["GCsp"],
+        "priors": {par: (1.7, 2.5) if par == "10^9As" else (0.1, 1.0) for par in parameters},
+    }
+    captured = {}
+
+    def fake_context(**kwargs):
+        captured.update(kwargs)
+        return _FakeContext(freeparams=kwargs["freepars"])
+
+    monkeypatch.setattr(sampler_mod, "build_analysis_context", fake_context)
+    monkeypatch.setattr(sampler_mod, "FisherMatrix", fake_context)
+    context = getattr(sampler_mod, builder)(config, ["GCsp"])
+    sampler = sampler_mod.NautilusSampler.__new__(sampler_mod.NautilusSampler)
+    sampler.cosmo_context = context
+    sampler.prior_dict = config["priors"]
+    sampler._setup_priors()
+
+    assert captured["freepars"] == {par: step for par in parameters}
+    assert list(sampler.prior_chosen.keys) == parameters
+    assert "sigma8" not in context.freeparams
+
+
+def test_sampler_freepars_defaults():
+    assert sampler_mod._sampler_freepars({"options": {}}) is None
+    assert sampler_mod._sampler_freepars({"options": {}, "priors": {"10^9As": (1.7, 2.5)}}) == {
+        "10^9As": 0.01
+    }

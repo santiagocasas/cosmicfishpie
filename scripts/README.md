@@ -10,6 +10,80 @@ The historical entry point is `archive/benchmarks/photometric_benchmark.py`, whi
 
 Below you’ll find setup instructions, usage examples, and details on outputs.
 
+### Sequential five-parameter LCDM Nautilus campaign (36 CPUs)
+
+```bash
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh --dry-run
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh
+```
+
+Samples GCsp and photometric GCph+WL (including their cross-correlation), each
+with CLASS, CAMB and SYREN-NEW, **one posterior at a time**. The five sampled
+parameters are `Omegam, Omegab, h, ns, sigma8`; all nuisance parameters, mnu,
+Neff, w0=-1 and wa=0 are fixed. Each backend generates its own self-consistent
+noiseless fiducial data. These are conditional five-parameter posteriors.
+No Fisher matrices or Fisher-derived priors are computed.
+
+Resource defaults follow the JURECA notes in
+[`cjfp-data/jobs_punch/nautilus_jureca_findings.md`](../../cjfp-data/jobs_punch/nautilus_jureca_findings.md):
+
+| Backend | Likelihood workers | OMP threads per worker | Batch size |
+|---|---:|---:|---:|
+| CLASS / CAMB | 18 | 2 | 36 |
+| SYREN-NEW | 36 | 1 | 72 |
+
+BLAS threads stay at one and inherited OpenMP affinity variables are removed
+to avoid pinning every spawned worker to the same core. Sampling defaults are
+`n_live=1000`, `n_eff=3000`, `n_networks=8`, and `n_batch=2*workers`, with
+`discard_exploration=True`. Override with `--n-live`, `--n-eff`, `--n-networks`,
+`--n-batch`, `--workers` or `--omp-threads`. The launcher checks a 36-CPU budget
+and any Slurm CPU allocation.
+
+Identical uniform cosmology priors are used for all six runs:
+Omega_m [0.28,0.36], Omega_b [0.04,0.06], h [0.60,0.74], n_s [0.90,1.02],
+sigma8 [0.75,0.87]. Fiducials and solver profiles are the MP-validation settings
+documented below, with the model changed to LCDM.
+
+Outputs default to a new timestamped `../cjfp-data/chains/euclid_mp_lcdm_*`
+directory (`--outdir` or `CFP_DATA_REPO` overrides this). Each run has its own
+`run.log`, requested configuration, input hashes, fiducial likelihood check,
+HDF5 checkpoint, weighted posterior text file and metadata. `campaign.json`
+records exit codes and per-backend resources. Checkpoints are updated while
+sampling; archive/upload only after the campaign is stopped or complete.
+
+To resume an interrupted campaign, keep the original code and inputs and use:
+
+```bash
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh \
+  --outdir /path/to/original/campaign --resume
+```
+
+Repeat any original sampling overrides when resuming. Changed inputs, priors,
+sampling settings or Git revision are rejected before reusing a checkpoint.
+`--check-only` initializes and checks the likelihoods without sampling.
+
+### Quick MP-validation Pessimistic campaign (36 CPUs)
+
+```bash
+bash scripts/validation/run_euclid_mp_fishers.sh --dry-run
+bash scripts/validation/run_euclid_mp_fishers.sh
+```
+
+Runs six independent Fishers: GCsp and GCph+WL (including their cross-correlation,
+i.e. photo 3×2pt), each with CLASS, CAMB and SYREN-NEW. Defaults to six processes,
+six OpenMP threads each; BLAS threads are capped at one. Uses the existing
+`common_specs_w0waCDM.json`, Paper-Pessimistic surveys, CLASS `mpvalidation_hp`,
+CAMB `mpvalidation_p3`, and symbolic `syren_new_photo` profiles. The seven free
+cosmological parameters are Omegam, Omegab, h, ns, sigma8, w0 and wa; mnu/Neff stay
+fixed, as in the MP cases. No new parameter or emulator validation is implied.
+
+Outputs and per-worker `run.log` files go into a new timestamped directory under
+`../cjfp-data/validation/fisher/` (override with `--outdir` or `CFP_DATA_REPO`).
+`campaign.json` records the code commit, thread budget and exit statuses.
+Use `--jobs 3 --omp-threads 12` to run three Fishers concurrently instead.
+Run inside `screen` or a Slurm allocation with at least 36 CPUs; outputs are not
+uploaded automatically. Keep the checkout unchanged while the campaign runs.
+
 ---
 
 ## 1) Prerequisites

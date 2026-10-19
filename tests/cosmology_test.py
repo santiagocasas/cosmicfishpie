@@ -196,6 +196,10 @@ def test_class_ee2_boost_converts_units_preserves_order_and_checks_range(monkeyp
         def get_primordial(self):
             return {"k [1/Mpc]": [0.01, 0.05, 0.1], "P_scalar(k)": [2e-9] * 3}
 
+        def get_current_derived_parameters(self, names):
+            assert names == ["A_s"]
+            return {"A_s": 2e-9}
+
     class FakeEmulator:
         def get_boost(self, parameters, redshifts):
             assert parameters["Omega_m"] == 0.3

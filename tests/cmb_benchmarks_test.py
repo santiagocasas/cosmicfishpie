@@ -2,7 +2,6 @@ import importlib.util
 import sys
 from pathlib import Path
 
-
 SCRIPT = (
     Path(__file__).resolve().parents[1] / "scripts" / "archive" / "cmb" / "run_cmb_benchmarks.py"
 )

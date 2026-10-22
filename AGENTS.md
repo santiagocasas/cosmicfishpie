@@ -31,9 +31,14 @@ Follow existing patterns and keep changes minimal and focused.
 - Tests live in `tests/` and are typically named `*_test.py`.
 
 ## Docs
+- Install docs dependencies: `uv sync --extra docs`
 - Live docs build (autobuild): `make docs`
-- Standard Sphinx build: `make -C docs html`
-- API docs are built from module docstrings; keep them clean and complete.
+- Docs are published by `.github/workflows/docs.yml` to the `docs/` folder of `gh-pages`
+  (https://www.santicasas.space/cosmicfishpie/docs/) on pushes to `main` and version tags.
+- Strict build (as in CI and the publishing workflow): `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`
+- Link check: `uv run --extra docs sphinx-build -b linkcheck docs/source docs/build/linkcheck`
+- API docs are built from module docstrings with autosummary (`docs/source/api/`); keep them clean and complete.
+- Use raw docstrings (`r"""`) when a docstring contains LaTeX backslashes.
 
 ## Repository layout
 - `cosmicfishpie/` is the main package.

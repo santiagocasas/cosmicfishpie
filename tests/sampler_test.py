@@ -11,8 +11,8 @@ class _FakeContext:
     """Minimal stand-in for an AnalysisContext, enough for NautilusSampler."""
 
     def __init__(self, freeparams=None, allparams=None):
-        self.freeparams = freeparams if freeparams is not None else {}
-        self.allparams = allparams if allparams is not None else {}
+        self.freeparams = freeparams if freeparams is not None else {"a": None, "b": None}
+        self.allparams = allparams if allparams is not None else {"a": 0.1, "b": 0.2}
         self.observables = ("WL",)
 
 
@@ -44,7 +44,7 @@ class _FakeNautilusSampler:
         return points, log_w, log_l
 
 
-def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
+def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None, general_survey_only=False):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sampler_mod, "build_analysis_context", lambda **kwargs: _FakeContext())
     monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
@@ -63,7 +63,7 @@ def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
             "cosmo_model": "LCDM",
             "survey_name": "Euclid",
         },
-        "priors": {},
+        "priors": {"a": (0.0, 1.0), "b": (0.0, 1.0)},
         "sampler_settings": {
             "pool": 1,
             "n_live": 10,
@@ -73,6 +73,9 @@ def _make_sampler(tmp_path, monkeypatch, run_return, output_dir=None):
     }
     if output_dir is not None:
         config["output_dir"] = str(output_dir)
+    if general_survey_only:
+        config["options"].pop("survey_name_photo")
+        config["options"].pop("survey_name_spectro")
     return sampler_mod.NautilusSampler(config)
 
 
@@ -102,6 +105,12 @@ def test_output_dir_places_sampler_artifacts_outside_working_directory(tmp_path,
 
     assert (output_dir / "chains_unit_test").exists()
     assert not (tmp_path / "chains").exists()
+
+
+def test_sampler_outroot_uses_general_survey_name_fallback(tmp_path, monkeypatch):
+    naut_sampler = _make_sampler(tmp_path, monkeypatch, run_return=True, general_survey_only=True)
+
+    assert "cosmicjellyfish_symbolic_Euclid_unit_test" in naut_sampler.outroot
 
 
 class _FakePool:
@@ -175,7 +184,7 @@ def test_parallel_run_uses_external_spawn_pool(tmp_path, monkeypatch):
             "cosmo_model": "LCDM",
             "survey_name": "Euclid",
         },
-        "priors": {},
+        "priors": {"a": (0.0, 1.0), "b": (0.0, 1.0)},
         "sampler_settings": {"pool": 2, "n_live": 10, "n_networks": 1, "n_batch": 2},
     }
 
@@ -597,7 +606,7 @@ def test_start_sampler_failure_terminates_worker_pool(tmp_path, monkeypatch):
             "cosmo_model": "LCDM",
             "survey_name": "Euclid",
         },
-        "priors": {},
+        "priors": {"a": (0.0, 1.0), "b": (0.0, 1.0)},
         "sampler_settings": {"pool": 2, "n_live": 10, "n_networks": 1, "n_batch": 2},
     }
 
@@ -635,7 +644,7 @@ def test_run_forwards_optional_sampler_settings(tmp_path, monkeypatch):
             "cosmo_model": "LCDM",
             "survey_name": "Euclid",
         },
-        "priors": {},
+        "priors": {"a": (0.0, 1.0), "b": (0.0, 1.0)},
         "sampler_settings": {
             "pool": 1,
             "n_live": 10,
@@ -692,3 +701,80 @@ def test_sampler_freepars_defaults():
     assert sampler_mod._sampler_freepars({"options": {}, "priors": {"10^9As": (1.7, 2.5)}}) == {
         "10^9As": 0.01
     }
+
+
+def test_sampler_does_not_mutate_caller_config_and_writes_version(tmp_path, monkeypatch):
+    from cosmicfishpie.version import VERSION
+
+    monkeypatch.chdir(tmp_path)
+    fake_context = _FakeContext(
+        freeparams={"Omegam": None, "h": None}, allparams={"Omegam": 0.3, "h": 0.7}
+    )
+    monkeypatch.setattr(sampler_mod, "build_analysis_context", lambda **kwargs: fake_context)
+    monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
+    options = {
+        "code": "symbolic",
+        "survey_name_photo": "Euclid",
+        "cosmo_model": "LCDM",
+        "survey_name": "Euclid",
+    }
+    config = {
+        "name": "mut_test",
+        "fiducial": {},
+        "observables": ["WL"],
+        "options": options,
+        "priors": {"Omegam": (0.2, 0.4), "h": (0.6, 0.8), "not_free": (0, 1)},
+        "sampler_settings": {"pool": 1, "n_live": 10, "n_networks": 1, "n_batch": 1},
+    }
+    with pytest.warns(UserWarning, match="not_free"):
+        naut_sampler = sampler_mod.NautilusSampler(config)
+    assert "outroot" not in options
+    assert "outroot" in naut_sampler.options
+    naut_sampler.tini = 1.0  # normally set in run()
+    naut_sampler.chain_file = naut_sampler.outroot + ".txt"
+    naut_sampler._save_metadata(evidence=0.0, finish_time=2.0)
+    with open(naut_sampler.outroot + "_metadata.json") as f:
+        meta = json.load(f)
+    assert meta["cosmicfishpie_version"] == VERSION
+    assert meta["evidence_log_z"] == 0.0
+
+
+def test_sampler_requires_two_sampled_parameters(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        sampler_mod,
+        "build_analysis_context",
+        lambda **kwargs: _FakeContext(freeparams={"h": None}, allparams={"h": 0.7}),
+    )
+    monkeypatch.setattr(sampler_mod, "PhotometricLikelihood", _FakePhotometricLikelihood)
+    config = {
+        "name": "one_param",
+        "fiducial": {},
+        "observables": ["WL"],
+        "options": {
+            "code": "symbolic",
+            "survey_name_photo": "Euclid",
+            "cosmo_model": "LCDM",
+            "survey_name": "Euclid",
+        },
+        "priors": {"h": (0.6, 0.8)},
+        "sampler_settings": {"pool": 1, "n_live": 10, "n_networks": 1, "n_batch": 1},
+    }
+    with pytest.raises(ValueError, match="at least 2 sampled parameters"):
+        sampler_mod.NautilusSampler(config)
+
+
+def test_overwrite_removes_existing_chain_and_resamples(tmp_path, monkeypatch):
+    naut_sampler = _make_sampler(tmp_path, monkeypatch, run_return=True)
+    naut_sampler.overwrite = True
+    open(naut_sampler.outroot + ".txt", "w").close()
+    naut_sampler.run()
+    # a fresh run was performed, so the (fake) chain file was rewritten with a header
+    with open(naut_sampler.outroot + ".txt") as f:
+        assert "weights loglike" in f.readline()
+
+
+def test_load_chain_metadata_is_exported():
+    from cosmicfishpie.likelihood import load_chain_metadata
+
+    assert callable(load_chain_metadata)

@@ -456,3 +456,33 @@ def test_photometric_yaml_profiles_load_and_run():
         assert np.isfinite(p_nl)
         assert p_nl > 0.0
         assert cosmo.results.kgrid[-1] > 5.0  # extended optimistic photo reach
+
+
+def test_camb_translation_defaults_neff_when_missing():
+    """A fiducial without Neff/num_nu_massless falls back to the standard Neff (as for CLASS)."""
+    translator = _translator("LCDM")
+    pars = {"Omegam": 0.31, "Omegab": 0.049, "h": 0.67, "ns": 0.96, "mnu": 0.06}
+    pars["num_nu_massive"] = 1
+    translated = translator.changebasis_camb(pars, camb)
+    assert translated["num_nu_massless"] == pytest.approx(boltzmann_code.hardcoded_Neff - 1)
+
+
+def test_camb_translation_accepts_nnu_as_neff_alias():
+    pars = {**_parameters(), "num_nu_massive": 1}
+    pars.pop("Neff")
+    pars["nnu"] = 4.0
+    expected = {**_parameters(), "num_nu_massive": 1, "Neff": 4.0}
+
+    translated_nnu = _translator("LCDM").changebasis_camb(pars, camb)
+    translated_neff = _translator("LCDM").changebasis_camb(expected, camb)
+
+    assert translated_nnu["num_nu_massless"] == pytest.approx(translated_neff["num_nu_massless"])
+    assert translated_nnu["num_nu_massless"] == pytest.approx(4.0 - 1)
+    assert "nnu" not in translated_nnu
+
+
+def test_camb_translation_rejects_both_nnu_and_neff():
+    pars = {**_parameters(), "num_nu_massive": 1, "nnu": 4.0}
+
+    with pytest.raises(ValueError, match="only one of 'nnu' and 'Neff'"):
+        _translator("LCDM").changebasis_camb(pars, camb)

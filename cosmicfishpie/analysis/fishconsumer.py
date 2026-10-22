@@ -1,3 +1,4 @@
+import ast
 import collections
 import copy
 import os
@@ -226,6 +227,7 @@ def fishtable_to_pandas(
     Converts a fisher matrix table to pandas DataFrames.
     This function takes a list of parameters and a FisherAnalysis object, and returns two pandas DataFrames:
     one for relative errors (as percentages) and one for absolute errors. It can also return data for bar plots.
+
     Parameters
     ----------
     paramstab : list
@@ -245,6 +247,7 @@ def fishtable_to_pandas(
         List of fisher matrix names to filter when returning bar plot data. Default is None.
     return_data_bar : bool, optional
         If True, return data formatted for bar plots instead of DataFrames. Default is False.
+
     Returns
     -------
     tuple or dict
@@ -1047,14 +1050,18 @@ def plot_chain_summary(
     blind_params : list, optional
         List of parameter names to blind (exclude) from the plot
 
+    plot_config_kwargs : dict, optional
+        Extra keyword arguments passed to ``chainconsumer.PlotConfig``
+
     Returns
     -------
-    matplotlib.figure.Figure
-        The generated summary plot figure
+    tuple
+        ``(ChainConsumer, matplotlib.figure.Figure)``: the ChainConsumer instance and the
+        generated summary plot figure
 
     Examples
     --------
-    >>> fig = plot_chain_summary(
+    >>> c, fig = plot_chain_summary(
     ...     chains=[chain1, chain2],
     ...     chain_names=['MCMC Run 1', 'MCMC Run 2'],
     ...     truth_values=fiducial_values,
@@ -1104,7 +1111,29 @@ def plot_chain_summary(
 
 
 def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
-    """Load Nautilus chains from a text file."""
+    """Load Nautilus chains from a text file.
+
+    The file is the one written by ``NautilusSampler``, with columns
+    ``<params...> weights loglike``. The last two columns are returned as ``weight`` and
+    ``posterior``. Note that ``posterior`` holds the log-likelihood stored by the sampler (the
+    name is kept for ChainConsumer and backwards compatibility); it equals the log-posterior
+    only for flat priors.
+
+    Parameters
+    ----------
+    filename : str
+        Path to the chain ``.txt`` file.
+    param_cols : list or dict
+        Names of the sampled parameters, in the column order of the file (a dict is
+        converted to its keys). Read them from the chain header if unsure.
+    log_weights : bool, optional
+        If True, the weight column holds log-weights and is exponentiated.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Samples with non-zero weight.
+    """
     if isinstance(param_cols, dict):
         param_cols = list(param_cols.keys())
     elif not isinstance(param_cols, list):
@@ -1142,7 +1171,7 @@ def parse_log_param(log_file_path):
                     param_name = line.split("['")[1].split("']")[0]
                     values_str = line.split("=")[1].strip()
                     try:
-                        values = eval(values_str)
+                        values = ast.literal_eval(values_str)
                         truth_values[param_name] = values[0]
                     except Exception as e:
                         print(
@@ -1175,14 +1204,14 @@ def load_montepython_chains(
     base_path : str
         Path to the folder containing chains and log.param
     chain_root : str
-        Root name of the chain files (e.g., "2024-09-11_200000_")
+        Root name of the chain files (e.g., ``"2024-09-11_200000_"``)
     num_chains : int
         Number of chains to load
     burn_in : float, optional
         Fraction of initial chain to remove (default: 0.3)
     param_names : list, optional
         List of parameter names. If None, will try to read from '.paramnames' file
-    param_conversion_dict : dict, optional
+    param_names_conversion_dict : dict, optional
         Dictionary to convert parameter names (e.g., {'omega_cdm': 'wc'})
     derived_params : dict, optional
         Dictionary of derived parameters to compute. Each key is the new parameter name

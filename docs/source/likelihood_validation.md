@@ -1,4 +1,4 @@
-# Likelihood Validation
+# Likelihood validation
 
 ## Scope
 
@@ -28,11 +28,11 @@ are marginal Fisher forecasts and lighter contours are Nautilus posterior
 samples. WL is blue, GCsp is green, and the joint result is orange. Dashed
 lines mark the fiducial cosmology.
 
-### Weak Lensing
+### Weak lensing
 
 ![](_static/likelihood_validation/wl_gcsp_symbolic_euclid_64cpu_wl.png)
 
-### Spectroscopic Galaxy Clustering
+### Spectroscopic galaxy clustering
 
 ![](_static/likelihood_validation/wl_gcsp_symbolic_euclid_64cpu_gcsp.png)
 
@@ -55,7 +55,7 @@ of the retained chains, this validates the tested WL, GCsp, and joint wedge
 likelihood implementations against their corresponding marginal Fisher
 forecasts.
 
-## Computational Resources
+## Computational resources
 
 Each probe was submitted as an independent Slurm job with `CPUS_PER_TASK=64`.
 The case runner passed all 64 allocated CPUs to Nautilus as multiprocessing

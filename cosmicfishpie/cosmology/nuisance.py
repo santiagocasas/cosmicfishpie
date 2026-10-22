@@ -383,7 +383,7 @@ class Nuisance:
 
     def IM_bias_fitting(self, z):
         """
-        IM 21cm HI bias function from http://arxiv.org/abs/2006.05996
+        IM 21cm HI bias function from https://arxiv.org/abs/2006.05996
         """
         c1 = self.IMbiasparams["bI_c1"]
         c2 = self.IMbiasparams["bI_c2"]

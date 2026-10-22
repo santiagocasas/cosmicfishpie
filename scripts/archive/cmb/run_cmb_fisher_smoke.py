@@ -13,7 +13,7 @@ Examples
 --------
 CAMB CMB_T+E quick smoke:
 
-  uv run python scripts/run_cmb_fisher_smoke.py --lmax 300 --compare-dir scripts/benchmark_results
+  uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py --lmax 300 --compare-dir scripts/benchmark_results
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from cosmicfishpie.fishermatrix import cosmicfish
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[3]
 
 
 def _timestamp_id() -> str:

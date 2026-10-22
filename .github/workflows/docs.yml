@@ -1,0 +1,98 @@
+name: Docs
+
+# Build the Sphinx documentation and publish it to the `docs/` folder of the
+# `gh-pages` branch (https://www.santicasas.space/cosmicfishpie/docs/).
+# Everything else on `gh-pages` (landing page, `dashboard/`) is left untouched.
+# Pull requests are only build-checked by the `docs` job in main.yml.
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+# Only one publish at a time so concurrent pushes to gh-pages cannot race.
+concurrency:
+  group: docs-publish
+  cancel-in-progress: false
+
+env:
+  PAGES_BRANCH: gh-pages
+  PAGES_SUBPATH: docs
+
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --extra docs
+
+      - name: Build documentation (warnings are errors)
+        run: uv run sphinx-build -W --keep-going -b html docs/source docs/build/html
+
+      - name: Upload built site
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-html
+          path: docs/build/html
+          if-no-files-found: error
+
+  publish:
+    name: Publish to gh-pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download built site
+        uses: actions/download-artifact@v8
+        with:
+          name: docs-html
+          path: site
+
+      - name: Check out gh-pages
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.PAGES_BRANCH }}
+          path: pages
+          fetch-depth: 1
+          # A PAT is needed to trigger legacy branch-based Pages publication.
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+
+      - name: Replace ${{ env.PAGES_SUBPATH }}/ and commit
+        working-directory: pages
+        run: |
+          touch .nojekyll
+          rm -rf "$PAGES_SUBPATH"
+          mkdir -p "$PAGES_SUBPATH"
+          cp -R ../site/. "$PAGES_SUBPATH"/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "Documentation is already up to date on $PAGES_BRANCH."
+            exit 0
+          fi
+          git commit -m "docs: publish ${GITHUB_REF_NAME} (${GITHUB_SHA::7})"
+          git push origin "HEAD:$PAGES_BRANCH"

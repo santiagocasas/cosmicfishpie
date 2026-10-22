@@ -1,0 +1,6 @@
+print\_table
+============
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: print_table

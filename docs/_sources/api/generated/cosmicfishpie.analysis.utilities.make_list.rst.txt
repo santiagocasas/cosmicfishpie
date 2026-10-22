@@ -1,0 +1,6 @@
+make\_list
+==========
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: make_list

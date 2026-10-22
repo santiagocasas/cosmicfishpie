@@ -1,0 +1,8 @@
+FishConsumer
+============
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autoclass:: FishConsumer
+   :members:
+   :show-inheritance:

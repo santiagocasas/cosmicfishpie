@@ -1,0 +1,31 @@
+cosmicfishpie.CMBsurvey.CMB\_cov
+================================
+
+.. automodule:: cosmicfishpie.CMBsurvey.CMB_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      CMBCov
+   
+   
+
+   
+   
+   
+
+
+

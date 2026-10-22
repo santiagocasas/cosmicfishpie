@@ -1,0 +1,6 @@
+eliminate\_columns\_rows
+========================
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_operations
+
+.. autofunction:: eliminate_columns_rows

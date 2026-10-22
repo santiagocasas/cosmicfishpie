@@ -1,0 +1,6 @@
+make\_triangle\_plot
+====================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: make_triangle_plot

@@ -1,0 +1,32 @@
+cosmicfishpie.cosmology.ee2
+===========================
+
+.. automodule:: cosmicfishpie.cosmology.ee2
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      class_ee2_boost
+      class_ee2_parameters
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

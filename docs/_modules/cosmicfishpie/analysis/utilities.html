@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cosmicfishpie.analysis.utilities &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/cosmicfishpie/analysis/utilities';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">cosmicfishpie.analysis.utilities</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for cosmicfishpie.analysis.utilities</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ----------------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of CosmicFish.</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (C) 2015-2017 by the CosmicFish authors</span>
+<span class="c1">#</span>
+<span class="c1"># The CosmicFish code is free software;</span>
+<span class="c1"># You can use it, redistribute it, and/or modify it under the terms</span>
+<span class="c1"># of the GNU General Public License as published by the Free Software Foundation;</span>
+<span class="c1"># either version 3 of the License, or (at your option) any later version.</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE at</span>
+<span class="c1"># the top level of the CosmicFish distribution.</span>
+<span class="c1">#</span>
+<span class="c1"># ----------------------------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   :synopsis: A collection of small utilities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ***************************************************************************************</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">it</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats.distributions</span><span class="w"> </span><span class="kn">import</span> <span class="n">chi2</span>
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="num_to_mant_exp">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.num_to_mant_exp.html#cosmicfishpie.analysis.utilities.num_to_mant_exp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">num_to_mant_exp</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns the (base 10) exponent and mantissa of a number.</span>
+
+<span class="sd">    :param num: input number.</span>
+<span class="sd">    :type num: :class:`int` or :class:`float`</span>
+<span class="sd">    :return: tuple (mantissa, exponent) of :class:`int` containing the mantissa and the exponent of the input number.</span>
+<span class="sd">    :rtype: tuple</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">exponent</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="p">)))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># Case of log10(0)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Convention: 0 = 0*10^0</span>
+    <span class="n">mantissa</span> <span class="o">=</span> <span class="n">num</span> <span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="n">exponent</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">mantissa</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="mant_exp_to_num">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.mant_exp_to_num.html#cosmicfishpie.analysis.utilities.mant_exp_to_num">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mant_exp_to_num</span><span class="p">(</span><span class="n">mant_exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns a float built with the given (base 10) mantissa and exponent.</span>
+
+<span class="sd">    :param mant_exp: (mantissa, exponent) a tuple of two :class:`int` with the mantissa and the exponent of the input number.</span>
+<span class="sd">    :type mant_exp: tuple</span>
+<span class="sd">    :return: output number built as mantissa*10**exponent.</span>
+<span class="sd">    :rtype: :class:`float`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">mant_exp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">mant_exp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="nice_number">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.nice_number.html#cosmicfishpie.analysis.utilities.nice_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nice_number</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns a nice number built with num. This is useful to build</span>
+<span class="sd">    the axes of a plot.</span>
+<span class="sd">    The nice number is built by taking the first digit of the number.</span>
+
+<span class="sd">    :param num: input number</span>
+<span class="sd">    :type num: :class:`float` or :class:`int`</span>
+<span class="sd">    :param mode: (optional) operation to use to build the nice number</span>
+
+<span class="sd">            | 0 -- use ceil</span>
+<span class="sd">            | 1 -- use round</span>
+<span class="sd">            | 2 -- use floor</span>
+
+<span class="sd">    :type mode: :class:`int`</span>
+<span class="sd">    :param digits: input number of digits to keep</span>
+<span class="sd">    :type digits: :class:`int`</span>
+<span class="sd">    :return: a nice number!</span>
+<span class="sd">    :rtype: :class:`float`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># extract mantissa and exponent:</span>
+    <span class="n">mant</span><span class="p">,</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">num_to_mant_exp</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="c1"># select the working mode and do the truncation:</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">mant</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mant</span><span class="p">,</span> <span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mant</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong worging mode for Fisher_utilities.nice_number&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mant_exp_to_num</span><span class="p">((</span><span class="n">mant</span><span class="p">,</span> <span class="n">exp</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># def nice_number( num, mode=0 ):</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    This function returns a nice number built with num. This is useful to build the axes of a plot.</span>
+<span class="c1">#    The nice number is built by taking the first digit of the number.</span>
+<span class="c1">#</span>
+<span class="c1">#    :param num: input number</span>
+<span class="c1">#    :type num: :class:`float` or :class:`int`</span>
+<span class="c1">#    :param mode: (optional) operation to use to build the nice number</span>
+<span class="c1">#</span>
+<span class="c1">#            | 0 -- use ceil</span>
+<span class="c1">#            | 1 -- use round</span>
+<span class="c1">#            | 2 -- use floor</span>
+<span class="c1">#</span>
+<span class="c1">#    :type mode: :class:`int`</span>
+<span class="c1">#    :return: a nice number!</span>
+<span class="c1">#    :rtype: :class:`float`</span>
+<span class="c1">#</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    # extract the mantissa</span>
+<span class="c1">#    exponent = num_to_mant_exp( num )[1]</span>
+<span class="c1">#    # select the working mode</span>
+<span class="c1">#    if ( mode==0 ):</span>
+<span class="c1">#        mantissa = np.ceil( num_to_mant_exp( num )[0])</span>
+<span class="c1">#    elif ( mode==1 ):</span>
+<span class="c1">#        mantissa = np.round( num_to_mant_exp( num )[0])</span>
+<span class="c1">#    elif ( mode==2 ):</span>
+<span class="c1">#        mantissa = np.floor( num_to_mant_exp( num )[0])</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        raise ValueError( &#39;Wrong worging mode for Fisher_utilities.nice_number&#39; )</span>
+<span class="c1">#</span>
+<span class="c1">#    return mant_exp_to_num( ( mantissa, exponent ) )</span>
+
+<span class="n">v_nice_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">nice_number</span><span class="p">)</span>
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="significant_digits">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.significant_digits.html#cosmicfishpie.analysis.utilities.significant_digits">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">significant_digits</span><span class="p">(</span><span class="n">num_err</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns the number in num_err at the precision of error.</span>
+
+<span class="sd">    :param num_err: (number, error) input number and error in a tuple.</span>
+<span class="sd">    :type num_err: tuple</span>
+<span class="sd">    :param mode: (optional) operation to use to build the number</span>
+
+<span class="sd">            | 0 -- use ceil</span>
+<span class="sd">            | 1 -- use round</span>
+<span class="sd">            | 2 -- use floor</span>
+
+<span class="sd">    :type mode: :class:`int`</span>
+<span class="sd">    :param digits: input number of digits to keep</span>
+<span class="sd">    :type digits: :class:`int`</span>
+<span class="sd">    :return: a number with all the significant digits according to error</span>
+<span class="sd">    :rtype: :class:`float`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">num_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">num_err</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">number_mant_exp</span> <span class="o">=</span> <span class="n">num_to_mant_exp</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="n">error_mant_exp</span> <span class="o">=</span> <span class="n">num_to_mant_exp</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">mant_exp_to_num</span><span class="p">((</span><span class="n">number_mant_exp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">number_mant_exp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">error_mant_exp</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="c1"># select the working mode</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">temp</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">temp</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">digits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Fisher_utilities.significant_digits called with mode=&quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot; legal values are 0,1,2&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">temp</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">error_mant_exp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="confidence_coefficient">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.confidence_coefficient.html#cosmicfishpie.analysis.utilities.confidence_coefficient">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">confidence_coefficient</span><span class="p">(</span><span class="n">confidence_level</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns the number of sigmas given a confidence level.</span>
+<span class="sd">    See page 815 of Numerical Recipes, Press et al., 2007</span>
+<span class="sd">    Uses the inverse CDF of the chi squared distribution</span>
+<span class="sd">    :param confidence_level: desired confidence level. Between 0 and 1.</span>
+<span class="sd">    :type confidence_level: :class:`float`</span>
+<span class="sd">    :return: the coefficient (number of sigmas) for the desired confidence level.</span>
+<span class="sd">    :rtype: :class:`float`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chi2</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">confidence_level</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">dimensions</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="print_table">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.print_table.html#cosmicfishpie.analysis.utilities.print_table">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function prints on the screen a nicely formatted table.</span>
+
+<span class="sd">    :param table: a 2D list that should be printed on the screen.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># transpose the table:</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="p">))))</span>
+    <span class="c1"># get the column width:</span>
+    <span class="n">col_width</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="p">)]</span>
+    <span class="c1"># print it to screen:</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;{:</span><span class="si">{}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">col_width</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; |&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="make_list">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.make_list.html#cosmicfishpie.analysis.utilities.make_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_list</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if elements is a list.</span>
+<span class="sd">    If yes returns elements without modifying it.</span>
+<span class="sd">    If not creates and return a list with elements inside.</span>
+
+<span class="sd">    :param elements: an element or a list of elements</span>
+<span class="sd">    :return: a list containing elements if elements is not a list, elements otherwise.</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">elements</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">elements</span><span class="p">]</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="grouper">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.grouper.html#cosmicfishpie.analysis.utilities.grouper">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">grouper</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This small function regroups a list in sub lists of n elements</span>
+
+<span class="sd">    :param n: an element or a list of elements</span>
+<span class="sd">    :param iterable: input list</span>
+<span class="sd">    :param fillvalue: value to put to fill if no element is present</span>
+<span class="sd">    :return: a list of list containing grouped elements</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">izip_longest</span><span class="p">(</span><span class="n">fillvalue</span><span class="o">=</span><span class="n">fillvalue</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="find_nearest">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.find_nearest.html#cosmicfishpie.analysis.utilities.find_nearest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_nearest</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function finds the index of the element in array which is nearest to ValueError</span>
+<span class="sd">    :param array:  an array of numbers</span>
+<span class="sd">    :param value:  a number</span>
+<span class="sd">    :return: the index in array nearest to value</span>
+<span class="sd">    :rtype:   int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">array</span> <span class="o">-</span> <span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">idx</span></div>
+
+
+
+<div class="viewcode-block" id="mkdirp">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.mkdirp.html#cosmicfishpie.analysis.utilities.mkdirp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mkdirp</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function creates the directory dirpath if it is not found</span>
+<span class="sd">    :param dirpath: string with the path of the directory to be created</span>
+<span class="sd">    :return:  None</span>
+<span class="sd">    :rtype:   NoneType</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+    <span class="c1"># create directory if it does not exist</span>
+    <span class="k">if</span> <span class="n">outdir</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output root is on working directory&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; directory created&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;  exists already&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="rel_median_error">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.rel_median_error.html#cosmicfishpie.analysis.utilities.rel_median_error">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rel_median_error</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">percentage</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns the percentage difference compared to median of an array for each element</span>
+<span class="sd">    :param array:  numpy array of numbers</span>
+<span class="sd">    :optional_param percentage: if set to True, returns percentage difference. Default: True</span>
+<span class="sd">    :return: difference of each element compared to median of array</span>
+<span class="sd">    :rtype: Numpy array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prefact</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">percentage</span><span class="p">:</span>
+        <span class="n">prefact</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">relerr</span> <span class="o">=</span> <span class="n">prefact</span> <span class="o">*</span> <span class="p">(</span><span class="n">array</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">/</span> <span class="n">median</span>
+    <span class="k">return</span> <span class="n">relerr</span></div>
+
+
+
+<div class="viewcode-block" id="rel_error_to_index">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.rel_error_to_index.html#cosmicfishpie.analysis.utilities.rel_error_to_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rel_error_to_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">percentage</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function returns the percentage difference compared to median of an array for each element</span>
+<span class="sd">    :param array:  numpy array of numbers</span>
+<span class="sd">    :optional_param percentage: if set to True, returns percentage difference. Default: True</span>
+<span class="sd">    :return: difference of each element compared to median of array</span>
+<span class="sd">    :rtype: Numpy array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prefact</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">percentage</span><span class="p">:</span>
+        <span class="n">prefact</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">compare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">relerr</span> <span class="o">=</span> <span class="n">prefact</span> <span class="o">*</span> <span class="p">(</span><span class="n">array</span> <span class="o">-</span> <span class="n">compare</span><span class="p">)</span> <span class="o">/</span> <span class="n">compare</span>
+    <span class="k">return</span> <span class="n">relerr</span></div>
+
+
+
+<div class="viewcode-block" id="CosmicFish_write_header">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.utilities.CosmicFish_write_header.html#cosmicfishpie.analysis.utilities.CosmicFish_write_header">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">CosmicFish_write_header</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function prints to screen the CosmicFish header.</span>
+<span class="sd">    To be called at the beginning of the applications.</span>
+
+<span class="sd">    :param name: string that contains the name of the program. This will be printed</span>
+<span class="sd">        along the CosmicFish header.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   _____               _     _____     __  &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  / ___/__  ___ __ _  (_)___/ __(_)__ / /  &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; / /__/ _ </span><span class="se">\\</span><span class="s2">(_-&lt;/  &#39; </span><span class="se">\\</span><span class="s2">/ / __/ _// (_-&lt;/ _ </span><span class="se">\\</span><span class="s2"> &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; </span><span class="se">\\</span><span class="s2">___/</span><span class="se">\\</span><span class="s2">___/___/_/_/_/_/</span><span class="se">\\</span><span class="s2">__/_/ /_/___/_//_/ Py Lib&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; This application was developed using the CosmicFish code.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;**************************************************************&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

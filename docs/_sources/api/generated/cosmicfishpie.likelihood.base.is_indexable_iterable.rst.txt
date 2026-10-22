@@ -1,0 +1,6 @@
+is\_indexable\_iterable
+=======================
+
+.. currentmodule:: cosmicfishpie.likelihood.base
+
+.. autofunction:: is_indexable_iterable

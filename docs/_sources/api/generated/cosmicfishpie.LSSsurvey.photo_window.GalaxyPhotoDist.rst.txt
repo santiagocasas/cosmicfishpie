@@ -1,0 +1,8 @@
+GalaxyPhotoDist
+===============
+
+.. currentmodule:: cosmicfishpie.LSSsurvey.photo_window
+
+.. autoclass:: GalaxyPhotoDist
+   :members:
+   :show-inheritance:

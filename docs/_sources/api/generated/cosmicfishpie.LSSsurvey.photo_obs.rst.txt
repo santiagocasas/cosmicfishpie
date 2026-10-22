@@ -1,0 +1,41 @@
+cosmicfishpie.LSSsurvey.photo\_obs
+==================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.photo_obs
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      faster_integral_efficiency
+      memo_integral_efficiency
+      much_faster_integral_efficiency
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      ComputeCls
+   
+   
+
+   
+   
+   
+
+
+

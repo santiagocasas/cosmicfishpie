@@ -1,0 +1,8 @@
+misc
+====
+
+.. currentmodule:: cosmicfishpie.utilities.utils
+
+.. autoclass:: misc
+   :members:
+   :show-inheritance:

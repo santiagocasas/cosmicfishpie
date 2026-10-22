@@ -1,0 +1,6 @@
+calc\_y\_range
+==============
+
+.. currentmodule:: cosmicfishpie.analysis.plot_comparison
+
+.. autofunction:: calc_y_range

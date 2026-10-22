@@ -1,0 +1,31 @@
+cosmicfishpie.analysis.fisher\_plotting
+=======================================
+
+.. automodule:: cosmicfishpie.analysis.fisher_plotting
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fisher_plotting
+   
+   
+
+   
+   
+   
+
+
+

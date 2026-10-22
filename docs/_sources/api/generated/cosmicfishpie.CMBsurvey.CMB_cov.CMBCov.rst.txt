@@ -1,0 +1,8 @@
+CMBCov
+======
+
+.. currentmodule:: cosmicfishpie.CMBsurvey.CMB_cov
+
+.. autoclass:: CMBCov
+   :members:
+   :show-inheritance:

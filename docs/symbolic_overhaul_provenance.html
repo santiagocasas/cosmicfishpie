@@ -1,0 +1,905 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Symbolic overhaul: implementation provenance &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=bb516dca"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'symbolic_overhaul_provenance';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Photometric pipeline optimization results" href="photometric_optimization_results.html" />
+    <link rel="prev" title="Historical snapshot: CLASS vs CAMB w0waCDM deviation investigation" href="validation_comparison.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Validation and tools</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="backend_validation.html">Backend validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="default_vs_hp_profiles.html">Default vs high-precision Boltzmann profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_validation.html">Likelihood validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neutrino_cb_regression.html">Photometric neutrino-response regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="syren_ns_response.html">SYREN-NEW spectral-tilt response and photometric Fisher discrepancies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts_reference.html">Scripts reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Historical records</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="validation_comparison.html">Historical snapshot: CLASS vs CAMB w0waCDM deviation investigation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Symbolic overhaul: implementation provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photometric_optimization_results.html">Photometric pipeline optimization results</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicfishpie/dashboard/">Validation dashboard</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="development.html" class="nav-link">Development</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Symbolic overhaul: implementation provenance</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="symbolic-overhaul-implementation-provenance">
+<h1>Symbolic overhaul: implementation provenance<a class="headerlink" href="#symbolic-overhaul-implementation-provenance" title="Link to this heading">#</a></h1>
+<blockquote>
+<div><p>This page preserves the original design, decisions, implementation notes, and
+remaining validation work for the symbolic-backend overhaul. The status below is
+a project record, not a claim that every roadmap item or scientific comparison is
+complete.</p>
+</div></blockquote>
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">#</a></h2>
+<p>Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).</p>
+</section>
+<section id="design-decisions">
+<h2>Design decisions<a class="headerlink" href="#design-decisions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Total matter first: CDM+baryon (<code class="docutils literal notranslate"><span class="pre">cb</span></code>) requests are rejected explicitly, not silently approximated.</p></li>
+<li><p>Validation proceeds through spectra → derivatives → Fisher forecasts.</p></li>
+<li><p>New symbolic is the default; an explicit legacy mode is kept. Wider-SYREN and baryonic corrections are later work (see <a class="reference internal" href="#final-optional-additions">§7</a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">euclidemu2</span></code> is an optional <code class="docutils literal notranslate"><span class="pre">emulators</span></code> extra. Its native grid spans approximately 8.73e-3 - 9.41 h/Mpc; each call accepts at most 100 redshifts.</p></li>
+<li><p>CLASS+EE2 uses <code class="docutils literal notranslate"><span class="pre">P_nl</span> <span class="pre">=</span> <span class="pre">P_lin_CLASS</span> <span class="pre">x</span> <span class="pre">B_EE2</span></code>, reusing the same total-matter boost for cb as an explicit approximation. The top-level <code class="docutils literal notranslate"><span class="pre">NONLINEAR.model</span></code> YAML selector defaults to <code class="docutils literal notranslate"><span class="pre">class_native</span></code> and is never passed to CLASS itself.</p></li>
+<li><p>EE2 k is in h/Mpc (CLASS k in 1/Mpc, divided by h). Below the native grid the boost is unity; above it the adapter raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>. CLASS’s padded redshift grid must fit EE2’s z = 0-10 range.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">class/syren_new_minimal_matched.yaml</span></code> requires <code class="docutils literal notranslate"><span class="pre">output:</span> <span class="pre">mPk,mTk</span></code>; <code class="docutils literal notranslate"><span class="pre">changebasis_class()</span></code> has an opt-in <code class="docutils literal notranslate"><span class="pre">three_degenerate</span></code> neutrino translation via <code class="docutils literal notranslate"><span class="pre">PARAMETER_TRANSLATION</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_analysis_context</span></code> is the spectrum-only configuration API; <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code> is for derivatives/Fisher computations. Call <code class="docutils literal notranslate"><span class="pre">likelihood.loglike(param_dict={})</span></code> by keyword.</p></li>
+</ul>
+</section>
+<section id="status-at-implementation-time">
+<h2>Status at implementation time<a class="headerlink" href="#status-at-implementation-time" title="Link to this heading">#</a></h2>
+<p><strong>Completed</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SyrenNewProvider</span></code> implemented in <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/symbolic_new.py</span></code>; wired into <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code> via <code class="docutils literal notranslate"><span class="pre">input_type='symbolic'</span></code> dispatch; uses Astropy backgrounds, physical-unit <code class="docutils literal notranslate"><span class="pre">Pmm</span></code>, total-matter only.</p></li>
+<li><p>SYREN-NEW GCsp and WL Fisher matrices produced and matched CLASS/symbolic YAML profiles, the <code class="docutils literal notranslate"><span class="pre">three_degenerate</span></code> CLASS neutrino scheme, and aggregate derivative plotting put in place.</p></li>
+<li><p>3-point GCsp derivatives run through the <code class="docutils literal notranslate"><span class="pre">derivatives.py</span></code> engine for all 4 matched configs (CLASS LCDM/w0wa, SYREN LCDM/w0wa); all derivatives finite.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scripts/likelihood/diagnostics/run_syren_new_likelihoods.py</span></code> created; fiducial <code class="docutils literal notranslate"><span class="pre">loglike(param_dict={})</span></code> verified (GCsp and WL+GCph both finite); parameter responsiveness confirmed.</p></li>
+<li><p>CLASS+EE2 implemented in <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/ee2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code>, with a new <code class="docutils literal notranslate"><span class="pre">class/ee2_boost.yaml</span></code> profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.</p></li>
+<li><p>Focused adapter and CLASS+EE2 integration tests passed for both <code class="docutils literal notranslate"><span class="pre">A_s</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma8</span></code> normalization.</p></li>
+</ul>
+<p><strong>Active / next</strong></p>
+<ol class="arabic simple">
+<li><p>Review the CLASS+EE2 integration in representative spectra/derivatives/forecasts as the broader comparison work proceeds.</p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">class_config_yaml=cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code> with <code class="docutils literal notranslate"><span class="pre">code=class</span></code> and <code class="docutils literal notranslate"><span class="pre">nonlinear=True</span></code> for a CLASS+EE2 comparison.</p></li>
+<li><p>Compare spectra, derivatives and forecasts against the matched CLASS HMcode and SYREN-NEW configurations.</p></li>
+</ol>
+</section>
+<section id="relevant-files">
+<h2>Relevant files<a class="headerlink" href="#relevant-files" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/ee2.py</span></code>: CLASS to EE2 parameter mapping and boost grid adapter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/cosmology.py</span></code>: <code class="docutils literal notranslate"><span class="pre">class_setparams()</span></code> selector and <code class="docutils literal notranslate"><span class="pre">class_results()</span></code> multiplication.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code>: opt-in CLASS+EE2 profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/cosmology_test.py</span></code>: unit and integration checks.</p></li>
+</ul>
+<p>The plan was to make SYREN-NEW the default symbolic backend, separate nonlinear modelling from the underlying cosmology calculation, and validate the result against CLASS-based references through representative forecasts, per the design decisions above. The sections below describe the wider roadmap that followed from that plan.</p>
+</section>
+<section id="design-cosmology-provider-nonlinear-prescription">
+<h2>1. Design: cosmology provider + nonlinear prescription<a class="headerlink" href="#design-cosmology-provider-nonlinear-prescription" title="Link to this heading">#</a></h2>
+<p>Keep the public cosmology interface—<code class="docutils literal notranslate"><span class="pre">Pmm</span></code>, <code class="docutils literal notranslate"><span class="pre">Hubble</span></code>, distances, growth, and so on—but separate its internal responsibilities:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Cosmological parameters
+        │
+        ▼
+Background + linear-spectrum provider
+        │
+        ▼
+Nonlinear prescription
+  ├─ native calculation
+  ├─ direct nonlinear emulator
+  └─ linear power × nonlinear boost
+        │
+        ▼
+Optional baryonic correction
+        │
+        ▼
+Existing CosmicFishPie observables and forecasts
+</pre></div>
+</div>
+<p>This accommodates the requested combinations:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Configuration</p></th>
+<th class="head"><p>Linear power</p></th>
+<th class="head"><p>Nonlinear power</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>New symbolic default</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">linear_new</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">syren_new</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>CLASS + EuclidEmu2</p></td>
+<td><p>CLASS</p></td>
+<td><p>CLASS linear × EE2 boost</p></td>
+</tr>
+<tr class="row-even"><td><p>Legacy symbolic</p></td>
+<td><p>Existing implementation</p></td>
+<td><p>Existing legacy choices</p></td>
+</tr>
+<tr class="row-odd"><td><p>Later: wider symbolic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wider_syren.linear</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wider_syren.halofit</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Later: baryonic symbolic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">linear_new</span></code></p></td>
+<td><p>SYREN-NEW × baryonic correction</p></td>
+</tr>
+<tr class="row-odd"><td><p>Future: MG combination</p></td>
+<td><p>MGCLASS</p></td>
+<td><p>Compatible MG linear power × MG boost</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Each boost must declare what it multiplies.</strong> A nonlinear-to-linear boost and an MG-to-GR nonlinear ratio are different objects. Recording that distinction now enables future MG combinations without assuming every emulator can multiply every spectrum.</p>
+<p>SYREN-NEW remains a <strong>direct nonlinear-spectrum provider</strong>: its implementation evaluates its own linear model internally. We should not pretend it accepts arbitrary CLASS linear power.</p>
+</section>
+<section id="replace-the-symbolic-calculation-completely">
+<h2>2. Replace the symbolic calculation completely<a class="headerlink" href="#replace-the-symbolic-calculation-completely" title="Link to this heading">#</a></h2>
+<p>The main integration point is <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/cosmology.py</span></code>, especially <code class="docutils literal notranslate"><span class="pre">changebasis_symb</span></code>, <code class="docutils literal notranslate"><span class="pre">symbolic_setparams</span></code>, and <code class="docutils literal notranslate"><span class="pre">symbolic_results</span></code>.</p>
+<section id="parameter-handling">
+<h3>Parameter handling<a class="headerlink" href="#parameter-handling" title="Link to this heading">#</a></h3>
+<p>Resolve a consistent parameter set:</p>
+<p>[
+{10^9A_s,\Omega_m,\Omega_b,h,n_s,\Sigma m_\nu,w_0,w_a}.
+]</p>
+<p>Changes include:</p>
+<ul class="simple">
+<li><p>Support flat ΛCDM and (w_0w_a)CDM within the emulator’s supported domain.</p></li>
+<li><p>Include neutrinos when converting between total matter and CDM densities.</p></li>
+<li><p>Use the new amplitude conversions, including their (m_\nu,w_0,w_a) dependence.</p></li>
+<li><p>Preserve a supplied (A_s); avoid the current unnecessary (A_s\to\sigma_8\to A_s) round trip.</p></li>
+<li><p>Define how conflicting amplitude inputs are handled.</p></li>
+<li><p>Reject unsupported cosmological freedom rather than silently ignoring it.</p></li>
+</ul>
+</section>
+<section id="spectra-and-units">
+<h3>Spectra and units<a class="headerlink" href="#spectra-and-units" title="Link to this heading">#</a></h3>
+<p>Evaluate the new linear spectrum <strong>at each redshift</strong>, rather than scaling a (z=0) spectrum with the old scale-independent Colossus growth.</p>
+<p>Preserve CosmicFishPie’s physical-unit interface:</p>
+<p>[
+k_{\rm symbolic}=k_{\rm CFP}/h,\qquad
+P_{\rm CFP}=P_{\rm symbolic}/h^3.
+]</p>
+<p>Internally, use explicit <code class="docutils literal notranslate"><span class="pre">(n_z,</span> <span class="pre">n_k)</span></code> grids and retain the existing interpolation interface.</p>
+</section>
+<section id="background-growth-and-normalization">
+<h3>Background, growth, and normalization<a class="headerlink" href="#background-growth-and-normalization" title="Link to this heading">#</a></h3>
+<p>My recommendation is:</p>
+<ul class="simple">
+<li><p><strong>Astropy backgrounds</strong>, already a dependency, for (H(z)), distances, and density evolution, tabulated once per cosmology.</p></li>
+<li><p>Configure radiation and massive neutrinos explicitly; account for Astropy’s distinction between matter and neutrino densities.</p></li>
+<li><p>Derive growth from the complete new linear spectrum:
+[
+D(k,z)=\sqrt{\frac{P_{\rm lin}(k,z)}{P_{\rm lin}(k,0)}},
+\qquad
+f(k,z)=-(1+z)\frac{\partial\ln D(k,z)}{\partial z}.
+]</p></li>
+<li><p>Compute (\sigma_8(z)) from the linear spectrum, with controlled integration limits and normalization checks.</p></li>
+</ul>
+<p>This keeps growth and normalization consistent with the emulator’s scale dependence. Its internal approximate growth factor alone is insufficient because the final spectrum includes additional redshift-dependent corrections.</p>
+</section>
+<section id="colossus-compatibility">
+<h3>Colossus compatibility<a class="headerlink" href="#colossus-compatibility" title="Link to this heading">#</a></h3>
+<p>The new path will stop creating Colossus cosmologies or using its background/growth routines.</p>
+<p>One source detail matters: <code class="docutils literal notranslate"><span class="pre">linear_new.py</span></code> imports a function from <code class="docutils literal notranslate"><span class="pre">linear.py</span></code>, and that module imports Colossus at module level. Upstream also declares Colossus as a dependency. Therefore, <strong>inactive but still installed</strong> is the appropriate first implementation, matching your compatibility preference.</p>
+</section>
+</section>
+<section id="add-euclidemu2-as-a-reusable-nonlinear-boost">
+<h2>3. Add EuclidEmu2 as a reusable nonlinear boost<a class="headerlink" href="#add-euclidemu2-as-a-reusable-nonlinear-boost" title="Link to this heading">#</a></h2>
+<p>Implement a small adapter around:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ee2</span><span class="o">.</span><span class="n">get_boost</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">redshifts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then construct:</p>
+<p>[
+P_{\rm nl}(k,z)=B_{\rm EE2}(k,z),P_{\rm lin}(k,z).
+]</p>
+<p>For CLASS+EE2:</p>
+<ul class="simple">
+<li><p>Use CosmicFishPie’s existing CLASS linear calculation.</p></li>
+<li><p>Avoid computing native CLASS nonlinear power unnecessarily.</p></li>
+<li><p>Keep CLASS backgrounds and linear growth.</p></li>
+<li><p>Obtain (A_s), densities, and neutrino parameters from the same resolved cosmology.</p></li>
+<li><p>Expose total-matter nonlinear results consistently; do not leave native CLASS cb nonlinear results attached to an EE2-labelled calculation.</p></li>
+<li><p>Import EE2 lazily and provide it as an optional dependency.</p></li>
+</ul>
+<p>The installed EE2 wrapper warrants a little care: it extrapolates custom (k) inputs and has fixed-size native redshift storage. I recommend requesting its native (k) grid, handling interpolation and range policies in our adapter, and chunking redshifts within its capacity.</p>
+<p>All provider choices must travel with the existing immutable run configuration, including metadata and any cache identity.</p>
+</section>
+<section id="set-the-numerical-domain-before-running-forecasts">
+<h2>4. Set the numerical domain before running forecasts<a class="headerlink" href="#set-the-numerical-domain-before-running-forecasts" title="Link to this heading">#</a></h2>
+<p>This is the main scientific constraint to resolve early.</p>
+<p>The SYREN-NEW notebook exercises:</p>
+<ul class="simple">
+<li><p>(0\le z\le3);</p></li>
+<li><p>(0.009\le k\le9,h,{\rm Mpc}^{-1});</p></li>
+<li><p>bounded cosmological parameters, including (0\le\Sigma m_\nu\le0.15) eV.</p></li>
+</ul>
+<p>The installed EE2 boost covers approximately (0.00873)–(9.41,h,{\rm Mpc}^{-1}), while some existing photometric configurations request substantially higher (k).</p>
+<p>The implementation should therefore:</p>
+<ol class="arabic simple">
+<li><p>Distinguish documented emulator validity from the notebook’s sampled test range.</p></li>
+<li><p>Check actual requested scales—including growth defaults, smoothing grids, and (\sigma_8) integration.</p></li>
+<li><p>Define explicit low-/high-(k) behaviour.</p></li>
+<li><p>Validate the <strong>whole derivative stencil</strong>, not just the fiducial cosmology.</p></li>
+<li><p>Use identical physical scale cuts for both sides of each forecast comparison.</p></li>
+</ol>
+<p>For initial forecast acceptance, I recommend a clearly labelled common-domain survey configuration. Full survey settings extending outside that domain require a separately justified extension policy; spline extrapolation must not silently supply it.</p>
+</section>
+<section id="class-only-validation-in-successive-stages">
+<h2>5. CLASS-only validation, in successive stages<a class="headerlink" href="#class-only-validation-in-successive-stages" title="Link to this heading">#</a></h2>
+<section id="stage-a-reproduce-the-notebook-reference">
+<h3>Stage A — Reproduce the notebook reference<a class="headerlink" href="#stage-a-reproduce-the-notebook-reference" title="Link to this heading">#</a></h3>
+<p>Start with a fiducial and a small deterministic set of cosmologies, then extend coverage.</p>
+<p>The CLASS settings need a dedicated profile: the notebook uses three degenerate massive neutrinos and a density convention that differs from CosmicFishPie’s current CLASS mapping. Match those conventions deliberately before attributing residuals to the emulator.</p>
+</section>
+<section id="stage-b-validate-cosmology-outputs">
+<h3>Stage B — Validate cosmology outputs<a class="headerlink" href="#stage-b-validate-cosmology-outputs" title="Link to this heading">#</a></h3>
+<p>Compare:</p>
+<ul class="simple">
+<li><p>linear (P(k,z));</p></li>
+<li><p>(H(z)), comoving and angular-diameter distances;</p></li>
+<li><p>(\sigma_8(z));</p></li>
+<li><p>(D(k,z)) and (f(k,z)).</p></li>
+</ul>
+<p>Separate raw emulator discrepancies from interpolation, integration, and parameter-conversion errors.</p>
+</section>
+<section id="stage-c-validate-nonlinear-power">
+<h3>Stage C — Validate nonlinear power<a class="headerlink" href="#stage-c-validate-nonlinear-power" title="Link to this heading">#</a></h3>
+<p>Use the notebook’s reference:</p>
+<p>[
+\boxed{P_{\rm nl}^{\rm reference}
+=P_{\rm lin}^{\rm CLASS},B_{\rm EE2}}
+]</p>
+<p>Native CLASS HMcode/Halofit can be a separately labelled comparison if useful, but it should not be the sole pass/fail reference for an emulator targeting EE2.</p>
+</section>
+<section id="stage-d-validate-derivatives">
+<h3>Stage D — Validate derivatives<a class="headerlink" href="#stage-d-validate-derivatives" title="Link to this heading">#</a></h3>
+<p>Check parameter responses and finite-difference stability, especially for (m_\nu,w_0,w_a) and amplitude normalization.</p>
+<p>Use absolute or scaled residuals where derivatives approach zero. Agreement in spectra does not guarantee agreement in their derivatives.</p>
+</section>
+<section id="stage-e-validate-representative-forecasts">
+<h3>Stage E — Validate representative forecasts<a class="headerlink" href="#stage-e-validate-representative-forecasts" title="Link to this heading">#</a></h3>
+<p>Run matched, total-matter cases for:</p>
+<ul class="simple">
+<li><p>photometric observables and Fisher matrices;</p></li>
+<li><p>spectroscopic observables and Fisher matrices.</p></li>
+</ul>
+<p>Reuse <code class="docutils literal notranslate"><span class="pre">scripts/validation/run_fisher_compare_backends.py</span></code> and the current reporting pipeline (see <a class="reference internal" href="scripts_reference.html"><span class="std std-doc">scripts reference</span></a>). Compare observable derivatives before interpreting differences in marginalized errors.</p>
+<p>Define acceptance thresholds separately for each stage before the formal campaign. Any slightly different CLASS settings and survey cuts should be recorded alongside the results.</p>
+<p><strong>The existing CAMB–CLASS validation remains supporting evidence.</strong> The new campaign establishes consistency with the chosen CLASS-based reference; it does not automatically establish agreement for every earlier nonlinear prescription or parameter setting.</p>
+</section>
+</section>
+<section id="dashboard-tests-and-dependency-integration">
+<h2>6. Dashboard, tests, and dependency integration<a class="headerlink" href="#dashboard-tests-and-dependency-integration" title="Link to this heading">#</a></h2>
+<p>Extend the current validation machinery to record:</p>
+<ul class="simple">
+<li><p>background and linear provider;</p></li>
+<li><p>nonlinear prescription and optional correction;</p></li>
+<li><p>tracer, amplitude basis, neutrino conventions, and domain policy;</p></li>
+<li><p>package revisions and resolved numerical settings;</p></li>
+<li><p>spectrum, derivative, observable, and Fisher metrics.</p></li>
+</ul>
+<p>Relevant files include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/config.py</span></code> and <code class="docutils literal notranslate"><span class="pre">configs/context.py</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">configs/default_boltzmann_yaml_files/symbolic/</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scripts/validation/run_fisher_compare_backends.py</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scripts/validation/render_validation_dashboard.py</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scripts/validation/configs/</span></code>;</p></li>
+<li><p>focused cosmology and runtime-context tests.</p></li>
+</ul>
+<p>Software tests should cover units, shape/order handling, nonlinear toggles, unsupported cb requests, amplitude conversion, range handling, and configuration isolation.</p>
+<p>A useful finding: the current project pin already matches the local upstream commit containing these new modules. We should verify packaging and align dependency declarations rather than assume an upstream version bump is necessary.</p>
+</section>
+<section id="final-optional-additions">
+<h2>7. Final optional additions<a class="headerlink" href="#final-optional-additions" title="Link to this heading">#</a></h2>
+<section id="wider-syren">
+<h3>Wider SYREN<a class="headerlink" href="#wider-syren" title="Link to this heading">#</a></h3>
+<p>Add it as an explicit <strong>ΛCDM-only</strong> option, with its own parameter/domain metadata, linear spectrum, and Halofit calculation. Its wider priors do not extend SYREN-NEW’s massive-neutrino or dynamical-dark-energy support.</p>
+</section>
+<section id="baryonic-corrections">
+<h3>Baryonic corrections<a class="headerlink" href="#baryonic-corrections" title="Link to this heading">#</a></h3>
+<p>Add a final correction stage:</p>
+<p>[
+P_{\rm nl,baryonic}=S_{\rm baryon},P_{\rm nl,DMO}.
+]</p>
+<p>Expose the hydro-model choice and feedback parameters. Keep the supplied scatter estimate separate from the deterministic spectrum; incorporating it into forecast covariance would be a further feature.</p>
+<p>As requested, these final options receive integration checks, not another scientific-validation campaign.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="implementation-order">
+<h2>Implementation order<a class="headerlink" href="#implementation-order" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Parameter, unit, capability, and domain contracts.</strong></p></li>
+<li><p><strong>New symbolic spectra plus Colossus-free background/growth calculation.</strong></p></li>
+<li><p><strong>Composable nonlinear interface and CLASS+EE2 adapter.</strong></p></li>
+<li><p><strong>CLASS validation: cosmology outputs → derivatives → forecasts.</strong></p></li>
+<li><p><strong>Dashboard integration and default/legacy documentation.</strong></p></li>
+<li><p><strong>Wider SYREN, then baryonic corrections.</strong></p></li>
+</ol>
+<p>The most important early milestone is a complete new symbolic cosmology object—not merely matching (P(k))—with consistent backgrounds, growth, normalization, and explicit numerical coverage. Once that is established, EE2 and the later corrections fit naturally into the same design.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="validation_comparison.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Historical snapshot: CLASS vs CAMB w0waCDM deviation investigation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="photometric_optimization_results.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Photometric pipeline optimization results</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objective">Objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-decisions">Design decisions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#status-at-implementation-time">Status at implementation time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relevant-files">Relevant files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-cosmology-provider-nonlinear-prescription">1. Design: cosmology provider + nonlinear prescription</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replace-the-symbolic-calculation-completely">2. Replace the symbolic calculation completely</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-handling">Parameter handling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spectra-and-units">Spectra and units</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#background-growth-and-normalization">Background, growth, and normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#colossus-compatibility">Colossus compatibility</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-euclidemu2-as-a-reusable-nonlinear-boost">3. Add EuclidEmu2 as a reusable nonlinear boost</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-numerical-domain-before-running-forecasts">4. Set the numerical domain before running forecasts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#class-only-validation-in-successive-stages">5. CLASS-only validation, in successive stages</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-a-reproduce-the-notebook-reference">Stage A — Reproduce the notebook reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-b-validate-cosmology-outputs">Stage B — Validate cosmology outputs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-c-validate-nonlinear-power">Stage C — Validate nonlinear power</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-d-validate-derivatives">Stage D — Validate derivatives</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-e-validate-representative-forecasts">Stage E — Validate representative forecasts</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard-tests-and-dependency-integration">6. Dashboard, tests, and dependency integration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-optional-additions">7. Final optional additions</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wider-syren">Wider SYREN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#baryonic-corrections">Baryonic corrections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-order">Implementation order</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/symbolic_overhaul_provenance.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

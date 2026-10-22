@@ -1,0 +1,6 @@
+rel\_median\_error
+==================
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: rel_median_error

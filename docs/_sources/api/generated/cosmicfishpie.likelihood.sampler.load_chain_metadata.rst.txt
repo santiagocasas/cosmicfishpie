@@ -1,0 +1,6 @@
+load\_chain\_metadata
+=====================
+
+.. currentmodule:: cosmicfishpie.likelihood.sampler
+
+.. autofunction:: load_chain_metadata

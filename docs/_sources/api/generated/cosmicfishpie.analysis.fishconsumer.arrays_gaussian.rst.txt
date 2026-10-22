@@ -1,0 +1,6 @@
+arrays\_gaussian
+================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: arrays_gaussian

@@ -1,0 +1,6 @@
+significant\_digits
+===================
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: significant_digits

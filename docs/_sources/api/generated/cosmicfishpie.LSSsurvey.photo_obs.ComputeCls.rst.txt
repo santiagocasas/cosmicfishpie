@@ -1,0 +1,8 @@
+ComputeCls
+==========
+
+.. currentmodule:: cosmicfishpie.LSSsurvey.photo_obs
+
+.. autoclass:: ComputeCls
+   :members:
+   :show-inheritance:

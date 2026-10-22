@@ -1,0 +1,6 @@
+gaussian
+========
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: gaussian

@@ -1,0 +1,6 @@
+memo\_integral\_efficiency
+==========================
+
+.. currentmodule:: cosmicfishpie.LSSsurvey.photo_obs
+
+.. autofunction:: memo_integral_efficiency

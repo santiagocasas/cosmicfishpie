@@ -1,0 +1,6 @@
+marginalise
+===========
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_operations
+
+.. autofunction:: marginalise

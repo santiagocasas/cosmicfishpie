@@ -1,0 +1,31 @@
+cosmicfishpie.cosmology.symbolic\_new
+=====================================
+
+.. automodule:: cosmicfishpie.cosmology.symbolic_new
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      SyrenNewProvider
+   
+   
+
+   
+   
+   
+
+
+

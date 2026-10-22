@@ -1,0 +1,6 @@
+compute\_chi2\_legendre
+=======================
+
+.. currentmodule:: cosmicfishpie.likelihood.spectro_like
+
+.. autofunction:: compute_chi2_legendre

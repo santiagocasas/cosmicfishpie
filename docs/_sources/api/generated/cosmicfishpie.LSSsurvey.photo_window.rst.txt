@@ -1,0 +1,31 @@
+cosmicfishpie.LSSsurvey.photo\_window
+=====================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.photo_window
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      GalaxyPhotoDist
+   
+   
+
+   
+   
+   
+
+
+

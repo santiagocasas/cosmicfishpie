@@ -1,0 +1,6 @@
+process\_fish\_errs
+===================
+
+.. currentmodule:: cosmicfishpie.analysis.plot_comparison
+
+.. autofunction:: process_fish_errs

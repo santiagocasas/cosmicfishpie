@@ -1,0 +1,6 @@
+n\_sigmas
+=========
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: n_sigmas

@@ -1,0 +1,6 @@
+prepare\_settings\_plot
+=======================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: prepare_settings_plot

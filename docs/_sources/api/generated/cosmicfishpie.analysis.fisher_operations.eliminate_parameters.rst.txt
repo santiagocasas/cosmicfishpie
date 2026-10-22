@@ -1,0 +1,6 @@
+eliminate\_parameters
+=====================
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_operations
+
+.. autofunction:: eliminate_parameters

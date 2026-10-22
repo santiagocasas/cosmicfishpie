@@ -1,0 +1,8 @@
+DerivativeProvider
+==================
+
+.. currentmodule:: cosmicfishpie.fishermatrix.derivatives
+
+.. autoclass:: DerivativeProvider
+   :members:
+   :show-inheritance:

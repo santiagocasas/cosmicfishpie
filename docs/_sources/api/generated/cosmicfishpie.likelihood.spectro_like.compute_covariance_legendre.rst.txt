@@ -1,0 +1,6 @@
+compute\_covariance\_legendre
+=============================
+
+.. currentmodule:: cosmicfishpie.likelihood.spectro_like
+
+.. autofunction:: compute_covariance_legendre

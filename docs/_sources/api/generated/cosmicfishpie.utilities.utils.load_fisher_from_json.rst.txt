@@ -1,0 +1,6 @@
+load\_fisher\_from\_json
+========================
+
+.. currentmodule:: cosmicfishpie.utilities.utils
+
+.. autofunction:: load_fisher_from_json

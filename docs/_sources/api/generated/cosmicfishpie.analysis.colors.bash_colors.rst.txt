@@ -1,0 +1,8 @@
+bash\_colors
+============
+
+.. currentmodule:: cosmicfishpie.analysis.colors
+
+.. autoclass:: bash_colors
+   :members:
+   :show-inheritance:

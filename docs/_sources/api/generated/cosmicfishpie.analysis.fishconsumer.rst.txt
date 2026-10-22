@@ -1,0 +1,61 @@
+cosmicfishpie.analysis.fishconsumer
+===================================
+
+.. automodule:: cosmicfishpie.analysis.fishconsumer
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      add_mathrm
+      arrays_gaussian
+      choose_fish_toplot
+      clamp
+      customize_barh
+      display_colors
+      fishtable_to_pandas
+      gaussian
+      hex2rgb
+      load_Nautilus_chains_from_txt
+      load_montepython_chains
+      log_fidu_to_fidu
+      make_triangle_plot
+      n_sigmas
+      parse_log_param
+      perc_to_abs
+      plot_chain_summary
+      prepare_fishers
+      prepare_settings_plot
+      replace_latex_name
+      replace_latex_style
+      rgb2hex
+      sigma_fidu
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      FishConsumer
+   
+   
+
+   
+   
+   
+
+
+

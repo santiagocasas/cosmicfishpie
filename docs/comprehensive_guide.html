@@ -1,0 +1,948 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Comprehensive guide &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=bb516dca"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'comprehensive_guide';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Derivative methods" href="derivatives.html" />
+    <link rel="prev" title="User guide" href="user_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Comprehensive guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">Derivative methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_sampling.html">Likelihood sampling with Nautilus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmb_benchmarks.html">CMB benchmarks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Comprehensive guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="comprehensive-guide">
+<h1>Comprehensive guide<a class="headerlink" href="#comprehensive-guide" title="Link to this heading">#</a></h1>
+<p>This guide covers the options you can choose when building a Cosmicfishpie
+Fisher forecast, and what you can do with the result. For a runnable end-to-end
+example, start with <a class="reference internal" href="first_forecast.html#first-forecast"><span class="std std-ref">A verified first forecast</span></a>. For
+installation, see the <a class="reference internal" href="installation.html"><span class="std std-doc">installation guide</span></a>.</p>
+<section id="core-concepts">
+<h2>Core concepts<a class="headerlink" href="#core-concepts" title="Link to this heading">#</a></h2>
+<p>A forecast combines:</p>
+<ul class="simple">
+<li><p>a <strong>fiducial cosmology</strong>: the parameter values at which observables are evaluated;</p></li>
+<li><p><strong>free parameters</strong>, each with a finite-difference step size used for derivatives;</p></li>
+<li><p>one or more <strong>observables</strong>, such as <code class="docutils literal notranslate"><span class="pre">GCph</span></code> (photometric galaxy clustering) and
+<code class="docutils literal notranslate"><span class="pre">WL</span></code> (weak lensing); and</p></li>
+<li><p>a <strong>survey specification</strong>, loaded from the packaged YAML files.</p></li>
+</ul>
+</section>
+<section id="choose-a-cosmology-backend">
+<h2>Choose a cosmology backend<a class="headerlink" href="#choose-a-cosmology-backend" title="Link to this heading">#</a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">options[&quot;code&quot;]</span></code> to choose where the cosmology comes from:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">code</span></code></p></th>
+<th class="head"><p>Source</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">camb</span></code></p></td>
+<td><p>CAMB (the default if <code class="docutils literal notranslate"><span class="pre">code</span></code> is not set).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">class</span></code></p></td>
+<td><p>CLASS.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">symbolic</span></code></p></td>
+<td><p>Built-in backend; no Boltzmann solver is run, so it is much faster.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">external</span></code></p></td>
+<td><p>Precomputed tables read from files (see <a class="reference internal" href="#external-backend"><span class="std std-ref">below</span></a>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>CAMB and CLASS are installed together with Cosmicfishpie (as the <code class="docutils literal notranslate"><span class="pre">camb</span></code> and
+<code class="docutils literal notranslate"><span class="pre">classy</span></code> packages), so <code class="docutils literal notranslate"><span class="pre">camb</span></code> and <code class="docutils literal notranslate"><span class="pre">class</span></code> work without extra setup. They run a
+Boltzmann solver for every derivative step and are therefore slower than
+<code class="docutils literal notranslate"><span class="pre">symbolic</span></code>. Omit the YAML path to use the default configurations in
+<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/</span></code>.</p>
+<p>If the fiducial cosmology has no <code class="docutils literal notranslate"><span class="pre">Neff</span></code>, both solvers use the standard value
+3.044. It is a fixed input: it is only varied if you put it in <code class="docutils literal notranslate"><span class="pre">freepars</span></code>.</p>
+<p>The examples in this guide use <code class="docutils literal notranslate"><span class="pre">symbolic</span></code> so that they run quickly. To use
+CAMB or CLASS, change <code class="docutils literal notranslate"><span class="pre">code</span></code>; check a small forecast against your solver
+setup before using it for science.</p>
+</section>
+<section id="observables-and-survey-settings">
+<span id="observables"></span><h2>Observables and survey settings<a class="headerlink" href="#observables-and-survey-settings" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Observable</p></th>
+<th class="head"><p>Meaning</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GCph</span></code>, <code class="docutils literal notranslate"><span class="pre">WL</span></code></p></td>
+<td><p>Euclid photometric clustering and shear</p></td>
+<td><p>Run together or separately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GCsp</span></code></p></td>
+<td><p>Euclid spectroscopic clustering</p></td>
+<td><p>Run as a separate forecast from <code class="docutils literal notranslate"><span class="pre">GCph</span></code>/<code class="docutils literal notranslate"><span class="pre">WL</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMB_T</span></code>, <code class="docutils literal notranslate"><span class="pre">CMB_E</span></code>, <code class="docutils literal notranslate"><span class="pre">CMB_B</span></code></p></td>
+<td><p>CMB temperature and polarisation</p></td>
+<td><p>Use <code class="docutils literal notranslate"><span class="pre">surveyName=&quot;Planck&quot;</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IM</span></code></p></td>
+<td><p>HI intensity mapping</p></td>
+<td><p>Needs <code class="docutils literal notranslate"><span class="pre">survey_name_radio_IM</span></code> (see below).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">FisherMatrix.compute()</span></code> takes the photometric branch if <code class="docutils literal notranslate"><span class="pre">GCph</span></code> or <code class="docutils literal notranslate"><span class="pre">WL</span></code> is
+requested and the spectroscopic branch if <code class="docutils literal notranslate"><span class="pre">GCsp</span></code> is requested, so run these as
+separate forecasts and add the resulting Fisher objects if appropriate.</p>
+<p>For the CMB, do not use <code class="docutils literal notranslate"><span class="pre">TT</span></code>, <code class="docutils literal notranslate"><span class="pre">EE</span></code>, <code class="docutils literal notranslate"><span class="pre">BB</span></code>, <code class="docutils literal notranslate"><span class="pre">TE</span></code>, <code class="docutils literal notranslate"><span class="pre">survey_name=&quot;CMB&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">survey_name_cmb</span></code>; they are not valid configuration names. See
+<a class="reference internal" href="cmb_benchmarks.html"><span class="std std-doc">CMB benchmarks</span></a> for the Planck, Simons Observatory and
+Stage-IV specs, the single-ell-range limitation, and smoke-test scripts.</p>
+<p>For a custom survey, pass a complete <code class="docutils literal notranslate"><span class="pre">specifications</span></code> dictionary to
+<code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code>. Adding a YAML file alone does not register a new survey name.</p>
+<section id="shipped-survey-files">
+<span id="survey-files"></span><h3>Shipped survey files<a class="headerlink" href="#shipped-survey-files" title="Link to this heading">#</a></h3>
+<p>Pass a file name (without <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>) as <code class="docutils literal notranslate"><span class="pre">survey_name_photo</span></code>, <code class="docutils literal notranslate"><span class="pre">survey_name_spectro</span></code>
+or <code class="docutils literal notranslate"><span class="pre">survey_name_radio_IM</span></code>. Cosmicfishpie looks in <code class="docutils literal notranslate"><span class="pre">specs_dir</span></code> first (by default
+<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_survey_specifications</span></code>) and then in
+<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/other_survey_specifications</span></code>, so every shipped file below
+can be selected by name alone.</p>
+<p><code class="docutils literal notranslate"><span class="pre">default_survey_specifications/</span></code></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Photometric-ISTF-Pessimistic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GCph</span></code>/<code class="docutils literal notranslate"><span class="pre">WL</span></code>, IST:F pessimistic: <code class="docutils literal notranslate"><span class="pre">lmax</span></code> 750/1500, <code class="docutils literal notranslate"><span class="pre">fsky</span></code> 0.35. Default photometric survey.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Photometric-Paper-Pessimistic</span></code></p></td>
+<td><p>Same scales, with <code class="docutils literal notranslate"><span class="pre">AIA</span></code>, <code class="docutils literal notranslate"><span class="pre">etaIA</span></code> varied (arXiv:2405.06047).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Photometric-Paper-Optimistic</span></code></p></td>
+<td><p>As above with <code class="docutils literal notranslate"><span class="pre">lmax</span></code> 3000/5000.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-ISTF-Pessimistic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GCsp</span></code>, IST:F pessimistic: 15000 deg², <code class="docutils literal notranslate"><span class="pre">kmax</span></code> 0.25 h/Mpc. Default spectroscopic survey.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-Paper-Pessimistic</span></code></p></td>
+<td><p>Same setup, from arXiv:2405.06047.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-Paper-Optimistic</span></code></p></td>
+<td><p>As above with <code class="docutils literal notranslate"><span class="pre">kmax</span></code> 0.30 h/Mpc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Planck</span></code></p></td>
+<td><p>CMB: <code class="docutils literal notranslate"><span class="pre">fsky</span></code> 0.7, <code class="docutils literal notranslate"><span class="pre">lmax</span></code> 1500. Loaded with <code class="docutils literal notranslate"><span class="pre">surveyName=&quot;Planck&quot;</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Simons-Observatory-PlanckLowEll</span></code>, <code class="docutils literal notranslate"><span class="pre">CMB-Stage4-PlanckLowEll</span></code></p></td>
+<td><p>CMB with Planck low-ell: <code class="docutils literal notranslate"><span class="pre">fsky</span></code> 0.4, <code class="docutils literal notranslate"><span class="pre">lmax</span></code> 3000. Not selected by <code class="docutils literal notranslate"><span class="pre">surveyName</span></code> (see <a class="reference internal" href="cmb_benchmarks.html"><span class="std std-doc">CMB benchmarks</span></a>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">other_survey_specifications/</span></code></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Photometric-DeboleR1</span></code></p></td>
+<td><p>Photometric, different bins, 2500 deg².</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Photometric-ISTF-GW</span></code></p></td>
+<td><p>IST:F photometric with <code class="docutils literal notranslate"><span class="pre">lmax_GCph</span></code> 1000 and a <code class="docutils literal notranslate"><span class="pre">sqrt</span></code> bias model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-DR1-Pessimistic</span></code></p></td>
+<td><p>DR1-like <code class="docutils literal notranslate"><span class="pre">GCsp</span></code>: 2500 deg², <code class="docutils literal notranslate"><span class="pre">kmax</span></code> 0.15 h/Mpc.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-ISTF-Pessimistic-sigma_pv</span></code></p></td>
+<td><p>IST:F <code class="docutils literal notranslate"><span class="pre">GCsp</span></code> with the <code class="docutils literal notranslate"><span class="pre">rescale_sigma_pv</span></code> nonlinear model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Euclid-Spectroscopic-ISTF-Pessimistic-Qbias</span></code>, <code class="docutils literal notranslate"><span class="pre">-Qbias-sigma_pv</span></code>, <code class="docutils literal notranslate"><span class="pre">-Qbias-1par</span></code></p></td>
+<td><p>IST:F <code class="docutils literal notranslate"><span class="pre">GCsp</span></code> with the <code class="docutils literal notranslate"><span class="pre">linear_Qbias</span></code> scale-dependent bias (optionally with <code class="docutils literal notranslate"><span class="pre">rescale_sigma_pv</span></code>, or with only <code class="docutils literal notranslate"><span class="pre">A2</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SKAO-Photometric-Redbook</span></code></p></td>
+<td><p>SKAO photometric: <code class="docutils literal notranslate"><span class="pre">fsky</span></code> 0.1166.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SKAO-Spectroscopic-Redbook</span></code></p></td>
+<td><p>SKAO HI <code class="docutils literal notranslate"><span class="pre">GCsp</span></code>: 5000 deg², <code class="docutils literal notranslate"><span class="pre">kmax</span></code> 0.25 h/Mpc.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SKAO-IM-Redbook</span></code></p></td>
+<td><p>SKAO HI intensity mapping (<code class="docutils literal notranslate"><span class="pre">IM</span></code>): 5000 deg².</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MeerKlass-IM-Ze</span></code></p></td>
+<td><p>MeerKLASS <code class="docutils literal notranslate"><span class="pre">IM</span></code>: 7500 deg², 60 dishes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For <code class="docutils literal notranslate"><span class="pre">IM</span></code> forecasts, <code class="docutils literal notranslate"><span class="pre">survey_name_radio_IM</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">SKAO-IM-Redbook</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;survey_name_radio_IM&quot;</span><span class="p">:</span> <span class="s2">&quot;SKAO-IM-Redbook&quot;</span><span class="p">,</span>  <span class="c1"># the default</span>
+    <span class="s2">&quot;survey_name_photo&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">forecast</span> <span class="o">=</span> <span class="n">cff</span><span class="o">.</span><span class="n">FisherMatrix</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;IM&quot;</span><span class="p">],</span> <span class="n">surveyName</span><span class="o">=</span><span class="s2">&quot;SKAO&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>No Rubin or DESI specification file is shipped. The <code class="docutils literal notranslate"><span class="pre">Rubin</span></code> and <code class="docutils literal notranslate"><span class="pre">DESI</span></code> branches in
+<code class="docutils literal notranslate"><span class="pre">config.py</span></code> load whatever file you name in <code class="docutils literal notranslate"><span class="pre">survey_name_photo</span></code> or
+<code class="docutils literal notranslate"><span class="pre">survey_name_spectro</span></code>.</p>
+</div>
+</section>
+</section>
+<section id="derivatives-and-nuisance-parameters">
+<h2>Derivatives and nuisance parameters<a class="headerlink" href="#derivatives-and-nuisance-parameters" title="Link to this heading">#</a></h2>
+<p>Select the finite-difference method with <code class="docutils literal notranslate"><span class="pre">options[&quot;derivatives&quot;]</span></code>: <code class="docutils literal notranslate"><span class="pre">3PT</span></code>
+(default), <code class="docutils literal notranslate"><span class="pre">STEM</span></code>, <code class="docutils literal notranslate"><span class="pre">POLY</span></code> or <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code>. Not every method supports every
+observable; see <a class="reference internal" href="derivatives.html#observable-support-by-method"><span class="std std-ref">Observable support by method</span></a>
+before using anything other than <code class="docutils literal notranslate"><span class="pre">3PT</span></code> for CMB, <code class="docutils literal notranslate"><span class="pre">GCsp</span></code> or <code class="docutils literal notranslate"><span class="pre">IM</span></code>.</p>
+<p>Nuisance parameters are survey- and model-specific. For example, the default
+Euclid spectroscopic specification uses <code class="docutils literal notranslate"><span class="pre">lnbg_1</span></code> to <code class="docutils literal notranslate"><span class="pre">lnbg_4</span></code> for its logarithmic
+galaxy bias. Check the survey YAML before adding nuisance parameters to
+<code class="docutils literal notranslate"><span class="pre">freepars</span></code>. The <code class="docutils literal notranslate"><span class="pre">Nuisance</span></code> class (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.cosmology.nuisance</span></code>) builds the
+bias, shot-noise and intrinsic-alignment functions from these settings; you
+rarely need to call it directly.</p>
+</section>
+<section id="advanced-options">
+<h2>Advanced options<a class="headerlink" href="#advanced-options" title="Link to this heading">#</a></h2>
+<p>These keys go in <code class="docutils literal notranslate"><span class="pre">options</span></code>; the defaults suit most forecasts.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GCsp_Tracer</span></code>, <code class="docutils literal notranslate"><span class="pre">GCph_Tracer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;matter&quot;</span></code></p></td>
+<td><p>Power spectrum traced by clustering: <code class="docutils literal notranslate"><span class="pre">&quot;matter&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;clustering&quot;</span></code> (CDM + baryons).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">activateMG</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Modified-gravity lensing term: <code class="docutils literal notranslate"><span class="pre">&quot;late-time&quot;</span></code> (needs <code class="docutils literal notranslate"><span class="pre">E11</span></code>, <code class="docutils literal notranslate"><span class="pre">E22</span></code> in the cosmological parameters) or <code class="docutils literal notranslate"><span class="pre">&quot;external&quot;</span></code> (reads the <code class="docutils literal notranslate"><span class="pre">SigmaWL</span></code> file).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ShareDeltaNeff</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a varied <code class="docutils literal notranslate"><span class="pre">Neff</span></code> rescales the neutrino decoupling temperature; otherwise extra <code class="docutils literal notranslate"><span class="pre">Neff</span></code> is added as massless relics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">memorize_cosmo</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Cache cosmologies in <code class="docutils literal notranslate"><span class="pre">memory_cache/</span></code> (only used by <code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Two legacy switches, <code class="docutils literal notranslate"><span class="pre">kh_rescaling_bug</span></code> and <code class="docutils literal notranslate"><span class="pre">kh_rescaling_beforespecerr_bug</span></code>
+(default <code class="docutils literal notranslate"><span class="pre">False</span></code>), reproduce an old, unphysical <code class="docutils literal notranslate"><span class="pre">h/h_fid</span></code> rescaling of <code class="docutils literal notranslate"><span class="pre">k</span></code> in the
+spectroscopic power spectrum. Leave them off unless you must reproduce older
+results.</p>
+</section>
+<section id="work-with-the-fisher-object">
+<h2>Work with the Fisher object<a class="headerlink" href="#work-with-the-fisher-object" title="Link to this heading">#</a></h2>
+<p>The returned object holds the matrix and its parameter metadata. Add
+compatible Fisher objects with <code class="docutils literal notranslate"><span class="pre">+</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">combined</span> <span class="o">=</span> <span class="n">fisher_a</span> <span class="o">+</span> <span class="n">fisher_b</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">combined</span><span class="o">.</span><span class="n">get_param_names</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>The module <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_operations</span></code> provides <code class="docutils literal notranslate"><span class="pre">marginalise</span></code>,
+<code class="docutils literal notranslate"><span class="pre">marginalise_over</span></code>, <code class="docutils literal notranslate"><span class="pre">reshuffle</span></code> and <code class="docutils literal notranslate"><span class="pre">information_gain</span></code> (the Fisher approximation
+of the Kullback-Leibler divergence between two experiments, given a prior).
+To keep <code class="docutils literal notranslate"><span class="pre">Omegam</span></code> and <code class="docutils literal notranslate"><span class="pre">h</span></code> and marginalise over everything else:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">marginalise</span>
+
+<span class="n">reduced</span> <span class="o">=</span> <span class="n">marginalise</span><span class="p">(</span><span class="n">fisher</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To fix parameters at their fiducial values instead (dropping their rows and
+columns without marginalising), use <code class="docutils literal notranslate"><span class="pre">eliminate_parameters(fisher,</span> <span class="pre">names)</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">eliminate_columns_rows(fisher,</span> <span class="pre">indexes)</span></code> with zero-based positions.</p>
+<p>A forecast with a non-empty <code class="docutils literal notranslate"><span class="pre">outroot</span></code> also writes a <code class="docutils literal notranslate"><span class="pre">*_specs.json</span></code> snapshot next
+to the Fisher matrix. <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.utilities.utils.load_fisher_from_json(path)</span></code>
+rebuilds the <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code> from it and returns <code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">snapshot)</span></code>; call
+<code class="docutils literal notranslate"><span class="pre">forecast.compute()</span></code> to rerun it.</p>
+<p>For debugging, every forecast keeps its raw derivatives in <code class="docutils literal notranslate"><span class="pre">forecast.derivs_dict</span></code>
+(photometric forecasts also expose them as <code class="docutils literal notranslate"><span class="pre">forecast.photo_derivs</span></code>). Other
+intermediate attributes are not a stable API; prefer the returned Fisher object.
+The names <code class="docutils literal notranslate"><span class="pre">add_fishers</span></code>, <code class="docutils literal notranslate"><span class="pre">marginalize</span></code>, <code class="docutils literal notranslate"><span class="pre">conditionalize</span></code> and <code class="docutils literal notranslate"><span class="pre">resample_basis</span></code>
+do not exist.</p>
+</section>
+<section id="plot-and-compare-fisher-matrices">
+<h2>Plot and compare Fisher matrices<a class="headerlink" href="#plot-and-compare-fisher-matrices" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CosmicFish_FisherAnalysis</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plot_analysis</span></code>)
+holds a list of Fisher matrices, or loads them from files, and applies
+<code class="docutils literal notranslate"><span class="pre">marginalise</span></code> / <code class="docutils literal notranslate"><span class="pre">reshuffle</span></code> to all of them at once.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fisher_plotting</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plotting</span></code>) draws comparison
+contour plots for such a group.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fishconsumer</span></code> provides <code class="docutils literal notranslate"><span class="pre">make_triangle_plot</span></code> (Fisher
+matrices and MCMC chains), <code class="docutils literal notranslate"><span class="pre">fishtable_to_pandas</span></code> for error tables, and chain
+loaders; see <a class="reference internal" href="likelihood_sampling.html"><span class="doc">Likelihood sampling with Nautilus</span></a>.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_plot_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">CosmicFish_FisherAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fishconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_triangle_plot</span>
+
+<span class="n">fisher</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;WL+GCph&quot;</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">CosmicFish_FisherAnalysis</span><span class="p">(</span><span class="n">fisher_list</span><span class="o">=</span><span class="p">[</span><span class="n">fisher</span><span class="p">])</span>
+<span class="n">small</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">marginalise</span><span class="p">([</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">])</span>  <span class="c1"># applied to every Fisher</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">make_triangle_plot</span><span class="p">(</span><span class="n">fishers</span><span class="o">=</span><span class="p">[</span><span class="n">fisher</span><span class="p">],</span> <span class="n">fisher_labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;WL+GCph&quot;</span><span class="p">],</span> <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-topics">
+<h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
+<section id="precomputed-cosmologies-code-external">
+<span id="external-backend"></span><h3>Precomputed cosmologies (<code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>)<a class="headerlink" href="#precomputed-cosmologies-code-external" title="Link to this heading">#</a></h3>
+<p>With <code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>, Cosmicfishpie reads background, growth and power-spectrum
+tables from text files instead of running a solver. Pass <code class="docutils literal notranslate"><span class="pre">extfiles</span></code> to
+<code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code>, with a <code class="docutils literal notranslate"><span class="pre">directory</span></code> holding one folder for the fiducial cosmology
+and one for each finite-difference step:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>my_cosmologies/
+  fiducial_eps_0/
+  Omegam_pl_eps_1p0E-02/     # &lt;folder name&gt;_&lt;pl|mn&gt;_eps_&lt;relative step&gt;
+  Omegam_mn_eps_1p0E-02/
+  h_pl_eps_1p0E-02/
+  h_mn_eps_1p0E-02/
+</pre></div>
+</div>
+<p>Each folder contains the same files (any extension, read with <code class="docutils literal notranslate"><span class="pre">numpy.loadtxt</span></code>):
+<code class="docutils literal notranslate"><span class="pre">z_values_list</span></code>, <code class="docutils literal notranslate"><span class="pre">k_values_list</span></code>, <code class="docutils literal notranslate"><span class="pre">background_Hz</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma8-z</span></code>, and the
+<code class="docutils literal notranslate"><span class="pre">(n_z,</span> <span class="pre">n_k)</span></code> tables <code class="docutils literal notranslate"><span class="pre">D_Growth-zk</span></code>, <code class="docutils literal notranslate"><span class="pre">f_GrowthRate-zk</span></code>, <code class="docutils literal notranslate"><span class="pre">Plin-zk</span></code> and <code class="docutils literal notranslate"><span class="pre">Pnonlin-zk</span></code>.
+Different names can be set in <code class="docutils literal notranslate"><span class="pre">extfiles[&quot;file_names&quot;]</span></code>. <code class="docutils literal notranslate"><span class="pre">GCsp_Tracer=&quot;clustering&quot;</span></code>
+additionally needs the <code class="docutils literal notranslate"><span class="pre">*cb*</span></code> files.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extfiles</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="s2">&quot;my_cosmologies&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fiducial_folder&quot;</span><span class="p">:</span> <span class="s2">&quot;fiducial_eps_0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;paramnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">],</span>         <span class="c1"># keys of the cosmological parameters</span>
+    <span class="s2">&quot;folder_paramnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">],</span>  <span class="c1"># folder prefixes, same order</span>
+    <span class="s2">&quot;eps_values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">],</span>                  <span class="c1"># relative steps available on disk</span>
+    <span class="s2">&quot;k-units&quot;</span><span class="p">:</span> <span class="s2">&quot;1/Mpc&quot;</span><span class="p">,</span>                    <span class="c1"># or &quot;h/Mpc&quot;</span>
+    <span class="s2">&quot;r-units&quot;</span><span class="p">:</span> <span class="s2">&quot;1/Mpc&quot;</span><span class="p">,</span>                    <span class="c1"># H(z) units; or &quot;Mpc/h&quot;, &quot;km/s/Mpc&quot;</span>
+<span class="p">}</span>
+<span class="n">forecast</span> <span class="o">=</span> <span class="n">cff</span><span class="o">.</span><span class="n">FisherMatrix</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;external&quot;</span><span class="p">},</span> <span class="n">extfiles</span><span class="o">=</span><span class="n">extfiles</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Only parameters listed in <code class="docutils literal notranslate"><span class="pre">folder_paramnames</span></code> can be varied.</p>
+</section>
+<section id="cosmology-calculator">
+<h3>Cosmology calculator<a class="headerlink" href="#cosmology-calculator" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">cosmo_functions</span></code> gives direct access to distances, growth and power spectra
+without running a Fisher calculation. It reads the global configuration, so call
+<code class="docutils literal notranslate"><span class="pre">config.init</span></code> first:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.configs</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">cfg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.cosmology</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosmo_functions</span>
+
+<span class="n">cfg</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="n">observables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">],</span>
+    <span class="n">fiducialpars</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="mf">0.32</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">0.67</span><span class="p">},</span>
+    <span class="n">freepars</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo_functions</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">fiducialparams</span><span class="p">)</span>
+<span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">physical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>        <span class="c1"># H(z) in km/s/Mpc</span>
+<span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>                     <span class="c1"># comoving distance, Mpc</span>
+<span class="n">cosmo</span><span class="o">.</span><span class="n">Pmm</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>    <span class="c1"># P(k) at z=0.5, k=0.1 1/Mpc</span>
+<span class="n">cosmo</span><span class="o">.</span><span class="n">sigma8_of_z</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>                  <span class="c1"># sigma_8(z)</span>
+</pre></div>
+</div>
+<p>To avoid global state, <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.configs.context.build_analysis_context</span></code>
+takes the same arguments as <code class="docutils literal notranslate"><span class="pre">config.init</span></code> and returns an immutable
+<code class="docutils literal notranslate"><span class="pre">AnalysisContext</span></code>. Pass it as
+<code class="docutils literal notranslate"><span class="pre">cosmo_functions(dict(ctx.fiducialparams),</span> <span class="pre">configuration=ctx)</span></code>.</p>
+</section>
+<section id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">COSMICFISH_FAST_EFF</span></code>, <code class="docutils literal notranslate"><span class="pre">COSMICFISH_FAST_P</span></code> and <code class="docutils literal notranslate"><span class="pre">COSMICFISH_FAST_KERNEL</span></code> enable
+fast implementations in the photometric calculations. They are on by default;
+set one to <code class="docutils literal notranslate"><span class="pre">0</span></code> to compare against the slower path.</p>
+</section>
+</section>
+<section id="project-status-and-citation">
+<h2>Project status and citation<a class="headerlink" href="#project-status-and-citation" title="Link to this heading">#</a></h2>
+<p>Cosmicfishpie has a backend-neutral derivative-provider interface, so a future
+differentiable solver or emulator can supply derivatives. JAX is not currently
+an implemented backend.</p>
+<p>To cite the project, use the repository’s
+<a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie/blob/main/CITATION.cff">CITATION.cff</a>.</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Start from the verified photometric example and change one option at a time.</p></li>
+<li><p>Browse the <a class="reference internal" href="scripts_reference.html"><span class="std std-doc">scripts reference</span></a> for benchmark, validation
+and backend-comparison workflows.</p></li>
+<li><p>Read the API documentation before adding a new survey model or parameterisation.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="user_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">User guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="derivatives.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Derivative methods</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-concepts">Core concepts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-a-cosmology-backend">Choose a cosmology backend</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observables-and-survey-settings">Observables and survey settings</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shipped-survey-files">Shipped survey files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivatives-and-nuisance-parameters">Derivatives and nuisance parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-options">Advanced options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#work-with-the-fisher-object">Work with the Fisher object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-and-compare-fisher-matrices">Plot and compare Fisher matrices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-topics">Advanced topics</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#precomputed-cosmologies-code-external">Precomputed cosmologies (<code class="docutils literal notranslate"><span class="pre">code="external"</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cosmology-calculator">Cosmology calculator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-status-and-citation">Project status and citation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/comprehensive_guide.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

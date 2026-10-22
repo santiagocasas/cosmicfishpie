@@ -1,0 +1,8 @@
+CosmicFish\_FisherAnalysis
+==========================
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_plot_analysis
+
+.. autoclass:: CosmicFish_FisherAnalysis
+   :members:
+   :show-inheritance:

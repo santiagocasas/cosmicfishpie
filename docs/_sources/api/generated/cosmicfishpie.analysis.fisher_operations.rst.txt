@@ -1,0 +1,36 @@
+cosmicfishpie.analysis.fisher\_operations
+=========================================
+
+.. automodule:: cosmicfishpie.analysis.fisher_operations
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      eliminate_columns_rows
+      eliminate_parameters
+      information_gain
+      marginalise
+      marginalise_over
+      reshuffle
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

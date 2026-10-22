@@ -1,0 +1,32 @@
+﻿cosmicfishpie.utilities
+=======================
+
+.. automodule:: cosmicfishpie.utilities
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   legendre_tools
+   utils
+

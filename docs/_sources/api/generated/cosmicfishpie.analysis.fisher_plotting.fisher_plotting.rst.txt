@@ -1,0 +1,8 @@
+fisher\_plotting
+================
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_plotting
+
+.. autoclass:: fisher_plotting
+   :members:
+   :show-inheritance:

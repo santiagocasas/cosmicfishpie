@@ -1,0 +1,6 @@
+replace\_latex\_style
+=====================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: replace_latex_style

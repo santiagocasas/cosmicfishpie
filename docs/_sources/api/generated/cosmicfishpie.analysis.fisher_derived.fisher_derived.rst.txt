@@ -1,0 +1,8 @@
+fisher\_derived
+===============
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_derived
+
+.. autoclass:: fisher_derived
+   :members:
+   :show-inheritance:

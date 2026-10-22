@@ -1,0 +1,8 @@
+boltzmann\_code
+===============
+
+.. currentmodule:: cosmicfishpie.cosmology.cosmology
+
+.. autoclass:: boltzmann_code
+   :members:
+   :show-inheritance:

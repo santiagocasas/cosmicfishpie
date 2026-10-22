@@ -1,0 +1,866 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cosmicfishpie.analysis.fisher_plotting &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/cosmicfishpie/analysis/fisher_plotting';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">cosmicfishpie.analysis.fisher_plotting</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for cosmicfishpie.analysis.fisher_plotting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   :synopsis: Module that contains the fisher_plotting class and related functions for</span>
+<span class="sd">              generating contour plots and visualizing Fisher matrix results using getdist.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">getdist</span><span class="w"> </span><span class="kn">import</span> <span class="n">plots</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">getdist.gaussian_mixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianND</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">fisher_matrix</span> <span class="k">as</span> <span class="n">fm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">fisher_plot_analysis</span> <span class="k">as</span> <span class="n">fpa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_comparison</span> <span class="k">as</span> <span class="n">pc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">filesystem</span> <span class="k">as</span> <span class="n">ffs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">printing</span> <span class="k">as</span> <span class="n">upr</span>
+
+<span class="n">snscolors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;colorblind&quot;</span><span class="p">)</span>
+<span class="n">dprint</span> <span class="o">=</span> <span class="n">upr</span><span class="o">.</span><span class="n">debug_print</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;mathtext.fontset&quot;</span><span class="p">:</span> <span class="s2">&quot;stix&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="s2">&quot;mathtext.rm&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mathtext.bf&quot;</span><span class="p">:</span> <span class="s2">&quot;serif:bold&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mathtext.it&quot;</span><span class="p">:</span> <span class="s2">&quot;serif:italic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mathtext.sf&quot;</span><span class="p">:</span> <span class="s2">&quot;sans</span><span class="se">\\</span><span class="s2">-serif&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;STIXGeneral&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;font.weight&quot;</span><span class="p">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="fisher_plotting">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.fisher_plotting.fisher_plotting.html#cosmicfishpie.analysis.fisher_plotting.fisher_plotting">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">fisher_plotting</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class uses the cosmicfish_pylib classes to generate</span>
+<span class="sd">    contour plots using getdist</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fish_files</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fish_files&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fishers_group&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fishers_list</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fishers_list&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fish_labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_pars</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;plot_pars&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_method</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;plot_method&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outroot</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outroot&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outpath</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outpath&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;plots&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axis_custom_factors&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_format&quot;</span><span class="p">,</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fishers_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">ffs</span><span class="o">.</span><span class="n">mkdirp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outpath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fish_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reading Fishers&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_fisher_matrices</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fmat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fmat</span><span class="p">,</span> <span class="n">fm</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="s2">&quot;Fisher matrix in list is not of the correct type fm.fishermatrix&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">fmat</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">fmat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_list</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="o">=</span> <span class="n">fpa</span><span class="o">.</span><span class="n">CosmicFish_FisherAnalysis</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">fmat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">add_fisher_matrix</span><span class="p">(</span><span class="n">fmat</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="p">,</span> <span class="n">fpa</span><span class="o">.</span><span class="n">CosmicFish_FisherAnalysis</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Loaded Fisher group is not of the correct type&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">fisher_name_list</span>
+            <span class="k">for</span> <span class="n">flab</span><span class="p">,</span> <span class="n">fishm</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">fisher_list</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix loaded, label name: &quot;</span><span class="p">,</span> <span class="n">flab</span><span class="p">)</span>
+                <span class="n">fishm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">flab</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No Fisher matrices were loaded correctly&quot;</span><span class="p">)</span>
+
+        <span class="c1"># if options[&#39;plot_method&#39;] == &#39;Gaussian&#39;:</span>
+        <span class="c1">#    self.plot_fisher(options)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#    raise ValueError(&quot;/!\ Unknown plot method {}. /!\ &quot;.format(options[&#39;plot_method&#39;]))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_fisher_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span> <span class="o">=</span> <span class="n">fpa</span><span class="o">.</span><span class="n">CosmicFish_FisherAnalysis</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ffil</span><span class="p">,</span> <span class="n">flab</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fish_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">):</span>
+            <span class="n">fishm</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">ffil</span><span class="p">)</span>
+            <span class="n">fishm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">flab</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix file imported: &quot;</span><span class="p">,</span> <span class="n">ffil</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix loaded, label name: &quot;</span><span class="p">,</span> <span class="n">flab</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">add_fisher_matrix</span><span class="p">(</span><span class="n">fishm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_FoM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing FoM...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fidpars</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;w0&quot;</span><span class="p">,</span> <span class="s2">&quot;wa&quot;</span><span class="p">]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WILL COMPUTE FOM&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;w0 and wa not in parameter list&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;no FoM computed&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_gaussians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_fishdata</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussians</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pfd</span> <span class="o">=</span> <span class="n">print_fishdata</span>
+        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">fishm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">fisher_list</span><span class="p">):</span>
+            <span class="c1"># covariance = self.get_marginv([par for par in self.fidpars[ind]],ind).values</span>
+            <span class="n">invcov</span> <span class="o">=</span> <span class="n">fishm</span><span class="o">.</span><span class="n">fisher_matrix</span>
+            <span class="n">means</span> <span class="o">=</span> <span class="n">fishm</span><span class="o">.</span><span class="n">get_param_fiducial</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pfd</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&gt; Fisher matrix name: &quot;</span><span class="p">,</span> <span class="n">fishm</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pfd</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix fiducials: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">means</span><span class="p">)</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">fishm</span><span class="o">.</span><span class="n">get_confidence_bounds</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pfd</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix 1-sigma bounds: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_names</span> <span class="o">=</span> <span class="n">fishm</span><span class="o">.</span><span class="n">get_param_names</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pfd</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix param names: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_labels</span> <span class="o">=</span> <span class="n">fishm</span><span class="o">.</span><span class="n">get_param_names_latex</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pfd</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fisher matrix param names latex: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_labels</span><span class="p">)</span>
+            <span class="c1"># print(labels)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gaussians</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">GaussianND</span><span class="p">(</span>
+                    <span class="n">means</span><span class="p">,</span> <span class="n">invcov</span><span class="p">,</span> <span class="n">is_inv_cov</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_labels</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">means_0</span> <span class="o">=</span> <span class="n">means</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">paramnames_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_names</span>
+                <span class="n">bounds_0</span> <span class="o">=</span> <span class="n">bounds</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fiducial_markers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">param_bounds_0</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">pp</span><span class="p">,</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paramnames_0</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fiducial_markers</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="n">means_0</span><span class="p">[</span><span class="n">pp</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">param_bounds_0</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounds_0</span><span class="p">[</span><span class="n">pp</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussians</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">param_limits_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_custom_factors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">factors_def</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramnames_0</span><span class="p">:</span>
+            <span class="n">factors_def</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+        <span class="k">if</span> <span class="n">axis_custom_factors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="n">axis_custom_factors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">factors_def</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis_custom_factors</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span>
+            <span class="c1"># print(factors_def)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># print(&#39;here&#39;)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_pars</span><span class="p">:</span>
+                    <span class="n">factors_def</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">factors_def</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_limits</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1"># print(factors_def)</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fiducial_markers</span>
+        <span class="n">onesigmas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_bounds_0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_lims_bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramnames_0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_lims_bounds</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">centers</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">-</span> <span class="n">onesigmas</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">*</span> <span class="n">factors_def</span><span class="p">[</span><span class="n">par</span><span class="p">],</span>
+                <span class="n">centers</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">+</span> <span class="n">onesigmas</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">*</span> <span class="n">factors_def</span><span class="p">[</span><span class="n">par</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_lims_bounds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_lims_bounds</span>
+
+<div class="viewcode-block" id="fisher_plotting.plot_fisher">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.fisher_plotting.fisher_plotting.html#cosmicfishpie.analysis.fisher_plotting.fisher_plotting.plot_fisher">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_fisher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a triangle plot based on loaded gaussian data and specified parameters.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            **kwargs: Keyword arguments for customizing the plot.</span>
+<span class="sd">                axis_custom_factors (optional): Custom factors for axis limits. Default is None.</span>
+<span class="sd">                filled (optional): Boolean value indicating whether contour plots should be filled or not. Default is True.</span>
+<span class="sd">                contour_args (optional): List of dictionaries specifying contour plot arguments. Default is [{&#39;alpha&#39;:0.9}].</span>
+<span class="sd">                legend_loc (optional): Location of the legend in the plot. Default is &#39;upper right&#39;.</span>
+<span class="sd">                dpi (optional): Dots per inch for saving the plot to a file. Default is 300.</span>
+<span class="sd">                file_format (optional): File format for saving the plot. Default is &#39;.pdf&#39;.</span>
+<span class="sd">                marker_color (optional): Color of the axis markers. Default is &#39;black&#39;.</span>
+<span class="sd">                axes_fontsize (optional): Font size for the axes labels. Default is 20.</span>
+<span class="sd">                legend_fontsize (optional): Font size for the legend labels. Default is 20.</span>
+<span class="sd">                figure_legend_frame (optional): Frame thickness for the figure legend. Default is 20.</span>
+<span class="sd">                axes_labelsize (optional): Font size for the axes tick labels. Default is 20.</span>
+<span class="sd">                figure_facecolor (optional): Facecolor of the figure. Default is &#39;white&#39;.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            instance_name.plot_fisher(axis_custom_factors=create_factors(),</span>
+<span class="sd">                                        filled=True,</span>
+<span class="sd">                                        contour_args=[{&#39;alpha&#39;:0.7}],</span>
+<span class="sd">                                        legend_loc=&#39;lower left&#39;,</span>
+<span class="sd">                                        dpi=150,</span>
+<span class="sd">                                        file_format=&#39;.png&#39;,</span>
+<span class="sd">                                        marker_color=&#39;red&#39;,</span>
+<span class="sd">                                        axes_fontsize=16,</span>
+<span class="sd">                                        legend_fontsize=18,</span>
+<span class="sd">                                        figure_legend_frame=10,</span>
+<span class="sd">                                        axes_labelsize=14)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_gaussians</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entering plotting routine&quot;</span><span class="p">)</span>
+
+        <span class="c1"># THIS MUST BE CHANGED</span>
+        <span class="c1"># In principle the fiducials could be different!</span>
+        <span class="n">cust_lims</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axis_custom_factors&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">filled_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filled&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">contour_args_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contour_args&quot;</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}])</span>
+        <span class="n">legend_loc_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend_loc&quot;</span><span class="p">,</span> <span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+        <span class="n">dpi_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dpi&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+        <span class="n">format_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_format&quot;</span><span class="p">,</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
+        <span class="n">marker_color_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;marker_color&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">)</span>
+        <span class="n">axes_fontsize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes_fontsize&quot;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">legend_fontsize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend_fontsize&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">tick_max_labels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tick_max_labels&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">title_limit</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title_limit&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">title_limit_labels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title_limit_labels&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">figure_legend_frame</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;figure_legend_frame&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">axes_labelsize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes_labelsize&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">figure_facecolor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;figure_facecolor&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">plots</span><span class="o">.</span><span class="n">get_subplot_plotter</span><span class="p">(</span><span class="n">subplot_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width_inch</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">figure_legend_frame</span> <span class="o">=</span> <span class="n">figure_legend_frame</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axes_fontsize</span> <span class="o">=</span> <span class="n">axes_fontsize</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axes_labelsize</span> <span class="o">=</span> <span class="n">axes_labelsize</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axis_tick_max_labels</span> <span class="o">=</span> <span class="n">tick_max_labels</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">title_limit_labels</span> <span class="o">=</span> <span class="n">title_limit_labels</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">title_limit</span> <span class="o">=</span> <span class="n">title_limit</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">legend_fontsize</span> <span class="o">=</span> <span class="n">legend_fontsize</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axis_marker_color</span> <span class="o">=</span> <span class="n">marker_color_</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axis_marker_ls</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">axis_marker_lw</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">triangle_plot</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gaussians</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_pars</span><span class="p">,</span>
+            <span class="n">filled</span><span class="o">=</span><span class="n">filled_</span><span class="p">,</span>
+            <span class="n">legend_labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">,</span>
+            <span class="n">legend_loc</span><span class="o">=</span><span class="n">legend_loc_</span><span class="p">,</span>
+            <span class="n">contour_colors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">,</span>
+            <span class="n">contour_args</span><span class="o">=</span><span class="n">contour_args_</span><span class="p">,</span>
+            <span class="n">markers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fiducial_markers</span><span class="p">,</span>
+            <span class="n">param_limits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_limits_bounds</span><span class="p">(</span><span class="n">axis_custom_factors</span><span class="o">=</span><span class="n">cust_lims</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">align_xlabels</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">figure_facecolor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;outroot&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">contstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contours_str&quot;</span><span class="p">,</span> <span class="s2">&quot;_contours&quot;</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;outpath&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;outroot&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">contstr</span> <span class="o">+</span> <span class="n">format_</span><span class="p">),</span>
+                <span class="n">dpi</span><span class="o">=</span><span class="n">dpi_</span><span class="p">,</span>
+                <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="nb">dict</span><span class="p">()):</span>
+        <span class="n">glob_opts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">glob_opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">glob_opts</span><span class="p">)</span>
+        <span class="n">imgformat_</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_format&quot;</span><span class="p">,</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
+        <span class="n">plot_style</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_style&quot;</span><span class="p">,</span> <span class="s2">&quot;bars&quot;</span><span class="p">)</span>
+        <span class="n">save_error</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_error&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">fishlabsjoin</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">)</span>
+        <span class="n">fishlabsjoin</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">ncol_legend</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ncol_legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">legend_title</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend_title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">legend_title_fontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend_title_fontsize&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># ffs.mkdirp(options[&#39;outpath&#39;])</span>
+        <span class="n">errstr</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errors_str&quot;</span><span class="p">,</span> <span class="s2">&quot;_error_comparison&quot;</span><span class="p">)</span>
+        <span class="n">marginalze_remaining_pars</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;marginalize_remaining_pars&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">plot_marg</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_marg&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">plot_unmarg</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plot_unmarg&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">xticksrotation</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xticksrotation&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">xticklabsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xticklabsize&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+        <span class="n">yticklabsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;yticklabsize&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+        <span class="n">xtickfontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xtickfontsize&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+        <span class="n">ylabelfontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ylabelfontsize&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">ylabel</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ylabel&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">% d</span><span class="s2">iscrepancy on $\sigma_i$ w.r.t. median&quot;</span><span class="p">)</span>
+        <span class="n">patches_legend_fontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;patches_legend_fontsize&quot;</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+        <span class="n">dots_legend_fontsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dots_legend_fontsize&quot;</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;colors&quot;</span><span class="p">,</span> <span class="n">snscolors</span><span class="p">)</span>
+        <span class="n">legend_loc</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend_loc&quot;</span><span class="p">,</span> <span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+        <span class="n">yrang</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;yrang&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+        <span class="n">dpi</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dpi&quot;</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;figsize&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">savefig</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;savefig&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">savefig</span><span class="p">:</span>
+            <span class="n">outpathfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;outroot&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">errstr</span> <span class="o">+</span> <span class="n">imgformat_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outpathfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outpath</span><span class="p">,</span> <span class="s2">&quot;dummy&quot;</span> <span class="o">+</span> <span class="n">errstr</span> <span class="o">+</span> <span class="n">imgformat_</span><span class="p">)</span>
+        <span class="n">transform_latex_dict</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transform_latex_dict&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+        <span class="n">compare_to_index</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;compare_to_index&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">figure_title</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;figure_title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">pc</span><span class="o">.</span><span class="n">ploterrs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">get_fisher_list</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">,</span>
+            <span class="n">parstoplot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_pars</span><span class="p">,</span>
+            <span class="n">plot_style</span><span class="o">=</span><span class="n">plot_style</span><span class="p">,</span>
+            <span class="n">marginalize_pars</span><span class="o">=</span><span class="n">marginalze_remaining_pars</span><span class="p">,</span>
+            <span class="n">outpathfile</span><span class="o">=</span><span class="n">outpathfile</span><span class="p">,</span>
+            <span class="n">plot_marg</span><span class="o">=</span><span class="n">plot_marg</span><span class="p">,</span>
+            <span class="n">plot_unmarg</span><span class="o">=</span><span class="n">plot_unmarg</span><span class="p">,</span>
+            <span class="n">yrang</span><span class="o">=</span><span class="n">yrang</span><span class="p">,</span>
+            <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+            <span class="n">savefig</span><span class="o">=</span><span class="n">savefig</span><span class="p">,</span>
+            <span class="n">y_label</span><span class="o">=</span><span class="n">ylabel</span><span class="p">,</span>
+            <span class="n">yticklabsize</span><span class="o">=</span><span class="n">yticklabsize</span><span class="p">,</span>
+            <span class="n">xticklabsize</span><span class="o">=</span><span class="n">xticklabsize</span><span class="p">,</span>
+            <span class="n">xtickfontsize</span><span class="o">=</span><span class="n">xtickfontsize</span><span class="p">,</span>
+            <span class="n">ylabelfontsize</span><span class="o">=</span><span class="n">ylabelfontsize</span><span class="p">,</span>
+            <span class="n">xticksrotation</span><span class="o">=</span><span class="n">xticksrotation</span><span class="p">,</span>
+            <span class="n">patches_legend_fontsize</span><span class="o">=</span><span class="n">patches_legend_fontsize</span><span class="p">,</span>
+            <span class="n">dots_legend_fontsize</span><span class="o">=</span><span class="n">dots_legend_fontsize</span><span class="p">,</span>
+            <span class="n">fish_leg_loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">,</span>
+            <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+            <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
+            <span class="n">legend_title_fontsize</span><span class="o">=</span><span class="n">legend_title_fontsize</span><span class="p">,</span>
+            <span class="n">ncol_legend</span><span class="o">=</span><span class="n">ncol_legend</span><span class="p">,</span>
+            <span class="n">transform_latex_dict</span><span class="o">=</span><span class="n">transform_latex_dict</span><span class="p">,</span>
+            <span class="n">compare_to_index</span><span class="o">=</span><span class="n">compare_to_index</span><span class="p">,</span>
+            <span class="n">save_error</span><span class="o">=</span><span class="n">save_error</span><span class="p">,</span>
+            <span class="n">figure_title</span><span class="o">=</span><span class="n">figure_title</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix_ratio</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">r_fishers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tick_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">plot_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ratio_mat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">savefig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">imgformat_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span>
+        <span class="k">if</span> <span class="n">r_fishers_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">r_fishers_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fishers_group</span><span class="o">.</span><span class="n">fisher_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">tick_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;$</span><span class="si">{}</span><span class="s2">$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_labels</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">plot_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plot_title</span> <span class="o">=</span> <span class="n">fishlabsjoin</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fish_labels</span><span class="p">)</span>
+            <span class="n">plot_title</span> <span class="o">=</span> <span class="n">fishlabsjoin</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">plot_title</span> <span class="o">=</span> <span class="s2">&quot;Ratio &quot;</span> <span class="o">+</span> <span class="n">plot_title</span>
+        <span class="k">if</span> <span class="n">ratio_mat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ratio_mat</span> <span class="o">=</span> <span class="n">r_fishers_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">/</span> <span class="n">r_fishers_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">fisher_matrix</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plot_name</span> <span class="o">=</span> <span class="n">plot_title</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+            <span class="n">plot_name</span> <span class="o">=</span> <span class="n">plot_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">matstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;matrix_str&quot;</span><span class="p">,</span> <span class="s2">&quot;_matrix_ratio&quot;</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;outroot&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">matstr</span> <span class="o">+</span> <span class="n">imgformat_</span><span class="p">)</span>
+
+        <span class="n">pc</span><span class="o">.</span><span class="n">matrix_plot</span><span class="p">(</span>
+            <span class="n">ratio_mat</span><span class="p">,</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="n">plot_title</span><span class="p">,</span>
+            <span class="n">ticklabels</span><span class="o">=</span><span class="n">tick_labels</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+            <span class="n">colormap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+            <span class="n">savefig</span><span class="o">=</span><span class="n">savefig</span><span class="p">,</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

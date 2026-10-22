@@ -1,0 +1,6 @@
+replace\_latex\_name
+====================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: replace_latex_name

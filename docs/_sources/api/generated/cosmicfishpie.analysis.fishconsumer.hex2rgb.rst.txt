@@ -1,0 +1,6 @@
+hex2rgb
+=======
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: hex2rgb

@@ -1,0 +1,32 @@
+﻿cosmicfishpie.CMBsurvey
+=======================
+
+.. automodule:: cosmicfishpie.CMBsurvey
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   CMB_cov
+   CMB_obs
+

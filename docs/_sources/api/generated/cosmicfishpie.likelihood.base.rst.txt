@@ -1,0 +1,41 @@
+cosmicfishpie.likelihood.base
+=============================
+
+.. automodule:: cosmicfishpie.likelihood.base
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      is_indexable_iterable
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      CompositeLikelihood
+      Likelihood
+      NautilusMixin
+   
+   
+
+   
+   
+   
+
+
+

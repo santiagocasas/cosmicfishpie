@@ -1,0 +1,6 @@
+compute\_wedge\_chi2
+====================
+
+.. currentmodule:: cosmicfishpie.likelihood.spectro_like
+
+.. autofunction:: compute_wedge_chi2

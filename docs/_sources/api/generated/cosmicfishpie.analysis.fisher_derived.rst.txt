@@ -1,0 +1,31 @@
+cosmicfishpie.analysis.fisher\_derived
+======================================
+
+.. automodule:: cosmicfishpie.analysis.fisher_derived
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fisher_derived
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+customize\_barh
+===============
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: customize_barh

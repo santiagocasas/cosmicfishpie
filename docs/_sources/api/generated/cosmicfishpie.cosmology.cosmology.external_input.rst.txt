@@ -1,0 +1,8 @@
+external\_input
+===============
+
+.. currentmodule:: cosmicfishpie.cosmology.cosmology
+
+.. autoclass:: external_input
+   :members:
+   :show-inheritance:

@@ -1,0 +1,6 @@
+rel\_error\_to\_index
+=====================
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: rel_error_to_index

@@ -1,0 +1,8 @@
+ComputeCls
+==========
+
+.. currentmodule:: cosmicfishpie.CMBsurvey.CMB_obs
+
+.. autoclass:: ComputeCls
+   :members:
+   :show-inheritance:

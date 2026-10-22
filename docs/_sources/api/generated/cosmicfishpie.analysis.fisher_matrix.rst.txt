@@ -1,0 +1,31 @@
+cosmicfishpie.analysis.fisher\_matrix
+=====================================
+
+.. automodule:: cosmicfishpie.analysis.fisher_matrix
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fisher_matrix
+   
+   
+
+   
+   
+   
+
+
+

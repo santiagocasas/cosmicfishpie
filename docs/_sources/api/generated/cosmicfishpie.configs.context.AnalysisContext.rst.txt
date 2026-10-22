@@ -1,0 +1,8 @@
+AnalysisContext
+===============
+
+.. currentmodule:: cosmicfishpie.configs.context
+
+.. autoclass:: AnalysisContext
+   :members:
+   :show-inheritance:

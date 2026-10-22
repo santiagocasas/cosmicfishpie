@@ -1,0 +1,1405 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cosmicfishpie.configs.config &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/cosmicfishpie/configs/config';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">cosmicfishpie.configs.config</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for cosmicfishpie.configs.config</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This class defines global variables that will not change through</span>
+<span class="c1"># the computation of one fisher matrix</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.cosmology</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cosmology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">misc</span> <span class="k">as</span> <span class="n">ums</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">physmath</span> <span class="k">as</span> <span class="n">upm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">printing</span> <span class="k">as</span> <span class="n">upt</span>
+
+<span class="c1"># `init()` below mutates this module&#39;s global variables in place. Callers that</span>
+<span class="c1"># call `init()` and then immediately read back those globals (e.g. to snapshot</span>
+<span class="c1"># them into an instance/context object) must hold this lock for the full</span>
+<span class="c1"># init-then-read-back sequence, otherwise a concurrent `init()` call from</span>
+<span class="c1"># another thread can interleave and corrupt the read-back values. See</span>
+<span class="c1"># `cosmicfishpie.cosmology.cosmology._COLOSSUS_SETTINGS_LOCK` for the same</span>
+<span class="c1"># pattern applied to a different piece of global state.</span>
+<span class="n">_CONFIG_INIT_LOCK</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a solver settings YAML.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_spec_path</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">other_specs_dir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a survey YAML, preferring the requested specs directory.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">alt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_specs_dir</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">alt_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">alt_path</span>
+    <span class="k">return</span> <span class="n">path</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_free_ia_parameters</span><span class="p">(</span><span class="n">freeparams</span><span class="p">,</span> <span class="n">ia_params</span><span class="p">,</span> <span class="n">variation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add the requested intrinsic-alignment parameters to ``freeparams``.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">variation</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">ia_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown intrinsic-alignment parameter(s): </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">variation</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;IA_model&quot;</span><span class="p">:</span>
+                <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ia_params</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;IA_model&quot;</span><span class="p">:</span>
+            <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">variation</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="init">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.configs.config.init.html#cosmicfishpie.configs.config.init">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span>
+    <span class="n">options</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+    <span class="n">specifications</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
+    <span class="n">observables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">freepars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">extfiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">fiducialpars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">photobiaspars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">photopars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">IApars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">PShotpars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">spectrobiaspars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">spectrononlinearpars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">IMbiaspars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">surveyName</span><span class="o">=</span><span class="s2">&quot;Euclid&quot;</span><span class="p">,</span>
+    <span class="n">cosmoModel</span><span class="o">=</span><span class="s2">&quot;w0waCDM&quot;</span><span class="p">,</span>
+    <span class="n">latexnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class is to handle the configuration for the fishermatrix computation as well as the fiducial parameters. It then gives access to all global variables</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    options              : dict, optional</span>
+<span class="sd">                           A dictionary that contains the global options for the calculation of the fishermatrix. A list of all possible keys are found below</span>
+<span class="sd">    specifications       : dict, optional</span>
+<span class="sd">                           A dictionary containing the survey specifications. Defaults to the specifications in the `.yaml` of the survey specifications</span>
+<span class="sd">    observables          : list, optional</span>
+<span class="sd">                           A list of strings for the different observables</span>
+<span class="sd">    freepars             : dict, optional</span>
+<span class="sd">                           A dictionary containing all cosmological parameters to be varied and their corresponding rel. step sizes</span>
+<span class="sd">    extfiles             : dict, optional</span>
+<span class="sd">                           A dictionary containing the path to the external files as well as how all the names of the files in the folder correspond to the cosmological quantities, units etc.</span>
+<span class="sd">    fiducialpars         : dict, optional</span>
+<span class="sd">                           A dictionary containing the fiducial cosmological parameters</span>
+<span class="sd">    photobiaspars             : dict, optional</span>
+<span class="sd">                           A dictionary containing the specifications for the galaxy biases of the photometric probe</span>
+<span class="sd">    photopars            : dict, optional</span>
+<span class="sd">                           A dictionary containing specifications for the window function&#39;s galaxy distribution</span>
+<span class="sd">    IApars               : dict, optional</span>
+<span class="sd">                           A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear</span>
+<span class="sd">    PShotpars            : dict, optional</span>
+<span class="sd">                           A dictionary containing the values of additional shotnoise of the spectroscopic probes</span>
+<span class="sd">    spectrobiaspars      : dict, optional</span>
+<span class="sd">                           A dictionary containing the specifications for the galaxy biases of the spectroscopic probe</span>
+<span class="sd">    spectrononlinearpars : dict, optional</span>
+<span class="sd">                           A dictionary containing the values of the non linear modeling parameters of the spectroscopic probe</span>
+<span class="sd">    IMbiaspars           : dict, optional</span>
+<span class="sd">                           A dictionary containing the specifications for the galaxy biases of the spectroscopic intensity mapping probe</span>
+<span class="sd">    surveyName           : str, optional</span>
+<span class="sd">                           String of the name of the survey for which the forecast is done. Defaults to Euclid with optimistic specifications</span>
+<span class="sd">    cosmoModel           : str, optional</span>
+<span class="sd">                           A string of the name of the cosmological model used in the calculations. Defaults to flat &quot;w0waCDM&quot; cosmology</span>
+<span class="sd">    latexnames           : dict, optional</span>
+<span class="sd">                           A dictionary that contains the Latex names of the cosmological parameters</span>
+
+<span class="sd">    Options</span>
+<span class="sd">    -------</span>
+<span class="sd">    camb_path                   : str</span>
+<span class="sd">                                  Path to camb. Defaults to the camb in your current environment</span>
+<span class="sd">    specs_dir                   : str</span>
+<span class="sd">                                  Path to the survey specifications. Defaults to the `specs_dir_default`.</span>
+<span class="sd">                                  Names not found there are also searched in the packaged `other_survey_specifications` folder</span>
+<span class="sd">    specs_dir_default           : str</span>
+<span class="sd">                                  Path to the default survey specifications. Defaults to the `survey_specifications` folder in the config directory of cosmicfishpie</span>
+<span class="sd">    survey_name                 : str</span>
+<span class="sd">                                  String of the names of the survey. Defaults to the name passed in the parameter `surveyName`</span>
+<span class="sd">    survey_name_photo           : str</span>
+<span class="sd">                                  Name of the survey specifications file for a photometric probe</span>
+<span class="sd">    survey_name_spectro         : str</span>
+<span class="sd">                                  Name of the survey specifications file for a spectrocopic probe</span>
+<span class="sd">    survey_name_radio_IM        : str</span>
+<span class="sd">                                  Name of the survey specifications file for a line intensity mapping probe. Defaults to `SKAO-IM-Redbook`</span>
+<span class="sd">    derivatives                 : str</span>
+<span class="sd">                                  String of the name of the derivative method. Either `3PT`, `4PT_FWD`, `STEM` or `POLY`. Defaults to `3PT`</span>
+<span class="sd">    nonlinear                   : bool</span>
+<span class="sd">                                  If True will do nonlinear corrections in the computation of the different observables. Defaults to True</span>
+<span class="sd">    nonlinear_photo             : bool</span>
+<span class="sd">                                  If True will use the nonlinear power spectrum when calculation the angular power spectrum of the photometric probe. Defaults to True</span>
+<span class="sd">    bfs8terms                   : bool</span>
+<span class="sd">                                  If True will expand the observed power spectrum with :math:`\\sigma_8` to match the IST:F recipe. Defaults to True</span>
+<span class="sd">    vary_bias_str               : str</span>
+<span class="sd">                                  The root of the name of the bias parameters that should be varied in the spectroscopic probe. Defaults to &#39;lnb&#39;</span>
+<span class="sd">    AP_effect                   : bool</span>
+<span class="sd">                                  If True the Alcock-Paczynsk effect will be considered in the spectroscopic probe. Defaults to True</span>
+<span class="sd">    FoG_switch                  : bool</span>
+<span class="sd">                                  If True the finger of god effect will be modelled in the observed power spectrum of the spectroscopic probe. Defaults to True</span>
+<span class="sd">    GCsp_linear                 : bool</span>
+<span class="sd">                                  If True there will be no nonlinear modelling used in the spectroscopic probe. Defaults to False</span>
+<span class="sd">    fix_cosmo_nl                : bool</span>
+<span class="sd">                                  If True and the nonlinear modeling parameters are not varied, then they will be fixed to the values computed in the fiducial cosmology. Else they will be recomputed in each sample cosmology. Defaults to True</span>
+<span class="sd">    Pshot_nuisance_fiducial     : float</span>
+<span class="sd">                                  Value of the fiducial additional shotnoise of the spectroscopic probe. Defaults to 0.0</span>
+<span class="sd">    pivot_z_IA                  : float</span>
+<span class="sd">                                  Redshift on which the power law dependance in the eNLA model of intrinsic alignment should be normalized to. Defaults to 0.0</span>
+<span class="sd">    accuracy                    : int</span>
+<span class="sd">                                  Global rescaling of the amount of points that are used in internal calculations or interpolations for the probes. Defaults to 1</span>
+<span class="sd">    feedback                    : int</span>
+<span class="sd">                                  Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2</span>
+<span class="sd">    timing                      : bool</span>
+<span class="sd">                                  If True, print phase timings for Fisher calculations. Defaults to False</span>
+<span class="sd">    activateMG                  : bool</span>
+<span class="sd">                                  If True will also consider modified gravity in the calculations of the observables. Defaults to False</span>
+<span class="sd">    external_activateMG         : bool</span>
+<span class="sd">                                  If True while reading the external Files will also look for files specific to modified gravity models</span>
+<span class="sd">    cosmo_model                 : str</span>
+<span class="sd">                                  A string of the name of the cosmological model used in the calculations. Defaults to what was passed in the parameter `cosmoModel`</span>
+<span class="sd">    outroot                     : str</span>
+<span class="sd">                                  The name of the output files are always starting with CosmicFish_Version number_outroot. Defaults to &#39;default_run&#39;</span>
+<span class="sd">    code                        : str</span>
+<span class="sd">                                  String of the method to obtain the cosmological functions such as the power spectrum. Either &#39;camb&#39;, &#39;class&#39; or &#39;external&#39;. Defaults to &#39;camb&#39;</span>
+<span class="sd">    memorize_cosmo              : bool</span>
+<span class="sd">                                  If True will save and load cosmologies that have already been computed in the cache. Defaults to False</span>
+<span class="sd">    results_dir                 : str</span>
+<span class="sd">                                  Name of the folder in which the results should be saved. If the folder does not exist will create a new one. Defaults to &#39;./results&#39;</span>
+<span class="sd">    boltzmann_yaml_path         : str</span>
+<span class="sd">                                  Path to the configurations for the Einstein-Boltzmann solvers. Defaults to the `boltzmann_yaml_files` folder in the home directory of cosmicfishpie</span>
+<span class="sd">    class_config_yaml           : str</span>
+<span class="sd">                                  Path to the configurations for class. Defaults to &#39;boltzmann_yaml_path/class/default.yaml&#39;</span>
+<span class="sd">    camb_config_yaml            : str</span>
+<span class="sd">                                  Path to the configurations for camb. Defaults to &#39;boltzmann_yaml_path/camb/default.yaml&#39;</span>
+<span class="sd">    fishermatrix_file_extension : str</span>
+<span class="sd">                                  Specifies in what kind of file the result Fisher matrix should be saved. Defaults to &#39;.txt&#39;</span>
+<span class="sd">    savgol_polyorder            : float</span>
+<span class="sd">                                  Order of the Savitzky-Golay filter. Defaults to 3 matching the IST:F recipe</span>
+<span class="sd">    savgol_width                : float</span>
+<span class="sd">                                  Width of the Savitzky-Golay filter. Defaults to ~1.359</span>
+<span class="sd">    savgol_internalsamples      : float</span>
+<span class="sd">                                  How many points on a logarithmic k axis should be taken to apply the Savitzky-Golay filter to. Defaults to 800</span>
+<span class="sd">    savgol_internalkmin         : float</span>
+<span class="sd">                                  Lowest wavenumber that should be used when calculating when applying the Savitzky-Golay filter. Defaults to 1e-3. Together with the other defaults this is matching the IST:F recipe</span>
+<span class="sd">    eps_cosmopars               : float</span>
+<span class="sd">                                  The default rel. step size of the cosmological parameters if none have been passed. Defaults to 1e-2</span>
+<span class="sd">    eps_gal_nuispars            : float</span>
+<span class="sd">                                   The default rel. step size of the bias parameters if none have been passed. Defaults to 1e-4</span>
+<span class="sd">    GCsp_Tracer                 : str</span>
+<span class="sd">                                  What power spectrum should be used as the underlying power spectrum the spectroscopic probe&#39;s galaxy clustering traces. Either &#39;matter&#39; for the total matter spectrum or &#39;clustering&#39; for CDM+baryons. Defaults to &#39;matter&#39;</span>
+<span class="sd">    GCph_Tracer                 : str</span>
+<span class="sd">                                  What power spectrum should be used as the underlying power spectrum the photometric probe&#39;s galaxy clustering traces. Either &#39;matter&#39; for the total matter spectrum or &#39;clustering&#39; for CDM+baryons. Defaults to &#39;matter&#39;</span>
+<span class="sd">    ShareDeltaNeff              : bool</span>
+<span class="sd">                                  If True, the variation of the cosmological parameter Neff is understood as a rescaling of the decoupling temperature of neutrinos. If False any additional Neff is accounted for as additional massless relics.</span>
+<span class="sd">    kh_rescaling_bug            : bool</span>
+<span class="sd">                                  If true, the internal wavenumber in the computation of the spectroscopic probe&#39;s power spectrum computation will be rescaled by an adtional factor h/hfid. Default False</span>
+<span class="sd">    kh_rescaling_beforespecerr_bug : bool</span>
+<span class="sd">                                     If True, the internal scales in the computation of the spectroscopic probe&#39;s resolution error will be rescaled by an adtional factor h/hfid. Default False</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    settings               : dict, global</span>
+<span class="sd">                             A dictionary containing all the global options passed as well as the default values of the ones not passed</span>
+<span class="sd">    external               : dict, global</span>
+<span class="sd">                             A dictionary containing all paths to the external files, how all the names of the files in the folder correspond to the cosmological quantities, the units etc. Will be None if no external files are given</span>
+<span class="sd">    input_type             : str, global</span>
+<span class="sd">                             String of the method to obtain the cosmological functions such as the power spectrum. Either &#39;camb&#39;, &#39;class&#39; or &#39;external&#39;</span>
+<span class="sd">    specs                  : dict, global</span>
+<span class="sd">                             A dictionary containing the survey specifications</span>
+<span class="sd">    boltzmann_classpars    : dict, global</span>
+<span class="sd">                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for class</span>
+<span class="sd">    boltzmann_cambpars     : dict, global</span>
+<span class="sd">                             A dictionary containing the configuration, precision parameters, and fixed cosmological parameters for camb</span>
+<span class="sd">    survey_equivalence     : callable, global</span>
+<span class="sd">                             Part of the Parser, will correspond the passed survey to the name of a specifications file</span>
+<span class="sd">    obs                    : list, global</span>
+<span class="sd">                             A list of strings for the different observables</span>
+<span class="sd">    freeparams             : dict, global</span>
+<span class="sd">                             A dictionary containing all names and the corresponding rel. step size for all parameters</span>
+<span class="sd">    fiducialparams         : dict, global</span>
+<span class="sd">                             A dictionary containing all fiducial values for the cosmological parameters</span>
+<span class="sd">    fiducialcosmo          : cosmicfishpie.cosmology.cosmology.cosmo_functions, global</span>
+<span class="sd">                             An instance of `cosmo_functions` of the fiducial cosmology, this contains all the cosmological functions and quantities computed from them</span>
+<span class="sd">    biasparams             : dict, global</span>
+<span class="sd">                             a dictionary containing the specifications for the galaxy biases of the photometric probe</span>
+<span class="sd">    photoparams            : dict, global</span>
+<span class="sd">                             A dictionary containing specifications for the window function&#39;s galaxy distribution of the photometric probe</span>
+<span class="sd">    IAparams               : dict, global</span>
+<span class="sd">                             A dictionary containing the specifications for the intrinsic alignment effect in cosmic shear of the photometric probe</span>
+<span class="sd">    PShotparams            : dict, global</span>
+<span class="sd">                             A dictionary containing the values of the additional shot noise per bin dictionary containing the values of the additional shot noise per bin for the spectroscopic probe</span>
+<span class="sd">    Spectrobiasparams      : dict, global</span>
+<span class="sd">                             A dictionary containing the specifications for the galaxy biases of the spectroscopic probe</span>
+<span class="sd">    Spectrononlinearparams : dict, global</span>
+<span class="sd">                             A dictionary containing the values of the non linear modeling parameters entering FOG and the dewiggling weight per bin for the spectroscopic probe</span>
+<span class="sd">    IMbiasparams           : dict, global</span>
+<span class="sd">                             A dictionary containing the specifications for the line intensity biases of the spectroscopic probe</span>
+<span class="sd">    latex_names            : dict, global</span>
+<span class="sd">                             A dictionary with all cosmological + nuisance parameters and their corresponding name for the LaTeX labels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">settings</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">options</span>
+    <span class="c1"># Set defaults if not contained previously in options</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;specs_dir_default&quot;</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span>
+            <span class="s2">&quot;default_survey_specifications&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir_default&quot;</span><span class="p">])</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;external_data_dir&quot;</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;external_data&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;survey_name&quot;</span><span class="p">,</span> <span class="n">surveyName</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;survey_specs&quot;</span><span class="p">,</span> <span class="s2">&quot;ISTF-Optimistic&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;survey_name_photo&quot;</span><span class="p">,</span> <span class="s2">&quot;Euclid-Photometric-ISTF-Pessimistic&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">,</span> <span class="s2">&quot;Euclid-Spectroscopic-ISTF-Pessimistic&quot;</span><span class="p">)</span>
+    <span class="c1"># settings.setdefault(&quot;survey_name_radio_photo&quot;, &quot;SKA1-Photometric-Redbook-Optimistic&quot;)</span>
+    <span class="c1"># settings.setdefault(&quot;survey_name_radio_spectro&quot;, &quot;SKA1-Spectroscopic-Redbook-Optimistic&quot;)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;survey_name_radio_IM&quot;</span><span class="p">,</span> <span class="s2">&quot;SKAO-IM-Redbook&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fail_on_specs_not_found&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;derivatives&quot;</span><span class="p">,</span> <span class="s2">&quot;3PT&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;nonlinear&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;nonlinear_photo&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;bfs8terms&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;vary_bias_str&quot;</span><span class="p">,</span> <span class="s2">&quot;lnb&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;AP_effect&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;FoG_switch&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;GCsp_linear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fix_cosmo_nl_terms&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;Pshot_nuisance_fiducial&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;pivot_z_IA&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;spectro_Pk_k_samples&quot;</span><span class="p">,</span> <span class="mi">1025</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;spectro_Pk_mu_samples&quot;</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;feedback&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;timing&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;activateMG&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;external_activateMG&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;cosmo_model&quot;</span><span class="p">,</span> <span class="n">cosmoModel</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;outroot&quot;</span><span class="p">,</span> <span class="s2">&quot;default_run&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;camb&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;memorize_cosmo&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;results_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;./results&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;SUPPRESS_WARNINGS&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;default_boltzmann_yaml_files&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;class_config_yaml&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">],</span> <span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;default.yaml&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;camb_config_yaml&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">],</span> <span class="s2">&quot;camb&quot;</span><span class="p">,</span> <span class="s2">&quot;default.yaml&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;symbolic_config_yaml&quot;</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">],</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">,</span> <span class="s2">&quot;default.yaml&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fishermatrix_file_extension&quot;</span><span class="p">,</span> <span class="s2">&quot;.txt&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_window&quot;</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_polyorder&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_width&quot;</span><span class="p">,</span> <span class="mf">1.358528901113328</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_internalsamples&quot;</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_internalkmin&quot;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;eps_cosmopars&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;eps_gal_nuispars&quot;</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;eps_gal_nonlinpars&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;GCsp_Tracer&quot;</span><span class="p">,</span> <span class="s2">&quot;matter&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;GCph_Tracer&quot;</span><span class="p">,</span> <span class="s2">&quot;matter&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ShareDeltaNeff&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kh_rescaling_bug&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;kh_rescaling_beforespecerr_bug&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">colossus_base_dir_default</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;..&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;colossus_base_dir&quot;</span><span class="p">,</span> <span class="n">colossus_base_dir_default</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;colossus_persistence&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">feed_lvl</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;feedback&quot;</span><span class="p">]</span>
+
+    <span class="k">global</span> <span class="n">external</span>
+    <span class="k">global</span> <span class="n">input_type</span>
+    <span class="k">if</span> <span class="n">extfiles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;external&quot;</span><span class="p">:</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="n">extfiles_default</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;file_names&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;H_z&quot;</span><span class="p">:</span> <span class="s2">&quot;background_Hz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;D_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;D_Growth-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;f_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;f_GrowthRate-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fcb_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;fcb_GrowthRate-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Pl_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;Plin-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Plcb_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;Plincb-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Pnl_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;Pnonlin-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Pnlcb_zk&quot;</span><span class="p">:</span> <span class="s2">&quot;Pnonlincb-zk&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s8_z&quot;</span><span class="p">:</span> <span class="s2">&quot;sigma8-z&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;s8cb_z&quot;</span><span class="p">:</span> <span class="s2">&quot;sigma8cb-z&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;SigmaWL&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Default name: &#39;sigmaWL-zk&#39;</span>
+                <span class="s2">&quot;z_arr&quot;</span><span class="p">:</span> <span class="s2">&quot;z_values_list&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;k_arr&quot;</span><span class="p">:</span> <span class="s2">&quot;k_values_list&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;k_arr_special&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;E-00&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;fiducial_folder&quot;</span><span class="p">:</span> <span class="s2">&quot;fiducial_eps_0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;folder_paramnames&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="n">extfiles_default</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ums</span><span class="o">.</span><span class="n">deepupdate</span><span class="p">(</span><span class="n">external</span><span class="p">,</span> <span class="n">extfiles</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">external</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]):</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="n">external</span><span class="p">[</span><span class="s2">&quot;fiducial_folder&quot;</span><span class="p">]</span>
+            <span class="n">dii</span> <span class="o">=</span> <span class="n">external</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+                <span class="n">min_level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Using input files for cosmology observables: </span><span class="si">{</span><span class="n">dii</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">fidudir</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">external</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">],</span> <span class="n">ff</span> <span class="o">+</span> <span class="s2">&quot;*&quot;</span><span class="p">))</span>
+            <span class="n">lendir</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fidudir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lendir</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;External directory does not contain fiducial folder &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">external</span><span class="p">[</span><span class="s2">&quot;folder_paramnames&quot;</span><span class="p">]:</span>
+                <span class="n">subdirs</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">external</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">],</span> <span class="n">dd</span> <span class="o">+</span> <span class="s2">&quot;*&quot;</span><span class="p">))</span>
+                <span class="n">lensub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subdirs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">lensub</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;External directory does not contain appropriate subfolders for:  </span><span class="si">{:s}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">dd</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                        <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+                        <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; </span><span class="si">{</span><span class="n">lensub</span><span class="si">}</span><span class="s2"> folders for parameter </span><span class="si">{</span><span class="n">dd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;External directory does not exist&quot;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;class&quot;</span><span class="p">:</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="k">global</span> <span class="n">boltzmann_classpars</span>
+        <span class="n">parsed_boltzmann</span> <span class="o">=</span> <span class="n">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;class_config_yaml&quot;</span><span class="p">])</span>
+        <span class="n">boltzmann_classpars</span> <span class="o">=</span> <span class="n">parsed_boltzmann</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;camb&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;camb_path&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">camb</span>
+
+            <span class="n">cambpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">camb</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;camb_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cambpath</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="k">global</span> <span class="n">boltzmann_cambpars</span>
+        <span class="n">parsed_boltzmann</span> <span class="o">=</span> <span class="n">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;camb_config_yaml&quot;</span><span class="p">])</span>
+        <span class="n">boltzmann_cambpars</span> <span class="o">=</span> <span class="n">parsed_boltzmann</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">:</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="k">global</span> <span class="n">boltzmann_symbolicpars</span>
+        <span class="n">parsed_boltzmann</span> <span class="o">=</span> <span class="n">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;symbolic_config_yaml&quot;</span><span class="p">])</span>
+        <span class="n">boltzmann_symbolicpars</span> <span class="o">=</span> <span class="n">parsed_boltzmann</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No external input files used in this calculation.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Einstein-Boltzmann-Solver (EBS) specified.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No symbolic_pofk specified.&quot;</span><span class="p">)</span>
+        <span class="c1"># settings[&#39;code&#39;] = &#39;camb&#39;</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No cosmology calculator specified&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ngal_per_bin</span><span class="p">(</span><span class="n">ngal_sqarmin</span><span class="p">,</span> <span class="n">zbins</span><span class="p">):</span>
+        <span class="c1"># compute num galaxies per bin for whole sky area</span>
+        <span class="n">nbins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">zbins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">zbins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ngal_sqdeg</span> <span class="o">=</span> <span class="n">ngal_sqarmin</span> <span class="o">*</span> <span class="mi">3600</span>
+        <span class="n">ngal_bin</span> <span class="o">=</span> <span class="p">(</span><span class="n">ngal_sqdeg</span> <span class="o">/</span> <span class="n">nbins</span><span class="p">)</span> <span class="o">*</span> <span class="n">upm</span><span class="o">.</span><span class="n">sr</span>
+        <span class="n">numgal</span> <span class="o">=</span> <span class="n">ngal_bin</span> <span class="o">*</span> <span class="n">ones</span>
+        <span class="k">return</span> <span class="n">numgal</span>
+
+    <span class="c1">##############################</span>
+    <span class="c1"># Load Survey Specifications #</span>
+    <span class="c1">##############################</span>
+
+    <span class="c1"># Add additional surveys here</span>
+    <span class="n">available_survey_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Euclid&quot;</span><span class="p">,</span> <span class="s2">&quot;SKAO&quot;</span><span class="p">,</span> <span class="s2">&quot;DESI&quot;</span><span class="p">,</span> <span class="s2">&quot;Planck&quot;</span><span class="p">,</span> <span class="s2">&quot;Rubin&quot;</span><span class="p">]</span>
+
+    <span class="n">other_specs_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;other_survey_specifications&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_ph_dict</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">photo_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+                <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; No photo survey passed, returning empty dict&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">photo_dict</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ph_file_path</span> <span class="o">=</span> <span class="n">_resolve_spec_path</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">other_specs_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ph_file_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;specifications file : </span><span class="si">{</span><span class="n">ph_file_path</span><span class="si">}</span><span class="s2"> not found!&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;fail_on_specs_not_found&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;specifications file : </span><span class="si">{</span><span class="n">ph_file_path</span><span class="si">}</span><span class="s2"> not found! Exiting...&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ph_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir_default&quot;</span><span class="p">],</span> <span class="n">specs_default_photo</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default specifications for photo: </span><span class="si">{</span><span class="n">ph_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ph_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ph_yaml_fs</span><span class="p">:</span>
+            <span class="n">ph_yaml_content</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">ph_yaml_fs</span><span class="p">)</span>
+
+        <span class="n">photo_dict</span> <span class="o">=</span> <span class="n">ph_yaml_content</span><span class="p">[</span><span class="s2">&quot;specifications&quot;</span><span class="p">]</span>
+        <span class="c1"># Load WL bins and num galaxies per bin make it backwards compatible</span>
+        <span class="n">z_bins_WL</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">,</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_ph&quot;</span><span class="p">))</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_bins_WL</span><span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngal_sqarmin_WL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;ngal_sqarmin_WL&quot;</span><span class="p">,</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ngal_sqarmin&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngalbin_WL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ngal_per_bin</span><span class="p">(</span>
+            <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngal_sqarmin_WL&quot;</span><span class="p">],</span> <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;binrange_WL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">]))</span>
+        <span class="c1"># Load GCph bins and num galaxies per bin make it backwards compatible</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">,</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_ph&quot;</span><span class="p">))</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngal_sqarmin_GCph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;ngal_sqarmin_GCph&quot;</span><span class="p">,</span> <span class="n">photo_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ngal_sqarmin&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngalbin_GCph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ngal_per_bin</span><span class="p">(</span>
+            <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;ngal_sqarmin_GCph&quot;</span><span class="p">],</span> <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;binrange_GCph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">]))</span>
+        <span class="c1"># Load theoretical n(z) parameters</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;zm&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z0_p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_dict</span><span class="p">[</span><span class="s2">&quot;z0&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">photo_dict</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_sp_dict</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;spectro&quot;</span><span class="p">):</span>
+        <span class="n">spec_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+                <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; No </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2"> survey passed, returning empty dict&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">spec_dict</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sp_file_path</span> <span class="o">=</span> <span class="n">_resolve_spec_path</span><span class="p">(</span><span class="n">foldername</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">other_specs_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sp_file_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;specifications file : </span><span class="si">{</span><span class="n">sp_file_path</span><span class="si">}</span><span class="s2"> not found!&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;fail_on_specs_not_found&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;specifications file : </span><span class="si">{</span><span class="n">sp_file_path</span><span class="si">}</span><span class="s2"> not found! Exiting...&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sp_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir_default&quot;</span><span class="p">],</span> <span class="n">specs_default_spectro</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default specifications for spectroscopic: </span><span class="si">{</span><span class="n">sp_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sp_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sp_yaml_fs</span><span class="p">:</span>
+            <span class="n">sp_yaml_content</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">sp_yaml_fs</span><span class="p">)</span>
+        <span class="n">spec_dict</span> <span class="o">=</span> <span class="n">sp_yaml_content</span><span class="p">[</span><span class="s2">&quot;specifications&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">spec_dict</span>
+
+    <span class="c1"># Load the default Euclid cases</span>
+    <span class="n">specs_defaults</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">specs_default_spectro</span> <span class="o">=</span> <span class="s2">&quot;Euclid-Spectroscopic-ISTF-Pessimistic&quot;</span>
+    <span class="n">specs_default_photo</span> <span class="o">=</span> <span class="s2">&quot;Euclid-Photometric-ISTF-Pessimistic&quot;</span>
+    <span class="n">specs_defaults</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">create_ph_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir_default&quot;</span><span class="p">],</span> <span class="n">specs_default_photo</span><span class="p">))</span>
+    <span class="n">specs_defaults</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">create_sp_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir_default&quot;</span><span class="p">],</span> <span class="n">specs_default_spectro</span><span class="p">))</span>
+
+    <span class="k">global</span> <span class="n">specs</span>
+    <span class="n">specs</span> <span class="o">=</span> <span class="n">specs_defaults</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Start with default dict</span>
+    <span class="n">spectroTaken</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">photoTaken</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">specificationsf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">spectroTaken</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">photoTaken</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">specificationsf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">&quot;Euclid&quot;</span> <span class="ow">in</span> <span class="n">surveyName</span><span class="p">:</span>
+        <span class="n">surveyNameSpectro</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">surveyNameSpectro</span><span class="p">:</span>
+            <span class="n">specificationsf1</span> <span class="o">=</span> <span class="n">create_sp_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNameSpectro</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf1</span><span class="p">)</span>
+            <span class="n">spectroTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNameSpectro</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">surveyNamePhoto</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_photo&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">surveyNamePhoto</span><span class="p">:</span>
+            <span class="n">specificationsf2</span> <span class="o">=</span> <span class="n">create_ph_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNamePhoto</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf2</span><span class="p">)</span>
+            <span class="n">photoTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNamePhoto</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;SKA&quot;</span> <span class="ow">in</span> <span class="n">surveyName</span><span class="p">:</span>
+        <span class="n">surveyNameRadioIM</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_radio_IM&quot;</span><span class="p">)</span>
+        <span class="n">specificationsf3</span> <span class="o">=</span> <span class="n">create_sp_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNameRadioIM</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;IM&quot;</span><span class="p">)</span>
+        <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf3</span><span class="p">)</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNameRadioIM</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spectroTaken</span><span class="p">:</span>
+            <span class="n">surveyNameSpectro</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">)</span>
+            <span class="n">specificationsf4</span> <span class="o">=</span> <span class="n">create_sp_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNameSpectro</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf4</span><span class="p">)</span>
+            <span class="n">spectroTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNameSpectro</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">photoTaken</span><span class="p">:</span>
+            <span class="n">surveyNamePhoto</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_photo&quot;</span><span class="p">)</span>
+            <span class="n">specificationsf5</span> <span class="o">=</span> <span class="n">create_ph_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNamePhoto</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf5</span><span class="p">)</span>
+            <span class="n">photoTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNamePhoto</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;Rubin&quot;</span> <span class="ow">in</span> <span class="n">surveyName</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">photoTaken</span><span class="p">:</span>
+            <span class="n">surveyNamePhoto</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_photo&quot;</span><span class="p">)</span>
+            <span class="n">specificationsf6</span> <span class="o">=</span> <span class="n">create_ph_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNamePhoto</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf6</span><span class="p">)</span>
+            <span class="n">photoTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNamePhoto</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;DESI&quot;</span> <span class="ow">in</span> <span class="n">surveyName</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spectroTaken</span><span class="p">:</span>
+            <span class="n">surveyNameSpectro</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">)</span>
+            <span class="n">specificationsf7</span> <span class="o">=</span> <span class="n">create_sp_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="n">surveyNameSpectro</span><span class="p">)</span>
+            <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf7</span><span class="p">)</span>
+            <span class="n">spectroTaken</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;-&gt; Survey loaded:  </span><span class="si">{</span><span class="n">surveyNameSpectro</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;Planck&quot;</span> <span class="ow">in</span> <span class="n">surveyName</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">],</span> <span class="s2">&quot;Planck.yaml&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>
+            <span class="n">parsed_yaml_file</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
+        <span class="n">specificationsfPlanck</span> <span class="o">=</span> <span class="n">parsed_yaml_file</span><span class="p">[</span><span class="s2">&quot;specifications&quot;</span><span class="p">]</span>
+        <span class="n">specificationsf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsfPlanck</span><span class="p">)</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span><span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; Survey loaded:  Planck&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">surveyName</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_survey_names</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Survey name passed: &quot;</span><span class="p">,</span> <span class="n">surveyName</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Survey name not found in available survey names.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Please pass your full custom specifications as a dictionary.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Files specifications: &quot;</span><span class="p">,</span> <span class="n">specificationsf</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Default specifications: &quot;</span><span class="p">,</span> <span class="n">specs</span><span class="p">)</span>
+    <span class="c1"># ums.deepupdate(specs, specificationsf)  # deep update keys if present in files</span>
+    <span class="c1"># no more deepupdate because it causes problems with duplicated keys in bias parameters when using different bias samples</span>
+    <span class="n">specs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Updated specifications: &quot;</span><span class="p">,</span> <span class="n">specs</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Files specifications: &quot;</span><span class="p">,</span> <span class="n">specificationsf</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Default specifications: &quot;</span><span class="p">,</span> <span class="n">specs</span><span class="p">)</span>
+    <span class="c1"># ums.deepupdate(specs, specificationsf)  # deep update keys if present in files</span>
+    <span class="c1"># no more deepupdate because it causes problems with duplicated keys in bias parameters when using different bias samples</span>
+    <span class="n">specs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specificationsf</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Updated specifications: &quot;</span><span class="p">,</span> <span class="n">specs</span><span class="p">)</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;fsky_GCph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;fsky_GCph&quot;</span><span class="p">,</span> <span class="n">upm</span><span class="o">.</span><span class="n">sqdegtofsky</span><span class="p">(</span><span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_survey_GCph&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;fsky_WL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;fsky_WL&quot;</span><span class="p">,</span> <span class="n">upm</span><span class="o">.</span><span class="n">sqdegtofsky</span><span class="p">(</span><span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_survey_WL&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;fsky_spectro&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;fsky_spectro&quot;</span><span class="p">,</span> <span class="n">upm</span><span class="o">.</span><span class="n">sqdegtofsky</span><span class="p">(</span><span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_survey_spectro&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;fsky_IM&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s2">&quot;fsky_IM&quot;</span><span class="p">,</span> <span class="n">upm</span><span class="o">.</span><span class="n">sqdegtofsky</span><span class="p">(</span><span class="n">specificationsf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_survey_IM&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="c1"># ums.deepupdate(specs, specifications)  # deep update keys if passed by users</span>
+    <span class="n">specs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">specifications</span><span class="p">)</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;survey_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">surveyName</span>
+    <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;specs_dir&quot;</span><span class="p">]</span>  <span class="c1"># Path for additional files like luminosity</span>
+
+    <span class="k">if</span> <span class="n">observables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">observables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">]</span>
+    <span class="k">global</span> <span class="n">obs</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">observables</span>
+
+    <span class="k">global</span> <span class="n">freeparams</span>
+    <span class="k">if</span> <span class="n">freepars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">eps_cp</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;eps_cosmopars&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;cosmo_model&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;w0waCDM&quot;</span><span class="p">:</span>
+            <span class="n">freepars</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;Omegab&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;w0&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;wa&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;sigma8&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;cosmo_model&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;LCDM&quot;</span><span class="p">:</span>
+            <span class="n">freepars</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;Omegab&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+                <span class="s2">&quot;sigma8&quot;</span><span class="p">:</span> <span class="n">eps_cp</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Other cosmological models not implemented yet.&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Please pass your free parameters and their respective epsilons as a dictionary.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="n">freeparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">freepars</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">fiducialparams</span>
+    <span class="k">if</span> <span class="n">fiducialpars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fiducialpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="mf">0.32</span><span class="p">,</span>
+            <span class="s2">&quot;Omegab&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+            <span class="s2">&quot;w0&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="s2">&quot;wa&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">0.67</span><span class="p">,</span>
+            <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">,</span>
+            <span class="s2">&quot;sigma8&quot;</span><span class="p">:</span> <span class="mf">0.815583</span><span class="p">,</span>
+            <span class="s2">&quot;Omegak&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;mnu&quot;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">,</span>
+            <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="mf">0.058</span><span class="p">,</span>
+            <span class="s2">&quot;num_nu_massive&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;num_nu_massless&quot;</span><span class="p">:</span> <span class="mf">2.046</span><span class="p">,</span>
+            <span class="s2">&quot;dark_energy_model&quot;</span><span class="p">:</span> <span class="s2">&quot;ppf&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span> <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; Custom fiducial parameters loaded&quot;</span>
+        <span class="p">)</span>
+    <span class="n">fiducialparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">fiducialpars</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">fiducialcosmo</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+        <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+        <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; Computing cosmology at the fiducial point&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">tcosmo1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">fiducialcosmo</span> <span class="o">=</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">cosmo_functions</span><span class="p">(</span>
+        <span class="n">fiducialparams</span><span class="p">,</span> <span class="n">input_type</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">tcosmo2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+        <span class="n">feedback_level</span><span class="o">=</span><span class="n">feed_lvl</span><span class="p">,</span>
+        <span class="n">min_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Cosmological functions obtained in: &quot;</span><span class="p">,</span>
+        <span class="n">time_ini</span><span class="o">=</span><span class="n">tcosmo1</span><span class="p">,</span>
+        <span class="n">time_fin</span><span class="o">=</span><span class="n">tcosmo2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">Photobiasparams</span>
+    <span class="k">if</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">photobiaspars</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">biasmodel</span> <span class="o">=</span> <span class="n">photobiaspars</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">photobiaspars</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">biasmodel</span> <span class="o">=</span> <span class="n">photobiaspars</span><span class="p">[</span><span class="s2">&quot;bias_model&quot;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;using bias model: &quot;</span><span class="p">,</span> <span class="n">biasmodel</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;with bias keys: &quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">photobiaspars</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">photobiaspars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">biasmodel</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;ph_bias_model&quot;</span><span class="p">]</span>
+            <span class="n">bias_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;ph_bias_parametrization&quot;</span><span class="p">]</span>
+            <span class="n">photobiaspars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">photobiaspars</span><span class="p">[</span><span class="s2">&quot;bias_model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">biasmodel</span>
+            <span class="k">if</span> <span class="n">biasmodel</span> <span class="o">==</span> <span class="s2">&quot;binned&quot;</span> <span class="ow">or</span> <span class="n">biasmodel</span> <span class="o">==</span> <span class="s2">&quot;binned_constant&quot;</span><span class="p">:</span>
+                <span class="n">generate_bias_keys</span> <span class="o">=</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">][</span><span class="s2">&quot;generate_bias_keys&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">generate_bias_keys</span><span class="p">:</span>
+                    <span class="n">zbins</span> <span class="o">=</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">,</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;z_bins_ph&quot;</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">zbins</span><span class="p">)):</span>
+                        <span class="n">keystr</span> <span class="o">=</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">][</span><span class="s2">&quot;keystr&quot;</span><span class="p">]</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="n">keystr</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+                        <span class="n">photobiaspars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">zbins</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="n">zbins</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;generate_bias_keys&quot;</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;keystr&quot;</span><span class="p">:</span>
+                            <span class="n">photobiaspars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">photobiaspars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_prtz</span><span class="p">[</span><span class="n">biasmodel</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">photobiaspars</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">Photobiasparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">photobiaspars</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;vary_ph_bias&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">default_eps_ph_bias</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;vary_ph_bias&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">photobiaspars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;bias_model&quot;</span><span class="p">:</span>
+                    <span class="c1"># Only add the free parameters that are not already in the dictionary</span>
+                    <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default_eps_ph_bias</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">photoparams</span>
+    <span class="k">if</span> <span class="n">photopars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">photopars</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;photo_z_params&quot;</span><span class="p">]</span>
+    <span class="n">photoparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">photopars</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">IAparams</span>
+    <span class="k">if</span> <span class="n">IApars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">IApars</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IA_params&quot;</span><span class="p">]</span>
+    <span class="n">IAparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">IApars</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;vary_IA_pars&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_add_free_ia_parameters</span><span class="p">(</span><span class="n">freeparams</span><span class="p">,</span> <span class="n">IAparams</span><span class="p">,</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;vary_IA_pars&quot;</span><span class="p">])</span>
+
+    <span class="k">global</span> <span class="n">Spectrononlinearparams</span>
+    <span class="n">Spectrononlinearparams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;GCsp&quot;</span> <span class="ow">in</span> <span class="n">obs</span> <span class="ow">or</span> <span class="s2">&quot;IM&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="n">gscp_nonlin_model</span> <span class="o">=</span> <span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nonlinear_model&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gscp_nonlin_model</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+            <span class="n">Spectrononlinearparams</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="n">gscp_nonlin_model</span> <span class="o">==</span> <span class="s2">&quot;rescale_sigma_pv&quot;</span><span class="p">:</span>
+            <span class="n">nonlin_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;nonlinear_parametrization&quot;</span><span class="p">]</span>
+            <span class="n">nonlin_prmod</span> <span class="o">=</span> <span class="n">nonlin_prtz</span><span class="p">[</span><span class="n">gscp_nonlin_model</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nonlin_prmod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">Spectrononlinearparams</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nonlin_prmod</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">spectrononlinearpars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Spectrononlinearparams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">spectrononlinearpars</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">Spectrobiasparams</span>
+    <span class="n">Spectrobiasparams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">spectrobiaspars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Spectrobiasparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">spectrobiaspars</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">PShotparams</span>
+    <span class="n">PShotparams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">PShotpars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">PShotparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">PShotpars</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;GCsp&quot;</span> <span class="ow">in</span> <span class="n">obs</span> <span class="ow">or</span> <span class="s2">&quot;IM&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+            <span class="n">bias_model</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;sp_bias_model&quot;</span><span class="p">]</span>
+            <span class="n">bias_sample</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;sp_bias_sample&quot;</span><span class="p">]</span>
+            <span class="n">bias_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;sp_bias_parametrization&quot;</span><span class="p">]</span>
+            <span class="n">bias_prmod</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">bias_prtz</span><span class="p">[</span><span class="n">bias_model</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bias_prmod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">Spectrobiasparams</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_prmod</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1"># sanity check</span>
+            <span class="k">if</span> <span class="n">bias_sample</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">Spectrobiasparams</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: bias_sample not found in bias_parameter keys&quot;</span><span class="p">)</span>
+            <span class="n">shot_noise_model</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;shot_noise_model&quot;</span><span class="p">]</span>
+            <span class="n">shot_noise_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;shot_noise_parametrization&quot;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">Pskeys</span> <span class="o">=</span> <span class="n">shot_noise_prtz</span><span class="p">[</span><span class="n">shot_noise_model</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">Pskeys</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Pskeys</span><span class="p">:</span>
+                <span class="n">PShotparams</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">shot_noise_prtz</span><span class="p">[</span><span class="n">shot_noise_model</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">global</span> <span class="n">IMbiasparams</span>
+    <span class="n">IMbiasparams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">IMbiaspars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">IMbiasparams</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">IMbiaspars</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;IM&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+            <span class="n">bias_model</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_model&quot;</span><span class="p">]</span>
+            <span class="n">bias_sample</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_sample&quot;</span><span class="p">]</span>
+            <span class="n">bias_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_parametrization&quot;</span><span class="p">]</span>
+            <span class="n">bias_prmod</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">bias_prtz</span><span class="p">[</span><span class="n">bias_model</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bias_prmod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">IMbiasparams</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_prmod</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">bias_model</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_model&quot;</span><span class="p">]</span>
+            <span class="n">bias_sample</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_sample&quot;</span><span class="p">]</span>
+            <span class="n">bias_prtz</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="s2">&quot;IM_bias_parametrization&quot;</span><span class="p">]</span>
+            <span class="n">bias_prmod</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">bias_prtz</span><span class="p">[</span><span class="n">bias_model</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">bias_prmod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">IMbiasparams</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_prmod</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># Set the default free parameters for the spectro nuisance parameters</span>
+    <span class="n">default_eps_gc_nuis</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;eps_gal_nuispars&quot;</span><span class="p">]</span>
+    <span class="n">default_eps_gc_nonlin</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;eps_gal_nonlinpars&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;GCsp&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Spectrobiasparams</span><span class="p">:</span>
+            <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default_eps_gc_nuis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;IM&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">IMbiasparams</span><span class="p">:</span>
+            <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default_eps_gc_nuis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;GCsp&quot;</span> <span class="ow">in</span> <span class="n">obs</span> <span class="ow">or</span> <span class="s2">&quot;IM&quot;</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">PShotparams</span><span class="p">:</span>
+            <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default_eps_gc_nuis</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Spectrononlinearparams</span><span class="p">:</span>
+            <span class="n">freeparams</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default_eps_gc_nonlin</span><span class="p">)</span>
+    <span class="c1"># Only add the free parameters that are not already in the dictionary</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="s2">&quot;Final dict of free parameters in config.py:&quot;</span><span class="p">)</span>
+    <span class="n">upt</span><span class="o">.</span><span class="n">debug_print</span><span class="p">(</span><span class="n">freeparams</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">latex_names</span>
+    <span class="n">latex_names_def</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\Omega_{{\rm m}, 0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Omegab&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\Omega_{{\rm b}, 0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Om&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\Omega_{{\rm m}, 0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ob&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\Omega_{{\rm b}, 0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;h&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;n_{\rm s}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\tau&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;As&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;A_{\rm s}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;10^9As&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;10^9 A_{\rm s}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigma8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;s8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Mnu&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;M_\nu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mnu&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\Sigma m_\nu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Neff&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;N_\mathrm</span><span class="si">{eff}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_4&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_5&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_6&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_6&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_7&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_9&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_9&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_10&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_10&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbgs8_11&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_g \sigma_8)_11&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_4&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_5&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_6&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_6&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_7&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_9&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_9&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_10&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_10&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lnbIs8_11&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\ln(b_</span><span class="si">{IM}</span><span class="s2"> \sigma_8)_11&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ps_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;P_</span><span class="si">{S1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ps_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;P_</span><span class="si">{S2}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ps_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;P_</span><span class="si">{S3}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ps_4&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;P_</span><span class="si">{S4}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;E11&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;E_</span><span class="si">{11}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;E22&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;E_</span><span class="si">{22}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g2}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g3}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_4&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g4}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_5&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g5}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_6&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g6}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_7&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g7}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_8&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g8}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_9&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g9}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_10&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g10}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bg_11&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;b_</span><span class="si">{g11}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AIA&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;A_</span><span class="si">{IA}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;betaIA&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\beta_</span><span class="si">{IA}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;etaIA&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\eta_</span><span class="si">{IA}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;w0&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;w_0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wa&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;w_a&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmap_0&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{p\,0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmap_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{p\,1}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmap_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{p\,2}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmap_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{p\,3}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmav_0&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{v\,0}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmav_1&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{v\,1}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmav_2&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{v\,2}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sigmav_3&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\sigma_{v\,3}&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">latex_names</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">latex_names_def</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latexnames</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">latex_names</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">latexnames</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

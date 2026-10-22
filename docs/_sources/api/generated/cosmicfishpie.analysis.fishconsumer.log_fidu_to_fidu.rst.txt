@@ -1,0 +1,6 @@
+log\_fidu\_to\_fidu
+===================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: log_fidu_to_fidu

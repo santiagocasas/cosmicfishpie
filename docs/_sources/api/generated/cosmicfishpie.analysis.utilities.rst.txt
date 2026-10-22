@@ -1,0 +1,43 @@
+cosmicfishpie.analysis.utilities
+================================
+
+.. automodule:: cosmicfishpie.analysis.utilities
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      CosmicFish_write_header
+      confidence_coefficient
+      find_nearest
+      grouper
+      make_list
+      mant_exp_to_num
+      mkdirp
+      nice_number
+      num_to_mant_exp
+      print_table
+      rel_error_to_index
+      rel_median_error
+      significant_digits
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,8 @@
+derivatives
+===========
+
+.. currentmodule:: cosmicfishpie.fishermatrix.derivatives
+
+.. autoclass:: derivatives
+   :members:
+   :show-inheritance:

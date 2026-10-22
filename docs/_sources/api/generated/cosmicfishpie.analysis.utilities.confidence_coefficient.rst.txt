@@ -1,0 +1,6 @@
+confidence\_coefficient
+=======================
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: confidence_coefficient

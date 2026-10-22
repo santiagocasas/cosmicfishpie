@@ -1,0 +1,6 @@
+compute\_theory\_spectro
+========================
+
+.. currentmodule:: cosmicfishpie.likelihood.spectro_like
+
+.. autofunction:: compute_theory_spectro

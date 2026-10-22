@@ -1,0 +1,6 @@
+prepare\_fishers
+================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: prepare_fishers

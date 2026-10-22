@@ -1,0 +1,8 @@
+FisherMatrix
+============
+
+.. currentmodule:: cosmicfishpie.fishermatrix.cosmicfish
+
+.. autoclass:: FisherMatrix
+   :members:
+   :show-inheritance:

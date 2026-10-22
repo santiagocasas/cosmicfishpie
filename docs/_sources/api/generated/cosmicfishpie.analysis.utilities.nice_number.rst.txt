@@ -1,0 +1,6 @@
+nice\_number
+============
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: nice_number

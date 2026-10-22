@@ -1,0 +1,33 @@
+﻿cosmicfishpie.configs
+=====================
+
+.. automodule:: cosmicfishpie.configs
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   config
+   context
+   install_external_data
+

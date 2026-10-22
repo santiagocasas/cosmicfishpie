@@ -1,0 +1,31 @@
+cosmicfishpie.utilities.legendre\_tools
+=======================================
+
+.. automodule:: cosmicfishpie.utilities.legendre_tools
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      gauss_lobatto_abscissa_and_weights
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

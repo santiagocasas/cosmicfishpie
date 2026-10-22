@@ -1,0 +1,6 @@
+build\_analysis\_context
+========================
+
+.. currentmodule:: cosmicfishpie.configs.context
+
+.. autofunction:: build_analysis_context

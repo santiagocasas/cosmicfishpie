@@ -1,0 +1,34 @@
+﻿cosmicfishpie.likelihood
+========================
+
+.. automodule:: cosmicfishpie.likelihood
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   base
+   photo_like
+   sampler
+   spectro_like
+

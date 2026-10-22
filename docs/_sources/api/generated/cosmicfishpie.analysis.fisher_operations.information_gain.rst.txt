@@ -1,0 +1,6 @@
+information\_gain
+=================
+
+.. currentmodule:: cosmicfishpie.analysis.fisher_operations
+
+.. autofunction:: information_gain

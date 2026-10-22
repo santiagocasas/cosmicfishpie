@@ -1,0 +1,31 @@
+cosmicfishpie.cosmology.nuisance
+================================
+
+.. automodule:: cosmicfishpie.cosmology.nuisance
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      Nuisance
+   
+   
+
+   
+   
+   
+
+
+

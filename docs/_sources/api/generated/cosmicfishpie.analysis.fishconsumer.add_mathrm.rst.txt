@@ -1,0 +1,6 @@
+add\_mathrm
+===========
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: add_mathrm

@@ -1,0 +1,8 @@
+DerivativeRequest
+=================
+
+.. currentmodule:: cosmicfishpie.fishermatrix.derivatives
+
+.. autoclass:: DerivativeRequest
+   :members:
+   :show-inheritance:

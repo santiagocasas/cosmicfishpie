@@ -1,0 +1,45 @@
+cosmicfishpie.likelihood.spectro\_like
+======================================
+
+.. automodule:: cosmicfishpie.likelihood.spectro_like
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      compute_chi2_legendre
+      compute_covariance_legendre
+      compute_theory_spectro
+      compute_wedge_chi2
+      legendre_Pgg
+      loglike
+      observable_Pgg
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      SpectroLikelihood
+   
+   
+
+   
+   
+   
+
+
+

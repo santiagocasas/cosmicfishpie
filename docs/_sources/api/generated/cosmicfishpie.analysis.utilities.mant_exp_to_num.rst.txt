@@ -1,0 +1,6 @@
+mant\_exp\_to\_num
+==================
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: mant_exp_to_num

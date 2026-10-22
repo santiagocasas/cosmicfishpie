@@ -1,0 +1,6 @@
+install\_ext\_data
+==================
+
+.. currentmodule:: cosmicfishpie.configs.install_external_data
+
+.. autofunction:: install_ext_data

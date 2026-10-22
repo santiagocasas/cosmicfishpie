@@ -1,0 +1,6 @@
+og\_plot\_shades
+================
+
+.. currentmodule:: cosmicfishpie.analysis.plot_comparison
+
+.. autofunction:: og_plot_shades

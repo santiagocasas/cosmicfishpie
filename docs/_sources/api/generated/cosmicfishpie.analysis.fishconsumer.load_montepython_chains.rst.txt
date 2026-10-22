@@ -1,0 +1,6 @@
+load\_montepython\_chains
+=========================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: load_montepython_chains

@@ -1,0 +1,32 @@
+﻿cosmicfishpie.fishermatrix
+==========================
+
+.. automodule:: cosmicfishpie.fishermatrix
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cosmicfish
+   derivatives
+

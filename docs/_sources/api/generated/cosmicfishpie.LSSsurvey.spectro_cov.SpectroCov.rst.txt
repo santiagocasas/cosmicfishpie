@@ -1,0 +1,8 @@
+SpectroCov
+==========
+
+.. currentmodule:: cosmicfishpie.LSSsurvey.spectro_cov
+
+.. autoclass:: SpectroCov
+   :members:
+   :show-inheritance:

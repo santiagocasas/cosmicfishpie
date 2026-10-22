@@ -1,0 +1,8 @@
+inputiniparser
+==============
+
+.. currentmodule:: cosmicfishpie.utilities.utils
+
+.. autoclass:: inputiniparser
+   :members:
+   :show-inheritance:

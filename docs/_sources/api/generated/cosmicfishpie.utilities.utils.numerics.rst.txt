@@ -1,0 +1,8 @@
+numerics
+========
+
+.. currentmodule:: cosmicfishpie.utilities.utils
+
+.. autoclass:: numerics
+   :members:
+   :show-inheritance:

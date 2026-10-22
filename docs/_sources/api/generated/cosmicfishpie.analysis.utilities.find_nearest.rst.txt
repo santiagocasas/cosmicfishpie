@@ -1,0 +1,6 @@
+find\_nearest
+=============
+
+.. currentmodule:: cosmicfishpie.analysis.utilities
+
+.. autofunction:: find_nearest

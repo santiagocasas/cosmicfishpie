@@ -1,0 +1,6 @@
+add\_colorbar
+=============
+
+.. currentmodule:: cosmicfishpie.analysis.plot_comparison
+
+.. autofunction:: add_colorbar

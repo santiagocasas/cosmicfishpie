@@ -1,0 +1,39 @@
+﻿cosmicfishpie.analysis
+======================
+
+.. automodule:: cosmicfishpie.analysis
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   colors
+   fishconsumer
+   fisher_derived
+   fisher_matrix
+   fisher_operations
+   fisher_plot_analysis
+   fisher_plotting
+   plot_comparison
+   utilities
+

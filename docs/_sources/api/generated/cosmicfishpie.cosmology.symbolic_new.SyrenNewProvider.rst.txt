@@ -1,0 +1,8 @@
+SyrenNewProvider
+================
+
+.. currentmodule:: cosmicfishpie.cosmology.symbolic_new
+
+.. autoclass:: SyrenNewProvider
+   :members:
+   :show-inheritance:

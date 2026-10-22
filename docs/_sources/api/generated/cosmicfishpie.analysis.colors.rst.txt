@@ -1,0 +1,39 @@
+cosmicfishpie.analysis.colors
+=============================
+
+.. automodule:: cosmicfishpie.analysis.colors
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      nice_colors
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      bash_colors
+   
+   
+
+   
+   
+   
+
+
+

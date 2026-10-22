@@ -1,0 +1,6 @@
+class\_ee2\_boost
+=================
+
+.. currentmodule:: cosmicfishpie.cosmology.ee2
+
+.. autofunction:: class_ee2_boost

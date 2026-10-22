@@ -1,0 +1,34 @@
+﻿cosmicfishpie.cosmology
+=======================
+
+.. automodule:: cosmicfishpie.cosmology
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cosmology
+   ee2
+   nuisance
+   symbolic_new
+

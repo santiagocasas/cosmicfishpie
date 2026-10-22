@@ -1,0 +1,31 @@
+cosmicfishpie.LSSsurvey.photo\_cov
+==================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.photo_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      PhotoCov
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+register\_likelihood\_component
+===============================
+
+.. currentmodule:: cosmicfishpie.likelihood.sampler
+
+.. autofunction:: register_likelihood_component

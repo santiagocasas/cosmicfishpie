@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Derivative methods &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=bb516dca"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'derivatives';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Likelihood sampling with Nautilus" href="likelihood_sampling.html" />
+    <link rel="prev" title="Comprehensive guide" href="comprehensive_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="comprehensive_guide.html">Comprehensive guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Derivative methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_sampling.html">Likelihood sampling with Nautilus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmb_benchmarks.html">CMB benchmarks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Derivative methods</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="derivative-methods">
+<h1>Derivative methods<a class="headerlink" href="#derivative-methods" title="Link to this heading">#</a></h1>
+<p>CosmicFishPie computes Fisher matrices from numerical derivatives of
+observables (angular power spectra, galaxy power spectra, etc.) with respect
+to the free cosmological and nuisance parameters. The method used for these
+derivatives is selected via <code class="docutils literal notranslate"><span class="pre">options[&quot;derivatives&quot;]</span></code> and implemented in
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.html#module-cosmicfishpie.fishermatrix.derivatives" title="cosmicfishpie.fishermatrix.derivatives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.derivatives</span></code></a>. Four methods are available:
+<code class="docutils literal notranslate"><span class="pre">3PT</span></code> (default), <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code>, <code class="docutils literal notranslate"><span class="pre">POLY</span></code>, and <code class="docutils literal notranslate"><span class="pre">STEM</span></code>.</p>
+<p>This page documents the algorithm behind each method, the relative cost of
+using them, and an empirical comparison across two different backends
+(<code class="docutils literal notranslate"><span class="pre">symbolic</span></code> and <code class="docutils literal notranslate"><span class="pre">camb</span></code>) that motivated a bug fix to the <code class="docutils literal notranslate"><span class="pre">POLY</span></code> method
+(see <a class="reference internal" href="#historical-note-the-poly-bug">Historical note: the POLY bug</a> below).
+It also documents <code class="docutils literal notranslate"><span class="pre">scripts/archive/backend-validation/compare_derivative_methods.py</span></code>,
+the regression script used to produce these results, so the comparison can be
+reproduced or extended.</p>
+<section id="pt-central-three-point-finite-difference">
+<h2>1. <code class="docutils literal notranslate"><span class="pre">3PT</span></code> — central three-point finite difference<a class="headerlink" href="#pt-central-three-point-finite-difference" title="Link to this heading">#</a></h2>
+<p>The default method. For each free parameter <span class="math notranslate nohighlight">\(\theta\)</span> with fiducial value
+<span class="math notranslate nohighlight">\(\theta_0\)</span> and step <span class="math notranslate nohighlight">\(h = \theta_0 \cdot \texttt{freeparams}[\theta]\)</span>, the
+observable <span class="math notranslate nohighlight">\(\mathcal{O}\)</span> is evaluated once on each side of the fiducial
+point:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\mathrm{d}\mathcal{O}}{\mathrm{d}\theta}\bigg|_{\theta_0}
+    \approx \frac{\mathcal{O}(\theta_0+h) - \mathcal{O}(\theta_0-h)}{2h}\]</div>
+<p>This is the standard central-difference stencil. Its leading-order
+truncation error comes from the next (cubic) term in the Taylor expansion of
+<span class="math notranslate nohighlight">\(\mathcal{O}\)</span> around <span class="math notranslate nohighlight">\(\theta_0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{error} \approx \frac{h^2}{6}\,\mathcal{O}'''(\theta_0)\]</div>
+<p>i.e. the error scales as <span class="math notranslate nohighlight">\(O(h^2)\)</span> and vanishes exactly for any observable
+that is at most quadratic in <span class="math notranslate nohighlight">\(\theta\)</span> locally. Cost: <strong>2 observable
+evaluations per parameter</strong>.</p>
+</section>
+<section id="pt-fwd-one-sided-four-point-forward-stencil">
+<h2>2. <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> — one-sided four-point forward stencil<a class="headerlink" href="#pt-fwd-one-sided-four-point-forward-stencil" title="Link to this heading">#</a></h2>
+<p>A forward-only (no backward step) finite-difference stencil, useful when a
+parameter cannot be perturbed below the fiducial value. It evaluates the
+observable at the fiducial point and three equally spaced forward steps
+(<span class="math notranslate nohighlight">\(\theta_0, \theta_0+h, \theta_0+2h, \theta_0+3h\)</span>) and combines them with
+fixed coefficients (obtained from a
+<a class="reference external" href="https://web.media.mit.edu/~crtaylor/calculator.html">finite-difference coefficients calculator</a>):</p>
+<div class="math notranslate nohighlight">
+\[\frac{\mathrm{d}\mathcal{O}}{\mathrm{d}\theta}\bigg|_{\theta_0}
+    \approx \frac{-11\,\mathcal{O}(\theta_0) + 18\,\mathcal{O}(\theta_0+h)
+    - 9\,\mathcal{O}(\theta_0+2h) + 2\,\mathcal{O}(\theta_0+3h)}{6h}\]</div>
+<p>This is <span class="math notranslate nohighlight">\(O(h^3)\)</span>-accurate, but uses <strong>4 observable
+evaluations per parameter</strong> (2x the cost of <code class="docutils literal notranslate"><span class="pre">3PT</span></code>) since it cannot reuse a
+symmetric backward point.</p>
+</section>
+<section id="poly-quartic-polynomial-fit">
+<h2>3. <code class="docutils literal notranslate"><span class="pre">POLY</span></code> — quartic polynomial fit<a class="headerlink" href="#poly-quartic-polynomial-fit" title="Link to this heading">#</a></h2>
+<p>Evaluates the observable at <code class="docutils literal notranslate"><span class="pre">numpoints=10</span></code> steps evenly spaced around the
+fiducial value, <code class="docutils literal notranslate"><span class="pre">stepsize</span> <span class="pre">=</span> <span class="pre">np.linspace(-h,</span> <span class="pre">h,</span> <span class="pre">10)</span></code> (i.e. <code class="docutils literal notranslate"><span class="pre">stepsize</span></code> is the
+<em>offset from the fiducial</em>, not the parameter value itself), then fits a
+degree-4 polynomial to the resulting values as a function of that offset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="c1"># fit = [a4, a3, a2, a1, a0], highest power first:</span>
+<span class="c1"># f(step) = a4*step^4 + a3*step^3 + a2*step^2 + a1*step + a0</span>
+</pre></div>
+</div>
+<p>Because <code class="docutils literal notranslate"><span class="pre">stepsize</span></code> is a translation of <span class="math notranslate nohighlight">\(\theta\)</span> (<span class="math notranslate nohighlight">\(\text{step} = \theta -
+\theta_0\)</span>), the change of variables is a pure shift, so
+<span class="math notranslate nohighlight">\(\mathrm{d}/\mathrm{d}\theta = \mathrm{d}/\mathrm{d}(\text{step})\)</span>. The
+derivative at the fiducial point (<span class="math notranslate nohighlight">\(\text{step}=0\)</span>) is therefore simply the
+polynomial’s linear coefficient, <code class="docutils literal notranslate"><span class="pre">fit[3]</span></code> (<code class="docutils literal notranslate"><span class="pre">a1</span></code> above) — no evaluation of the
+fit at any nonzero point is needed.</p>
+<p><strong>Worked example.</strong> Take <span class="math notranslate nohighlight">\(\mathcal{O}(\theta) = \theta^3\)</span> with fiducial
+<span class="math notranslate nohighlight">\(\theta_0 = 2\)</span>. Expanding around the fiducial with <span class="math notranslate nohighlight">\(\text{step} = \theta -
+\theta_0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{O}(\theta_0 + \text{step}) = 8 + 12\,\text{step}
+    + 6\,\text{step}^2 + \text{step}^3\]</div>
+<p>so the exact derivative at the fiducial is the coefficient of the linear
+term, <span class="math notranslate nohighlight">\(12\)</span>, matching <span class="math notranslate nohighlight">\(3\theta_0^2 = 3 \cdot 4 = 12\)</span>. A degree-4 fit to this
+data recovers <code class="docutils literal notranslate"><span class="pre">fit[3]</span> <span class="pre">=</span> <span class="pre">12</span></code> exactly (the quartic term is fit to zero since
+the data has no quartic component). Cost: <strong>10 observable evaluations per
+parameter</strong> (5x the cost of <code class="docutils literal notranslate"><span class="pre">3PT</span></code>), but the derivative from a single fit is
+essentially free (no additional evaluations of the observable).</p>
+<section id="historical-note-the-poly-bug">
+<h3>Historical note: the POLY bug<a class="headerlink" href="#historical-note-the-poly-bug" title="Link to this heading">#</a></h3>
+<p>Prior to this branch, <code class="docutils literal notranslate"><span class="pre">derivative_poly()</span></code> evaluated the fitted polynomial at
+the <em>fiducial value</em> <span class="math notranslate nohighlight">\(\theta_0\)</span> itself, using a mismatched expression that
+treated the fit as if it were a function of <span class="math notranslate nohighlight">\(\theta\)</span> rather than of the
+offset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># buggy: wrong evaluation point AND wrong coefficient-to-power mapping</span>
+<span class="mi">4</span> <span class="o">*</span> <span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">fidpar</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">fit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">fidpar</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">fit</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">fidpar</span> <span class="o">+</span> <span class="n">fit</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For the <span class="math notranslate nohighlight">\(\theta^3\)</span> example above this does not reproduce the correct
+derivative of 12 at any fiducial value other than 0. The fix (this branch)
+replaces this with <code class="docutils literal notranslate"><span class="pre">fit[3]</span></code>, i.e. reading off the linear coefficient of the
+fit directly, since the fit is already expressed in the offset coordinate
+where the fiducial point is 0. See
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.derivatives.html#cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly" title="cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly"><code class="xref py py-func docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly()</span></code></a>
+and the regression tests
+<code class="docutils literal notranslate"><span class="pre">test_derivative_poly_cubic_exact_at_fiducial</span></code> /
+<code class="docutils literal notranslate"><span class="pre">test_derivative_poly_matches_3pt_for_power_spectrum_observable</span></code> in
+<code class="docutils literal notranslate"><span class="pre">tests/derivatives_test.py</span></code>.</p>
+</section>
+</section>
+<section id="stem-adaptive-linear-fit-step-method">
+<h2>4. <code class="docutils literal notranslate"><span class="pre">STEM</span></code> — adaptive linear-fit (“step method”)<a class="headerlink" href="#stem-adaptive-linear-fit-step-method" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">STEM</span></code> solves a different problem than the three fixed-step methods above:
+rather than assuming one pre-chosen step size is simultaneously <em>large
+enough</em> to rise above the observable’s numerical noise floor and <em>small
+enough</em> to avoid curvature bias, it adaptively searches for a step-size
+window where a straight-line (degree-1) fit is statistically trustworthy.</p>
+<p>Algorithm (<code class="docutils literal notranslate"><span class="pre">numstem=11</span></code>, <code class="docutils literal notranslate"><span class="pre">mult_eps_factor=5</span></code>, <code class="docutils literal notranslate"><span class="pre">threshold=1e-3</span></code>):</p>
+<ol class="arabic simple">
+<li><p>Build an 11-point step grid spanning <span class="math notranslate nohighlight">\(\pm 5h\)</span> around the fiducial
+(<code class="docutils literal notranslate"><span class="pre">np.linspace(-5h,</span> <span class="pre">5h,</span> <span class="pre">11)</span></code>), and evaluate the observable at each point.</p></li>
+<li><p>Fit a degree-1 polynomial (<code class="docutils literal notranslate"><span class="pre">np.polyfit(step,</span> <span class="pre">values,</span> <span class="pre">1,</span> <span class="pre">full=True)</span></code>) and
+check the residual sum-of-squares against <code class="docutils literal notranslate"><span class="pre">threshold</span> <span class="pre">=</span> <span class="pre">1e-3</span></code>.</p></li>
+<li><p>If the residual exceeds the threshold, trim the two outermost
+(largest-<code class="docutils literal notranslate"><span class="pre">|step|</span></code>) points — the ones most likely dominated by curvature —
+and refit.</p></li>
+<li><p>Repeat until the fit converges or fewer than 3 points remain, in which
+case the routine currently prints an error and calls <code class="docutils literal notranslate"><span class="pre">exit()</span></code> (a known,
+pre-existing hard-exit fragility, tracked separately and not addressed by
+this comparison).</p></li>
+<li><p>The derivative is the converged linear fit’s slope.</p></li>
+</ol>
+<p>Cost: <strong>11 observable evaluations per parameter</strong> (the most expensive
+method), plus possible extra polynomial refits (free, no extra observable
+calls).</p>
+</section>
+<section id="observable-support-by-method">
+<span id="id1"></span><h2>Observable support by method<a class="headerlink" href="#observable-support-by-method" title="Link to this heading">#</a></h2>
+<p>The four methods are not interchangeable across probes: each one dispatches
+on <code class="docutils literal notranslate"><span class="pre">observables_type</span></code> (or doesn’t) in a different way, so only <code class="docutils literal notranslate"><span class="pre">3PT</span></code> is
+guaranteed to work everywhere today.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">GCph</span></code> / <code class="docutils literal notranslate"><span class="pre">WL</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">GCsp</span></code> / <code class="docutils literal notranslate"><span class="pre">IM</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">CMB_T</span></code> / <code class="docutils literal notranslate"><span class="pre">CMB_E</span></code> / <code class="docutils literal notranslate"><span class="pre">CMB_B</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">plain</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">3PT</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>no — no branch; raises <code class="docutils literal notranslate"><span class="pre">UnboundLocalError</span></code></p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POLY</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>no — assumes an <code class="docutils literal notranslate"><span class="pre">ells</span></code> key; <code class="docutils literal notranslate"><span class="pre">GCsp</span></code>/<code class="docutils literal notranslate"><span class="pre">IM</span></code> use <code class="docutils literal notranslate"><span class="pre">z_bins</span></code> and raise <code class="docutils literal notranslate"><span class="pre">KeyError</span></code></p></td>
+<td><p>yes — also keyed by <code class="docutils literal notranslate"><span class="pre">ells</span></code></p></td>
+<td><p>untested</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STEM</span></code></p></td>
+<td><p>yes</p></td>
+<td><p>no — raises <code class="docutils literal notranslate"><span class="pre">ValueError(&quot;STEM</span> <span class="pre">derivative</span> <span class="pre">not</span> <span class="pre">availabe&quot;)</span></code></p></td>
+<td><p>no</p></td>
+<td><p>untested</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Creating a <code class="docutils literal notranslate"><span class="pre">derivatives</span></code> object with <code class="docutils literal notranslate"><span class="pre">POLY</span></code> or <code class="docutils literal notranslate"><span class="pre">STEM</span></code> for a non-photometric probe,
+or with <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> for a CMB probe, emits a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">3PT</span></code>.
+Use <code class="docutils literal notranslate"><span class="pre">3PT</span></code> (or <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> for <code class="docutils literal notranslate"><span class="pre">GCsp</span></code>/<code class="docutils literal notranslate"><span class="pre">IM</span></code>) outside the photometric probes until
+these gaps are closed; see
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.derivatives.html#cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly" title="cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly"><code class="xref py py-func docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly()</span></code></a> and
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.derivatives.html#cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_stem" title="cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_stem"><code class="xref py py-func docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_stem()</span></code></a> for
+the exact dispatch logic.</p>
+</section>
+<section id="custom-derivative-providers">
+<span id="id2"></span><h2>Custom derivative providers<a class="headerlink" href="#custom-derivative-providers" title="Link to this heading">#</a></h2>
+<p>The four methods above all live in the default provider,
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider.html#cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider" title="cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiniteDifferenceProvider</span></code></a>. To replace
+them (analytic formulae, an emulator, autodiff…), pass any object with a
+<code class="docutils literal notranslate"><span class="pre">compute(request)</span></code> method, i.e. the
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.DerivativeProvider.html#cosmicfishpie.fishermatrix.derivatives.DerivativeProvider" title="cosmicfishpie.fishermatrix.derivatives.DerivativeProvider"><code class="xref py py-class docutils literal notranslate"><span class="pre">DerivativeProvider</span></code></a> protocol, as
+<code class="docutils literal notranslate"><span class="pre">FisherMatrix(...,</span> <span class="pre">derivative_provider=MyProvider())</span></code>. If it is <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default),
+<code class="docutils literal notranslate"><span class="pre">FiniteDifferenceProvider</span></code> is used. The <em>Comprehensive guide</em> (“Project status”) mentions
+this interface; no autodiff backend ships with the package.</p>
+<p><code class="docutils literal notranslate"><span class="pre">compute</span></code> receives a frozen
+<a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.DerivativeRequest.html#cosmicfishpie.fishermatrix.derivatives.DerivativeRequest" title="cosmicfishpie.fishermatrix.derivatives.DerivativeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">DerivativeRequest</span></code></a> with these fields:
+<code class="docutils literal notranslate"><span class="pre">observable</span></code> (callable taking a full parameter dict), <code class="docutils literal notranslate"><span class="pre">fiducial</span></code>, <code class="docutils literal notranslate"><span class="pre">freeparams</span></code> (parameter -&gt;
+relative step), <code class="docutils literal notranslate"><span class="pre">observables_type</span></code>, <code class="docutils literal notranslate"><span class="pre">external_settings</span></code>, <code class="docutils literal notranslate"><span class="pre">feed_lvl</span></code>, <code class="docutils literal notranslate"><span class="pre">method</span></code> (the
+<code class="docutils literal notranslate"><span class="pre">3PT</span></code>/<code class="docutils literal notranslate"><span class="pre">STEM</span></code>/… string), <code class="docutils literal notranslate"><span class="pre">special_deriv_function</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration</span></code>. It must return
+<code class="docutils literal notranslate"><span class="pre">{parameter:</span> <span class="pre">derivative}</span></code> in the same shape as the default: for <code class="docutils literal notranslate"><span class="pre">GCph</span></code>/<code class="docutils literal notranslate"><span class="pre">WL</span></code>/<code class="docutils literal notranslate"><span class="pre">CMB_*</span></code> a dict per
+parameter holding the <code class="docutils literal notranslate"><span class="pre">ells</span></code> axis plus one derivative array per spectrum (<code class="docutils literal notranslate"><span class="pre">z_bins</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">ells</span></code> for <code class="docutils literal notranslate"><span class="pre">GCsp</span></code>/<code class="docutils literal notranslate"><span class="pre">IM</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.fishermatrix.derivatives</span><span class="w"> </span><span class="kn">import</span> <span class="n">DerivativeRequest</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyProvider</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">DerivativeRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">derivs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">par</span><span class="p">,</span> <span class="n">rel_step</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">freeparams</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">fiducial</span><span class="p">[</span><span class="n">par</span><span class="p">]</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">fid</span> <span class="o">*</span> <span class="n">rel_step</span> <span class="k">if</span> <span class="n">fid</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="n">rel_step</span>
+            <span class="n">up</span><span class="p">,</span> <span class="n">dn</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">fiducial</span><span class="p">),</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">fiducial</span><span class="p">)</span>
+            <span class="n">up</span><span class="p">[</span><span class="n">par</span><span class="p">],</span> <span class="n">dn</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="n">fid</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="n">fid</span> <span class="o">-</span> <span class="n">h</span>
+            <span class="n">o_up</span><span class="p">,</span> <span class="n">o_dn</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">up</span><span class="p">),</span> <span class="n">request</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+            <span class="n">derivs</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">o_up</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ells&quot;</span><span class="p">,</span> <span class="s2">&quot;z_bins&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">o_up</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">o_dn</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">o_up</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">derivs</span>
+</pre></div>
+</div>
+<p>This skeleton ignores <code class="docutils literal notranslate"><span class="pre">special_deriv_function</span></code> and <code class="docutils literal notranslate"><span class="pre">method</span></code>; honour them if you need
+analytic overrides. It was checked against the default <code class="docutils literal notranslate"><span class="pre">3PT</span></code> provider on a toy <code class="docutils literal notranslate"><span class="pre">GCph</span></code>-style
+observable (identical output); passing it through a full <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code> run was not tested.</p>
+</section>
+<section id="empirical-comparison-wl-only-euclid-fisher-matrix">
+<h2>Empirical comparison: WL-only Euclid Fisher matrix<a class="headerlink" href="#empirical-comparison-wl-only-euclid-fisher-matrix" title="Link to this heading">#</a></h2>
+<p>To validate the <code class="docutils literal notranslate"><span class="pre">POLY</span></code> fix and understand when <code class="docutils literal notranslate"><span class="pre">STEM</span></code>’s adaptivity actually
+matters, <code class="docutils literal notranslate"><span class="pre">scripts/archive/backend-validation/compare_derivative_methods.py</span></code>
+builds a fresh WL-only Euclid Fisher matrix (5 free LCDM parameters: <code class="docutils literal notranslate"><span class="pre">Omegam</span></code>, <code class="docutils literal notranslate"><span class="pre">Omegab</span></code>, <code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">ns</span></code>,
+<code class="docutils literal notranslate"><span class="pre">sigma8</span></code>, each with a 1% step) once per derivative method, using <code class="docutils literal notranslate"><span class="pre">3PT</span></code> as
+the reference baseline, across two backends:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">symbolic</span></code></strong> — a fast, closed-form/emulator backend (colossus for
+background cosmology + the <code class="docutils literal notranslate"><span class="pre">symbolic_pofk</span></code> package’s symbolic-regression
+P(k) emulators) with essentially no numerical noise.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">camb</span></code></strong> — the real CAMB Boltzmann backend, using the repository’s fast
+default settings (<code class="docutils literal notranslate"><span class="pre">camb/default.yaml</span></code>) with <code class="docutils literal notranslate"><span class="pre">halofit_version</span></code> overridden
+to <code class="docutils literal notranslate"><span class="pre">takahashi</span></code>. Real Boltzmann solvers have an irreducible numerical noise
+floor (ODE-integration tolerances, line-of-sight quadrature, nonlinear
+halofit), which is exactly the regime <code class="docutils literal notranslate"><span class="pre">STEM</span></code>’s adaptivity is designed to
+be robust against.</p></li>
+</ul>
+<section id="symbolic-backend-noise-free">
+<h3>Symbolic backend (noise-free)<a class="headerlink" href="#symbolic-backend-noise-free" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param</span>           <span class="n">sigma_3PT</span>   <span class="n">dev</span><span class="o">%</span><span class="n">_4PT_FWD</span>  <span class="n">dev</span><span class="o">%</span><span class="n">_POLY</span>  <span class="n">dev</span><span class="o">%</span><span class="n">_STEM</span>
+<span class="n">Omegam</span>         <span class="mf">0.00595468</span>       <span class="mf">0.020</span>        <span class="mf">0.016</span>      <span class="mf">0.323</span>
+<span class="n">Omegab</span>         <span class="mf">0.0203588</span>        <span class="mf">0.022</span>        <span class="mf">0.021</span>      <span class="mf">0.349</span>
+<span class="n">h</span>              <span class="mf">0.119352</span>         <span class="mf">0.016</span>        <span class="mf">0.015</span>      <span class="mf">0.243</span>
+<span class="n">ns</span>             <span class="mf">0.027081</span>         <span class="mf">0.010</span>        <span class="mf">0.009</span>      <span class="mf">0.154</span>
+<span class="n">sigma8</span>         <span class="mf">0.00761877</span>       <span class="mf">0.016</span>        <span class="mf">0.013</span>      <span class="mf">0.271</span>
+<span class="o">-------------------------------------------------------------</span>
+<span class="n">worst</span> <span class="n">deviation</span> <span class="n">vs</span> <span class="mi">3</span><span class="n">PT</span>                       <span class="mf">0.022</span><span class="o">%</span>       <span class="mf">0.021</span><span class="o">%</span>      <span class="mf">0.349</span><span class="o">%</span>
+                                              <span class="p">(</span><span class="mi">4</span><span class="n">PT_FWD</span><span class="p">)</span>    <span class="p">(</span><span class="n">POLY</span><span class="p">)</span>      <span class="p">(</span><span class="n">STEM</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Total wall-clock (all 4 methods): 2m33.6s (3PT 14.6s, 4PT_FWD 17.6s, POLY
+57.2s, STEM 59.3s).</p>
+</section>
+<section id="camb-backend-real-solver-halofit-takahashi">
+<h3>CAMB backend (real solver, halofit=takahashi)<a class="headerlink" href="#camb-backend-real-solver-halofit-takahashi" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param</span>           <span class="n">sigma_3PT</span>   <span class="n">dev</span><span class="o">%</span><span class="n">_4PT_FWD</span>  <span class="n">dev</span><span class="o">%</span><span class="n">_POLY</span>  <span class="n">dev</span><span class="o">%</span><span class="n">_STEM</span>
+<span class="n">Omegam</span>         <span class="mf">0.00538462</span>       <span class="mf">0.204</span>        <span class="mf">0.104</span>      <span class="mf">0.317</span>
+<span class="n">Omegab</span>         <span class="mf">0.0213948</span>        <span class="mf">1.198</span>        <span class="mf">0.669</span>      <span class="mf">0.419</span>
+<span class="n">h</span>              <span class="mf">0.124571</span>         <span class="mf">1.399</span>        <span class="mf">0.732</span>      <span class="mf">0.213</span>
+<span class="n">ns</span>             <span class="mf">0.0295462</span>        <span class="mf">1.586</span>        <span class="mf">0.727</span>      <span class="mf">0.029</span>
+<span class="n">sigma8</span>         <span class="mf">0.00665589</span>       <span class="mf">0.194</span>        <span class="mf">0.105</span>      <span class="mf">0.312</span>
+<span class="o">-------------------------------------------------------------</span>
+<span class="n">worst</span> <span class="n">deviation</span> <span class="n">vs</span> <span class="mi">3</span><span class="n">PT</span>                       <span class="mf">1.586</span><span class="o">%</span>       <span class="mf">0.732</span><span class="o">%</span>      <span class="mf">0.419</span><span class="o">%</span>
+                                              <span class="p">(</span><span class="mi">4</span><span class="n">PT_FWD</span><span class="p">)</span>    <span class="p">(</span><span class="n">POLY</span><span class="p">)</span>      <span class="p">(</span><span class="n">STEM</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Total wall-clock (all 4 methods): 11m50s (3PT 54.0s, 4PT_FWD 79.2s, POLY
+264.7s, STEM 292.0s).</p>
+</section>
+<section id="interpretation">
+<h3>Interpretation<a class="headerlink" href="#interpretation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">POLY</span></code> is fixed.</strong> In both backends <code class="docutils literal notranslate"><span class="pre">POLY</span></code> agrees with the well-tested
+<code class="docutils literal notranslate"><span class="pre">3PT</span></code> baseline far more closely than <code class="docutils literal notranslate"><span class="pre">STEM</span></code> does, confirming the fitted
+linear-coefficient fix is correct (previously a wrong evaluation-point
+formula would have produced grossly, not just slightly, different
+derivatives).</p></li>
+<li><p><strong>The ranking flips between backends.</strong> With the noise-free <code class="docutils literal notranslate"><span class="pre">symbolic</span></code>
+backend, <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> and <code class="docutils literal notranslate"><span class="pre">POLY</span></code> are essentially exact matches to <code class="docutils literal notranslate"><span class="pre">3PT</span></code>
+(~0.02%), while <code class="docutils literal notranslate"><span class="pre">STEM</span></code> has the <em>largest</em> deviation (0.35%) — just its own
+<code class="docutils literal notranslate"><span class="pre">1e-3</span></code> convergence-tolerance floor showing through, with no real noise for
+the adaptivity to correct for. With the real, noisy <code class="docutils literal notranslate"><span class="pre">camb</span></code> backend,
+<code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> (the smallest, most fixed step, most exposed to cancellation
+noise) degrades the most (0.02% → 1.6%), <code class="docutils literal notranslate"><span class="pre">POLY</span></code> degrades less thanks to
+its wider default step and averaging over 10 points (0.02% → 0.73%), and
+<code class="docutils literal notranslate"><span class="pre">STEM</span></code> stays roughly stable regardless of backend (0.35% → 0.42%) — ending
+up with the <em>smallest</em> deviation from <code class="docutils literal notranslate"><span class="pre">3PT</span></code> of the three non-baseline
+methods in the noisy regime.</p></li>
+<li><p><strong>Takeaway:</strong> <code class="docutils literal notranslate"><span class="pre">STEM</span></code>’s adaptive step-size search earns its keep
+specifically against real Boltzmann-solver numerical noise (this is
+consistent with historical experience that <code class="docutils literal notranslate"><span class="pre">STEM</span></code> “helped” in past
+Euclid-validation Fisher comparisons using CAMB/CLASS). In smooth or
+noise-free conditions (e.g. the <code class="docutils literal notranslate"><span class="pre">symbolic</span></code> backend, or well-converged
+analytic observables) it offers no advantage and simply reflects its own
+coarser stopping tolerance.</p></li>
+</ul>
+</section>
+</section>
+<section id="running-the-comparison-script">
+<h2>Running the comparison script<a class="headerlink" href="#running-the-comparison-script" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: symbolic backend, all 4 methods</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/archive/backend-validation/compare_derivative_methods.py
+
+<span class="c1"># Only compare a subset of methods against the 3PT baseline</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/archive/backend-validation/compare_derivative_methods.py<span class="w"> </span>--methods<span class="w"> </span>3PT,POLY
+
+<span class="c1"># Real CAMB backend (fast default yaml, halofit_version=takahashi)</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/archive/backend-validation/compare_derivative_methods.py<span class="w"> </span>--backend<span class="w"> </span>camb
+</pre></div>
+</div>
+<p>The script prints a table of the marginalized 1-sigma bound on each free
+parameter for every requested method, the percent deviation relative to the
+<code class="docutils literal notranslate"><span class="pre">3PT</span></code> baseline, the worst-deviating parameter per method, and per-method
+wall-clock timings. Fisher matrices and metadata are written under
+<code class="docutils literal notranslate"><span class="pre">scripts/benchmark_results/compare_derivative_methods/</span></code> (gitignored, not
+committed). See the script’s module docstring and <code class="docutils literal notranslate"><span class="pre">--help</span></code> output for the
+full set of options.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="comprehensive_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Comprehensive guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="likelihood_sampling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Likelihood sampling with Nautilus</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-central-three-point-finite-difference">1. <code class="docutils literal notranslate"><span class="pre">3PT</span></code> — central three-point finite difference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-fwd-one-sided-four-point-forward-stencil">2. <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> — one-sided four-point forward stencil</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#poly-quartic-polynomial-fit">3. <code class="docutils literal notranslate"><span class="pre">POLY</span></code> — quartic polynomial fit</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-note-the-poly-bug">Historical note: the POLY bug</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stem-adaptive-linear-fit-step-method">4. <code class="docutils literal notranslate"><span class="pre">STEM</span></code> — adaptive linear-fit (“step method”)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observable-support-by-method">Observable support by method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-derivative-providers">Custom derivative providers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-comparison-wl-only-euclid-fisher-matrix">Empirical comparison: WL-only Euclid Fisher matrix</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#symbolic-backend-noise-free">Symbolic backend (noise-free)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#camb-backend-real-solver-halofit-takahashi">CAMB backend (real solver, halofit=takahashi)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation">Interpretation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-comparison-script">Running the comparison script</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/derivatives.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

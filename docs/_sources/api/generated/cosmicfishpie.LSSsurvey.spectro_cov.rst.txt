@@ -1,0 +1,32 @@
+cosmicfishpie.LSSsurvey.spectro\_cov
+====================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.spectro_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      SpectroCov
+      SpectroDerivs
+   
+   
+
+   
+   
+   
+
+
+

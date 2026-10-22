@@ -1,0 +1,8 @@
+NautilusSampler
+===============
+
+.. currentmodule:: cosmicfishpie.likelihood.sampler
+
+.. autoclass:: NautilusSampler
+   :members:
+   :show-inheritance:

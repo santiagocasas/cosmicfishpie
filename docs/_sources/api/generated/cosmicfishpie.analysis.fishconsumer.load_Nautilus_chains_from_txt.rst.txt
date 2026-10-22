@@ -1,0 +1,6 @@
+load\_Nautilus\_chains\_from\_txt
+=================================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: load_Nautilus_chains_from_txt

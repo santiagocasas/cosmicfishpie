@@ -1,0 +1,6 @@
+plot\_chain\_summary
+====================
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: plot_chain_summary

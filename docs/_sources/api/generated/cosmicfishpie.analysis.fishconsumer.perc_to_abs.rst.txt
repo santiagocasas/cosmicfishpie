@@ -1,0 +1,6 @@
+perc\_to\_abs
+=============
+
+.. currentmodule:: cosmicfishpie.analysis.fishconsumer
+
+.. autofunction:: perc_to_abs

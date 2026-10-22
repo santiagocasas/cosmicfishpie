@@ -1,0 +1,8 @@
+printing
+========
+
+.. currentmodule:: cosmicfishpie.utilities.utils
+
+.. autoclass:: printing
+   :members:
+   :show-inheritance:

@@ -1,0 +1,35 @@
+﻿cosmicfishpie.LSSsurvey
+=======================
+
+.. automodule:: cosmicfishpie.LSSsurvey
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   photo_cov
+   photo_obs
+   photo_window
+   spectro_cov
+   spectro_obs
+

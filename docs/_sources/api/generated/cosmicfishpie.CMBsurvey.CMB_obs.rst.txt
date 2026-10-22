@@ -1,0 +1,31 @@
+cosmicfishpie.CMBsurvey.CMB\_obs
+================================
+
+.. automodule:: cosmicfishpie.CMBsurvey.CMB_obs
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      ComputeCls
+   
+   
+
+   
+   
+   
+
+
+

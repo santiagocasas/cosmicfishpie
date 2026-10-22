@@ -1,0 +1,31 @@
+cosmicfishpie.LSSsurvey.spectro\_obs
+====================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.spectro_obs
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      ComputeGalSpectro
+   
+   
+
+   
+   
+   
+
+
+

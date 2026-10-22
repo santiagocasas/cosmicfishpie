@@ -1,0 +1,6 @@
+compute\_derivatives
+====================
+
+.. currentmodule:: cosmicfishpie.fishermatrix.derivatives
+
+.. autofunction:: compute_derivatives

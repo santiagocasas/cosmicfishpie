@@ -1,0 +1,1478 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cosmicfishpie.LSSsurvey.photo_obs &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/cosmicfishpie/LSSsurvey/photo_obs';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">cosmicfishpie.LSSsurvey.photo_obs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for cosmicfishpie.LSSsurvey.photo_obs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;CLS</span>
+
+<span class="sd">This module contains cls calculations (only LSS atm).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.configs.config</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cfg</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.cosmology</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cosmology</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.nuisance</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nuisance</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.LSSsurvey.photo_window</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">photo_window</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">printing</span> <span class="k">as</span> <span class="n">upt</span>
+
+<span class="n">cachedir</span> <span class="o">=</span> <span class="s2">&quot;./cache&quot;</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+
+<span class="c1"># Experimental optimization toggles (default: enabled). Users can disable via env.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_env_flag</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">)</span>
+
+
+<span class="n">_USE_FAST_EFF</span> <span class="o">=</span> <span class="n">_env_flag</span><span class="p">(</span><span class="s2">&quot;COSMICFISH_FAST_EFF&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">_USE_FAST_P</span> <span class="o">=</span> <span class="n">_env_flag</span><span class="p">(</span><span class="s2">&quot;COSMICFISH_FAST_P&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">_USE_FAST_KERNEL</span> <span class="o">=</span> <span class="n">_env_flag</span><span class="p">(</span><span class="s2">&quot;COSMICFISH_FAST_KERNEL&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># @memory.cache</span>
+
+
+<div class="viewcode-block" id="memo_integral_efficiency">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.memo_integral_efficiency.html#cosmicfishpie.LSSsurvey.photo_obs.memo_integral_efficiency">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">memo_integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ngal_func</span><span class="p">,</span> <span class="n">comoving_func</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">zint_mat</span><span class="p">,</span> <span class="n">diffz</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy O(N^2) implementation of the efficiency integral.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Deprecated: prefer `faster_integral_efficiency` (vectorized) or</span>
+<span class="sd">      `much_faster_integral_efficiency` (O(N)).</span>
+<span class="sd">    - This version performs a per-row trapezoidal integration on the original</span>
+<span class="sd">      redshift grid to ensure numerically correct spacing. The `zint_mat` and</span>
+<span class="sd">      `diffz` arguments are ignored for correctness (they were prone to</span>
+<span class="sd">      inconsistent spacing per row).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    i : int</span>
+<span class="sd">        Bin index.</span>
+<span class="sd">    ngal_func : callable</span>
+<span class="sd">        Function returning n(z&#39;) given (z&#39;, i, kind).</span>
+<span class="sd">    comoving_func : callable</span>
+<span class="sd">        Function returning r(z).</span>
+<span class="sd">    z : numpy.ndarray</span>
+<span class="sd">        1D redshift grid.</span>
+<span class="sd">    zint_mat : numpy.ndarray</span>
+<span class="sd">        Ignored (kept for backward compatibility).</span>
+<span class="sd">    diffz : numpy.ndarray or float</span>
+<span class="sd">        Ignored (kept for backward compatibility).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        Interpolating function over z for the efficiency.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">comoving_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">integral</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="c1"># For each z_k integrate from z_k to z_max on the native grid</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">z_row</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span>
+        <span class="c1"># integrand: n(z&#39;) * (1 - r(z_k)/r(z&#39;))</span>
+        <span class="n">y_row</span> <span class="o">=</span> <span class="n">ngal_func</span><span class="p">(</span><span class="n">z_row</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">chi</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">comoving_func</span><span class="p">(</span><span class="n">z_row</span><span class="p">))</span>
+        <span class="c1"># integrate with correct x per row</span>
+        <span class="n">integral</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">y_row</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">z_row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">integral</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="faster_integral_efficiency">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.faster_integral_efficiency.html#cosmicfishpie.LSSsurvey.photo_obs.faster_integral_efficiency">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">faster_integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ngal_func</span><span class="p">,</span> <span class="n">comoving_func</span><span class="p">,</span> <span class="n">zarr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;function to do the integration over redshift that shows up in the lensing kernel</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    i             : int</span>
+<span class="sd">                    index of the redshift bin for which the lensing kernel should be computed</span>
+<span class="sd">    ngal_func     : callable</span>
+<span class="sd">                    callable function that returns the number density distribution of galaxies. Should be a function of the redshift bin index i as an int and the redshift z as a numpy.ndarray</span>
+<span class="sd">    comoving_func : callable</span>
+<span class="sd">                    callable function that returns the comoving distance. Should beb a function of the redshift z as a numpy.ndarray</span>
+<span class="sd">    zarr         : numpy.ndarray</span>
+<span class="sd">                    1d array of all redshifts z that should be used as integration points.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zprime</span> <span class="o">=</span> <span class="n">zarr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">wintgd</span> <span class="o">=</span> <span class="n">ngal_func</span><span class="p">(</span><span class="n">zprime</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">comoving_func</span><span class="p">(</span><span class="n">zarr</span><span class="p">)</span> <span class="o">/</span> <span class="n">comoving_func</span><span class="p">(</span><span class="n">zprime</span><span class="p">))</span>
+    <span class="n">witri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">wintgd</span><span class="p">)</span>
+    <span class="n">wint</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">witri</span><span class="p">,</span> <span class="n">zarr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">intp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">zarr</span><span class="p">,</span> <span class="n">wint</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">intp</span></div>
+
+
+
+<div class="viewcode-block" id="much_faster_integral_efficiency">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.much_faster_integral_efficiency.html#cosmicfishpie.LSSsurvey.photo_obs.much_faster_integral_efficiency">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">much_faster_integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ngal_func</span><span class="p">,</span> <span class="n">comoving_func</span><span class="p">,</span> <span class="n">zarr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;O(N) algorithm for the lensing efficiency integral using backward</span>
+<span class="sd">    cumulative trapezoid integrals.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    i             : int</span>
+<span class="sd">                    index of the redshift bin for which the lensing kernel should be computed</span>
+<span class="sd">    ngal_func     : callable</span>
+<span class="sd">                    callable function that returns the number density distribution of galaxies. Should be a</span>
+<span class="sd">                    function of the redshift bin index i as an int and the redshift z as a numpy.ndarray</span>
+<span class="sd">    comoving_func : callable</span>
+<span class="sd">                    callable function that returns the comoving distance. Should be a function of the redshift z</span>
+<span class="sd">                    as a numpy.ndarray</span>
+<span class="sd">    zarr          : numpy.ndarray</span>
+<span class="sd">                    1d array of all redshifts z that should be used as integration points.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency</span>
+<span class="sd">        for the i-th bin as a numpy.ndarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Grid and step</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">zarr</span>
+    <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+
+    <span class="c1"># Required functions on grid</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">comoving_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">ngal</span> <span class="o">=</span> <span class="n">ngal_func</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span>
+    <span class="n">ngal_over_chi</span> <span class="o">=</span> <span class="n">ngal</span> <span class="o">/</span> <span class="n">chi</span>
+
+    <span class="c1"># Backward trapezoid cumulative integral: I[k] = ∫_{z_k}^{z_max} f(z&#39;) dz&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">backward_trapz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">yr</span> <span class="o">=</span> <span class="n">y</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">seg</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">yr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">yr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">cumsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">seg</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">cumsum</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">I1</span> <span class="o">=</span> <span class="n">backward_trapz</span><span class="p">(</span><span class="n">ngal</span><span class="p">,</span> <span class="n">dz</span><span class="p">)</span>
+    <span class="n">I2</span> <span class="o">=</span> <span class="n">backward_trapz</span><span class="p">(</span><span class="n">ngal_over_chi</span><span class="p">,</span> <span class="n">dz</span><span class="p">)</span>
+    <span class="n">eff</span> <span class="o">=</span> <span class="n">I1</span> <span class="o">-</span> <span class="n">chi</span> <span class="o">*</span> <span class="n">I2</span>
+
+    <span class="k">return</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">eff</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ComputeCls">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ComputeCls</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cosmopars</span><span class="p">,</span>
+        <span class="n">photopars</span><span class="p">,</span>
+        <span class="n">IApars</span><span class="p">,</span>
+        <span class="n">biaspars</span><span class="p">,</span>
+        <span class="n">print_info_specs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">fiducial_cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">configuration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main class to obtain the angular power spectrum of the photometric probe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cosmopars        : dict</span>
+<span class="sd">                           a dictionary containing the cosmological parameters</span>
+<span class="sd">        photopars        : dict</span>
+<span class="sd">                           a dictionary containing specifications for the window function&#39;s galaxy distribution</span>
+<span class="sd">        IApars           : dict</span>
+<span class="sd">                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear</span>
+<span class="sd">        biaspars         : dict</span>
+<span class="sd">                           a dictionary containing the specifications for the galaxy biases</span>
+<span class="sd">        print_info_specs : bool</span>
+<span class="sd">                           If True will print the numerical specifications of the computation. Defaults to False</span>
+<span class="sd">        fiducial_cosmo   : cosmicfishpie.cosmology.cosmology.cosmo_functions, optional</span>
+<span class="sd">                           An instance of `cosmo_functions` of the fiducial cosmology.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cosmopars        : dict</span>
+<span class="sd">                           a dictionary containing the cosmological parameters</span>
+<span class="sd">        photopars        : dict</span>
+<span class="sd">                           a dictionary containing specifications for the window function&#39;s galaxy distribution</span>
+<span class="sd">        IApars           : dict</span>
+<span class="sd">                           a dictionary containing the specifications for the intrinsic alignment effect in cosmic shear</span>
+<span class="sd">        biaspars         : dict</span>
+<span class="sd">                           a dictionary containing the specifications for the galaxy biases</span>
+<span class="sd">        cosmo            : cosmicfishpie.cosmology.cosmo_functions</span>
+<span class="sd">                           An instance of `cosmo_functions`. Will either contain the fiducial cosmology if passed or compute from the cosmopars dict</span>
+<span class="sd">        observables      : list</span>
+<span class="sd">                           a list of the observables that the angular power spectrum is computed for</span>
+<span class="sd">        nuisance         : cosmicfishpie.cosmology.nuisance.Nuisance</span>
+<span class="sd">                           An instance of `Nuisance` that contains the relevant modeling of nuisance parameters</span>
+<span class="sd">        window           : cosmicfishpie.LSSsurvey.photo_window.GalaxyPhotoDist</span>
+<span class="sd">                           An instance of `GalaxyPhotoDist` containing the galaxy distribution needed to compute the window functions</span>
+<span class="sd">        tracer           : str</span>
+<span class="sd">                           What Power spectrum should be used when calculating the angular power spectrum of galaxy clustering. Either &quot;matter&quot; or &quot;clustering&quot;</span>
+<span class="sd">        binrange         : range</span>
+<span class="sd">                           a range with all the bins asked for in the survey specifications</span>
+<span class="sd">        zsamp            : int</span>
+<span class="sd">                           how many individual values of the redshifts are used in the internal calculations</span>
+<span class="sd">        ellsamp          : int</span>
+<span class="sd">                           how many individual values of the multipoles are used in the internal calculations</span>
+<span class="sd">        ell              : numpy.ndarray</span>
+<span class="sd">                           array containing the multipoles for which the angular power spectrum is computed.</span>
+<span class="sd">        z_min            : float</span>
+<span class="sd">                           minimum redshift of the probes</span>
+<span class="sd">        z_max            : float</span>
+<span class="sd">                           maximum redshift of the probes</span>
+<span class="sd">        z                : numpy.ndarray</span>
+<span class="sd">                           array containing the redshifts used in the internal calculations</span>
+<span class="sd">        dz               : numpy.ndarray</span>
+<span class="sd">                           array containing the numerical distance of the redshifts in z</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">=</span> <span class="n">cfg</span> <span class="k">if</span> <span class="n">configuration</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">specs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">input_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configured_observables</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">obs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;feedback&quot;</span><span class="p">]</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; Started Cls calculation&quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">tcosmo1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmopars</span> <span class="o">=</span> <span class="n">cosmopars</span>
+        <span class="k">if</span> <span class="n">fiducial_cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">cosmo_functions</span><span class="p">(</span>
+                <span class="n">cosmopars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_type</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">fiducial_cosmo</span>
+        <span class="n">tcosmo2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Cosmological functions obtained in &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tcosmo1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tcosmo2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configured_observables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;GCph&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;binrange_GCph&quot;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;WL&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;binrange_WL&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">binrange_WL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;binrange_WL&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binrange_GCph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;binrange_GCph&quot;</span><span class="p">]</span>
+
+        <span class="n">tnuis1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biaspars</span> <span class="o">=</span> <span class="n">biaspars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IApars</span> <span class="o">=</span> <span class="n">IApars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuisance</span> <span class="o">=</span> <span class="n">nuisance</span><span class="o">.</span><span class="n">Nuisance</span><span class="p">(</span><span class="n">configuration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
+        <span class="c1"># if &#39;GCph&#39; in self.observables: self.bfunction = self.nuisance.bias(self.biaspars)</span>
+        <span class="k">if</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IAvalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuisance</span><span class="o">.</span><span class="n">IA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IApars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">tnuis2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Nuisance functions obtained in &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tnuis1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tnuis2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">tngal1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">photopars</span> <span class="o">=</span> <span class="n">photopars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">photo_window</span><span class="o">.</span><span class="n">GalaxyPhotoDist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">photopars</span><span class="p">,</span> <span class="n">specifications</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span>
+        <span class="n">tngal2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Galaxy Photometric distributions obtained in &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tngal1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tngal2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="ow">and</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_GCph&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_WL&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_GCph&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_WL&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_GCph&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_GCph&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_WL&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_WL&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Observables not specified correctly&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;GCph_Tracer&quot;</span><span class="p">]</span>
+        <span class="c1">#        self.binrange = self.specs[&quot;binrange&quot;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ell_sampling should be an integer or &#39;accuracy&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellmax</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
+        <span class="c1"># Precompute comoving distance (major hotspot) once; reuse everywhere</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chi_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="c1"># Lazy caches for other frequently used cosmological functions (filled on demand)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hubble_z</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_IA_z</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">print_info_specs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_numerical_specs</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ComputeCls.compute_all">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.compute_all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main function to compute the angular power spectrum. Will first compute the limber approximated angular power spectrum and the window functions for both probes. From that it will obtain the angular power spectrum.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function does not return the calculated quantities. Rather they are found in new attributes of the object.</span>
+
+<span class="sd">        The result of the Limber approximated power spectra are found in the new attributes `Pell` and `sqrtPell`</span>
+
+<span class="sd">        The window functions are found in the new attributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for</span>
+
+<span class="sd">        The angular power spectrum is found in the new attribute `result`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tini</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;-&gt; Computing power spectra and kernels &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">tplim1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">P_limber</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqrtP_limber</span><span class="p">()</span>
+        <span class="n">tplim2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Computed P_limber in &quot;</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tplim1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tplim2</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">tkern1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_kernels</span><span class="p">()</span>
+        <span class="n">tkern2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Computed Kernels in: &quot;</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tkern1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tkern2</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">tcls1</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computecls_vectorized</span><span class="p">()</span>
+        <span class="n">tcls2</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;---&gt; Computed Cls in: &quot;</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tcls1</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tcls2</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;--&gt; Total Cls computation performed in : &quot;</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tini</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tend</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.print_numerical_specs">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.print_numerical_specs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_numerical_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;prints the numerical specifications of the internal computations&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numerical specifications: &quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WL ell max = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_WL&quot;</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GCph ell max = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_GCph&quot;</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ell min = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellmin</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ell max = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellmax</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ell sampling: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z sampling: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z_min : &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_min</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z_max : &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z_max : &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_max</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delta_z : &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dz</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.P_limber">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.P_limber">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">P_limber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the Limber-approximated power spectrum.</span>
+<span class="sd">        This is done for a range of redshift values and multipoles.</span>
+<span class="sd">        Will add MG effects to WL and(!) GCph if asked for.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        This does not return the power spectra. The results are stored in the attribute `Pell`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">_USE_FAST_P</span><span class="p">:</span>
+            <span class="n">chi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chi_z</span>  <span class="c1"># reuse precomputed</span>
+            <span class="n">ell_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="mf">0.5</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">ell_grid</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;kmax&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">iz</span><span class="p">,</span> <span class="n">chi_val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chi</span><span class="p">):</span>
+                    <span class="n">row_mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">row_mask</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="n">kappas_row</span> <span class="o">=</span> <span class="n">kappa</span><span class="p">[</span><span class="n">iz</span><span class="p">,</span> <span class="n">row_mask</span><span class="p">]</span>
+                    <span class="n">zval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Pell</span><span class="p">[</span><span class="n">iz</span><span class="p">,</span> <span class="n">row_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">SigmaMG</span><span class="p">(</span><span class="n">zval</span><span class="p">,</span> <span class="n">kappas_row</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">matpow</span><span class="p">(</span>
+                            <span class="n">zval</span><span class="p">,</span> <span class="n">kappas_row</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;nonlinear_photo&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="o">/</span> <span class="p">(</span><span class="n">chi_val</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">chi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ell</span><span class="p">,</span> <span class="n">zin</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">)):</span>
+                <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">[</span><span class="n">ell</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[</span><span class="n">zin</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;kmax&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Pell</span><span class="p">[</span><span class="n">zin</span><span class="p">,</span> <span class="n">ell</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">SigmaMG</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">zin</span><span class="p">],</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">matpow</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">zin</span><span class="p">],</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;nonlinear_photo&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="o">/</span> <span class="p">(</span><span class="n">chi</span><span class="p">[</span><span class="n">zin</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Pell</span><span class="p">[</span><span class="n">zin</span><span class="p">,</span> <span class="n">ell</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.sqrtP_limber">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.sqrtP_limber">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sqrtP_limber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the square root of the Limber-approximated power spectrum</span>
+<span class="sd">        for weak lensing (WL) and galaxy clustering photometric (GCph) observables.</span>
+<span class="sd">        This is done for a range of redshift values and multipoles.</span>
+<span class="sd">        Depending on the tracer asked for in &#39;GCph_Tracer&#39; will use &#39;matter&#39; or &#39;clustering&#39; observable GCph.</span>
+<span class="sd">        Will add MG effects to WL if asked for.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        This does not return the power spectra. The results are stored in the attribute `sqrtPell`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sakr Fix June 2023</span>
+        <span class="c1"># self.sqrtPell = {&#39;WL&#39;  :np.zeros((self.zsamp,self.ellsamp)),</span>
+        <span class="c1">#             &#39;WL_IA&#39;  :np.zeros((self.zsamp,self.ellsamp)),</span>
+        <span class="c1">#             &#39;GCph&#39;:np.zeros((self.zsamp,self.ellsamp)),</span>
+        <span class="c1">#             &#39;GCph_IA&#39;:np.zeros((self.zsamp,self.ellsamp))}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;WL&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">)),</span>
+            <span class="s2">&quot;WL_IA&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">)),</span>
+            <span class="s2">&quot;GCph&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">)),</span>
+            <span class="s2">&quot;GCph_IA&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ellsamp</span><span class="p">)),</span>
+        <span class="p">}</span>
+        <span class="n">chi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chi_z</span>  <span class="c1"># reuse cached</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">chi</span>
+        <span class="n">kmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;kmax&quot;</span><span class="p">]</span>
+        <span class="n">nonlinear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;nonlinear&quot;</span><span class="p">]</span>
+        <span class="c1"># Row-wise vectorization: one vector `matpow` call per redshift instead of</span>
+        <span class="c1"># one scalar call per (ell, z) pair. WL and GCph share the same matter P(k)</span>
+        <span class="c1"># when the GCph tracer is matter, so it is computed only once per row.</span>
+        <span class="k">for</span> <span class="n">iz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zsamp</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">kappa</span><span class="p">[:,</span> <span class="n">iz</span><span class="p">]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">kmax</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">kn</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">Pmm_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">matpow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">iz</span><span class="p">],</span> <span class="n">kn</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="n">nonlinear</span><span class="p">)</span>
+            <span class="n">sqrtPmm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">Pmm_val</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="s2">&quot;WL&quot;</span><span class="p">][</span><span class="n">iz</span><span class="p">,</span> <span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">SigmaMG</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">iz</span><span class="p">],</span> <span class="n">kn</span><span class="p">)</span> <span class="o">*</span> <span class="n">sqrtPmm</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="s2">&quot;WL_IA&quot;</span><span class="p">][</span><span class="n">iz</span><span class="p">,</span> <span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqrtPmm</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracer</span> <span class="o">==</span> <span class="s2">&quot;matter&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">][</span><span class="n">iz</span><span class="p">,</span> <span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqrtPmm</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Pgcph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">matpow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">iz</span><span class="p">],</span> <span class="n">kn</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="n">nonlinear</span><span class="p">,</span> <span class="n">tracer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tracer</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">][</span><span class="n">iz</span><span class="p">,</span> <span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">Pgcph</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.galaxy_kernel">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.galaxy_kernel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">galaxy_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the GCph kernel function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : numpy.ndarray</span>
+<span class="sd">            array containing the redshifts for which the kernel should be computed for</span>
+<span class="sd">        i : int</span>
+<span class="sd">            index of the redshift bin</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Value of the galaxy clustering kernel at redshift z for bin i</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        Implements the following equation:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            W_i^{GCph} = b(z) \\frac{n_i(z)}{\\bar{n}(z)} H(z)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tgcstart</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="c1"># Wgc = self.window.norm_ngal_photoz(z,i) * np.array([self.nuisance.bias(self.biaspars, i)(z) * \</span>
+        <span class="c1"># Wgc = self.window.norm_ngal_photoz(z,i) *</span>
+        <span class="c1"># np.array([self.biaspars[&#39;b{:d}&#39;.format(i)] * \</span>
+        <span class="n">Wgc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">norm_ngal_photoz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;GCph&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="c1"># Wgc = self.window.norm_ngal_photoz(z,i) * self.nuisance.bias(self.biaspars, i)(z) * \</span>
+        <span class="c1">#                                          self.cosmo.Hubble(z)</span>
+
+        <span class="n">tgcend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;    ...done bin </span><span class="si">{}</span><span class="s2"> for GCph in: &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tgcstart</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tgcend</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Wgc</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.lensing_kernel">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.lensing_kernel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lensing_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the photometric cosmic shear kernel function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : numpy.ndarray</span>
+<span class="sd">            array containing the redshifts for which the kernel should be computed for</span>
+<span class="sd">        i : int</span>
+<span class="sd">            index of the redshift bin</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Value of the cosmic shearing kernel at redshift z for bin i</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        Implements the following equation:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">         W_i^{WL} = W_i^{IA}+\\frac{3}{2}\\left(\\frac{H_0}{c}\\right)^2\\Omega_{m,0}(1+z)r(z)</span>
+<span class="sd">         \\int_z^{z_{\\rm max}}{dz&#39; \\frac{n_i(z&#39;)}{\\bar{n}(z)}\\left[1-\\frac{r(z)}{r(z&#39;)}\\right]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">twlstart</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_USE_FAST_KERNEL</span><span class="p">:</span>
+            <span class="n">prefac</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Omegam_of_z</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">chi_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chi_z</span>
+            <span class="n">eff_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">Wwl</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">chi_z</span> <span class="o">*</span> <span class="n">eff_z</span>
+            <span class="n">IA_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IAvalue</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">hub_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">WIA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">norm_ngal_photoz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">IA_val</span> <span class="o">*</span> <span class="n">hub_z</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefac</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Omegam_of_z</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">Wwl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">zi</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="n">zi</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">zi</span><span class="p">)</span> <span class="k">for</span> <span class="n">zi</span> <span class="ow">in</span> <span class="n">z</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">WIA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">norm_ngal_photoz</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IAvalue</span><span class="p">(</span><span class="n">zi</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="n">zi</span><span class="p">)</span> <span class="k">for</span> <span class="n">zi</span> <span class="ow">in</span> <span class="n">z</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="c1"># Sakr Fix June 2023</span>
+        <span class="c1"># kernel = Wwl+WIA</span>
+
+        <span class="n">twlend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;    ...done bin </span><span class="si">{}</span><span class="s2"> for WL in:&quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">twlstart</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">twlend</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Sakr Fix June 2023</span>
+        <span class="c1"># return Wwl</span>
+        <span class="k">return</span> <span class="n">Wwl</span><span class="p">,</span> <span class="n">WIA</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.integral_efficiency">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.integral_efficiency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integral_efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;computes the integral that enters the lensing kernel for a given redshift bin</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            index of the redshift bin for which the lensing efficiency should be calculated</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable</span>
+<span class="sd">            callable function that receives a numpy.ndarray of requested redshifts and returns the lensing efficiency for the i-th bin as a numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># expensive calculation doesn&#39;t need to</span>
+        <span class="c1"># be performed if cosmopars and photopars are the same</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">ngal_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">norm_ngal_photoz</span>
+        <span class="c1"># Reuse the comoving distance precomputed in __init__ when the helper</span>
+        <span class="c1"># asks for the same grid; each fresh call would redo one quad per point.</span>
+        <span class="n">chi_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chi_z</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">comoving_func</span><span class="p">(</span><span class="n">zz</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">zz</span> <span class="ow">is</span> <span class="n">z</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">chi_z</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">comoving</span><span class="p">(</span><span class="n">zz</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_USE_FAST_EFF</span><span class="p">:</span>
+            <span class="c1"># Fallback to vectorized O(N^2) implementation</span>
+            <span class="k">return</span> <span class="n">faster_integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ngal_func</span><span class="p">,</span> <span class="n">comoving_func</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="c1"># New O(N) implementation outsourced to helper</span>
+        <span class="k">return</span> <span class="n">much_faster_integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ngal_func</span><span class="p">,</span> <span class="n">comoving_func</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.lensing_efficiency">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.lensing_efficiency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lensing_efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;computes the integral that enters the lensing kernel for all redshift bins</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            list of callable functions that give the lensing efficiency for each bin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">teffstart</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">efficiency</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integral_efficiency</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange_WL</span><span class="p">]</span>
+        <span class="n">efficiency</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">teffend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;    ...lensing efficiency computation done in:&quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">teffstart</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">teffend</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">efficiency</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.compute_kernels">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.compute_kernels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_kernels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;function to compute all the needed window functions.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        This does not return the window functions. They are found in the new attributes `GC` if galaxy clustering is asked for, and `WL` if cosmic sheer is asked for</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GC</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">galaxy_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">ind</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange_GCph</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GC</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">efficiency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensing_efficiency</span><span class="p">()</span>
+            <span class="c1"># Sakr Fix June 2023</span>
+            <span class="c1"># self.WL         = [interp1d(self.z,self.lensing_kernel(self.z,ind), kind=&#39;cubic&#39;) for ind in self.binrange]</span>
+            <span class="n">wl_kernels</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lensing_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange_WL</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WL</span> <span class="o">=</span> <span class="p">[</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">kern</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">kern</span> <span class="ow">in</span> <span class="n">wl_kernels</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WL</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># Sakr Fix June 2023</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WL_IA</span> <span class="o">=</span> <span class="p">[</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">kern</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;cubic&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">kern</span> <span class="ow">in</span> <span class="n">wl_kernels</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WL_IA</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Memoized window-function samples on the integration grid (used by clsintegral)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_win_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.genwindow">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.genwindow">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">genwindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;generic function to obtain the window functions for the different observables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            z     : numpy.ndarray</span>
+<span class="sd">                    array of redshifts for which the window function should be computed</span>
+<span class="sd">            obs   : str</span>
+<span class="sd">                    name of the observable (GC or WL)</span>
+<span class="sd">            i     : int</span>
+<span class="sd">                    integer of the redshift bin the window should be computed for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Values of the window function for the observable obs, for redshift bin i, and at redshifts z.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">win</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">win_IA</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">obs</span> <span class="o">==</span> <span class="s2">&quot;GCph&quot;</span><span class="p">:</span>
+            <span class="n">bz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuisance</span><span class="o">.</span><span class="n">gcph_bias</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biaspars</span><span class="p">,</span> <span class="n">i</span><span class="p">)(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">win</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GC</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">bz</span>
+            <span class="n">win_IA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GC</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="n">obs</span> <span class="o">==</span> <span class="s2">&quot;WL&quot;</span><span class="p">:</span>
+            <span class="n">win</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WL</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">win_IA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WL_IA</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">win</span><span class="p">,</span> <span class="n">win_IA</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.computecls">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.computecls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">computecls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to compute the angular power spectrum for all observables, redshift bins and multipoles.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            a dictionary containing all auto and cross correlation angular power spectra. Its keys are formatted to have an array of the power spectra in &#39;X ixY j&#39;. Also the multipoles for which the angular power spectra were computed for are found in &#39;ells&#39;.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        Implements the following equation:</span>
+
+<span class="sd">            .. math::</span>
+<span class="sd">                C_{i,j}^{X,Y}(\\ell) = c \\int \\mathrm{d}z \\frac{W_i^X (z)W_j^Y (z)}{ H(z) r^2(z)}</span>
+<span class="sd">                P_{\\delta \\delta} \\big[\\frac{\\ell + 1/2}{r(z)} , z \\big]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Computing Cls integral for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">),</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># full_ell = np.linspace(self.specs[&#39;ellmin&#39;],self.specs[&#39;ellmax&#39;],self.specs[&#39;ellmax&#39;]-self.specs[&#39;ellmin&#39;])</span>
+        <span class="c1"># full_ell = np.round(full_ell, 0)</span>
+        <span class="n">full_ell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ell</span>
+
+        <span class="bp">cls</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ells&quot;</span><span class="p">:</span> <span class="n">full_ell</span><span class="p">}</span>
+
+        <span class="n">hub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">tcell</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># PYTHONIZE THIS HORRIBLE THING</span>
+        <span class="c1"># for obs1, obs2, bin1, bin2 in product(</span>
+        <span class="c1">#        self.observables, self.observables, self.binrange[0], self.binrange[1] #MMmod: BEWARE! THIS IS UGLY!</span>
+        <span class="c1"># ):</span>
+        <span class="k">for</span> <span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">obs1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">obs2</span><span class="p">]):</span>
+                <span class="n">clinterp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clsintegral</span><span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span><span class="p">,</span> <span class="n">hub</span><span class="p">)</span>
+
+                <span class="n">finalcls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">full_ell</span><span class="p">)))</span>
+                <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">lval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">full_ell</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_&quot;</span> <span class="o">+</span> <span class="n">obs1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lval</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_&quot;</span> <span class="o">+</span> <span class="n">obs1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_&quot;</span> <span class="o">+</span> <span class="n">obs2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lval</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_&quot;</span> <span class="o">+</span> <span class="n">obs2</span><span class="p">]</span>
+                    <span class="p">):</span>
+                        <span class="n">finalcls</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">clinterp</span><span class="p">(</span><span class="n">lval</span><span class="p">)</span>
+
+                <span class="bp">cls</span><span class="p">[</span><span class="n">obs1</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bin1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="n">obs2</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bin2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">finalcls</span>
+
+            <span class="n">tbin</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+                <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="s2">&quot;    ...</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> x </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> done in: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin2</span><span class="p">),</span>
+                <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">time_ini</span><span class="o">=</span><span class="n">tcell</span><span class="p">,</span>
+                <span class="n">time_fin</span><span class="o">=</span><span class="n">tbin</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">tcell</span> <span class="o">=</span> <span class="n">tbin</span>
+
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cls integral computation done in: &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tend</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
+
+<div class="viewcode-block" id="ComputeCls.computecls_vectorized">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.computecls_vectorized">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">computecls_vectorized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Vectorized function to compute the angular power spectrum for all observables, redshift bins and multipoles.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            a dictionary containing all auto and cross correlation angular power spectra. Its keys are formatted to have an array of the power spectra in &#39;X ixY j&#39;. Also the multipoles for which the angular power spectra were computed for are found in &#39;ells&#39;.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        -----</span>
+<span class="sd">        Implements the following equation:</span>
+
+<span class="sd">            .. math::</span>
+<span class="sd">                C_{i,j}^{X,Y}(\\ell) = c \\int \\mathrm{d}z \\frac{W_i^X (z)W_j^Y (z)}{ H(z) r^2(z)}</span>
+<span class="sd">                P_{\\delta \\delta} \\big[\\frac{\\ell + 1/2}{r(z)} , z \\big]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Computing Cls integral for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">),</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">full_ell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ell</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ells&quot;</span><span class="p">:</span> <span class="n">full_ell</span><span class="p">}</span>
+        <span class="n">hub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">Hubble</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Pre-compute all clsintegrals</span>
+        <span class="n">clinterps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">):</span>
+            <span class="c1"># Get the correct binrange for each observable</span>
+            <span class="n">bins1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">obs1</span><span class="p">]</span>
+            <span class="n">bins2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">obs2</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">bins1</span><span class="p">,</span> <span class="n">bins2</span><span class="p">):</span>
+                <span class="n">clinterps</span><span class="p">[(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clsintegral</span><span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span><span class="p">,</span> <span class="n">hub</span><span class="p">)</span>
+
+        <span class="c1"># Vectorized computation of finalcls</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span><span class="p">),</span> <span class="n">clinterp</span> <span class="ow">in</span> <span class="n">clinterps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">lmin1</span><span class="p">,</span> <span class="n">lmax1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmin_</span><span class="si">{</span><span class="n">obs1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmax_</span><span class="si">{</span><span class="n">obs1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+            <span class="n">lmin2</span><span class="p">,</span> <span class="n">lmax2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmin_</span><span class="si">{</span><span class="n">obs2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmax_</span><span class="si">{</span><span class="n">obs2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">full_ell</span> <span class="o">&gt;=</span> <span class="n">lmin1</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">full_ell</span> <span class="o">&lt;=</span> <span class="n">lmax1</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">full_ell</span> <span class="o">&gt;=</span> <span class="n">lmin2</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">full_ell</span> <span class="o">&lt;=</span> <span class="n">lmax2</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">finalcls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">full_ell</span><span class="p">))</span>
+            <span class="n">finalcls</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">clinterp</span><span class="p">(</span><span class="n">full_ell</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obs1</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bin1</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">obs2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bin2</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">cls</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">finalcls</span>
+
+            <span class="n">tbin</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+                <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+                <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;    ...</span><span class="si">{</span><span class="n">obs1</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bin1</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">obs2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bin2</span><span class="si">}</span><span class="s2"> done in: &quot;</span><span class="p">,</span>
+                <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">time_ini</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span>
+                <span class="n">time_fin</span><span class="o">=</span><span class="n">tbin</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">tstart</span> <span class="o">=</span> <span class="n">tbin</span>
+
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">upt</span><span class="o">.</span><span class="n">time_print</span><span class="p">(</span>
+            <span class="n">feedback_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_lvl</span><span class="p">,</span>
+            <span class="n">min_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cls integral computation done in: &quot;</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">time_ini</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span>
+            <span class="n">time_fin</span><span class="o">=</span><span class="n">tend</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_window_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cached hub-independent Limber factor for one observable/bin pair.</span>
+
+<span class="sd">        Combines the clustering and IA terms into</span>
+<span class="sd">        ``sqrtP * W + sqrtP_IA * W_IA`` evaluated on the redshift grid, so that</span>
+<span class="sd">        each pair of the ``O(nbins^2)`` Cl terms reuses the same array instead of</span>
+<span class="sd">        rebuilding the window functions and bias callables. The Hubble factor is</span>
+<span class="sd">        deliberately applied by ``clsintegral`` because it is an input to that</span>
+<span class="sd">        public method and may differ between calls.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_win_cache&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_win_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">obs</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">win</span><span class="p">,</span> <span class="n">win_IA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genwindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">cached</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="n">obs</span><span class="p">]</span> <span class="o">*</span> <span class="n">win</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqrtPell</span><span class="p">[</span><span class="n">obs</span> <span class="o">+</span> <span class="s2">&quot;_IA&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">win_IA</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">cache</span><span class="p">[(</span><span class="n">obs</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cached</span>
+        <span class="k">return</span> <span class="n">cached</span>
+
+<div class="viewcode-block" id="ComputeCls.clsintegral">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html#cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.clsintegral">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clsintegral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">bin1</span><span class="p">,</span> <span class="n">bin2</span><span class="p">,</span> <span class="n">hub</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;function to obtain the angular power spectrum as an function of the multipole.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obs1 : str</span>
+<span class="sd">               name of the observable of the redshift bin bin1 (GC or WL)</span>
+<span class="sd">        obs2 : str</span>
+<span class="sd">               name of the observable of the redshift bin bin2 (GC or WL)</span>
+<span class="sd">        bin1 : int</span>
+<span class="sd">               index of the redshift bin at which the observable obs1 is measured</span>
+<span class="sd">        bin2 : int</span>
+<span class="sd">               index of the redshift bin at which the observable obs2 is measured</span>
+<span class="sd">        hub  : callable</span>
+<span class="sd">               function that should be passed a numpy.ndarray of redshifts returns the hubble expansion rate at these redshifts.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Function that receives an array multipole and returns the angular power spectrum for these multipoles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_&quot;</span> <span class="o">+</span> <span class="n">obs1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_&quot;</span> <span class="o">+</span> <span class="n">obs1</span><span class="p">])</span>
+        <span class="n">mask2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmin_&quot;</span> <span class="o">+</span> <span class="n">obs2</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;lmax_&quot;</span> <span class="o">+</span> <span class="n">obs2</span><span class="p">])</span>
+
+        <span class="n">hub_inv_sqrt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hub</span><span class="p">))[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+        <span class="n">intgn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window_matrix</span><span class="p">(</span><span class="n">obs1</span><span class="p">,</span> <span class="n">bin1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window_matrix</span><span class="p">(</span><span class="n">obs2</span><span class="p">,</span> <span class="n">bin2</span><span class="p">)</span> <span class="o">*</span> <span class="n">hub_inv_sqrt</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="n">clint</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">intgn</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">clint</span><span class="p">[</span><span class="o">~</span><span class="n">mask1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">clint</span><span class="p">[</span><span class="o">~</span><span class="n">mask2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">clinterp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">,</span> <span class="n">clint</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>  <span class="c1"># &#39;cubic&#39;)</span>
+
+        <span class="k">return</span> <span class="n">clinterp</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

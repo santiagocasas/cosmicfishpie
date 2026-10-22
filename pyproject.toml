@@ -40,7 +40,7 @@ dependencies = [
     "pandas",
     "PyYAML==6.0.3",
     "scikit-learn==1.7.2",
-    "SciPy>=1.8.0",
+    "SciPy>=1.15.3",
     "seaborn",
     "colossus",
     "symbolic-pofk @ https://github.com/DeaglanBartlett/symbolic_pofk/archive/cb4d2bb5a759d0c682dc1499cf3aad1c496436ac.tar.gz",

@@ -77,6 +77,8 @@ jobs:
           ref: ${{ env.PAGES_BRANCH }}
           path: pages
           fetch-depth: 1
+          # A PAT is needed to trigger legacy branch-based Pages publication.
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN }}
 
       - name: Replace ${{ env.PAGES_SUBPATH }}/ and commit
         working-directory: pages

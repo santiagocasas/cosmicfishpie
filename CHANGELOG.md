@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Support NumPy 2: widen the dependency pin from `numpy<2` to `numpy>=2.1,<2.3`
+  (2.2.x is the newest series supporting Python 3.10), relock, and compute the
+  legacy `round_decimals_up` branch in float64 to keep results identical under
+  NEP 50 promotion rules. Full Fisher backend validation against the NumPy 1
+  results is run separately.
+
 - Add `fishconsumer.make_fisher_chain_plot` for paired Fisher/posterior overlays,
   with marginalization to plotted parameters, matched colors for missing-chain
   cases, independent `show_fisher`/`show_chains` switches, and per-call limits

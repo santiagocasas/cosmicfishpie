@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add `fishconsumer.make_fisher_chain_plot` for paired Fisher/posterior overlays,
+  with marginalization to plotted parameters, matched colors for missing-chain
+  cases, independent `show_fisher`/`show_chains` switches, and per-call limits
+  using Gaussian-equivalent weighted posterior quantiles (3 sigma by default).
+
 - Build sampler analysis and worker contexts with the configured prior parameters,
   preventing nondefault coordinates such as `10^9As` from being dropped.
 

@@ -7,7 +7,7 @@ This module re-implements, with ``jax.numpy`` only, the Limber computation done 
 
 is traceable by ``jax.jit`` / ``jax.jacfwd``.  The existing NumPy/SciPy pipeline is left
 untouched; this is a *parallel* observable used by
-:class:`cosmicfishpie.fishermatrix.jaxcosmo_autodiff.JaxAutodiffProvider`.
+:class:`cosmicfishpie.fishermatrix.jaxcosmo_derivatives.JaxAutodiffProvider`.
 
 Scope (explicitly rejected otherwise)
 -------------------------------------
@@ -49,10 +49,10 @@ except ImportError as err:  # pragma: no cover
         "Install it with: pip install 'cosmicfishpie[jaxcosmo]'"
     ) from err
 
-from cosmicfishpie.cosmology import jaxcosmo_theory as theory
-from cosmicfishpie.cosmology.jaxcosmo_provider import resolve_parameters
+from cosmicfishpie.cosmology.jax_theory import get_jax_theory
 
 #: CosmicFishPie names of the cosmological parameters that can be differentiated.
+#: Kept for backwards compatibility; the authoritative mapping is ``theory.free_name_map``.
 COSMO_FREE_NAMES: dict[str, str] = {
     "10^9As": "As",
     "Omegam": "Omegam",
@@ -82,6 +82,13 @@ def _backward_trapezoid(y: jnp.ndarray, dx: float) -> jnp.ndarray:
     seg = 0.5 * (yr[:-1] + yr[1:]) * dx
     cum = jnp.concatenate([jnp.zeros(1, dtype=y.dtype), jnp.cumsum(seg)])
     return cum[::-1]
+
+
+def _same_value(left: Any, right: Any) -> bool:
+    """Compare a repeated fiducial value (numbers or model-name strings)."""
+    if isinstance(left, str) or isinstance(right, str):
+        return left == right
+    return bool(np.allclose(np.asarray(left, dtype=float), np.asarray(right, dtype=float)))
 
 
 class JaxPhotoObservable:
@@ -127,9 +134,14 @@ class JaxPhotoObservable:
             backend_parameters = self._default_backend_parameters(configuration)
         self.backend_parameters = backend_parameters
         numerics = backend_parameters["NUMERICS"]
-        if numerics.get("x64", True):
-            theory.enable_x64()
-        self.theory_config = theory.TheoryConfig.from_backend_parameters(backend_parameters)
+        # The theory backend is selected by options["code"]; this observable only relies on the
+        # backend-neutral contract of cosmicfishpie.cosmology.jax_theory.
+        self.theory = get_jax_theory(
+            self.settings.get("code", "jaxcosmo"),
+            backend_parameters,
+            cosmo_model=self.settings.get("cosmo_model", "LCDM"),
+        )
+        self.free_name_map = dict(self.theory.free_name_map)
         self.k_hmpc = np.logspace(
             np.log10(numerics["kmin_pk"]), np.log10(numerics["kmax_pk"]), int(numerics["k_samples"])
         )
@@ -154,8 +166,7 @@ class JaxPhotoObservable:
     def _split_fiducial(self) -> None:
         fid = self.fiducial
         cosmo_in = {k: v for k, v in fid.items() if k in _COSMO_KEYS}
-        cosmo_model = self.settings.get("cosmo_model", "LCDM")
-        base = resolve_parameters(cosmo_in, cosmo_model)  # canonical names, floats
+        base = self.theory.resolve_cosmology(cosmo_in)  # canonical names, floats
         self.bias_model = fid.get("bias_model", "binned")
         self.ia_model = fid.get("IA_model", "eNLA")
         if self.ia_model != "eNLA" and "WL" in self.observables:
@@ -165,7 +176,7 @@ class JaxPhotoObservable:
             for k, v in fid.items()
             if k not in _COSMO_KEYS and k not in _STRING_KEYS and np.ndim(v) == 0
         }
-        self.cosmo_names = tuple(base)
+        self.cosmo_names = tuple(self.theory.cosmo_names)
         self.nuisance_names = tuple(numeric)
         self.base_values: dict[str, float] = {**base, **numeric}
 
@@ -290,25 +301,24 @@ class JaxPhotoObservable:
         """All requested ``C_ell`` as an array of shape ``(len(self.keys), len(self.ell))``."""
         cosmo = {name: v[name] for name in self.cosmo_names}
         z = jnp.asarray(self.z)
-        tab = theory.compute_tables(cosmo, z, self.k_hmpc, self.theory_config, self.nonlinear)
-        chi, hub = tab["chi"], tab["H_over_c"]
-        h = cosmo["h"]
-        hub0 = 100.0 * h / theory.SPEED_OF_LIGHT_KM_S
-        omegam0 = cosmo["Omegam"]
+        tab = self.theory.tables(cosmo, z, self.k_hmpc, self.nonlinear)
+        chi, hub = tab.chi, tab.h_over_c
+        hub0 = tab.h0_over_c
+        omegam0 = tab.omega_m0
 
         # Limber: P(kappa_l(z), z) / chi^2, zero above kmax.   shapes (nz, nell)
         kappa = (jnp.asarray(self.ell)[None, :] + 0.5) / chi[:, None]
-        logk = jnp.log(jnp.asarray(self.k_hmpc) * h)
-        logp = jnp.log(tab["Pnl"])
+        logk = jnp.log(jnp.asarray(self.k_hmpc) * cosmo["h"])
+        logp = jnp.log(tab.pk_nonlinear)
         p_kappa = jnp.exp(jax.vmap(jnp.interp, in_axes=(0, None, 0))(jnp.log(kappa), logk, logp))
         q = jnp.where(kappa < self.kmax, p_kappa / chi[:, None] ** 2, 0.0)
 
         growth_nuis = None
         if "WL" in self.observables:
-            tab_nuis = theory.compute_tables(
-                cosmo, jnp.asarray(self.z_nuis), self.k_hmpc[:2], self.theory_config, False
+            tab_nuis = self.theory.tables(
+                cosmo, jnp.asarray(self.z_nuis), self.k_hmpc[:2], False
             )
-            growth_nuis = tab_nuis["D"]
+            growth_nuis = tab_nuis.growth
             ia_win = self._ia_window(v, omegam0, growth_nuis)
             prefac = 1.5 * hub0**2 * omegam0
 
@@ -330,8 +340,8 @@ class JaxPhotoObservable:
     # ------------------------------------------------------------------ public API
     def canonical_name(self, name: str) -> str:
         """Map a CosmicFishPie parameter name to the name used inside the traced function."""
-        if name in COSMO_FREE_NAMES:
-            canon = COSMO_FREE_NAMES[name]
+        if name in self.free_name_map:
+            canon = self.free_name_map[name]
             if canon not in self.cosmo_names:  # pragma: no cover - defensive
                 raise ValueError(f"Parameter '{name}' is not part of the jaxcosmo model.")
             return canon
@@ -340,14 +350,32 @@ class JaxPhotoObservable:
         if name in _COSMO_KEYS:
             raise ValueError(
                 f"Cosmological parameter '{name}' cannot be differentiated by the jaxcosmo "
-                f"autodiff provider; supported: {sorted(COSMO_FREE_NAMES)}."
+                f"autodiff provider; supported: {sorted(self.free_name_map)}."
             )
         raise ValueError(f"Unknown parameter '{name}' for the jaxcosmo photometric observable.")
 
     def _values(self, overrides: Mapping[str, Any] | None = None) -> dict[str, Any]:
         values = dict(self.base_values)
         for name, val in (overrides or {}).items():
-            values[self.canonical_name(name)] = val
+            if name in self.free_name_map:
+                values[self.free_name_map[name]] = val
+            elif name in self.nuisance_names:
+                values[name] = val
+            else:
+                # The finite-difference engine replays the whole fiducial dictionary, including
+                # parameters this model keeps fixed (``mnu``, ``bias_model`` ...).  Repeating a
+                # fiducial value is harmless; varying it is not supported.
+                fid = self.fiducial.get(name)
+                if fid is not None and _same_value(val, fid):
+                    continue
+                if name in _COSMO_KEYS:
+                    raise ValueError(
+                        f"Cosmological parameter '{name}' is fixed by the jaxcosmo model and "
+                        f"cannot be varied; supported: {sorted(self.free_name_map)}."
+                    )
+                raise ValueError(
+                    f"Unknown parameter '{name}' for the jaxcosmo photometric observable."
+                )
         return values
 
     def as_dict(self, array: Any) -> dict[str, np.ndarray]:
@@ -361,6 +389,15 @@ class JaxPhotoObservable:
     def cls(self, overrides: Mapping[str, Any] | None = None) -> dict[str, np.ndarray]:
         """Angular power spectra at the fiducial point (optionally with parameter overrides)."""
         return self.as_dict(self._cls_jit(self._values(overrides)))
+
+    def __call__(self, allpars: Mapping[str, Any]) -> dict[str, np.ndarray]:
+        """Evaluate the spectra for a full CosmicFishPie parameter dictionary.
+
+        This is the callable signature expected by the finite-difference engine in
+        :mod:`cosmicfishpie.fishermatrix.derivatives`, which lets autodiff and finite
+        differences be compared on *identical* observables.
+        """
+        return self.cls(allpars)
 
     def jacobian(self, names: Sequence[str]) -> dict[str, dict[str, np.ndarray]]:
         """Exact derivatives ``dC_ell/dtheta`` for each name, as ``{name: Cl dictionary}``.

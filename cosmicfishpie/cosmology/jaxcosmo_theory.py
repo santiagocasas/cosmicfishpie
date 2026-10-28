@@ -52,6 +52,7 @@ except ImportError as err:  # pragma: no cover
         "Install them with: pip install 'cosmicfishpie[jaxcosmo]'"
     ) from err
 
+from cosmicfishpie.cosmology.jax_theory import TheoryTables
 from cosmicfishpie.cosmology.jaxcosmo_amplitude import As_to_sigma8
 
 SPEED_OF_LIGHT_KM_S = 299792.458
@@ -59,6 +60,17 @@ SPEED_OF_LIGHT_KM_S = 299792.458
 #: Order of the cosmological parameters used by the vector interface of the autodiff layer.
 #: ``As`` is ``10^9 As``.
 PARAM_ORDER: tuple[str, ...] = ("As", "Omegam", "Omegab", "h", "ns", "w0", "wa")
+
+#: Mapping from CosmicFishPie parameter names to the canonical names of this backend.
+FREE_NAME_MAP: dict[str, str] = {
+    "10^9As": "As",
+    "Omegam": "Omegam",
+    "Omegab": "Omegab",
+    "h": "h",
+    "ns": "ns",
+    "w0": "w0",
+    "wa": "wa",
+}
 
 _SUPPORTED_TRANSFER = ("eisenhu_osc", "eisenhu")
 _SUPPORTED_HALOFIT = ("takahashi2012", "smith2003")
@@ -227,3 +239,66 @@ def compute_tables(
 def params_from_vector(vector: jnp.ndarray, names: tuple[str, ...] = PARAM_ORDER) -> dict:
     """Unpack a parameter vector (ordered as ``names``) into the dict used by this module."""
     return {name: vector[i] for i, name in enumerate(names)}
+
+
+class JaxCosmoTheory:
+    """``jax_cosmo`` implementation of :class:`cosmicfishpie.cosmology.jax_theory.JaxTheory`.
+
+    This is the adapter that lets backend-agnostic JAX observables request theory tables
+    without importing ``jax_cosmo`` themselves.
+
+    Parameters
+    ----------
+    backend_parameters : mapping, optional
+        Parsed ``default_boltzmann_yaml_files/jaxcosmo/default.yaml``.  The ``ACCURACY`` block
+        configures the transfer function, the Halofit prescription and the distance ODE, and
+        ``NUMERICS['x64']`` enables double precision.
+    cosmo_model : str
+        ``"LCDM"`` or ``"w0waCDM"``.  ``LCDM`` fixes ``w0 = -1`` and ``wa = 0``.
+    """
+
+    cosmo_names: tuple[str, ...] = PARAM_ORDER
+    free_name_map: Mapping[str, str] = FREE_NAME_MAP
+
+    def __init__(
+        self,
+        backend_parameters: Mapping | None = None,
+        cosmo_model: str = "LCDM",
+    ) -> None:
+        self.backend_parameters = dict(backend_parameters or {})
+        numerics = dict(self.backend_parameters.get("NUMERICS", {}) or {})
+        if numerics.get("x64", True):
+            enable_x64()
+        self.config = TheoryConfig.from_backend_parameters(self.backend_parameters)
+        self.cosmo_model = cosmo_model
+
+    def resolve_cosmology(self, params: Mapping) -> dict[str, float]:
+        """Resolve CosmicFishPie parameter names into canonical floats (massless neutrinos)."""
+        from cosmicfishpie.cosmology.jaxcosmo_provider import resolve_parameters
+
+        return resolve_parameters(params, self.cosmo_model)
+
+    def tables(
+        self,
+        params: Mapping,
+        z,
+        k_hmpc,
+        nonlinear: bool = True,
+    ) -> TheoryTables:
+        """Evaluate the ``jax_cosmo`` theory on ``(z, k_hmpc)``, in CosmicFishPie units."""
+        raw = compute_tables(params, z, k_hmpc, self.config, nonlinear)
+        h = params["h"]
+        # jax_cosmo's background has no radiation, so H(0)/c = 100 h / c exactly.
+        h0_over_c = 100.0 * h / SPEED_OF_LIGHT_KM_S
+        return TheoryTables(
+            z=z,
+            k_hmpc=k_hmpc,
+            chi=raw["chi"],
+            h_over_c=raw["H_over_c"],
+            growth=raw["D"],
+            omega_m=raw["Omega_m_z"],
+            pk_linear=raw["Plin"],
+            pk_nonlinear=raw["Pnl"],
+            h0_over_c=h0_over_c,
+            omega_m0=params["Omegam"],
+        )

@@ -54,6 +54,7 @@ except ImportError as err:  # pragma: no cover
 
 from cosmicfishpie.cosmology.jax_theory import TheoryTables
 from cosmicfishpie.cosmology.jaxcosmo_amplitude import As_to_sigma8
+from cosmicfishpie.cosmology.jaxcosmo_halofit import halofit as _smooth_halofit
 
 SPEED_OF_LIGHT_KM_S = 299792.458
 
@@ -216,7 +217,7 @@ def compute_tables(
     if nonlinear:
 
         def _pnl_one(a_i):
-            return jc_power.halofit(cosmo, k_hmpc, a_i, transfer, prescription=config.halofit)
+            return _smooth_halofit(cosmo, k_hmpc, a_i, transfer, prescription=config.halofit)
 
         pnl = jax.vmap(_pnl_one)(a)
     else:
@@ -335,7 +336,7 @@ class JaxCosmoTheory:
         if nonlinear:
 
             def _one(a_i, k_i):
-                return jc_power.halofit(cosmo, k_i, a_i, transfer, prescription=self.config.halofit)
+                return _smooth_halofit(cosmo, k_i, a_i, transfer, prescription=self.config.halofit)
 
             pk = jax.vmap(_one)(a, k)
         else:

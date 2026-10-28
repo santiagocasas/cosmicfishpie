@@ -36,7 +36,7 @@ dependencies = [
     "matplotlib==3.10.9",
     "nautilus-sampler==1.0.6",
     "chainconsumer>=1.3.0,<2.0.0",
-    "numpy<2",
+    "numpy>=2.1,<2.3",
     "pandas",
     "PyYAML==6.0.3",
     "scikit-learn==1.7.2",
@@ -55,6 +55,14 @@ Documentation = "https://www.santicasas.space/cosmicfishpie/docs/"
 [project.optional-dependencies]
 emulators = [
     "euclidemu2==1.4.3",
+]
+# Differentiable (JAX) theory backend, selected with options["code"] = "jaxcosmo".
+# jax-cosmo 0.1.0 imports ``pkg_resources``, which setuptools>=81 no longer ships.
+jaxcosmo = [
+    "jax>=0.4.30",
+    "jaxlib>=0.4.30",
+    "jax-cosmo==0.1.0",
+    "setuptools<81",
 ]
 docs = [
     "Sphinx>=7.3,<8.2",

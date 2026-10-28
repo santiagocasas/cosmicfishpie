@@ -1,0 +1,23 @@
+# Differentiable jax-cosmo backend (options["code"] = "jaxcosmo").
+# Total-matter only, flat, massless neutrinos (mnu must be 0).
+# Eisenstein-Hu transfer function + Halofit; 10^9As is converted to sigma8 with
+# the SYREN-NEW As -> sigma8 fit, re-evaluated inside the traced function.
+ACCURACY:
+  'transfer': 'eisenhu_osc'          # 'eisenhu_osc' (BAO wiggles) or 'eisenhu' (smooth)
+  'halofit': 'takahashi2012'         # 'takahashi2012' or 'smith2003'
+  'distance_steps': 256              # table size of the comoving-distance ODE (static under jit);
+                                     # the growth ODE uses a fixed 128 steps inside jax-cosmo
+NUMERICS:
+  'kmin_pk': 1.0e-3                  # h/Mpc
+  'kmax_pk': 9.0                     # h/Mpc
+  'zmin_pk': 0.0
+  'zmax_pk': 3.0
+  'z_samples': 100
+  'k_samples': 400
+  'zmax_background': 10.0            # background (H, distances, Omega_m) is tabulated up to here
+  'z_samples_background': 512
+  'extrapolate': False
+  'x64': True                        # enable float64 in JAX (needed for stable Fisher derivatives)
+COSMO_SETTINGS: {}
+LCDM: {}
+w0waCDM: {}

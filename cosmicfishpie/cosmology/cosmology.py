@@ -126,6 +126,7 @@ def _backend_parameters(configuration, code):
         "camb": "boltzmann_cambpars",
         "class": "boltzmann_classpars",
         "symbolic": "boltzmann_symbolicpars",
+        "jaxcosmo": "boltzmann_jaxcosmopars",
     }.get(code)
     if attribute is None:
         return {}
@@ -234,6 +235,23 @@ class boltzmann_code:
 
             self.class_setparams(self.cosmopars)
             self.class_results(Class)
+        elif code == "jaxcosmo":
+            self.boltzmann_jaxcosmopars = _backend_parameters(self.configuration, code)
+            # Lazy import: jax / jax-cosmo are an optional extra (``pip install .[jaxcosmo]``).
+            from cosmicfishpie.cosmology.jaxcosmo_provider import JaxCosmoProvider
+
+            provider = JaxCosmoProvider(
+                self.cosmopars,
+                self.boltzmann_jaxcosmopars,
+                self.settings["cosmo_model"],
+                self.settings,
+            )
+            self.jaxcosmopars = provider.cosmopars
+            self.h_now = self.jaxcosmopars["h"]
+            self.results = provider.build()
+            self.zgrid = self.results.zgrid
+            self.kgrid_1Mpc = self.results.kgrid
+            return
         elif code == "symbolic":
             self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
             provider_name = self.boltzmann_symbolicpars["ACCURACY"].get("provider", "legacy")
@@ -1798,6 +1816,15 @@ class cosmo_functions:
             self.kgrid = symbresults.results.kgrid
             self.cosmopars = symbresults.cosmopars
             self.symbcosmopars = symbresults.symbcosmopars
+        elif effective_input == "jaxcosmo":
+            jaxresults = boltzmann_code(
+                cosmopars, code="jaxcosmo", configuration=self.configuration
+            )
+            self.code = "jaxcosmo"
+            self.results = jaxresults.results
+            self.kgrid = jaxresults.results.kgrid
+            self.cosmopars = jaxresults.cosmopars
+            self.jaxcosmopars = jaxresults.jaxcosmopars
         else:
             print(effective_input, ":  This input type is not implemented yet")
 
@@ -1942,6 +1969,11 @@ class cosmo_functions:
         if self.code == "symbolic" and not hasattr(self.results, "Pk_cb_l"):
             raise ValueError(
                 "SYREN-NEW provides total-matter power only; tracer='clustering' is unsupported."
+            )
+        if self.code == "jaxcosmo":
+            raise ValueError(
+                "The jaxcosmo backend provides total-matter power only; "
+                "tracer='clustering' is unsupported."
             )
         if nonlinear is True:
             power = self.results.Pk_cb_nl(z, k, grid=False)

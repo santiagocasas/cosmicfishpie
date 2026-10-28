@@ -91,6 +91,7 @@ class AnalysisContext:
             "class": "boltzmann_classpars",
             "camb": "boltzmann_cambpars",
             "symbolic": "boltzmann_symbolicpars",
+            "jaxcosmo": "boltzmann_jaxcosmopars",
         }.get(input_type)
         backend_parameters = (
             deepcopy(getattr(legacy_config, backend_attr, {})) if backend_attr is not None else {}

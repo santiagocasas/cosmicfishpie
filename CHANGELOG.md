@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add the optional, differentiable `jaxcosmo` backend (`options["code"] = "jaxcosmo"`,
+  install with `pip install 'cosmicfishpie[jaxcosmo]'`): `jax-cosmo` background,
+  Eisenstein-Hu + Halofit total-matter power (flat, massless neutrinos), and a JAX port
+  of the `symbolic_pofk` `10^9As -> sigma8` fit. A JAX-native photometric (`GCph`+`WL`)
+  Limber observable (`LSSsurvey/jaxcosmo_photo.py`) and
+  `fishermatrix.jaxcosmo_autodiff.JaxAutodiffProvider` provide exact forward-mode
+  derivatives through `FisherMatrix(derivative_provider=...)`. CMB, clustering/CB
+  tracers, massive neutrinos and spectroscopic probes are explicitly rejected.
+
 - Support NumPy 2: widen the dependency pin from `numpy<2` to `numpy>=2.1,<2.3`
   (2.2.x is the newest series supporting Python 3.10), relock, and compute the
   legacy `round_decimals_up` branch in float64 to keep results identical under

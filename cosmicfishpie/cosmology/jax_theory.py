@@ -42,6 +42,8 @@ class TheoryTables:
         Hubble rate divided by the speed of light, in ``1/Mpc``.
     growth : array, shape (nz,)
         Linear growth factor normalised to ``D(0) = 1``.
+    growth_rate : array, shape (nz,)
+        Logarithmic growth rate ``f = d ln D / d ln a`` (scale independent).
     omega_m : array, shape (nz,)
         Matter fraction ``Omega_m(z)``.
     pk_linear, pk_nonlinear : array, shape (nz, nk)
@@ -57,6 +59,7 @@ class TheoryTables:
     chi: Any
     h_over_c: Any
     growth: Any
+    growth_rate: Any
     omega_m: Any
     pk_linear: Any
     pk_nonlinear: Any

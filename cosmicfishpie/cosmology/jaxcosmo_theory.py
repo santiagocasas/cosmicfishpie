@@ -297,6 +297,7 @@ class JaxCosmoTheory:
             chi=raw["chi"],
             h_over_c=raw["H_over_c"],
             growth=raw["D"],
+            growth_rate=raw["f"],
             omega_m=raw["Omega_m_z"],
             pk_linear=raw["Plin"],
             pk_nonlinear=raw["Pnl"],

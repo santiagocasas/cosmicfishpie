@@ -1,4 +1,4 @@
-r"""Derivative providers for the JAX-native photometric observable of the ``jaxcosmo`` backend.
+r"""Derivative providers for the JAX-native observables of the ``jaxcosmo`` backend.
 
 Two providers implement
 :class:`cosmicfishpie.fishermatrix.derivatives.DerivativeProvider`:
@@ -49,7 +49,6 @@ class _JaxObservableProvider:
         fiducial = dict(request.fiducial)
         if self._observable is not None and self._same_fiducial(fiducial):
             return self._observable
-        from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
         configuration = request.configuration
         if configuration is None:
@@ -59,7 +58,15 @@ class _JaxObservableProvider:
             raise ValueError(
                 f"{type(self).__name__} requires options['code'] = 'jaxcosmo' (got '{code}')."
             )
-        self._observable = JaxPhotoObservable(configuration, fiducial)
+        observables = tuple(request.observables_type)
+        if "GCsp" in observables:
+            from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+            self._observable = JaxSpectroObservable(configuration, fiducial)
+        else:
+            from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
+
+            self._observable = JaxPhotoObservable(configuration, fiducial)
         self._fiducial = fiducial
         return self._observable
 
@@ -74,21 +81,46 @@ class _JaxObservableProvider:
             for k in old
         )
 
-    def _check_request(self, request: DerivativeRequest) -> None:
-        if request.special_deriv_function is not None:
-            raise NotImplementedError(
-                "special_deriv_function is not supported by the jaxcosmo derivative providers."
-            )
+    @staticmethod
+    def _special_derivs(request: DerivativeRequest) -> dict[str, object]:
+        """Derivatives CosmicFishPie already knows analytically (e.g. shot noise)."""
+        special = request.special_deriv_function
+        if special is None:
+            return {}
+        found: dict[str, object] = {}
+        primed = False
+        for name in request.freeparams:
+            try:
+                value = special(name)
+            except AttributeError:
+                # The legacy spectroscopic engine caches its fiducial observable on the
+                # first call to ``get_obs``; prime it so its analytic shot-noise
+                # derivatives are available without a legacy evaluation loop.
+                if primed:  # pragma: no cover - defensive
+                    raise
+                request.observable(dict(request.fiducial))
+                primed = True
+                value = special(name)
+            if value is not None:
+                found[name] = value
+        return found
 
 
 class JaxAutodiffProvider(_JaxObservableProvider):
     """Exact forward-mode derivatives of the photometric ``C_ell`` (``jaxcosmo`` backend)."""
 
     def compute(self, request: DerivativeRequest) -> dict[str, object]:
-        """Return ``{parameter: {Cl key: dC/dtheta, 'ells': ells}}`` for ``request.freeparams``."""
-        self._check_request(request)
+        """Return ``{parameter: derivative}`` for ``request.freeparams``.
+
+        Parameters with an analytic derivative in ``request.special_deriv_function`` keep it,
+        exactly as the finite-difference engine does.
+        """
         observable = self._get_observable(request)
-        return dict(observable.jacobian(tuple(request.freeparams)))
+        result = self._special_derivs(request)
+        names = [name for name in request.freeparams if name not in result]
+        if names:
+            result.update(dict(observable.jacobian(tuple(names))))
+        return {name: result[name] for name in request.freeparams}
 
 
 class JaxFiniteDifferenceProvider(_JaxObservableProvider):
@@ -100,8 +132,12 @@ class JaxFiniteDifferenceProvider(_JaxObservableProvider):
     """
 
     def compute(self, request: DerivativeRequest) -> dict[str, object]:
-        """Return ``{parameter: {Cl key: dC/dtheta, 'ells': ells}}`` by finite differences."""
-        self._check_request(request)
+        """Return ``{parameter: derivative}`` by finite differences of the JAX observable."""
+        if request.special_deriv_function is not None:
+            # The legacy spectroscopic engine keeps its fiducial observable in an attribute
+            # that ``get_obs`` fills in; prime it so the analytic shot-noise derivatives the
+            # finite-difference engine asks for are available.
+            request.observable(dict(request.fiducial))
         observable = self._get_observable(request)
         jax_request = replace(request, observable=observable)
         return FiniteDifferenceProvider().compute(jax_request)

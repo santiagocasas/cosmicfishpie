@@ -302,3 +302,47 @@ class JaxCosmoTheory:
             h0_over_c=h0_over_c,
             omega_m0=params["Omegam"],
         )
+
+    def power(
+        self,
+        params: Mapping,
+        z,
+        k_hmpc,
+        nonlinear: bool = True,
+    ) -> jnp.ndarray:
+        """Matter power at *per-redshift* wavenumbers, in ``Mpc^3``.
+
+        Unlike :meth:`tables`, this evaluates the transfer function and Halofit directly at the
+        requested ``k`` values instead of interpolating a fixed wavenumber grid.  That removes
+        the slope kinks of the interpolation, which is what makes finite differences of the
+        projected spectra converge slowly.
+        """
+        z = jnp.atleast_1d(jnp.asarray(z))
+        k = jnp.asarray(k_hmpc)
+        if k.ndim == 1:
+            k = jnp.broadcast_to(k[None, :], (z.shape[0], k.shape[0]))
+
+        cosmo = make_cosmology(params)
+        h = cosmo.h
+        a = 1.0 / (1.0 + z)
+        transfer = _transfer_fn(self.config)
+
+        # Prime the cached tables outside the transformation (see ``compute_tables``).
+        a_prime = jnp.atleast_1d(1.0)
+        jc_background.radial_comoving_distance(cosmo, a_prime, steps=self.config.distance_steps)
+        jc_background.growth_factor(cosmo, a_prime)
+
+        if nonlinear:
+
+            def _one(a_i, k_i):
+                return jc_power.halofit(cosmo, k_i, a_i, transfer, prescription=self.config.halofit)
+
+            pk = jax.vmap(_one)(a, k)
+        else:
+            transfer_k = transfer(cosmo, k)
+            pknorm = cosmo.sigma8**2 / jc_power.sigmasqr(cosmo, 8.0, transfer)
+            p0 = jc_power.primordial_matter_power(cosmo, k) * transfer_k**2 * pknorm
+            growth = jnp.atleast_1d(jc_background.growth_factor(cosmo, a))
+            pk = growth[:, None] ** 2 * p0
+
+        return pk / h**3

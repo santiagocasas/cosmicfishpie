@@ -75,7 +75,10 @@ def _relative_stats(reference: np.ndarray, candidate: np.ndarray) -> dict:
     diff = np.abs(candidate - reference)
     scale = float(np.max(np.abs(reference))) if reference.size else 0.0
     if scale == 0.0:
-        return {"max": float(diff.max(initial=0.0)), "mean": float(diff.mean() if diff.size else 0.0)}
+        return {
+            "max": float(diff.max(initial=0.0)),
+            "mean": float(diff.mean() if diff.size else 0.0),
+        }
     significant = np.abs(reference) > 1.0e-2 * scale
     rel = diff / scale
     rel_sig = (diff[significant] / np.abs(reference[significant])) if significant.any() else rel
@@ -116,9 +119,17 @@ def _matrix(fisher) -> np.ndarray:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outdir", type=Path, default=Path("/tmp/opencode/jax_parity"))
+    parser.add_argument(
+        "--fd-step",
+        type=float,
+        default=0.01,
+        help="relative finite-difference step (default 0.01, the CosmicFishPie default)",
+    )
     args = parser.parse_args()
     outdir = args.outdir.resolve()
     outdir.mkdir(parents=True, exist_ok=True)
+    if args.fd_step != 0.01:
+        FREE.update({name: args.fd_step for name in FREE})
 
     from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
     from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import (
@@ -173,9 +184,7 @@ def main() -> int:
     }
     summary["derivatives"] = {}
     for label, (ref, cand) in comparisons.items():
-        per_param = {
-            name: _compare_dicts(ref[name], cand[name]) for name in FREE if name in ref
-        }
+        per_param = {name: _compare_dicts(ref[name], cand[name]) for name in FREE if name in ref}
         summary["derivatives"][label] = per_param
 
     # ---------------------------------------------------------------- Fisher matrices

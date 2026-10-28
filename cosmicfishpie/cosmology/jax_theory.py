@@ -89,6 +89,20 @@ class JaxTheory(Protocol):
     ) -> TheoryTables:
         """Evaluate :class:`TheoryTables` at ``z`` and ``k_hmpc`` for ``params``."""
 
+    def power(
+        self,
+        params: Mapping[str, Any],
+        z: Any,
+        k_hmpc: Any,
+        nonlinear: bool = True,
+    ) -> Any:
+        """Matter power in ``Mpc^3`` at per-redshift wavenumbers ``k_hmpc`` (``h/Mpc``).
+
+        ``z`` has shape ``(nz,)``.  ``k_hmpc`` may have shape ``(nk,)`` (the same wavenumbers
+        for every redshift) or ``(nz, nk)`` to request a different wavenumber per redshift,
+        which is what a Limber projection needs.  The return value has shape ``(nz, nk)``.
+        """
+
 
 def get_jax_theory(
     code: str | None,

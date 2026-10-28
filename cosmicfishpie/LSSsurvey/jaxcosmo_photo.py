@@ -189,7 +189,9 @@ class JaxPhotoObservable:
         accuracy = s["accuracy"]
         zsamp = int(round(200 * accuracy))
         ellsamp = (
-            int(round(100 * accuracy)) if s["ell_sampling"] == "accuracy" else int(s["ell_sampling"])
+            int(round(100 * accuracy))
+            if s["ell_sampling"] == "accuracy"
+            else int(s["ell_sampling"])
         )
         self.ell = np.logspace(np.log10(ellmin), np.log10(ellmax + 10), num=ellsamp)
         z_min = min(sp["z_bins_GCph"][0], sp["z_bins_WL"][0])
@@ -301,23 +303,24 @@ class JaxPhotoObservable:
         """All requested ``C_ell`` as an array of shape ``(len(self.keys), len(self.ell))``."""
         cosmo = {name: v[name] for name in self.cosmo_names}
         z = jnp.asarray(self.z)
-        tab = self.theory.tables(cosmo, z, self.k_hmpc, self.nonlinear)
+        # Background only; the power spectrum is evaluated directly at the Limber wavenumbers
+        # below, which avoids the slope kinks of a fixed-grid interpolation.
+        tab = self.theory.tables(cosmo, z, self.k_hmpc[:2], False)
         chi, hub = tab.chi, tab.h_over_c
         hub0 = tab.h0_over_c
         omegam0 = tab.omega_m0
 
         # Limber: P(kappa_l(z), z) / chi^2, zero above kmax.   shapes (nz, nell)
         kappa = (jnp.asarray(self.ell)[None, :] + 0.5) / chi[:, None]
-        logk = jnp.log(jnp.asarray(self.k_hmpc) * cosmo["h"])
-        logp = jnp.log(tab.pk_nonlinear)
-        p_kappa = jnp.exp(jax.vmap(jnp.interp, in_axes=(0, None, 0))(jnp.log(kappa), logk, logp))
+        # Clamp only for evaluation: masked entries are zeroed by ``q`` and clamping keeps
+        # Halofit away from absurd wavenumbers at the lowest redshifts.
+        k_eval = jnp.minimum(kappa, self.kmax) / cosmo["h"]
+        p_kappa = self.theory.power(cosmo, z, k_eval, self.nonlinear)
         q = jnp.where(kappa < self.kmax, p_kappa / chi[:, None] ** 2, 0.0)
 
         growth_nuis = None
         if "WL" in self.observables:
-            tab_nuis = self.theory.tables(
-                cosmo, jnp.asarray(self.z_nuis), self.k_hmpc[:2], False
-            )
+            tab_nuis = self.theory.tables(cosmo, jnp.asarray(self.z_nuis), self.k_hmpc[:2], False)
             growth_nuis = tab_nuis.growth
             ia_win = self._ia_window(v, omegam0, growth_nuis)
             prefac = 1.5 * hub0**2 * omegam0

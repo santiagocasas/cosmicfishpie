@@ -12,13 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Eisenstein-Hu + Halofit total-matter power (flat, massless neutrinos), and a JAX port
   of the `symbolic_pofk` `10^9As -> sigma8` fit. A backend-neutral differentiable theory
   interface (`cosmology/jax_theory.py`) lets JAX observables stay independent of the
-  selected backend. A JAX-native photometric (`GCph`+`WL`) Limber observable
-  (`LSSsurvey/jaxcosmo_photo.py`) with `fishermatrix.jaxcosmo_derivatives` providers:
-  `JaxAutodiffProvider` gives exact forward-mode derivatives and
+  selected backend. JAX-native photometric (`GCph`+`WL`, `LSSsurvey/jaxcosmo_photo.py`)
+  and spectroscopic (`GCsp`, `LSSsurvey/jaxcosmo_spectro.py`) observables reproduce the
+  standard Limber and P(k, mu) calculations, with `fishermatrix.jaxcosmo_derivatives`
+  providers: `JaxAutodiffProvider` gives exact forward-mode derivatives and
   `JaxFiniteDifferenceProvider` applies the standard finite-difference engine to the same
-  observable, so autodiff and finite differences can be validated against each other.
+  observable, so autodiff and finite differences can be validated against each other and
+  against the legacy pipeline (`scripts/validation/compare_jax_*_fishers.py`).
   Both are wired through `FisherMatrix(derivative_provider=...)`. CMB, clustering/CB
-  tracers, massive neutrinos and spectroscopic probes are explicitly rejected.
+  tracers and massive neutrinos are explicitly rejected.
+
+- Use a smooth Halofit root find in the `jaxcosmo` theory layer: `jax-cosmo` locates the
+  nonlinear scale by interpolating `sigma(R) = 1` on a fixed 256-node grid, which makes the
+  power spectrum jump between nodes and spoils finite differences even at small steps. The
+  replacement integrates `sigma^2(R)` on a fine grid and solves it with a fixed-count Newton
+  iteration, keeping the values within 5e-4 of `jax-cosmo` while making them differentiable.
 
 - Support NumPy 2: widen the dependency pin from `numpy<2` to `numpy>=2.1,<2.3`
   (2.2.x is the newest series supporting Python 3.10), relock, and compute the

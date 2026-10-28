@@ -423,7 +423,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">chainconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chain</span><span class="p">,</span> <span class="n">ChainConfig</span><span class="p">,</span> <span class="n">ChainConsumer</span><span class="p">,</span> <span class="n">PlotConfig</span><span class="p">,</span> <span class="n">Truth</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.colors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_operations</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fo</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_plot_analysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fpa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">fisher_matrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.utilities.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">printing</span> <span class="k">as</span> <span class="n">upr</span>
 
 <span class="n">dprint</span> <span class="o">=</span> <span class="n">upr</span><span class="o">.</span><span class="n">debug_print</span>
@@ -1481,6 +1483,156 @@
 
 
 
+<div class="viewcode-block" id="make_fisher_chain_plot">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.fishconsumer.make_fisher_chain_plot.html#cosmicfishpie.analysis.fishconsumer.make_fisher_chain_plot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_fisher_chain_plot</span><span class="p">(</span>
+    <span class="n">fishers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">fisher_matrix</span><span class="p">],</span>
+    <span class="n">chains</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">nsigmas</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">extents</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show_fisher</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_chains</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">plot_kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Overlay paired Fisher forecasts and weighted posterior chains.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fishers : list of fisher_matrix</span>
+<span class="sd">        Forecasts, one per comparison case. Inputs are not modified.</span>
+<span class="sd">    chains : list of pandas.DataFrame or None, optional</span>
+<span class="sd">        Aligned with ``fishers``; use None for a Fisher-only case. DataFrames</span>
+<span class="sd">        contain parameter columns and optionally a ``weight`` column. Selecting</span>
+<span class="sd">        plotted columns marginalizes the posterior over omitted parameters.</span>
+<span class="sd">    labels : list of str, optional</span>
+<span class="sd">        One unique case label per Fisher. Legend entries append &#39;Fisher&#39; or</span>
+<span class="sd">        &#39;chain&#39;. Defaults to &#39;Case 1&#39;, &#39;Case 2&#39;, etc.</span>
+<span class="sd">    params : list of str, optional</span>
+<span class="sd">        Ordered parameters present in every input. Defaults to the first Fisher&#39;s</span>
+<span class="sd">        parameters. Fishers are marginalized, never conditioned, to this subset.</span>
+<span class="sd">    colors : list of str, optional</span>
+<span class="sd">        One color per case, shared by its Fisher and chain. A shorter palette</span>
+<span class="sd">        cycles by case, including cases without a chain.</span>
+<span class="sd">    nsigmas : float, optional</span>
+<span class="sd">        Automatic limits use each visible Fisher fiducial +/- nsigmas marginalized</span>
+<span class="sd">        standard deviations and visible chain weighted quantiles at Phi(-nsigmas)</span>
+<span class="sd">        and Phi(nsigmas). Default is 3 (central 99.73% posterior mass).</span>
+<span class="sd">        Quantiles interpolate at cumulative-weight midpoints. Limits are the</span>
+<span class="sd">        union of visible cases in this call; sparse prior tails do not set them.</span>
+<span class="sd">    extents : dict, optional</span>
+<span class="sd">        Explicit parameter limits, overriding automatic limits for those keys.</span>
+<span class="sd">    show_fisher, show_chains : bool, optional</span>
+<span class="sd">        Independently display forecasts and posteriors. Both default to True;</span>
+<span class="sd">        at least one must be True. Missing chains are skipped without shifting</span>
+<span class="sd">        case colors. Hidden inputs do not contribute to limits or get plotted.</span>
+<span class="sd">    **plot_kwargs</span>
+<span class="sd">        Additional ``make_triangle_plot`` options, e.g. param_labels, figsize,</span>
+<span class="sd">        legend_kwargs, or savefile. Defaults are dashed unfilled Fishers and</span>
+<span class="sd">        shaded chains. Parameter transformations must be applied before calling</span>
+<span class="sd">        this helper; use make_triangle_plot for its transform_params interface.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.figure.Figure</span>
+<span class="sd">        Figure for the caller to display, save, or close.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Compare two forecasts when only the second has a completed posterior::</span>
+
+<span class="sd">        fig = make_fisher_chain_plot(</span>
+<span class="sd">            [fisher_a, fisher_b], [None, chain_b],</span>
+<span class="sd">            labels=[&#39;A&#39;, &#39;B&#39;], params=[&#39;Omegam&#39;, &#39;h&#39;],</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fishers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fishers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">show_fisher</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">show_chains</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of show_fisher and show_chains must be True&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fishers</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one Fisher matrix is required&quot;</span><span class="p">)</span>
+    <span class="n">chains</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fishers</span><span class="p">)</span> <span class="k">if</span> <span class="n">chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">chains</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Case </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fishers</span><span class="p">))]</span> <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chains</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fishers</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fishers</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;chains and labels must have one entry per Fisher (use None for no chain)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Case labels must be unique&quot;</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fishers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">param_names</span> <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;params must be nonempty and unique&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">nsigmas</span><span class="p">)</span> <span class="ow">or</span> <span class="n">nsigmas</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;nsigmas must be positive and finite&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transform_params&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Apply parameter transformations before calling make_fisher_chain_plot&quot;</span><span class="p">)</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;#3a86ff&quot;</span><span class="p">,</span> <span class="s2">&quot;#fb5607&quot;</span><span class="p">,</span> <span class="s2">&quot;#8338ec&quot;</span><span class="p">,</span> <span class="s2">&quot;#ffbe0b&quot;</span><span class="p">,</span> <span class="s2">&quot;#d11149&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">palette</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;colors must be nonempty&quot;</span><span class="p">)</span>
+    <span class="n">case_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">palette</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fishers</span><span class="p">))]</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalDist</span>
+
+    <span class="n">probabilities</span> <span class="o">=</span> <span class="p">[</span><span class="n">NormalDist</span><span class="p">()</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">nsigmas</span><span class="p">),</span> <span class="n">NormalDist</span><span class="p">()</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">nsigmas</span><span class="p">)]</span>
+    <span class="n">selected_fishers</span><span class="p">,</span> <span class="n">selected_chains</span><span class="p">,</span> <span class="n">chain_labels</span><span class="p">,</span> <span class="n">chain_colors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="n">lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fisher</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fishers</span><span class="p">,</span> <span class="n">chains</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">case_colors</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">show_fisher</span><span class="p">:</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">fisher</span><span class="o">.</span><span class="n">param_names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fisher </span><span class="si">{</span><span class="n">label</span><span class="si">!r}</span><span class="s2"> is missing parameters: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">marginal</span> <span class="o">=</span> <span class="n">fo</span><span class="o">.</span><span class="n">marginalise</span><span class="p">(</span><span class="n">fisher</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">update_names</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">selected_fishers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marginal</span><span class="p">)</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">marginal</span><span class="o">.</span><span class="n">inverse_fisher_matrix</span><span class="p">()))</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">marginal</span><span class="o">.</span><span class="n">param_fiducial</span> <span class="o">-</span> <span class="n">nsigmas</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="n">marginal</span><span class="o">.</span><span class="n">param_fiducial</span> <span class="o">+</span> <span class="n">nsigmas</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">show_chains</span> <span class="ow">and</span> <span class="n">chain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chain </span><span class="si">{</span><span class="n">label</span><span class="si">!r}</span><span class="s2"> is missing parameters: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">params</span> <span class="o">+</span> <span class="p">([</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="p">[])</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chain </span><span class="si">{</span><span class="n">label</span><span class="si">!r}</span><span class="s2"> needs finite samples with positive weight&quot;</span><span class="p">)</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">))</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;stable&quot;</span><span class="p">)</span>
+                <span class="n">sorted_weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+                <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">sorted_weights</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">sorted_weights</span>
+                <span class="n">bounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">samples</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="n">order</span><span class="p">]))</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bounds</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">selected_chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+            <span class="n">chain_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> chain&quot;</span><span class="p">)</span>
+            <span class="n">chain_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_fishers</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">selected_chains</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No visible Fishers or completed chains to plot&quot;</span><span class="p">)</span>
+    <span class="n">limits</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lo</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">hi</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">)}</span>
+    <span class="n">limits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extents</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ls_fisher</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">shade_fisher</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">shade_chains</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plot_kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">make_triangle_plot</span><span class="p">(</span>
+        <span class="n">fishers</span><span class="o">=</span><span class="n">selected_fishers</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chains</span><span class="o">=</span><span class="n">selected_chains</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fisher_labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> Fisher&quot;</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span> <span class="k">if</span> <span class="n">show_fisher</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chain_labels</span><span class="o">=</span><span class="n">chain_labels</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="n">colors</span><span class="o">=</span><span class="p">(</span><span class="n">case_colors</span> <span class="k">if</span> <span class="n">show_fisher</span> <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span> <span class="n">chain_colors</span><span class="p">,</span>
+        <span class="n">extents</span><span class="o">=</span><span class="n">limits</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">options</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="plot_chain_summary">
 <a class="viewcode-back" href="../../../api/generated/cosmicfishpie.analysis.fishconsumer.plot_chain_summary.html#cosmicfishpie.analysis.fishconsumer.plot_chain_summary">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_chain_summary</span><span class="p">(</span>
@@ -1887,6 +2039,9 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">make_triangle_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">make_triangle_plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_fisher_chain_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">make_fisher_chain_plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">load_Nautilus_chains_from_txt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">param_cols</span><span class="p">,</span> <span class="n">log_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">load_Nautilus_chains_from_txt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">param_cols</span><span class="p">,</span> <span class="n">log_weights</span><span class="o">=</span><span class="n">log_weights</span><span class="p">)</span>

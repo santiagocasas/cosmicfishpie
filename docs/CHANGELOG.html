@@ -462,6 +462,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <section id="unreleased">
 <h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">#</a></h2>
 <ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">fishconsumer.make_fisher_chain_plot</span></code> for paired Fisher/posterior overlays,
+with marginalization to plotted parameters, matched colors for missing-chain
+cases, independent <code class="docutils literal notranslate"><span class="pre">show_fisher</span></code>/<code class="docutils literal notranslate"><span class="pre">show_chains</span></code> switches, and per-call limits
+using Gaussian-equivalent weighted posterior quantiles (3 sigma by default).</p></li>
 <li><p>Build sampler analysis and worker contexts with the configured prior parameters,
 preventing nondefault coordinates such as <code class="docutils literal notranslate"><span class="pre">10^9As</span></code> from being dropped.</p></li>
 <li><p>Translate public dimensionless <code class="docutils literal notranslate"><span class="pre">As</span></code> to CLASS <code class="docutils literal notranslate"><span class="pre">A_s</span></code> and order-one <code class="docutils literal notranslate"><span class="pre">10^9As</span></code>

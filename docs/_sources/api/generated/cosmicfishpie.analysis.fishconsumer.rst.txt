@@ -27,6 +27,7 @@ cosmicfishpie.analysis.fishconsumer
       load_Nautilus_chains_from_txt
       load_montepython_chains
       log_fidu_to_fidu
+      make_fisher_chain_plot
       make_triangle_plot
       n_sigmas
       parse_log_param

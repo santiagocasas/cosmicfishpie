@@ -18,11 +18,14 @@ Usage
 
 The providers are stateful on purpose: the JAX observable and its compiled Jacobians are cached
 between calls (and are *not* picklable), so a fresh provider must be created in every worker
-process.  Only the photometric probes ``GCph`` and ``WL`` are supported.
+process.  The probes ``GCph`` + ``WL`` (photometric) and ``GCsp`` (spectroscopic) are supported;
+the provider picks the JAX observable from ``request.observables_type``.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import replace
 from typing import Any
 
@@ -31,55 +34,87 @@ import numpy as np
 from cosmicfishpie.fishermatrix.derivatives import DerivativeRequest, FiniteDifferenceProvider
 
 
+def _json_default(obj: Any) -> Any:
+    """Serialise the odd objects found in ``settings`` / ``specs`` for fingerprinting."""
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, np.generic):
+        return obj.item()
+    if isinstance(obj, (set, frozenset)):
+        return sorted(map(repr, obj))
+    return repr(obj)
+
+
+def _fingerprint(*objects: Any) -> str:
+    """Content hash of nested settings/specs/fiducial dictionaries (order independent)."""
+    payload = json.dumps(objects, default=_json_default, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 class _JaxObservableProvider:
-    """Shared lifecycle for providers backed by :class:`JaxPhotoObservable`."""
+    """Shared lifecycle for providers backed by the JAX photometric / spectroscopic observables.
+
+    The observable (and its compiled Jacobians) is cached between calls.  The cache key is a
+    *content* fingerprint of the fiducial point, the analysis settings, the survey
+    specifications, the requested probes and the backend parameters, so one provider instance
+    can safely be reused across analyses: any change rebuilds the observable.  Object identity
+    would not be enough, because the legacy ``config`` module is mutated in place.
+    """
 
     def __init__(self) -> None:
         self._observable = None
-        self._fiducial: dict[str, Any] | None = None
+        self._cache_key: str | None = None
 
     # Compiled functions and device arrays must never be shipped between processes.
     def __getstate__(self) -> dict[str, Any]:
         state = self.__dict__.copy()
         state["_observable"] = None
-        state["_fiducial"] = None
+        state["_cache_key"] = None
         return state
 
-    def _get_observable(self, request: DerivativeRequest):
-        fiducial = dict(request.fiducial)
-        if self._observable is not None and self._same_fiducial(fiducial):
-            return self._observable
-
+    @staticmethod
+    def _resolve_configuration(request: DerivativeRequest):
         configuration = request.configuration
         if configuration is None:
             from cosmicfishpie.configs import config as configuration  # legacy global state
+        return configuration
+
+    def _make_cache_key(self, request: DerivativeRequest, configuration) -> str:
+        backend = getattr(configuration, "backend_parameters", None)
+        if not backend:
+            backend = getattr(configuration, "boltzmann_jaxcosmopars", None)
+        return _fingerprint(
+            dict(request.fiducial),
+            getattr(configuration, "settings", None),
+            getattr(configuration, "specs", None),
+            tuple(getattr(configuration, "obs", ())),
+            tuple(request.observables_type),
+            backend,
+        )
+
+    def _get_observable(self, request: DerivativeRequest):
+        configuration = self._resolve_configuration(request)
+        key = self._make_cache_key(request, configuration)
+        if self._observable is not None and key == self._cache_key:
+            return self._observable
+
         code = configuration.settings.get("code") if hasattr(configuration, "settings") else None
         if code not in (None, "jaxcosmo"):
             raise ValueError(
                 f"{type(self).__name__} requires options['code'] = 'jaxcosmo' (got '{code}')."
             )
+        fiducial = dict(request.fiducial)
         observables = tuple(request.observables_type)
         if "GCsp" in observables:
             from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
-            self._observable = JaxSpectroObservable(configuration, fiducial)
+            observable = JaxSpectroObservable(configuration, fiducial)
         else:
             from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
-            self._observable = JaxPhotoObservable(configuration, fiducial)
-        self._fiducial = fiducial
-        return self._observable
-
-    def _same_fiducial(self, fiducial: dict[str, Any]) -> bool:
-        old = self._fiducial
-        if old is None or old.keys() != fiducial.keys():
-            return False
-        return all(
-            np.array_equal(old[k], fiducial[k])
-            if not isinstance(old[k], str)
-            else old[k] == fiducial[k]
-            for k in old
-        )
+            observable = JaxPhotoObservable(configuration, fiducial)
+        self._observable, self._cache_key = observable, key
+        return observable
 
     @staticmethod
     def _special_derivs(request: DerivativeRequest) -> dict[str, object]:
@@ -107,7 +142,7 @@ class _JaxObservableProvider:
 
 
 class JaxAutodiffProvider(_JaxObservableProvider):
-    """Exact forward-mode derivatives of the photometric ``C_ell`` (``jaxcosmo`` backend)."""
+    """Exact forward-mode derivatives of the JAX observables (``jaxcosmo`` backend)."""
 
     def compute(self, request: DerivativeRequest) -> dict[str, object]:
         """Return ``{parameter: derivative}`` for ``request.freeparams``.

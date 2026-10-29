@@ -28,7 +28,7 @@ spectroscopic GCsp (default modelling path only). No CMB, no clustering (CB) tra
 | # | severity | finding | status |
 |---|---|---|---|
 | F1 | high | Savitzky-Golay operator applied transposed in `jaxcosmo_spectro._nowiggle_power`; differs from `scipy.signal.savgol_filter` at the edges | fixed (see 3.1) |
-| F2 | high | Derivative-provider cache keyed on the fiducial dictionary only; reuse across configurations returns stale observable | open |
+| F2 | high | Derivative-provider cache keyed on the fiducial dictionary only; reuse across configurations returns stale observable | fixed (see 3.2) |
 | F3 | high | `AP_effect=False` branch has wrong array rank and a wrong redshift-error `k_par` (legacy always uses `k mu / q_par`) | open |
 | F4 | medium | `kh_rescaling_bug` / `kh_rescaling_beforespecerr_bug` read but not implemented | open |
 | F5 | medium | Claim "legacy spline extrapolates" was wrong: `RectBivariateSpline` clamps at the boundary. Direct Halofit evaluation outside the table is a deliberate difference, not a reproduction | open |
@@ -57,6 +57,15 @@ New observation: with the corrected smoothing, one point stands out in the `Omeg
 of every redshift bin: the first wavenumber at `mu = 1`, where `k_ap = k / q_par` sits exactly
 on the lower edge of the tabulated power spectrum (`kmin_pk * h`). Legacy clamps the spline
 there, JAX evaluates directly. See F5.
+
+### 3.2 F2: configuration-aware observable cache
+
+`_JaxObservableProvider` now keys its cached observable on a SHA-256 fingerprint of the
+fiducial point, `settings`, `specs`, `obs`, the requested probes and the backend parameters.
+Object identity is deliberately not used: the legacy `config` module is mutated in place, so
+the same object can describe two different analyses. The fingerprint is dropped when the
+provider is pickled, as before. `tests/jaxcosmo_derivatives_test.py` covers reuse, rebuild on
+each kind of change (including in-place mutation), wrong `code`, and pickling.
 
 ## 4. Limits of the evidence
 

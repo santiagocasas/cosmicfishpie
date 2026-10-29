@@ -33,7 +33,7 @@ spectroscopic GCsp (default modelling path only). No CMB, no clustering (CB) tra
 | F4 | medium | `kh_rescaling_bug` / `kh_rescaling_beforespecerr_bug` read but not implemented | fixed (see 3.3) |
 | F5 | medium | Claim "legacy spline extrapolates" was wrong: `RectBivariateSpline` clamps at the boundary. Direct Halofit evaluation outside the table is a deliberate difference, not a reproduction | fixed: documented + `legacy_pk_clamp` switch (see 3.3) |
 | F6 | medium | ARA trace: duplicate top-level YAML keys (`tree:`, `observations:`); observation O19 states the wrong spline claim | fixed (see 3.4; trace lives in `cfp-dev`, not in this repo) |
-| F7 | medium | No automated tests for the jaxcosmo path | partly fixed: theory, Halofit, amplitude, GCsp options, providers (3.2-3.5); photometric observable and Nautilus still untested |
+| F7 | medium | No automated tests for the jaxcosmo path | partly fixed (31 tests added; 474 pass in the full suite): theory, Halofit, amplitude, GCsp options, providers (3.2-3.5); photometric observable and Nautilus still untested |
 | F8 | medium | Halofit Newton solve has no convergence diagnostic; module-level constants built with JAX before x64 is enabled | fixed (see 3.5) |
 | F9 | low | Documentation drift (provider docstring says photometric only; photo docstring describes an interpolation no longer used) | fixed (see 3.6) |
 | F10 | info | Parity evidence covers one LCDM massless-nu Euclid setup at a 0.3% step; max differences are normalised by the largest matrix element | accepted, see section 4 |
@@ -185,7 +185,33 @@ derivative `dR/dp = -(d sigma^2/dp)/(d sigma^2/dR)`.
 ## 5. Upstreaming the smooth Halofit to jax-cosmo
 
 `jax_cosmo.power._halofit_parameters` finds the nonlinear scale with a linear `interp` on a
-fixed 256-node `ln R` grid, so d P/d theta is discontinuous between nodes. `jaxcosmo_halofit.py`
-replaces that with a fixed-count Newton iteration. Planned steps: validate across the parameter
-domain here (F8), then prepare a minimal patch plus tests against the local jax_cosmo clone.
-No pull request is opened without maintainer (user) approval.
+fixed 256-node `ln R` grid (the code itself carries a `TODO: implement a better root finding
+algorithm`), so d P/d theta is discontinuous between nodes.
+
+Status: a patch is **prepared and committed locally, not pushed, no PR opened**, on branch
+`smooth-halofit-nonlinear-scale` of `~/CosmoProjects/differentiablestuff/jax_cosmo`
+(commit `d193ebf`, parent `c4f249f`). It changes only `jax_cosmo/power.py` (and drops the now
+unused `interp` import) and adds `tests/test_halofit_smooth.py`.
+
+Evidence, using the same `pyccl`-enabled environment their suite needs:
+
+* their full suite (including the CCL comparisons): **25 passed** on the patched tree;
+* the new derivative test **fails on master and passes with the patch**. 12 redshifts,
+  `d P_halofit / d Omega_c`, error relative to the derivative's scale:
+
+  | step | master | patch |
+  |---|---|---|
+  | 1% | 2.4e-1 (`k_nl` alone: 3.0e-2) | 1.0e-3 (`k_nl`: 2.7e-4) |
+  | 0.1% | 1.6e-5 | 1.0e-5 |
+  | 0.01% | 1.6e-7 | 1.0e-7 |
+
+  Both converge quadratically to the same derivative, so master's problem is specific to the
+  finite steps used in Fisher forecasts, where the root hops between nodes;
+* the new test also checks `growth^2 sigma^2(R_nl) = 1` against a 40001-point integral
+  (rtol 1e-4), which master satisfies too: the issue is smoothness, not the root's accuracy.
+
+Open points for whoever proposes it: the project may prefer `custom_jvp` to the
+stop-gradient-plus-one-step form; the Newton bracket `ln R in [-20, 10]` is wider than the old
+`[ln 1e-4, ln 10]`; and a short note on behaviour change (values move by up to 0.6% over the
+CFP validation box, which is jax-cosmo's own interpolation error) belongs in the PR text.
+CosmicFishPie keeps its vendored `jaxcosmo_halofit.py` until a jax-cosmo release contains the fix.

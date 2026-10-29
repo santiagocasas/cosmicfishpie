@@ -35,7 +35,7 @@ spectroscopic GCsp (default modelling path only). No CMB, no clustering (CB) tra
 | F6 | medium | ARA trace: duplicate top-level YAML keys (`tree:`, `observations:`); observation O19 states the wrong spline claim | fixed (see 3.4; trace lives in `cfp-dev`, not in this repo) |
 | F7 | medium | No automated tests for the jaxcosmo path | partly fixed: theory, Halofit, amplitude, GCsp options, providers (3.2-3.5); photometric observable and Nautilus still untested |
 | F8 | medium | Halofit Newton solve has no convergence diagnostic; module-level constants built with JAX before x64 is enabled | fixed (see 3.5) |
-| F9 | low | Documentation drift (provider docstring says photometric only; photo docstring describes an interpolation no longer used) | open |
+| F9 | low | Documentation drift (provider docstring says photometric only; photo docstring describes an interpolation no longer used) | fixed (see 3.6) |
 | F10 | info | Parity evidence covers one LCDM massless-nu Euclid setup at a 0.3% step; max differences are normalised by the largest matrix element | accepted, see section 4 |
 
 ## 3. Fix log
@@ -129,6 +129,14 @@ Omegab 0.04-0.06, h 0.61-0.73, ns 0.92-1.0, w0 -1.3..-0.7, wa -0.7..0.5`) at
 agreement with jax-cosmo, AD-vs-central-difference at two step sizes (the error must shrink
 quadratically), the amplitude fit against `symbolic_pofk` (values, inverse, gradient) and the
 unit/normalisation conventions of `compute_tables` (distances checked against astropy).
+
+### 3.6 F9 + lint
+
+Provider and photo docstrings now describe what the code does. `black`, `isort` and `ruff` are
+clean on every new file (one unused variable removed). `mypy` still reports
+`config.boltzmann_jaxcosmopars` as a missing module attribute: this is the same dynamic
+`cfg`-module pattern the other backends use (`boltzmann_symbolicpars`, ...) and the project has
+~280 such pre-existing findings, so it was not "fixed" here.
 
 ## 4. Limits of the evidence
 

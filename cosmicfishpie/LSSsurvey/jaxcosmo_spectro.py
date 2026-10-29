@@ -38,8 +38,8 @@ except ImportError as err:  # pragma: no cover
         "Install it with: pip install 'cosmicfishpie[jaxcosmo]'"
     ) from err
 
-from cosmicfishpie.LSSsurvey.jaxcosmo_photo import _COSMO_KEYS, _same_value
 from cosmicfishpie.cosmology.jax_theory import get_jax_theory
+from cosmicfishpie.LSSsurvey.jaxcosmo_photo import _COSMO_KEYS, _same_value
 
 _SPECTRO_OBS = ("GCsp",)
 
@@ -173,11 +173,7 @@ class JaxSpectroObservable:
             raise NotImplementedError(
                 f"Spectroscopic bias model '{self.bias_model}' is not implemented."
             )
-        numeric = {
-            k: float(v)
-            for k, v in fid.items()
-            if k not in _COSMO_KEYS and np.ndim(v) == 0
-        }
+        numeric = {k: float(v) for k, v in fid.items() if k not in _COSMO_KEYS and np.ndim(v) == 0}
         self.cosmo_names = tuple(self.theory.cosmo_names)
         self.nuisance_names = tuple(numeric)
         self.base_values: dict[str, float] = {**base, **numeric}
@@ -205,10 +201,11 @@ class JaxSpectroObservable:
         self.dz_err = float(self.specs["spec_sigma_dz"])
         self.dz_type = self.specs["spec_sigma_dz_type"]
         if self.dz_type not in ("constant", "z-dependent"):
-            raise NotImplementedError(f"Unknown spectroscopic redshift-error type {self.dz_type!r}.")
+            raise NotImplementedError(
+                f"Unknown spectroscopic redshift-error type {self.dz_type!r}."
+            )
 
     def _setup_bias(self) -> None:
-        model = self.bias_model
         keys = []
         for i in range(1, self.nbins + 1):
             keys.append(f"{self.bias_root}{self.bias_sample}_{i}")
@@ -277,7 +274,9 @@ class JaxSpectroObservable:
         raw = jnp.asarray([v[k] for k in self.bias_keys])
         binned = jnp.exp(raw) if self.bias_model == "linear_log" else raw
         edges = jnp.asarray(self.bias_edges)
-        idx = jnp.clip(jnp.searchsorted(edges, jnp.asarray(self.z), side="right") - 1, 0, self.nbins - 1)
+        idx = jnp.clip(
+            jnp.searchsorted(edges, jnp.asarray(self.z), side="right") - 1, 0, self.nbins - 1
+        )
         return binned[idx]
 
     def _bias_kscale(self, k, v: Mapping):
@@ -312,8 +311,10 @@ class JaxSpectroObservable:
 
         # Spectroscopic redshift error.  The legacy ``spec_err_z`` always uses the
         # AP-corrected parallel wavenumber ``k mu / q_par`` (even if AP_effect is off).
-        dz_err = self.dz_err * (1.0 + z) if self.dz_type == "z-dependent" else self.dz_err
-        dz_err = dz_err[:, None, None] if jnp.ndim(dz_err) else dz_err
+        if self.dz_type == "z-dependent":
+            dz_err = (self.dz_err * (1.0 + z))[:, None, None]
+        else:
+            dz_err = self.dz_err
         err = jnp.exp(-0.5 * (dz_err / hub[:, None, None] * (k_err * mum / qpar)) ** 2)
 
         # Alcock-Paczynski rescaling (spectro_obs.ComputeGalSpectro.kmu_alc_pac).

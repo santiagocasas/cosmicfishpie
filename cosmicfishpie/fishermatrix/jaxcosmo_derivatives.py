@@ -31,7 +31,10 @@ from typing import Any
 
 import numpy as np
 
-from cosmicfishpie.fishermatrix.derivatives import DerivativeRequest, FiniteDifferenceProvider
+from cosmicfishpie.fishermatrix.derivatives import (
+    DerivativeRequest,
+    FiniteDifferenceProvider,
+)
 
 
 def _json_default(obj: Any) -> Any:
@@ -76,7 +79,9 @@ class _JaxObservableProvider:
     def _resolve_configuration(request: DerivativeRequest):
         configuration = request.configuration
         if configuration is None:
-            from cosmicfishpie.configs import config as configuration  # legacy global state
+            from cosmicfishpie.configs import (
+                config as configuration,  # legacy global state
+            )
         return configuration
 
     def _make_cache_key(self, request: DerivativeRequest, configuration) -> str:
@@ -105,6 +110,7 @@ class _JaxObservableProvider:
             )
         fiducial = dict(request.fiducial)
         observables = tuple(request.observables_type)
+        observable: Any
         if "GCsp" in observables:
             from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 

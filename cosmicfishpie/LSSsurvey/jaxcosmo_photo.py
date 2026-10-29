@@ -19,9 +19,12 @@ Scope (explicitly rejected otherwise)
 
 Differences with respect to ``ComputeCls`` (all numerical, not conceptual)
 -------------------------------------------------------------------------
-* ``P(k, z)`` is evaluated with Halofit directly on the Limber redshift grid and interpolated
-  linearly in ``(ln k, ln P)`` (``ComputeCls`` uses a bicubic spline on a coarser ``z`` grid).
-  Outside the tabulated ``k`` range the value is clamped, like the spline does.
+* ``P(k, z)`` is evaluated directly (Halofit) at the Limber wavenumbers
+  ``kappa = (ell + 1/2) / chi(z)`` on the Limber redshift grid, with ``kappa`` capped at
+  ``kmax`` (the contribution above ``kmax`` is masked to zero anyway).  ``ComputeCls`` instead
+  reads a bicubic spline built on a coarser ``z`` / ``k`` table, which clamps at the table
+  edges.  Evaluating the model directly keeps the result smooth in the parameters, which both
+  autodiff and finite differences need.
 * The luminosity-ratio table is interpolated with ``numpy.interp`` (clamped), whereas the
   original code uses ``scipy.interpolate.interp1d`` (raises outside the table).
 

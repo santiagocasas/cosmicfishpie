@@ -15,7 +15,10 @@ from jax_cosmo import power as jc_power  # noqa: E402
 
 from cosmicfishpie.cosmology import jaxcosmo_halofit as halofit  # noqa: E402
 from cosmicfishpie.cosmology import jaxcosmo_theory as theory  # noqa: E402
-from cosmicfishpie.cosmology.jaxcosmo_amplitude import As_to_sigma8, sigma8_to_As  # noqa: E402
+from cosmicfishpie.cosmology.jaxcosmo_amplitude import (  # noqa: E402
+    As_to_sigma8,
+    sigma8_to_As,
+)
 
 theory.enable_x64()
 

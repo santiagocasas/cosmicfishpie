@@ -32,9 +32,7 @@ _TABLES_JIT = None
 def _tables_jit():
     global _TABLES_JIT
     if _TABLES_JIT is None:
-        _TABLES_JIT = theory.jax.jit(
-            theory.compute_tables, static_argnames=("config", "nonlinear")
-        )
+        _TABLES_JIT = theory.jax.jit(theory.compute_tables, static_argnames=("config", "nonlinear"))
     return _TABLES_JIT
 
 

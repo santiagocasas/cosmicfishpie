@@ -140,6 +140,8 @@ class JaxSpectroObservable:
         )
         self.kmin_pk = float(numerics["kmin_pk"])
         self.kmax_pk = float(numerics["kmax_pk"])
+        self.legacy_pk_clamp = bool(numerics.get("legacy_pk_clamp", False))
+        self.h_fid = float(fiducial.get("h", 0.67))
 
         self._split_fiducial()
         self._setup_grids()
@@ -293,29 +295,39 @@ class JaxSpectroObservable:
         hub, chi = tab.h_over_c, tab.chi
         growth_rate = tab.growth_rate
 
-        km = jnp.asarray(self.km)
-        mum = jnp.asarray(self.mum)
+        shape = (z.shape[0], *self.shape_kmu)  # (nz, nmu, nk)
+        km = jnp.broadcast_to(jnp.asarray(self.km), shape)
+        mum = jnp.broadcast_to(jnp.asarray(self.mum), shape)
+        qpar = (self.hub_fid / hub)[:, None, None]
+
+        # Optional unphysical h-rescaling of the wavenumbers (legacy ``kh_rescaling_bug``).
+        # It is applied before or after the redshift-error damping, as in the legacy
+        # ``observed_Pgg``: the damping sees ``km`` or ``k_h`` accordingly.
+        if self.kh_rescaling_bug:
+            k_h = km * (cosmo["h"] / self.h_fid)
+            k_err = k_h if self.kh_bug_before_err else km
+        else:
+            k_h = km
+            k_err = km
+
+        # Spectroscopic redshift error.  The legacy ``spec_err_z`` always uses the
+        # AP-corrected parallel wavenumber ``k mu / q_par`` (even if AP_effect is off).
+        dz_err = self.dz_err * (1.0 + z) if self.dz_type == "z-dependent" else self.dz_err
+        dz_err = dz_err[:, None, None] if jnp.ndim(dz_err) else dz_err
+        err = jnp.exp(-0.5 * (dz_err / hub[:, None, None] * (k_err * mum / qpar)) ** 2)
 
         # Alcock-Paczynski rescaling (spectro_obs.ComputeGalSpectro.kmu_alc_pac).
         if self.ap:
-            qpar = self.hub_fid / hub
-            qper = (chi / (1.0 + z)) / self.da_fid
-            kpar = km * mum / qpar[:, None, None]
-            kper = km * jnp.sqrt(1.0 - mum**2) / qper[:, None, None]
+            qper = ((chi / (1.0 + z)) / self.da_fid)[:, None, None]
+            kpar = k_h * mum / qpar
+            kper = k_h * jnp.sqrt(1.0 - mum**2) / qper
             kap = jnp.sqrt(kpar**2 + kper**2)
             muap = kpar / kap
-            bao = (1.0 / (qper**2 * qpar))[:, None, None]
+            bao = 1.0 / (qper**2 * qpar)
         else:
-            kpar = km * mum
-            kap = km
+            kap = k_h
             muap = mum
             bao = 1.0
-
-        # Spectroscopic redshift error (uses the *unrescaled* k, as the legacy code does
-        # when kh_rescaling_beforespecerr_bug is off, but the AP-rescaled k-parallel).
-        dz_err = self.dz_err * (1.0 + z) if self.dz_type == "z-dependent" else self.dz_err
-        kpar_err = km * mum / (self.hub_fid / hub)[:, None, None] if self.ap else kpar
-        err = jnp.exp(-0.5 * (dz_err / hub[:, None, None] * kpar_err) ** 2)
 
         # Kaiser RSD term with the (possibly scale dependent) galaxy bias.
         bias = self._bias(v)
@@ -336,10 +348,17 @@ class JaxSpectroObservable:
             gmu = f0 + 2.0 * muap**2 * f1 + muap**2 * f2
 
         nz = z.shape[0]
-        # No clamping: the legacy spline extrapolates outside its tabulated range, so a clip
-        # would introduce a derivative discontinuity exactly at the first/last k of the grid.
+        # Linear power at the AP-rescaled wavenumbers.  The legacy provider interpolates the
+        # power on a table spanning [kmin_pk, kmax_pk] (h/Mpc) with a SciPy
+        # ``RectBivariateSpline``, which *clamps* to the edge value outside that range.  Here
+        # the theory is evaluated directly (exact, smooth) unless ``legacy_pk_clamp`` is set
+        # in the backend NUMERICS block, which reproduces the clamp for parity studies.  Note
+        # that the clamp makes the derivative discontinuous exactly where the fiducial grid
+        # touches the table edge (first k at mu = 1).
         k_eval = kap
         k_hmpc = (k_eval / cosmo["h"]).reshape(nz, -1)
+        if self.legacy_pk_clamp:
+            k_hmpc = jnp.clip(k_hmpc, self.kmin_pk, self.kmax_pk)
         p_dd = self.theory.power(cosmo, z, k_hmpc, False).reshape(kap.shape)
         p_nw = self._nowiggle_power(cosmo, k_eval.reshape(nz, -1)).reshape(kap.shape)
         damp = jnp.exp(-gmu * kap**2)

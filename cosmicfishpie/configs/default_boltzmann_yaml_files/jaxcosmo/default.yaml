@@ -17,6 +17,7 @@ NUMERICS:
   'zmax_background': 10.0            # background (H, distances, Omega_m) is tabulated up to here
   'z_samples_background': 512
   'extrapolate': False
+  'legacy_pk_clamp': False           # GCsp only: clamp k to [kmin_pk, kmax_pk] like the legacy spline
   'x64': True                        # enable float64 in JAX (needed for stable Fisher derivatives)
 COSMO_SETTINGS: {}
 LCDM: {}

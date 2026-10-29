@@ -47,10 +47,10 @@ FREE.update({"lnbg_1": 0.01, "lnbg_2": 0.01, "lnbg_3": 0.01, "lnbg_4": 0.01})
 _OBS_KEYS = ("z_bins", "ells")
 
 
-def _options(outdir: Path, tag: str) -> dict:
+def _options(outdir: Path, tag: str, extra: dict | None = None) -> dict:
     results = outdir / tag
     results.mkdir(parents=True, exist_ok=True)
-    return {
+    options = {
         "accuracy": 1,
         "derivatives": "3PT",
         "feedback": 0,
@@ -63,13 +63,15 @@ def _options(outdir: Path, tag: str) -> dict:
         "results_dir": str(results) + "/",
         "outroot": f"jaxcosmo_spectro_parity_{tag}",
     }
+    options.update(extra or {})
+    return options
 
 
-def _make_calc(outdir: Path, tag: str, provider=None):
+def _make_calc(outdir: Path, tag: str, provider=None, extra_options: dict | None = None):
     from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 
     return FisherMatrix(
-        options=_options(outdir, tag),
+        options=_options(outdir, tag, extra_options),
         fiducialpars=dict(FIDUCIAL),
         freepars=dict(FREE),
         observables=["GCsp"],

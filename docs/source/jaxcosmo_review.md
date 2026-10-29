@@ -29,9 +29,9 @@ spectroscopic GCsp (default modelling path only). No CMB, no clustering (CB) tra
 |---|---|---|---|
 | F1 | high | Savitzky-Golay operator applied transposed in `jaxcosmo_spectro._nowiggle_power`; differs from `scipy.signal.savgol_filter` at the edges | fixed (see 3.1) |
 | F2 | high | Derivative-provider cache keyed on the fiducial dictionary only; reuse across configurations returns stale observable | fixed (see 3.2) |
-| F3 | high | `AP_effect=False` branch has wrong array rank and a wrong redshift-error `k_par` (legacy always uses `k mu / q_par`) | open |
-| F4 | medium | `kh_rescaling_bug` / `kh_rescaling_beforespecerr_bug` read but not implemented | open |
-| F5 | medium | Claim "legacy spline extrapolates" was wrong: `RectBivariateSpline` clamps at the boundary. Direct Halofit evaluation outside the table is a deliberate difference, not a reproduction | open |
+| F3 | high | `AP_effect=False` branch has wrong array rank and a wrong redshift-error `k_par` (legacy always uses `k mu / q_par`) | fixed (see 3.3) |
+| F4 | medium | `kh_rescaling_bug` / `kh_rescaling_beforespecerr_bug` read but not implemented | fixed (see 3.3) |
+| F5 | medium | Claim "legacy spline extrapolates" was wrong: `RectBivariateSpline` clamps at the boundary. Direct Halofit evaluation outside the table is a deliberate difference, not a reproduction | fixed: documented + `legacy_pk_clamp` switch (see 3.3) |
 | F6 | medium | ARA trace: duplicate top-level YAML keys (`tree:`, `observations:`); observation O19 states the wrong spline claim | open |
 | F7 | medium | No automated tests for the jaxcosmo path | open |
 | F8 | medium | Halofit Newton solve has no convergence diagnostic; module-level constants built with JAX before x64 is enabled | open |
@@ -66,6 +66,39 @@ Object identity is deliberately not used: the legacy `config` module is mutated 
 the same object can describe two different analyses. The fingerprint is dropped when the
 provider is pickled, as before. `tests/jaxcosmo_derivatives_test.py` covers reuse, rebuild on
 each kind of change (including in-place mutation), wrong `code`, and pickling.
+
+### 3.3 F3 + F4 + F5: option branches and the table-edge behaviour
+
+`JaxSpectroObservable._lnp_from_values` now follows the order of operations of
+`ComputeGalSpectro.observed_Pgg`:
+
+* the optional unphysical h-rescaling of `k` (`kh_rescaling_bug`) is applied either before
+  (`kh_rescaling_beforespecerr_bug`) or after the spectroscopic-redshift damping;
+* the damping always uses `k mu / q_par` (legacy `spec_err_z`), also with `AP_effect=False`;
+* everything is broadcast to `(nz, nmu, nk)`, which also removes the rank error of the AP-off
+  branch for multi-bin surveys.
+
+**F5 correction.** The earlier statement "the legacy spline extrapolates" was wrong:
+`RectBivariateSpline` returns the edge value outside its table (checked directly), while
+`nonwiggle_pow` (a `k=1` `InterpolatedUnivariateSpline`) does extrapolate linearly. The JAX
+observable evaluates the linear power directly (exact and smooth) by default. A new backend
+option `NUMERICS.legacy_pk_clamp` clamps `k` to `[kmin_pk, kmax_pk]` (h/Mpc) and reproduces the
+legacy behaviour for parity studies; it makes the derivative discontinuous where the fiducial
+grid touches the table edge (first `k` at `mu = 1`).
+
+Evidence (`tests/jaxcosmo_spectro_parity_test.py`, perturbed cosmology
+`Omegam +6%, h +4%, ns +2%, As +5%`, absolute `|dlnP|`, legacy vs JAX):
+
+| case | max abs diff |
+|---|---|
+| default | 2.5e-5 |
+| AP off, **without** clamp | **3.8e-2** (grid below `kmin_pk h` once `h` grows) |
+| AP off, with clamp | 2.5e-5 |
+| h-bug before / after damping | 2.5e-5 (both shift `ln P` by 0.106, agreeing to 1e-7) |
+| linear | 3.0e-5 |
+
+So the AP-off "failure" is entirely the table-edge clamp, not a modelling error. The same effect
+explains the single-point `Omegam` derivative mismatch noted in 3.1.
 
 ## 4. Limits of the evidence
 

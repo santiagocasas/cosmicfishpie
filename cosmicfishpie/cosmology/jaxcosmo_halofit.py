@@ -29,6 +29,7 @@ from __future__ import annotations
 import math
 
 import jax.numpy as jnp
+from jax import lax
 from jax_cosmo import background as jc_background
 from jax_cosmo import power as jc_power
 
@@ -79,20 +80,30 @@ def _sigma2(logr: jnp.ndarray, lnk: jnp.ndarray, pk3: jnp.ndarray, want_derivati
 
 
 def _solve_logr(target, lnk, pk3):
-    """Solve ``sigma^2(R) = target`` for ``ln R`` with a fixed-count Newton iteration.
+    """Solve ``sigma^2(R) = target`` for ``ln R``; differentiable via the implicit function.
 
-    A converged Newton fixed point differentiates to the implicit derivative,
-    unlike a bisection, whose branch conditions carry the parameter dependence.
-    ``sigma^2`` is smooth and monotonically decreasing in ``R``, so the iteration
-    converges quadratically from a generous starting guess; the step is clamped
-    so a bad start cannot throw it out of the bracket.
+    The root is located with a fixed-count Newton iteration run on *gradient-free* copies of
+    the inputs (so no tangents are carried through the loop and the loop compiles once as a
+    ``lax.fori_loop``).  One last Newton step is then taken from the converged root with the
+    real inputs.  At a converged root ``dR/dp = -(d sigma^2/dp) / (d sigma^2/dR)``, which is
+    exactly the derivative of that single step, so autodiff returns the implicit-function
+    derivative.  (Differentiating through a bisection would not: its branch conditions carry
+    the parameter dependence.)  ``sigma^2`` is smooth and monotonically decreasing in ``R``,
+    so the iteration converges quadratically from a generous starting guess; the step is
+    clamped so a bad start cannot throw it out of the bracket.
     """
-    lnr = jnp.asarray(_LNR_START)
-    for _ in range(_NEWTON_ITERATIONS):
-        sigma2, dsigma2 = _sigma2(lnr, lnk, pk3)
-        step = jnp.clip((sigma2 - target) / dsigma2, -_MAX_STEP, _MAX_STEP)
-        lnr = jnp.clip(lnr - step, _LNR_MIN, _LNR_MAX)
-    return lnr
+    target_sg = lax.stop_gradient(target)
+    pk3_sg = lax.stop_gradient(pk3)
+
+    def newton(_, lnr):
+        sigma2, dsigma2 = _sigma2(lnr, lnk, pk3_sg)
+        step = jnp.clip((sigma2 - target_sg) / dsigma2, -_MAX_STEP, _MAX_STEP)
+        return jnp.clip(lnr - step, _LNR_MIN, _LNR_MAX)
+
+    lnr = lax.fori_loop(0, _NEWTON_ITERATIONS, newton, jnp.asarray(_LNR_START))
+    lnr = lax.stop_gradient(lnr)
+    sigma2, dsigma2 = _sigma2(lnr, lnk, pk3)
+    return lnr - (sigma2 - target) / dsigma2
 
 
 def _scale_inputs(cosmo, a, transfer_fn):

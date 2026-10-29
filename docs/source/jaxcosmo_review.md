@@ -159,6 +159,20 @@ derivative (0.107 -> 5.9e-5) and moves the discontinuity into AD-vs-FD instead, 
 kink predicts. The Fisher matrix does not care (one point in ~17k per bin). The default is the
 direct evaluation, which is the smooth, physical choice.
 
+### 3.8 Improvement: implicit-function Newton step (speed, same numbers)
+
+The Newton iteration was unrolled 40 times, so forward-mode AD carried tangents through every
+iteration. It now runs as a `lax.fori_loop` on gradient-free copies of the inputs, followed by
+one differentiable Newton step at the converged root, which gives exactly the implicit-function
+derivative `dR/dp = -(d sigma^2/dp)/(d sigma^2/dR)`.
+
+* values: max rel difference to the unrolled version 1.6e-15; Jacobian 4.2e-14;
+  AD vs central FD 1e-9;
+* cost of the Halofit Jacobian (6 redshifts, 4 wavenumbers, 3 parameters, incl. compile):
+  24.5 s -> 8.8 s; end-to-end photometric `jax-ad` Fisher: 37.6 s -> 18.3 s, with identical
+  sigmas to all printed digits;
+* the 11 theory tests pass unchanged.
+
 ## 4. Limits of the evidence
 
 * The parity numbers below are for the Euclid pessimistic setups with fiducial

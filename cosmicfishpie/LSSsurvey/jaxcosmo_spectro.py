@@ -60,11 +60,15 @@ def _linear_interp_rows(x, xk, yk):
 
 
 def _savgol_operator(n_samples: int, window: int, order: int) -> np.ndarray:
-    """Matrix of SciPy's ``savgol_filter`` (default ``mode='interp'``) on ``n_samples`` points."""
+    """Matrix ``A`` with ``A @ y == savgol_filter(y, window, order)`` (``mode='interp'``).
+
+    The filter is linear in ``y``, so column ``i`` of ``A`` is the filter applied to the unit
+    vector ``e_i``.  The edge treatment of ``mode='interp'`` is not symmetric, hence ``A`` is
+    *not* equal to its transpose and the orientation matters at the boundaries.
+    """
     from scipy.signal import savgol_filter
 
-    identity = np.eye(n_samples)
-    return np.stack([savgol_filter(identity[i], window, order) for i in range(n_samples)])
+    return savgol_filter(np.eye(n_samples), window, order, axis=0)
 
 
 class JaxSpectroObservable:
@@ -359,6 +363,7 @@ class JaxSpectroObservable:
         z = jnp.asarray(self.z)
         k = jnp.exp(self._nowiggle_grid(cosmo["h"]))
         p = self.theory.power(cosmo, z, k / cosmo["h"], False)
+        # rows of ``log p`` are samples: (A @ y) for each row y is ``log p @ A.T``
         smooth = jnp.log(p) @ jnp.asarray(self.savgol_operator).T
         return _linear_interp_rows(k_1mpc, k, jnp.exp(smooth))
 

@@ -138,10 +138,32 @@ clean on every new file (one unused variable removed). `mypy` still reports
 `cfg`-module pattern the other backends use (`boltzmann_symbolicpars`, ...) and the project has
 ~280 such pre-existing findings, so it was not "fixed" here.
 
+### 3.7 Final parity after all fixes (commit `bd77f26` + script flag)
+
+Photometric (GCph+WL, 1% step): fiducial `C_ell` max |dC|/max|C| 2.1e-5; Fisher max
+|dF|/max|F|: JAX-FD vs legacy 1.2e-3, JAX-AD vs legacy 1.2e-3, **AD vs JAX-FD 1.8e-5**.
+
+Spectroscopic (GCsp, 0.3% step):
+
+| quantity | default (direct) | `--legacy-pk-clamp` |
+|---|---|---|
+| fiducial `ln P`, max rel | 2.2e-6 | 2.2e-6 |
+| `d ln P/d Omegam`, JAX-FD vs legacy-FD, max / max-significant | 1.1e-1 / 2.4e-1 | **5.9e-5** / 1.7e-3 |
+| `d ln P/d Omegam`, AD vs JAX-FD | 5.5e-3 | 1.0e-1 (kink at the clamp) |
+| Fisher max \|dF\|/max\|F\|, JAX-FD vs legacy | 1.5e-6 | 1.5e-6 |
+| Fisher, JAX-AD vs legacy | 1.4e-5 | 1.4e-5 |
+
+Reading: the one grid point where the derivative differs from legacy (first `k`, `mu = 1`) is
+explained completely by the legacy clamp: switching the clamp on removes the gap to the legacy
+derivative (0.107 -> 5.9e-5) and moves the discontinuity into AD-vs-FD instead, exactly as a
+kink predicts. The Fisher matrix does not care (one point in ~17k per bin). The default is the
+direct evaluation, which is the smooth, physical choice.
+
 ## 4. Limits of the evidence
 
-* The parity numbers in the CHANGELOG and PR are for the Euclid pessimistic setups with fiducial
-  `10^9As=2.1, Omegam=0.32, Omegab=0.05, h=0.67, ns=0.96`, massless neutrinos.
+* The parity numbers below are for the Euclid pessimistic setups with fiducial
+  `10^9As=2.1, Omegam=0.32, Omegab=0.05, h=0.67, ns=0.96`, massless neutrinos, LCDM, five
+  cosmological parameters (+ four `lnbg_i` for GCsp).
 * "max |dF|/max|F|" hides larger relative differences in small matrix entries. Use the
   entry-wise and marginalised-sigma comparisons as well.
 * The large cross-backend Fisher campaign is deliberately left for a separate workstation run.

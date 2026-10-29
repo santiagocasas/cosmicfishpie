@@ -45,6 +45,8 @@ FREE = {name: 0.01 for name in ("10^9As", "Omegam", "Omegab", "h", "ns")}
 FREE.update({"lnbg_1": 0.01, "lnbg_2": 0.01, "lnbg_3": 0.01, "lnbg_4": 0.01})
 
 _OBS_KEYS = ("z_bins", "ells")
+#: options applied to every variant (filled from the command line)
+_GLOBAL_EXTRA_OPTIONS: dict = {}
 
 
 def _options(outdir: Path, tag: str, extra: dict | None = None) -> dict:
@@ -63,6 +65,7 @@ def _options(outdir: Path, tag: str, extra: dict | None = None) -> dict:
         "results_dir": str(results) + "/",
         "outroot": f"jaxcosmo_spectro_parity_{tag}",
     }
+    options.update(_GLOBAL_EXTRA_OPTIONS)
     options.update(extra or {})
     return options
 
@@ -172,9 +175,25 @@ def main() -> int:
         default=0.01,
         help="relative finite-difference step (default 0.01, the CosmicFishPie default)",
     )
+    parser.add_argument(
+        "--legacy-pk-clamp",
+        action="store_true",
+        help="clamp k to the power-spectrum table like the legacy spline (NUMERICS.legacy_pk_clamp)",
+    )
     args = parser.parse_args()
     outdir = args.outdir.resolve()
     outdir.mkdir(parents=True, exist_ok=True)
+    if args.legacy_pk_clamp:
+        import yaml
+
+        import cosmicfishpie
+
+        yaml_dir = Path(cosmicfishpie.__file__).parent / "configs/default_boltzmann_yaml_files"
+        params = yaml.safe_load((yaml_dir / "jaxcosmo/default.yaml").read_text())
+        params["NUMERICS"]["legacy_pk_clamp"] = True
+        clamp_yaml = outdir / "jaxcosmo_legacy_pk_clamp.yaml"
+        clamp_yaml.write_text(yaml.safe_dump(params))
+        _GLOBAL_EXTRA_OPTIONS["jaxcosmo_config_yaml"] = str(clamp_yaml)
     if args.fd_step != 0.01:
         FREE.update({name: args.fd_step for name in FREE})
 

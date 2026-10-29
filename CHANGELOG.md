@@ -26,7 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nonlinear scale by interpolating `sigma(R) = 1` on a fixed 256-node grid, which makes the
   power spectrum jump between nodes and spoils finite differences even at small steps. The
   replacement integrates `sigma^2(R)` on a fine grid and solves it with a fixed-count Newton
-  iteration, keeping the values within 5e-4 of `jax-cosmo` while making them differentiable.
+  iteration, which converges to machine precision. The values stay within 5e-4 of `jax-cosmo`
+  at the fiducial point and within 0.6% over the validation parameter box (the difference is
+  `jax-cosmo`'s own interpolation error in the nonlinear scale), while being differentiable.
+
+- Review fixes for the `jaxcosmo` branch (see `docs/source/jaxcosmo_review.md`): correct
+  orientation of the Savitzky-Golay operator in the JAX spectroscopic observable (fiducial
+  `ln P` agreement with the legacy code improves from 8e-5 to 2e-6); observable cache of
+  the derivative providers keyed on the full analysis configuration; `kh_rescaling_bug`
+  options and `AP_effect=False` handled like the legacy `observed_Pgg`; new
+  `NUMERICS.legacy_pk_clamp` option reproducing the table-edge clamp of the legacy power
+  spline; tests for the theory layer, option branches and providers.
 
 - Support NumPy 2: widen the dependency pin from `numpy<2` to `numpy>=2.1,<2.3`
   (2.2.x is the newest series supporting Python 3.10), relock, and compute the

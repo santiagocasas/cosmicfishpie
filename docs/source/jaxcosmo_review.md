@@ -32,9 +32,9 @@ spectroscopic GCsp (default modelling path only). No CMB, no clustering (CB) tra
 | F3 | high | `AP_effect=False` branch has wrong array rank and a wrong redshift-error `k_par` (legacy always uses `k mu / q_par`) | fixed (see 3.3) |
 | F4 | medium | `kh_rescaling_bug` / `kh_rescaling_beforespecerr_bug` read but not implemented | fixed (see 3.3) |
 | F5 | medium | Claim "legacy spline extrapolates" was wrong: `RectBivariateSpline` clamps at the boundary. Direct Halofit evaluation outside the table is a deliberate difference, not a reproduction | fixed: documented + `legacy_pk_clamp` switch (see 3.3) |
-| F6 | medium | ARA trace: duplicate top-level YAML keys (`tree:`, `observations:`); observation O19 states the wrong spline claim | open |
-| F7 | medium | No automated tests for the jaxcosmo path | open |
-| F8 | medium | Halofit Newton solve has no convergence diagnostic; module-level constants built with JAX before x64 is enabled | open |
+| F6 | medium | ARA trace: duplicate top-level YAML keys (`tree:`, `observations:`); observation O19 states the wrong spline claim | fixed (see 3.4; trace lives in `cfp-dev`, not in this repo) |
+| F7 | medium | No automated tests for the jaxcosmo path | partly fixed: theory, Halofit, amplitude, GCsp options, providers (3.2-3.5); photometric observable and Nautilus still untested |
+| F8 | medium | Halofit Newton solve has no convergence diagnostic; module-level constants built with JAX before x64 is enabled | fixed (see 3.5) |
 | F9 | low | Documentation drift (provider docstring says photometric only; photo docstring describes an interpolation no longer used) | open |
 | F10 | info | Parity evidence covers one LCDM massless-nu Euclid setup at a 0.3% step; max differences are normalised by the largest matrix element | accepted, see section 4 |
 
@@ -99,6 +99,36 @@ Evidence (`tests/jaxcosmo_spectro_parity_test.py`, perturbed cosmology
 
 So the AP-off "failure" is entirely the table-edge clamp, not a modelling error. The same effect
 explains the single-point `Omegam` derivative mismatch noted in 3.1.
+
+### 3.4 F6: ARA trace
+
+`ara/trace/exploration_tree.yaml` and `ara/staging/observations.yaml` started with a repeated
+top-level key (`tree:` / `observations:`). A permissive loader accepts that and silently keeps
+the last one, which is why "all YAML validated" was misleading. The repeated line was removed
+(parsed content verified identical before and after) and a duplicate-key-detecting loader over
+all of `ara/` now reports none. Observation O19 keeps its original text and gets a dated
+`correction:` field pointing to F5 instead of being rewritten.
+
+### 3.5 F8 (+ part of F7): Halofit convergence and tests
+
+Measured over 24 random cosmologies from the validation box (`As 1.7-2.5, Omegam 0.24-0.40,
+Omegab 0.04-0.06, h 0.61-0.73, ns 0.92-1.0, w0 -1.3..-0.7, wa -0.7..0.5`) at
+`z = 0, 0.5, 1.5, 3`:
+
+* worst Newton residual `|growth^2 sigma^2(R_nl) - 1|` = **4.4e-16**, and the solution never
+  touches the bracket `[-20, 10]` in `ln R`;
+* maximum relative difference to `jax_cosmo.power.halofit` over `k = 1e-3..9` h/Mpc: **0.59%**
+  (0.05% at the fiducial point). This is jax-cosmo's interpolation error in its own root, not
+  ours: the 256-interval Simpson integral reproduces `k_nl` of a 4096-interval reference to
+  1.7e-6 (z=0) and 3.1e-5 (z=1);
+* `nonlinear_scale_residual()` is a new public diagnostic (the traced code cannot branch on a
+  failed solve); the import-time `ln k` limits now use `math.log`, so they no longer depend on
+  whether x64 was enabled before the import.
+
+`tests/jaxcosmo_theory_test.py` (11 tests, ~55 s) covers convergence at the box corners,
+agreement with jax-cosmo, AD-vs-central-difference at two step sizes (the error must shrink
+quadratically), the amplitude fit against `symbolic_pofk` (values, inverse, gradient) and the
+unit/normalisation conventions of `compute_tables` (distances checked against astropy).
 
 ## 4. Limits of the evidence
 

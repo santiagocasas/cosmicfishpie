@@ -26,15 +26,21 @@ respective root finds.
 
 from __future__ import annotations
 
+import math
+
 import jax.numpy as jnp
 from jax_cosmo import background as jc_background
 from jax_cosmo import power as jc_power
 
-__all__ = ["halofit", "nonlinear_scale"]
+__all__ = ["halofit", "nonlinear_scale", "nonlinear_scale_residual"]
 
-# Quadrature limits used by jax-cosmo's Halofit (in ln k).
-_LNK_MIN = float(jnp.log(1e-4))
-_LNK_MAX = float(jnp.log(1e4))
+# Quadrature limits used by jax-cosmo's Halofit (in ln k).  Plain ``math`` keeps these exact
+# Python floats regardless of whether JAX x64 is already enabled at import time.
+_LNK_MIN = math.log(1e-4)
+_LNK_MAX = math.log(1e4)
+# 256 Simpson intervals: the relative error of ``k_nl`` against a 4096-interval reference is
+# 2e-6 at z = 0 and 3e-5 at z = 1 (fiducial cosmology), well below the scatter of the
+# interpolated root find this module replaces.
 _LNK_STEPS = 256
 
 # Newton iteration on ln R (in Mpc/h): start, bracket, step limit, iterations.
@@ -89,12 +95,31 @@ def _solve_logr(target, lnk, pk3):
     return lnr
 
 
-def nonlinear_scale(cosmo, a, transfer_fn):
-    """``(k_nl, n_eff, C)`` in ``h/Mpc`` and dimensionless, smooth in the parameters."""
+def _scale_inputs(cosmo, a, transfer_fn):
     lnk = _lnk_grid()
     k = jnp.exp(lnk)
     growth = jc_background.growth_factor(cosmo, jnp.atleast_1d(a))[0]
     pk3 = jc_power.linear_matter_power(cosmo, k, 1.0, transfer_fn) * k**3
+    return lnk, k, growth, pk3
+
+
+def nonlinear_scale_residual(cosmo, a, transfer_fn):
+    """``|growth^2 sigma^2(R_nl) - 1|`` at the Newton solution (``~1e-15`` when converged).
+
+    Also returns whether the solution lies strictly inside the Newton bracket.  Intended for
+    tests and diagnostics: the traced :func:`halofit` has no data-dependent branches to report
+    a failed solve, so convergence is verified here instead.
+    """
+    lnk, _, growth, pk3 = _scale_inputs(cosmo, a, transfer_fn)
+    lnr = _solve_logr(1.0 / growth**2, lnk, pk3)
+    sigma2, _ = _sigma2(lnr, lnk, pk3, want_derivative=False)
+    inside = (lnr > _LNR_MIN + 1e-6) & (lnr < _LNR_MAX - 1e-6)
+    return jnp.abs(growth**2 * sigma2 - 1.0), inside
+
+
+def nonlinear_scale(cosmo, a, transfer_fn):
+    """``(k_nl, n_eff, C)`` in ``h/Mpc`` and dimensionless, smooth in the parameters."""
+    lnk, k, growth, pk3 = _scale_inputs(cosmo, a, transfer_fn)
 
     lnr = _solve_logr(1.0 / growth**2, lnk, pk3)
     k_nl = 1.0 / jnp.exp(lnr)

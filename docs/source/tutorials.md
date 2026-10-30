@@ -26,4 +26,11 @@ Draw a triangle plot from the forecast above, and compare several surveys.
 Check a Fisher forecast against the full likelihood. The toy example takes five
 minutes or more on one core.
 :::
+
+:::{grid-item-card} JAXcosmo: autodiff and finite differences
+:link: jaxcosmo
+:link-type: doc
+
+Compare JAX AD, JAX FD and the standard pipeline, with a runnable SYREN comparison notebook.
+:::
 ::::

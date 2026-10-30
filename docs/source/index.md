@@ -19,7 +19,7 @@ development
 
 :::{div} cfp-tagline
 Fisher-matrix forecasts for galaxy clustering, weak lensing and CMB surveys,
-with CAMB, CLASS or a built-in symbolic backend.
+with CAMB, CLASS, a built-in symbolic backend or optional JAXcosmo.
 :::
 
 ```bash
@@ -103,6 +103,8 @@ Contribution guidelines, changelog, validation reports and the scripts reference
   forecasts, CMB (`CMB_T`, `CMB_E`, `CMB_B`) and intensity mapping (`IM`).
 - **Finite-difference derivatives.** `3PT`, `STEM`, `POLY` and `4PT_FWD` schemes, selected with
   a single option.
+- **Automatic differentiation.** Optional JAXcosmo theory and JAX-native photometric and
+  spectroscopic observables, with matched AD/FD comparisons ({doc}`jaxcosmo`).
 - **Analysis and plotting.** Marginalise, reshuffle and combine Fisher matrices, and draw
   triangle plots to compare surveys and settings.
 - **Likelihood sampling.** Run Nautilus posterior sampling with the same observables and

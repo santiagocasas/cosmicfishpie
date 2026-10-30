@@ -7,6 +7,12 @@ derivatives is selected via `options["derivatives"]` and implemented in
 {mod}`cosmicfishpie.fishermatrix.derivatives`. Four methods are available:
 `3PT` (default), `4PT_FWD`, `POLY`, and `STEM`.
 
+For automatic differentiation of JAX-native photometric and spectroscopic
+observables, pass `JaxAutodiffProvider()` to `FisherMatrix(derivative_provider=...)`.
+`JaxFiniteDifferenceProvider()` applies these finite-difference schemes to the
+same JAX observable for a controlled comparison. Both currently require
+`options["code"] = "jaxcosmo"`; see {doc}`jaxcosmo` for examples and scope.
+
 This page documents the algorithm behind each method, the relative cost of
 using them, and an empirical comparison across two different backends
 (`symbolic` and `camb`) that motivated a bug fix to the `POLY` method

@@ -17,8 +17,8 @@ Scope (explicitly rejected otherwise)
 * intrinsic alignment model ``eNLA``; bias models ``sqrt``, ``binned``, ``binned_constant``,
   ``flagship``.
 
-Differences with respect to ``ComputeCls`` (all numerical, not conceptual)
--------------------------------------------------------------------------
+Numerical differences from ``ComputeCls``
+-----------------------------------------
 * ``P(k, z)`` is evaluated directly (Halofit) at the Limber wavenumbers
   ``kappa = (ell + 1/2) / chi(z)`` on the Limber redshift grid, with ``kappa`` capped at
   ``kmax`` (the contribution above ``kmax`` is masked to zero anyway).  ``ComputeCls`` instead

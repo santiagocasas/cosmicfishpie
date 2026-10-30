@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Document that the roughly 10% difference in the marginalized `10^9As` error between
+  SYREN-NEW and JAXcosmo is a matter-power-model difference, not an implementation or
+  differentiation artefact: unmarginalized errors agree to 2.6%, the gap appears through
+  galaxy-bias marginalization, and putting the SYREN-NEW power spectrum inside the JAX
+  observable reproduces the SYREN result to 0.08% (`scripts/validation/compare_theory_amplitude_response.py`).
+
+- Document the JAXcosmo backend, AD/FD providers and configuration in the user guide,
+  with a downloadable photometric comparison notebook against SYREN-NEW. Its Fisher
+  comparison keeps `ns` fixed while retaining the spectral-index response diagnostic.
+
 - Add the optional, differentiable `jaxcosmo` backend (`options["code"] = "jaxcosmo"`,
   install with `pip install 'cosmicfishpie[jaxcosmo]'`): `jax-cosmo` background,
   Eisenstein-Hu + Halofit total-matter power (flat, massless neutrinos), and a JAX port

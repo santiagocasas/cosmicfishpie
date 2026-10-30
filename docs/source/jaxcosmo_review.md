@@ -1,5 +1,7 @@
 # `jaxcosmo` backend: review log
 
+For installation, forecast examples and the comparison notebook, see {doc}`jaxcosmo`.
+
 Living record of the review of the `jaxcosmo-autodiff` branch (draft PR #231): what was built,
 what was found, what was fixed, and what is still open. Each finding has a status and the commit
 that closed it.

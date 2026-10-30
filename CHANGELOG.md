@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   differentiation artefact: unmarginalized errors agree to 2.6%, the gap appears through
   galaxy-bias marginalization, and putting the SYREN-NEW power spectrum inside the JAX
   observable reproduces the SYREN result to 0.08% (`scripts/validation/compare_theory_amplitude_response.py`).
+  Also document why two "Eisenstein-Hu" models still differ: SYREN-NEW is the no-wiggle
+  fit times a fitted correction to the true linear spectrum, and feeding Halofit with that
+  linear shape reproduces the sign and most of the size of the gap.
 
 - Document the JAXcosmo backend, AD/FD providers and configuration in the user guide,
   with a downloadable photometric comparison notebook against SYREN-NEW. Its Fisher

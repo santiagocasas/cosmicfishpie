@@ -43,6 +43,8 @@ import jax  # noqa: E402
 import jax.numpy as jnp  # noqa: E402
 
 from cosmicfishpie.cosmology.jax_theory import get_jax_theory  # noqa: E402
+from cosmicfishpie.cosmology.jaxcosmo_halofit import halofit  # noqa: E402
+from cosmicfishpie.cosmology.jaxcosmo_theory import make_cosmology  # noqa: E402
 from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider  # noqa: E402
 from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix  # noqa: E402
 from cosmicfishpie.fishermatrix.derivatives import compute_derivatives  # noqa: E402
@@ -194,6 +196,126 @@ class SyrenPowerShim:
             # The SYREN spline is defined on k in 1/Mpc and returns Mpc^3.
             power[iz] = results.Pk_nl(redshift, k[iz] * cosmopars["h"], grid=False)
         return power
+
+
+class HalofitOnSyrenLinear:
+    """JAX background, growth and Halofit, fed with the SYREN-NEW *linear* shape.
+
+    Both backends are often described as "Eisenstein-Hu". They are not the same formula:
+    ``jax_cosmo`` evaluates the Eisenstein-Hu 1998 fit including baryon wiggles, while
+    SYREN-NEW multiplies the *no-wiggle* Eisenstein-Hu fit by a fitted correction to the
+    true linear spectrum (Bartlett et al. 2023), a growth correction and a further
+    ``S(k)`` correction. This shim keeps Halofit's nonlinear prescription and only swaps
+    the linear input, which measures how much of the Fisher difference the linear shape
+    carries.
+    """
+
+    def __init__(self, base):
+        self._base = base
+        self.cosmo_names = base.cosmo_names
+        self.free_name_map = base.free_name_map
+
+    def resolve_cosmology(self, params):
+        return self._base.resolve_cosmology(params)
+
+    def tables(self, params, z, k_hmpc, nonlinear=True):
+        return self._base.tables(params, z, k_hmpc, nonlinear)
+
+    def power(self, params, z, k_hmpc, nonlinear=True):
+        if not nonlinear:
+            return self._base.power(params, z, k_hmpc, nonlinear)
+        z = np.asarray(z, dtype=float)
+        k = np.asarray(k_hmpc, dtype=float)
+        cosmopars = {
+            "10^9As": float(params["As"]),
+            "Omegam": float(params["Omegam"]),
+            "Omegab": float(params["Omegab"]),
+            "h": float(params["h"]),
+            "ns": float(params["ns"]),
+            "mnu": 0.0,
+            "w0": float(params["w0"]),
+            "wa": float(params["wa"]),
+        }
+        h = cosmopars["h"]
+        results = SyrenNewProvider(cosmopars, SYREN_PARS, "LCDM").build()
+        grid = np.logspace(-4.0, 3.0, 600)
+        linear = np.array([results.Pk_l(0.0, value * h, grid=False) for value in grid]) * h**3
+        log_grid = jnp.asarray(np.log10(grid))
+        log_power = jnp.asarray(np.log(linear))
+
+        def transfer(cosmo, wavenumber):
+            wavenumber = jnp.asarray(wavenumber)
+            shape = jnp.exp(jnp.interp(jnp.log10(wavenumber), log_grid, log_power))
+            return jnp.sqrt(shape / wavenumber**cosmo.n_s)
+
+        cosmology = make_cosmology({name: float(value) for name, value in params.items()})
+        halofit_grid = jax.jit(
+            jax.vmap(lambda scale, wavenumber: halofit(cosmology, wavenumber, scale, transfer))
+        )
+        return np.asarray(halofit_grid(jnp.asarray(1.0 / (1.0 + z)), jnp.asarray(k))) / h**3
+
+
+def linear_shape_table(fiducial: dict) -> dict:
+    """Ratio of the two linear spectra at equal As, plus the growth-factor ratio."""
+    parameters = fiducial_parameters(fiducial)
+    theory = get_jax_theory("jaxcosmo", JAX_PARS, "LCDM")
+    cosmology = theory.resolve_cosmology(parameters)
+    results = SyrenNewProvider(parameters, SYREN_PARS, "LCDM").build()
+    h = parameters["h"]
+
+    k_hmpc = np.logspace(-3.0, np.log10(3.0), 120)
+    redshifts = np.array([0.0, 0.5, 1.0, 2.0])
+    tables = theory.tables(cosmology, redshifts, k_hmpc, False)
+    linear_jax = np.asarray(tables.pk_linear)
+    linear_syren = np.array([results.Pk_l(z, k_hmpc * h, grid=False) for z in redshifts])
+    growth_jax = np.asarray(tables.growth)
+    growth_syren = np.array([results.D_growth_zk(z, 1e-4, grid=False) for z in redshifts])
+
+    bands = (
+        (1e-3, 5e-3),
+        (5e-3, 2e-2),
+        (2e-2, 5e-2),
+        (5e-2, 0.1),
+        (0.1, 0.2),
+        (0.2, 0.5),
+        (0.5, 1.0),
+    )
+    band_ratios = {}
+    for low, high in bands:
+        mask = (k_hmpc >= low) & (k_hmpc < high)
+        band_ratios[f"{low:g}-{high:g}"] = float(
+            np.mean(linear_syren[0, mask] / linear_jax[0, mask])
+        )
+    samples = {}
+    for value in (0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0):
+        index = int(np.argmin(np.abs(k_hmpc - value)))
+        samples[f"{k_hmpc[index]:.4f}"] = float(linear_syren[0, index] / linear_jax[0, index])
+    return {
+        "bands_z0": band_ratios,
+        "samples_z0": samples,
+        "growth_ratio": {
+            float(z): float(syren / jax)
+            for z, syren, jax in zip(redshifts, growth_syren, growth_jax)
+        },
+    }
+
+
+def halofit_syren_forecast(jax_run: dict) -> dict:
+    """Run the JAX observable with Halofit applied to the SYREN-NEW linear shape."""
+    calc = jax_run["calc"]
+    covariance = jax_run["covariance"]
+    observable = JaxPhotoObservable(calc, dict(covariance.allparsfid))
+    observable.theory = HalofitOnSyrenLinear(observable.theory)
+
+    def hybrid_cls(allpars):
+        return observable.as_dict(observable._cls_from_values(observable._values(allpars)))
+
+    cls = hybrid_cls(covariance.allparsfid)
+    noisy_cls = covariance.getclsnoise(cls)
+    covmat = covariance.get_covmat(noisy_cls)
+    derivs = compute_derivatives(hybrid_cls, covariance.allparsfid, configuration=calc)
+    matrix = calc.photo_LSS_fishermatrix_einsum(noisy_cls=noisy_cls, covmat=covmat, derivs=derivs)
+    return {"matrix": matrix, "cls": cls}
 
 
 def theory_response(fiducial: dict) -> dict:
@@ -383,6 +505,35 @@ def main() -> int:
         f"JAX {first['sigma']['marginalized_all']['jax_ad']:.6g}  "
         f"hybrid {hybrid_sigma:.6g}"
         f"\n  hybrid versus SYREN fiducial C_ell: max|dC|/max|C| = {hybrid['cls_difference']:.3e}"
+    )
+
+    linear = linear_shape_table(FIDUCIALS[0][1])
+    summary["linear_shape"] = linear
+    print(
+        "\nLinear power at equal As (SYREN-NEW / JAX Eisenstein-Hu), z=0"
+        "\n  SYREN-NEW starts from the *no-wiggle* Eisenstein-Hu fit and multiplies it by a"
+        "\n  fitted correction to the true linear spectrum, so the two are not the same formula."
+    )
+    print(f"{'band [h/Mpc]':>16} {'ratio':>8}")
+    for band, value in linear["bands_z0"].items():
+        print(f"{band:>16} {value:8.5f}")
+    print(
+        "  growth-factor ratio: "
+        + ", ".join(f"z={z:g} {value:.5f}" for z, value in linear["growth_ratio"].items())
+    )
+
+    halofit_syren = halofit_syren_forecast(matrices[labels[0]]["jax_ad"])
+    halofit_sigma = sigma_of(halofit_syren["matrix"], names)
+    summary["halofit_on_syren_linear"] = {
+        "sigma": halofit_sigma,
+        "syren_sigma": first["sigma"]["marginalized_all"]["syren"],
+        "jax_sigma": first["sigma"]["marginalized_all"]["jax_ad"],
+    }
+    print(
+        "\nHalofit fed with the SYREN-NEW linear shape, same JAX observable"
+        f"\n  10^9As: SYREN {first['sigma']['marginalized_all']['syren']:.6g}  "
+        f"JAX {first['sigma']['marginalized_all']['jax_ad']:.6g}  "
+        f"Halofit-on-SYREN-linear {halofit_sigma:.6g}"
     )
 
     print("\nFiducial stability of the marginalized 10^9As error:")

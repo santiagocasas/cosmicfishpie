@@ -170,6 +170,45 @@ accident. The difference is therefore a genuine matter-power-model difference,
 not the observable implementation, the covariance, the Fisher assembly or the
 autodiff. It cannot be removed without changing the theory.
 
+### Both models are "Eisenstein-Hu", so why do they differ?
+
+A common objection is that both backends are Eisenstein-Hu based, so the spectra
+should agree. They are not the same formula:
+
+* `jax_cosmo` evaluates the Eisenstein-Hu 1998 fit *including* baryon wiggles
+  (`eisenhu_osc`) and normalises it to `sigma8`.
+* SYREN-NEW starts from the Eisenstein-Hu *no-wiggle* fit
+  (`get_eisensteinhu_nw`) and multiplies it by `exp(logF)`, an emulated
+  correction of the true linear spectrum relative to the Eisenstein-Hu fit
+  (Bartlett et al. 2023), a growth correction `R` and a further `S(k)`
+  correction with its own coefficients. In other words SYREN-NEW's "linear"
+  model is calibrated to reproduce a full Boltzmann spectrum with Eisenstein-Hu
+  only as a backbone.
+
+At equal `As` the two linear spectra differ by a few percent with a
+`k`-dependent sign, while the growth factors agree to `4e-4`:
+
+| band [`h/Mpc`] | `P_lin`(SYREN)/`P_lin`(EH), z=0 |
+| --- | --- |
+| 0.001-0.005 | 1.0032 |
+| 0.005-0.02 | 1.0164 |
+| 0.02-0.05 | 1.0093 |
+| 0.05-0.1 | 0.9872 |
+| 0.1-0.2 | 0.9914 |
+| 0.2-0.5 | 1.0093 |
+| 0.5-1 | 1.0161 |
+
+Those percent-level shape changes sit exactly where the galaxy-bias
+marginalization operates. Feeding Halofit with SYREN-NEW's *linear* shape, while
+keeping the JAX observable and the Halofit nonlinear prescription, gives a
+marginalized `10^9As` error of `0.0301323`, i.e. `+2.4%` with respect to SYREN
+(`0.0294396`) and `+14%` with respect to plain Eisenstein-Hu plus Halofit
+(`0.0264081`). The linear input therefore carries essentially all of the
+difference: the two nonlinear prescriptions (Halofit emulator versus the
+SYREN-NEW emulator) contribute at the percent level in the opposite direction.
+This is why the gap cannot be removed by changing the derivative method,
+the grids or the marginalization; only a common power-spectrum model can.
+
 Reproduce the decomposition with:
 
 ```bash
@@ -178,7 +217,8 @@ uv run --extra jaxcosmo python scripts/validation/compare_theory_amplitude_respo
 ```
 
 The script prints the theory response table, the nuisance-marginalization
-decomposition, the hybrid test, both fiducials and the AD-versus-FD control, and
+decomposition, the hybrid test, the linear-shape comparison, the
+Halofit-on-SYREN-linear bridge, both fiducials and the AD-versus-FD control, and
 writes `summary.json`. The response-optimised SYREN coefficient sets from the
 `ns`-response study are not a fix here: they increase this amplitude error.
 

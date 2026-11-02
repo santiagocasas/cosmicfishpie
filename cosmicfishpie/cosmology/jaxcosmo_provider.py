@@ -55,14 +55,13 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         raise ValueError(f"The jaxcosmo backend does not support cosmo_model={cosmo_model!r}.")
     pars = dict(cosmopars)
 
-    mnu = _as_scalar(pars.get("mnu", pars.get("m_nu", 0.0)))
-    if abs(mnu) > _MNU_TOLERANCE or any(
-        key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE for key in ("Omeganu", "omnuh2")
-    ):
-        raise ValueError(
-            "The jaxcosmo backend supports massless neutrinos only; "
-            f"got mnu={mnu}. Set mnu=0 and Omeganu=omnuh2=0 in the fiducial cosmology."
-        )
+    for key in ("mnu", "m_nu", "Omeganu", "omnuh2"):
+        if key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE:
+            raise ValueError(
+                "The jaxcosmo backend supports massless neutrinos only; "
+                f"got {key}={_as_scalar(pars[key])}. Set mnu=m_nu=0 and "
+                "Omeganu=omnuh2=0 in the fiducial cosmology."
+            )
     for key in ("Omegak", "omk", "Omega_k"):
         if key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE:
             raise ValueError("The jaxcosmo backend supports flat cosmologies only.")
@@ -74,6 +73,15 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
             )
 
     h = _as_scalar(pars["h"]) if "h" in pars else _as_scalar(pars.get("H0", 67.0)) / 100.0
+    for keys, supported, target in (
+        (("omega_b", "Omega_b", "100omega_b"), ("Omegab", "ombh2"), "Omegab or ombh2"),
+        (("omega_cdm", "Omega_cdm"), ("Omegam", "omch2"), "Omegam or omch2"),
+    ):
+        ignored = [key for key in keys if key in pars]
+        if ignored and not any(key in pars for key in supported):
+            raise ValueError(
+                f"The jaxcosmo backend does not read {', '.join(ignored)}; pass {target} instead."
+            )
     omega_b = _as_scalar(pars["Omegab"]) if "Omegab" in pars else None
     if omega_b is None:
         omega_b = _as_scalar(pars.get("ombh2", 0.05 * h**2)) / h**2
@@ -85,6 +93,12 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         omega_m = 0.32
     ns = _as_scalar(pars.get("ns", pars.get("n_s", 0.96)))
     if cosmo_model == "LCDM":
+        for key, expected in (("w0", -1.0), ("w0_fld", -1.0), ("wa", 0.0), ("wa_fld", 0.0)):
+            if key in pars and _as_scalar(pars[key]) != expected:
+                raise ValueError(
+                    "cosmo_model='LCDM' fixes w0=-1 and wa=0, but got "
+                    f"{key}={_as_scalar(pars[key])}. Use cosmo_model='w0waCDM' instead."
+                )
         w0, wa = -1.0, 0.0
     else:
         w0 = _as_scalar(pars.get("w0", pars.get("w0_fld", -1.0)))
@@ -112,6 +126,11 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         if sigma8 <= 0.0:
             raise ValueError(f"The jaxcosmo backend requires sigma8 > 0 (got {sigma8}).")
         as_value = float(sigma8_to_As(sigma8, omega_m, omega_b, h, ns, 0.0, w0, wa))
+
+    if not np.isfinite(as_value) or as_value <= 0.0:
+        raise ValueError(
+            "The jaxcosmo backend requires a positive, finite 10^9 As " f"(got {as_value})."
+        )
 
     return {
         "As": as_value,
@@ -148,6 +167,9 @@ class JaxCosmoProvider:
         settings: Mapping | None = None,
     ):
         self.numerics = dict(backend_parameters["NUMERICS"])
+        for key in ("z_samples", "k_samples", "z_samples_background"):
+            if key in self.numerics and int(self.numerics[key]) < 4:
+                raise ValueError(f"NUMERICS['{key}'] must be at least 4 for cubic splines.")
         self.config = theory.TheoryConfig.from_backend_parameters(backend_parameters)
         self.cosmo_model = cosmo_model
         self.settings = settings

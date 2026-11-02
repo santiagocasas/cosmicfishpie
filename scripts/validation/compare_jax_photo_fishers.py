@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import time
 from pathlib import Path
 
@@ -138,12 +139,20 @@ def _matrix(fisher) -> np.ndarray:
     return np.asarray(fisher.get_fisher_matrix(), dtype=float)
 
 
+def _nonzero_finite_float(text: str) -> float:
+    """Parse a finite, non-zero relative step for the central difference."""
+    value = float(text)
+    if not math.isfinite(value) or value == 0.0:
+        raise argparse.ArgumentTypeError("must be a finite, non-zero number")
+    return value
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--outdir", type=Path, default=Path("/tmp/opencode/jax_parity"))
     parser.add_argument(
         "--fd-step",
-        type=float,
+        type=_nonzero_finite_float,
         default=0.01,
         help="relative finite-difference step (default 0.01, the CosmicFishPie default)",
     )

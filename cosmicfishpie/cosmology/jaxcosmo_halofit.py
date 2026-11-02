@@ -103,9 +103,12 @@ def _solve_logr(target, lnk, pk3):
     lnr = lax.fori_loop(0, _NEWTON_ITERATIONS, newton, jnp.asarray(_LNR_START))
     lnr = lax.stop_gradient(lnr)
     sigma2, dsigma2 = _sigma2(lnr, lnk, pk3)
-    # Keep the scale finite even if the bracket holds no root: a cosmology without a root
-    # then produces a wrong but finite Pnl, which the provider rejects explicitly.
-    return jnp.clip(lnr - (sigma2 - target) / dsigma2, _LNR_MIN, _LNR_MAX)
+    # A bracket that holds no root leaves the Newton iterate pinned to an edge; the clipped
+    # value would be finite but wrong.  Return NaN there instead, so the provider's
+    # ``np.isfinite(Pnl)`` check rejects the cosmology explicitly.
+    solved = jnp.clip(lnr - (sigma2 - target) / dsigma2, _LNR_MIN, _LNR_MAX)
+    inside = (lnr > _LNR_MIN + 1e-6) & (lnr < _LNR_MAX - 1e-6)
+    return jnp.where(inside, solved, jnp.nan)
 
 
 def _scale_inputs(cosmo, a, transfer_fn):

@@ -146,7 +146,6 @@ class JaxSpectroObservable:
         self.kmin_pk = float(numerics["kmin_pk"])
         self.kmax_pk = float(numerics["kmax_pk"])
         self.legacy_pk_clamp = bool(numerics.get("legacy_pk_clamp", False))
-        self.h_fid = float(fiducial.get("h", 0.67))
 
         self._split_fiducial()
         self._setup_grids()
@@ -171,6 +170,7 @@ class JaxSpectroObservable:
         fid = self.fiducial
         cosmo_in = {k: v for k, v in fid.items() if k in _COSMO_KEYS}
         base = self.theory.resolve_cosmology(cosmo_in)
+        self.h_fid = float(base["h"])
         self.bias_model = self.specs["sp_bias_model"]
         self.bias_sample = self.specs["sp_bias_sample"]
         self.bias_root = self.specs["sp_bias_root"]
@@ -180,12 +180,15 @@ class JaxSpectroObservable:
             )
         numeric = {k: float(v) for k, v in fid.items() if k not in _COSMO_KEYS and np.ndim(v) == 0}
         self.cosmo_names = tuple(self.theory.cosmo_names)
-        self.nuisance_names = tuple(numeric)
+        self.nonlinear_names = tuple(
+            key for key in numeric if key.startswith(("sigmap_", "sigmav_"))
+        )
+        self.nuisance_names = tuple(k for k in numeric if k not in self.nonlinear_names)
         self.base_values: dict[str, float] = {**base, **numeric}
 
     def _setup_grids(self) -> None:
         s, sp = self.settings, self.specs
-        h_fid = float(self.fiducial.get("h", 0.67))
+        h_fid = self.h_fid
         kmin = sp["kmin_GCsp"] * h_fid
         kmax = sp["kmax_GCsp"] * h_fid
         self.k_1mpc = np.linspace(kmin, kmax, int(s["spectro_Pk_k_samples"]))
@@ -231,7 +234,7 @@ class JaxSpectroObservable:
         is fixed here (from the fiducial ``h``), exactly as the legacy code derives it.
         """
         s = self.settings
-        h = float(self.fiducial.get("h", 0.67))
+        h = self.h_fid
         self.savgol_kmin_factor = float(s["savgol_internalkmin"])
         self.savgol_samples = int(s["savgol_internalsamples"])
         # ``nonwiggle_pow`` spans ``h * savgol_internalkmin`` to ``h * kmax_pk * h`` (in
@@ -422,6 +425,11 @@ class JaxSpectroObservable:
             if canon not in self.cosmo_names:  # pragma: no cover - defensive
                 raise ValueError(f"Parameter '{name}' is not part of the jaxcosmo model.")
             return canon
+        if name in self.nonlinear_names:
+            raise NotImplementedError(
+                "The jaxcosmo spectroscopic observable does not implement the "
+                f"rescale_sigma_pv parameterization; '{name}' cannot be differentiated."
+            )
         if name in self.nuisance_names:
             return name
         if name in _COSMO_KEYS:
@@ -434,6 +442,11 @@ class JaxSpectroObservable:
     def _values(self, overrides: Mapping[str, Any] | None = None) -> dict[str, Any]:
         values = dict(self.base_values)
         for name, val in (overrides or {}).items():
+            if name in self.nonlinear_names:
+                raise NotImplementedError(
+                    "The jaxcosmo spectroscopic observable does not implement the "
+                    f"rescale_sigma_pv parameterization; '{name}' cannot be varied."
+                )
             if name in self.free_name_map:
                 values[self.free_name_map[name]] = val
             elif name in self.nuisance_names:

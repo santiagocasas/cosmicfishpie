@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Tighten the `jaxcosmo` guards after review: check every neutrino alias, reject
+  density keys the backend ignores, require a positive finite primordial amplitude, enforce
+  minimum `NUMERICS` grid sizes, validate `distance_steps` before truncation, refuse a
+  conflicting `w0`/`wa` under `cosmo_model="LCDM"`, compare fiducial overrides to
+  near-machine precision, take the spectroscopic fiducial `h` from the resolved cosmology,
+  reject the unimplemented `rescale_sigma_pv` parameters, and require a finite non-zero
+  `--fd-step`. A Halofit bracket with no root now returns `NaN` so the provider rejects it.
 - Upgrade the development Black requirement to `>=26.5.1,<27.0`, apply its formatting
   with an explicit Python 3.10 target, and refresh the development dependency lockfile.
 - Validate `jaxcosmo` inputs further: reject theta-like expansion parameters, conflicting
@@ -77,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `NUMERICS.legacy_pk_clamp` option reproducing the table-edge clamp of the legacy power
   spline; tests for the theory layer, option branches and providers.
 
-- Support NumPy 2: widen the dependency pin from `numpy<2` to `numpy>=2.1,<2.3`
+- Support NumPy 2: replace the `numpy<2` pin with `numpy>=2.1,<2.3` (NumPy 1.x installs must upgrade to 2.1 or newer)
   (2.2.x is the newest series supporting Python 3.10), relock, and compute the
   legacy `round_decimals_up` branch in float64 to keep results identical under
   NEP 50 promotion rules. Full Fisher backend validation against the NumPy 1

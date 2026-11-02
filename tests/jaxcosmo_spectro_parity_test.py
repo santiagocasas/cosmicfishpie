@@ -112,3 +112,33 @@ def test_jacobian_matches_finite_differences(tmp_path):
             fd = (lp[ibin] - lm[ibin]) / (2.0 * step)
             scale = max(float(np.max(np.abs(fd))), 1.0)
             assert np.max(np.abs(jac[name][ibin] - fd)) < 1.0e-6 * scale
+
+
+def test_h_fid_is_taken_from_the_resolved_cosmology(tmp_path):
+    """An ``H0`` fiducial must set the same ``h`` the theory uses for its k grid."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "h_fid")
+    compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    fiducial.pop("h", None)
+    fiducial["H0"] = 73.0
+    observable = JaxSpectroObservable(calc, fiducial)
+    assert observable.h_fid == pytest.approx(0.73)
+    kmin = observable.specs["kmin_GCsp"] * 0.73
+    assert observable.k_1mpc[0] == pytest.approx(kmin)
+
+
+def test_rescale_sigma_pv_parameters_are_rejected(tmp_path):
+    """``sigmap_*``/``sigmav_*`` have no JAX implementation, so they must not look fixed."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "nonlinear")
+    compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    fiducial["sigmap_0"] = 1.0
+    observable = JaxSpectroObservable(calc, fiducial)
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.canonical_name("sigmap_0")
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.lnp({"sigmap_0": 1.1})

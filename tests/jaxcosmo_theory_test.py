@@ -147,3 +147,104 @@ def test_tables_units_shapes_and_normalisation():
     )
     chi_ref = ref.comoving_distance(np.asarray(z[1:])).value
     np.testing.assert_allclose(np.asarray(tab["chi"][1:]), chi_ref, rtol=5e-4)
+
+
+# ------------------------------------------------------- provider guards added in review
+def test_resolve_parameters_rejects_every_massive_neutrino_alias():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
+    for key in ("mnu", "m_nu", "Omeganu", "omnuh2"):
+        with pytest.raises(ValueError, match="massless neutrinos"):
+            provider.resolve_parameters(dict(base, **{key: 0.1}), "LCDM")
+    # A zero in one alias must not hide a massive value in another.
+    with pytest.raises(ValueError, match="massless neutrinos"):
+        provider.resolve_parameters(dict(base, mnu=0.0, m_nu=0.1), "LCDM")
+
+
+def test_resolve_parameters_rejects_ignored_density_parameterizations():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegab": 0.05}
+    for key in ("omega_cdm", "Omega_cdm"):
+        with pytest.raises(ValueError, match="does not read"):
+            provider.resolve_parameters(dict(base, **{key: 0.12}), "LCDM")
+    base = {"10^9As": 2.1, "Omegam": 0.32}
+    for key in ("omega_b", "Omega_b", "100omega_b"):
+        with pytest.raises(ValueError, match="does not read"):
+            provider.resolve_parameters(dict(base, **{key: 0.022}), "LCDM")
+    resolved = provider.resolve_parameters(
+        {"10^9As": 2.1, "omch2": 0.12, "Omegab": 0.05, "h": 0.67}, "LCDM"
+    )
+    assert resolved["Omegam"] == pytest.approx(0.12 / 0.67**2 + 0.05)
+
+
+def test_resolve_parameters_rejects_non_finite_amplitude():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"Omegam": 0.32, "Omegab": 0.05}
+    for weak in ({"10^9As": float("nan")}, {"10^9As": -1.0}, {"logAs": 1000.0}):
+        with pytest.raises(ValueError, match="positive, finite"):
+            provider.resolve_parameters(dict(base, **weak), "LCDM")
+
+
+def test_resolve_parameters_rejects_conflicting_lcdm_dark_energy():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
+    for key, value in (("w0", -0.8), ("wa", 0.3), ("w0_fld", -0.9), ("wa_fld", 0.2)):
+        with pytest.raises(ValueError, match="cosmo_model='LCDM'"):
+            provider.resolve_parameters(dict(base, **{key: value}), "LCDM")
+    resolved = provider.resolve_parameters(dict(base, w0=-1.0, wa=0.0), "LCDM")
+    assert (resolved["w0"], resolved["wa"]) == (-1.0, 0.0)
+
+
+def test_theory_tables_reject_conflicting_lcdm_dark_energy():
+    params = dict(FIDUCIAL, w0=-0.8)
+    cosmology = theory.JaxCosmoTheory(cosmo_model="LCDM")
+    with pytest.raises(ValueError, match="cosmo_model='LCDM'"):
+        cosmology.tables(params, jnp.array([0.0]), jnp.array([0.1]))
+    with pytest.raises(ValueError, match="cosmo_model='LCDM'"):
+        cosmology.power(params, jnp.array([0.0]), jnp.array([0.1]))
+
+
+def test_distance_steps_must_be_an_integer_in_the_accuracy_block():
+    with pytest.raises(ValueError, match="distance_steps"):
+        theory.TheoryConfig.from_backend_parameters({"ACCURACY": {"distance_steps": 256.9}})
+    config = theory.TheoryConfig.from_backend_parameters({"ACCURACY": {"distance_steps": 64}})
+    assert config.distance_steps == 64
+
+
+def _backend(numerics: dict) -> dict:
+    base = {
+        "kmin_pk": 1.0e-3,
+        "kmax_pk": 9.0,
+        "zmin_pk": 0.0,
+        "zmax_pk": 3.0,
+        "z_samples": 100,
+        "k_samples": 400,
+        "x64": True,
+    }
+    return {"ACCURACY": {}, "NUMERICS": dict(base, **numerics)}
+
+
+def test_numerics_grids_need_enough_nodes_for_cubic_splines():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    cosmopars = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67, "ns": 0.96}
+    for key in ("z_samples", "k_samples", "z_samples_background"):
+        with pytest.raises(ValueError, match=key):
+            provider.JaxCosmoProvider(cosmopars, _backend({key: 3}), "LCDM")
+
+
+def test_provider_rejects_a_cosmology_whose_halofit_root_is_outside_the_bracket():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    cosmology = theory.make_cosmology(dict(FIDUCIAL, As=1.0e-4))
+    residual, inside = halofit.nonlinear_scale_residual(cosmology, 1.0, TRANSFER)
+    assert not bool(inside)
+    assert not np.isfinite(float(residual))
+
+    cosmopars = {"10^9As": 1.0e-4, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67, "ns": 0.96}
+    with pytest.raises(ValueError, match="not finite"):
+        provider.JaxCosmoProvider(cosmopars, _backend({}), "LCDM").build()

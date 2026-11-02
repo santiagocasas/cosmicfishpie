@@ -114,10 +114,14 @@ class TheoryConfig:
         """Build the config from the ``ACCURACY`` block of the backend yaml."""
         accuracy = dict((backend_parameters or {}).get("ACCURACY", {}) or {})
         defaults = cls()
+        raw_steps = accuracy.get("distance_steps", defaults.distance_steps)
+        steps = int(raw_steps)
+        if steps != raw_steps:
+            raise ValueError("distance_steps must be an integer >= 16.")
         return cls(
             transfer=str(accuracy.get("transfer", defaults.transfer)),
             halofit=str(accuracy.get("halofit", defaults.halofit)),
-            distance_steps=int(accuracy.get("distance_steps", defaults.distance_steps)),
+            distance_steps=steps,
         )
 
 
@@ -281,6 +285,26 @@ class JaxCosmoTheory:
 
         return resolve_parameters(params, self.cosmo_model)
 
+    def _model_params(self, params: Mapping) -> dict:
+        """Pin ``w0``/``wa`` for ``LCDM`` so direct calls cannot evaluate perturbed DE."""
+        if self.cosmo_model != "LCDM":
+            return dict(params)
+        out = dict(params)
+        for key, expected in (("w0", -1.0), ("wa", 0.0)):
+            if key not in out:
+                continue
+            try:
+                concrete = float(jnp.asarray(out[key]).reshape(-1)[0])
+            except Exception:
+                concrete = None
+            if concrete is not None and concrete != expected:
+                raise ValueError(
+                    "cosmo_model='LCDM' fixes w0=-1 and wa=0, but got "
+                    f"{key}={concrete}. Use cosmo_model='w0waCDM' instead."
+                )
+            out[key] = expected
+        return out
+
     def tables(
         self,
         params: Mapping,
@@ -289,6 +313,7 @@ class JaxCosmoTheory:
         nonlinear: bool = True,
     ) -> TheoryTables:
         """Evaluate the ``jax_cosmo`` theory on ``(z, k_hmpc)``, in CosmicFishPie units."""
+        params = self._model_params(params)
         raw = compute_tables(params, z, k_hmpc, self.config, nonlinear)
         h = params["h"]
         # jax_cosmo's background has no radiation, so H(0)/c = 100 h / c exactly.
@@ -321,6 +346,7 @@ class JaxCosmoTheory:
         the slope kinks of the interpolation, which is what makes finite differences of the
         projected spectra converge slowly.
         """
+        params = self._model_params(params)
         z = jnp.atleast_1d(jnp.asarray(z))
         k = jnp.asarray(k_hmpc)
         if k.ndim == 1:

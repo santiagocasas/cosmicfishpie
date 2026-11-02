@@ -147,3 +147,20 @@ def test_jacobian_matches_finite_differences(name, reference):
         finite_difference = (plus[key] - minus[key]) / (2.0 * step)
         residual = float(np.max(np.abs(jac[key] - finite_difference)))
         assert residual < 1.0e-4 * scale / (2.0 * step)
+
+
+def test_near_fiducial_override_is_not_silently_ignored():
+    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import _same_value
+
+    assert _same_value(0.32, 0.32)
+    assert _same_value(0.32, 0.32 + 1.0e-15)
+    assert not _same_value(0.32 * (1.0 + 1.0e-7), 0.32)
+
+
+def test_fd_step_validator_rejects_zero_and_non_finite():
+    import argparse
+
+    for bad in ("0", "nan", "inf", "-inf"):
+        with pytest.raises(argparse.ArgumentTypeError):
+            compare._nonzero_finite_float(bad)
+    assert compare._nonzero_finite_float("-0.01") == -0.01

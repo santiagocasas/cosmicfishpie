@@ -91,7 +91,14 @@ def _same_value(left: Any, right: Any) -> bool:
     """Compare a repeated fiducial value (numbers or model-name strings)."""
     if isinstance(left, str) or isinstance(right, str):
         return left == right
-    return bool(np.allclose(np.asarray(left, dtype=float), np.asarray(right, dtype=float)))
+    return bool(
+        np.allclose(
+            np.asarray(left, dtype=float),
+            np.asarray(right, dtype=float),
+            rtol=1.0e-12,
+            atol=0.0,
+        )
+    )
 
 
 class JaxPhotoObservable:

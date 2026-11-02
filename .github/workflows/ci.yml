@@ -52,7 +52,7 @@ jobs:
         env:
           CUDA_VISIBLE_DEVICES: ''
         run: |
-          uv run pytest tests/jaxcosmo_derivatives_test.py tests/jaxcosmo_spectro_parity_test.py tests/jaxcosmo_spectro_test.py tests/jaxcosmo_theory_test.py -rs
+          uv run pytest tests/jaxcosmo_derivatives_test.py tests/jaxcosmo_photo_parity_test.py tests/jaxcosmo_spectro_parity_test.py tests/jaxcosmo_spectro_test.py tests/jaxcosmo_theory_test.py -rs
       - name: Upload to Codecov
         uses: codecov/codecov-action@v6
         with:

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Test the JAX photometric observable against the legacy `ComputeCls`: the fiducial `C_ell`,
+  a shifted cosmology and shifted bias / intrinsic-alignment amplitudes agree to
+  `max |dC|/max|C| < 1e-3` (observed ~2e-5), and the autodiff derivatives match central
+  differences of the same observable. This takes `jaxcosmo_photo` from 16% to 92% coverage.
+
 - CI and docs for the `jaxcosmo` backend: add a `test (jaxcosmo)` job that installs the
   `jaxcosmo` extra and runs the JAX tests (they skip themselves in the default job, where
   JAX is not installed), uploading coverage with the `jaxcosmo` Codecov flag; mock `jax`

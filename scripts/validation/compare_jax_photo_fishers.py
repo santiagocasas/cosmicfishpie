@@ -54,18 +54,38 @@ def _options(outdir: Path, tag: str) -> dict:
     }
 
 
-def _make_calc(outdir: Path, tag: str, provider=None):
+def _make_calc(outdir: Path, tag: str, provider=None, fiducial=None):
     from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
 
     return FisherMatrix(
         options=_options(outdir, tag),
-        fiducialpars=dict(FIDUCIAL),
+        fiducialpars=dict(FIDUCIAL if fiducial is None else fiducial),
         freepars=dict(FREE),
         observables=["GCph", "WL"],
         cosmoModel="LCDM",
         surveyName="Euclid",
         derivative_provider=provider,
     )
+
+
+def _legacy_observable(calc, photobiaspars=None, iapars=None):
+    """The legacy ``ComputeCls`` observable for a :class:`FisherMatrix` configuration.
+
+    ``photobiaspars`` and ``iapars`` default to the configuration's values; pass a modified copy
+    to compare at a shifted nuisance point (the bias and intrinsic-alignment fiducials come from
+    the survey specification, not from ``fiducialpars``).
+    """
+    from cosmicfishpie.LSSsurvey import photo_obs
+
+    observable = photo_obs.ComputeCls(
+        calc.fiducialcosmopars,
+        calc.photopars,
+        calc.IApars if iapars is None else iapars,
+        calc.photobiaspars if photobiaspars is None else photobiaspars,
+        configuration=calc,
+    )
+    observable.compute_all()
+    return observable
 
 
 def _relative_stats(reference: np.ndarray, candidate: np.ndarray) -> dict:
@@ -136,7 +156,7 @@ def main() -> int:
         JaxAutodiffProvider,
         JaxFiniteDifferenceProvider,
     )
-    from cosmicfishpie.LSSsurvey import photo_cov, photo_obs
+    from cosmicfishpie.LSSsurvey import photo_cov
     from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
     summary: dict = {"fiducial": FIDUCIAL, "freeparams": FREE, "variants": {}}
@@ -144,14 +164,7 @@ def main() -> int:
     # ---------------------------------------------------------------- fiducial spectra
     reference = _make_calc(outdir, "reference")
     allpars = dict(reference.allparams_fidus)
-    legacy_obs = photo_obs.ComputeCls(
-        reference.fiducialcosmopars,
-        reference.photopars,
-        reference.IApars,
-        reference.photobiaspars,
-        configuration=reference,
-    )
-    legacy_obs.compute_all()
+    legacy_obs = _legacy_observable(reference)
     jax_observable = JaxPhotoObservable(reference, allpars)
     t0 = time.time()
     jax_cls = jax_observable.cls()

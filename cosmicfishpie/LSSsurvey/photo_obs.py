@@ -4,6 +4,7 @@
 This module contains cls calculations (only LSS atm).
 
 """
+
 import os
 from itertools import product
 from time import time

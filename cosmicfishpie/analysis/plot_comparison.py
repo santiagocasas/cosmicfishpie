@@ -1,6 +1,6 @@
 """
-   :synopsis: Module for creating comparison plots of Fisher Matrix entries and related visualizations.
-   :module author: Dida Markovic, Santiago Casas, and other contributors to the CosmicFishPie project.
+:synopsis: Module for creating comparison plots of Fisher Matrix entries and related visualizations.
+:module author: Dida Markovic, Santiago Casas, and other contributors to the CosmicFishPie project.
 """
 
 import os

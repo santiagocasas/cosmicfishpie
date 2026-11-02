@@ -4,120 +4,107 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![Documentation Status](https://readthedocs.org/projects/cosmicfishpie/badge/?version=latest)](https://cosmicfishpie.readthedocs.io/en/latest/?badge=latest)
+[![Documentation](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/docs.yml/badge.svg)](https://www.santicasas.space/cosmicfishpie/docs/)
 [![codecov](https://codecov.io/github/santiagocasas/cosmicfishpie/graph/badge.svg?token=BXTVDPXPUO)](https://codecov.io/github/santiagocasas/cosmicfishpie)
 [![37.50 % FAIR](https://img.shields.io/badge/FAIR_assessment-37.50_%25-red)](https://fair-checker.france-bioinformatique.fr/assessment/68da9e3cc49e421b3e2cf501)
 [![CI](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/santiagocasas/cosmicfishpie)
 
-`cosmicfishpie` is a Python package for cosmological Fisher forecasts. It is designed to help prepare and compare forecasts for surveys such as Euclid, DESI, SKAO, and CMB experiments, using flexible pipelines that combine cosmology backends, survey specs, and post-processing tools.
+`cosmicfishpie` is a Python package for cosmological Fisher forecasts. It helps prepare and compare forecasts for surveys such as Euclid, DESI, SKAO and CMB experiments.
 
 <div align="center">
   <img src="https://github.com/santiagocasas/cosmicfishpie/assets/6987716/1816b3b7-0920-4a2c-aafd-9c4ba1dc3e2b" width="280">
 </div>
 
-## What you can do with cosmicfishpie
+## Features
 
-- Compute Fisher matrices for multiple observables (e.g. spectroscopic/photometric galaxy probes and CMB spectra).
-- Use established Einstein-Boltzmann solvers such as CAMB (and configurable backend workflows).
-- Choose finite-difference strategies and numerical settings for derivatives and stability.
-- Run likelihood-based Bayesian sampling with Nautilus (nested sampling / MCMC-style posterior analysis).
-- Combine, reparameterize, and post-process Fisher matrices after the initial run.
-- Generate publication-ready comparison and corner plots.
+- **Observables.** Photometric (`GCph`, `WL`) and spectroscopic (`GCsp`) galaxy clustering and weak lensing, CMB (`CMB_T`, `CMB_E`, `CMB_B`) and HI intensity mapping (`IM`).
+- **Backends.** CAMB, CLASS, a built-in `symbolic` backend that needs no Einstein-Boltzmann solver, or precomputed tables.
+- **Derivatives.** Four finite-difference schemes (`3PT`, `STEM`, `POLY`, `4PT_FWD`), chosen with one option.
+- **Analysis and plots.** Marginalise, reshuffle and combine Fisher matrices, and draw triangle plots to compare surveys and settings.
+- **Likelihood sampling.** Sample the full posterior of the photometric and spectroscopic likelihoods with [Nautilus](https://nautilus-sampler.readthedocs.io/) and compare it with the Fisher forecast.
 
 ## Installation
 
 `cosmicfishpie` supports Python `>=3.10,<3.13`.
 
-### Recommended: uv workflow
+```bash
+pip install cosmicfishpie
+```
 
-Create a virtual environment and install from source:
+To work from a source checkout, use [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
 git clone https://github.com/santiagocasas/cosmicfishpie.git
 cd cosmicfishpie
-uv venv --python 3.11
-source .venv/bin/activate
 uv sync --extra dev
 ```
 
-For a lighter install (without the dev extras):
-
-```bash
-uv sync
-```
-
-### Alternative: mamba/conda-forge workflow
-
-If you prefer Conda-style environments, create one with `mamba` (or `conda`) and install from source in editable mode:
-
-```bash
-mamba create -n cosmicfishpie -c conda-forge python=3.11 pip
-mamba activate cosmicfishpie
-git clone https://github.com/santiagocasas/cosmicfishpie.git
-cd cosmicfishpie
-pip install -e .
-```
-
-This setup lets you manage the environment with conda-forge while using the latest repository version.
-
-## Quick check
-
-After installation, run:
+Check the installation with
 
 ```bash
 python -c "import cosmicfishpie; print('cosmicfishpie import OK')"
 ```
 
-If you installed from source (dev setup), you can also run tests:
+and, from a source checkout, run the tests with `uv run pytest`. Conda setup, optional extras and more are in the [installation guide](https://www.santicasas.space/cosmicfishpie/docs/installation.html).
 
-```bash
-uv run pytest
-```
+## Minimal example
 
-## Minimal usage example
+A photometric forecast with the `symbolic` backend. It needs no solver setup and runs in a few seconds from any directory, writing its output to `results/`:
 
 ```python
-import cosmicfishpie.fishermatrix.cosmicfish as cff
+from cosmicfishpie.fishermatrix import cosmicfish as cff
 
 options = {
     "accuracy": 1,
-    "feedback": 2,
-    "outroot": "example_run",
-    "results_dir": "results/",
-    "derivatives": "3PT",
-    "nonlinear": True,
+    "feedback": 1,
+    "code": "symbolic",  # or "class" / "camb"
     "cosmo_model": "LCDM",
-    "code": "camb",
+    "derivatives": "3PT",
+    "ell_sampling": 25,  # coarse grid for speed, not production accuracy
+    "nonlinear": True,
+    "outroot": "first_forecast",
+    "results_dir": "results",
     "survey_name": "Euclid",
-    "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
+    "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
+    "survey_name_spectro": False,
 }
 
-observables = ["GCsp"]
 fiducial = {"Omegam": 0.32, "h": 0.67}
-freepars = {"Omegam": 0.01, "h": 0.01}
+freepars = {"Omegam": 0.01, "h": 0.01}  # relative finite-difference steps
 
-fm = cff.FisherMatrix(
+forecast = cff.FisherMatrix(
     fiducialpars=fiducial,
     freepars=freepars,
     options=options,
-    observables=observables,
+    observables=["WL", "GCph"],
     cosmoModel=options["cosmo_model"],
     surveyName=options["survey_name"],
 )
 
-fisher_matrix = fm.compute()
+fisher = forecast.compute()
+print(fisher.fisher_matrix.shape, fisher.get_param_names())
 ```
 
-For fuller examples and configuration details, see the documentation.
+## Documentation
 
-## Documentation and citation
+- [Documentation](https://www.santicasas.space/cosmicfishpie/docs/): getting started, user guide, tutorials, API reference and development notes.
+- [Validation dashboard](https://www.santicasas.space/cosmicfishpie/dashboard/)
+- [Citation metadata](CITATION.cff) (`CITATION.cff`)
 
-- Docs: https://cosmicfishpie.readthedocs.io/
-- Repository: https://github.com/santiagocasas/cosmicfishpie
-- Citation metadata: [`CITATION.cff`](CITATION.cff)
-- Nautilus sampler docs (and citation info): https://nautilus-sampler.readthedocs.io/
+To build the documentation locally:
+
+```bash
+uv sync --extra docs
+make docs   # live-reloading server at http://127.0.0.1:8000
+```
+
+CI builds the docs with warnings treated as errors:
+
+```bash
+uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html
+```
 
 ## Contributors ✨
 

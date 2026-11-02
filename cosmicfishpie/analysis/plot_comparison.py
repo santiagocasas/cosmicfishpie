@@ -302,14 +302,14 @@ def plot_shades(
 
     if plotlight:
         dprint("plotting light")
-        ax.bar(x_arr, max_l, color=colL, width=0.8, alpha=0.9, zorder=1)
-        ax.bar(x_arr, min_l, color=colL, width=0.8, alpha=0.9, zorder=1)
+        ax.bar(x_arr, max_l, color=colL, width=0.8, alpha=0.9, linewidth=LW, zorder=1)
+        ax.bar(x_arr, min_l, color=colL, width=0.8, alpha=0.9, linewidth=LW, zorder=1)
         # ax.fill_between(x_arr, min_l, max_l, interpolate=True, facecolor=colL,
         # edgecolor=colL, alpha=aalpha, linewidth=0.0, hatch=light_hatch)
     if plotdark:
         dprint("plotting dark")
-        ax.bar(x_arr, max_d, color=colD, width=0.5, alpha=0.95, zorder=2)
-        ax.bar(x_arr, min_d, color=colD, width=0.5, alpha=0.95, zorder=2)
+        ax.bar(x_arr, max_d, color=colD, width=0.5, alpha=0.95, linewidth=LW, zorder=2)
+        ax.bar(x_arr, min_d, color=colD, width=0.5, alpha=0.95, linewidth=LW, zorder=2)
         # ax.fill_between(x_arr, min_d, max_d, interpolate=True, facecolor=colD,
         # edgecolor=colD, alpha=aalpha, linewidth=0.0)
     for ii, lbl in enumerate(mats_labels):
@@ -433,13 +433,17 @@ def process_fish_errs(
             dprint(("Marginalized 1-sigma errors :", errMargs[ii]))
             dprint(("Unmarginalized 1-sigma errors :", errUnmargs[ii]))
     # Plot differences, not absolute values np.abs,   np.median default
-    if not compare_to_index:
+    if compare_to_index is True:
+        compare_to_index = 0
+
+    if compare_to_index is False:
         eurel = fu.rel_median_error(errUnmargs)
         emrel = fu.rel_median_error(errMargs)
+    elif isinstance(compare_to_index, (int, np.integer)) and compare_to_index >= 0:
+        eurel = fu.rel_error_to_index(compare_to_index, errUnmargs)
+        emrel = fu.rel_error_to_index(compare_to_index, errMargs)
     else:
-        if isinstance(compare_to_index, int) and compare_to_index >= 0:
-            eurel = fu.rel_error_to_index(compare_to_index, errUnmargs)
-            emrel = fu.rel_error_to_index(compare_to_index, errMargs)
+        raise ValueError("compare_to_index must be False, True, or a non-negative integer")
 
     return eurel, emrel, x_pars, parsnames_latex
 

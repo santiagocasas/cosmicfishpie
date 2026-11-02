@@ -1,3 +1,4 @@
+import ast
 import collections
 import copy
 import os
@@ -12,7 +13,9 @@ import pandas as pd
 from chainconsumer import Chain, ChainConfig, ChainConsumer, PlotConfig, Truth
 
 import cosmicfishpie.analysis.colors as fc
+import cosmicfishpie.analysis.fisher_operations as fo
 import cosmicfishpie.analysis.fisher_plot_analysis as fpa
+from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
 from cosmicfishpie.utilities.utils import printing as upr
 
 dprint = upr.debug_print
@@ -226,6 +229,7 @@ def fishtable_to_pandas(
     Converts a fisher matrix table to pandas DataFrames.
     This function takes a list of parameters and a FisherAnalysis object, and returns two pandas DataFrames:
     one for relative errors (as percentages) and one for absolute errors. It can also return data for bar plots.
+
     Parameters
     ----------
     paramstab : list
@@ -245,6 +249,7 @@ def fishtable_to_pandas(
         List of fisher matrix names to filter when returning bar plot data. Default is None.
     return_data_bar : bool, optional
         If True, return data formatted for bar plots instead of DataFrames. Default is False.
+
     Returns
     -------
     tuple or dict
@@ -1011,6 +1016,153 @@ def make_triangle_plot(
     return fig
 
 
+def make_fisher_chain_plot(
+    fishers: list[fisher_matrix],
+    chains: list[pd.DataFrame | None] | None = None,
+    labels: list[str] | None = None,
+    params: list[str] | None = None,
+    colors: list[str] | None = None,
+    nsigmas: float = 3.0,
+    extents: dict[str, tuple[float, float]] | None = None,
+    show_fisher: bool = True,
+    show_chains: bool = True,
+    **plot_kwargs,
+) -> matplotlib.figure.Figure:
+    """Overlay paired Fisher forecasts and weighted posterior chains.
+
+    Parameters
+    ----------
+    fishers : list of fisher_matrix
+        Forecasts, one per comparison case. Inputs are not modified.
+    chains : list of pandas.DataFrame or None, optional
+        Aligned with ``fishers``; use None for a Fisher-only case. DataFrames
+        contain parameter columns and optionally a ``weight`` column. Selecting
+        plotted columns marginalizes the posterior over omitted parameters.
+    labels : list of str, optional
+        One unique case label per Fisher. Legend entries append 'Fisher' or
+        'chain'. Defaults to 'Case 1', 'Case 2', etc.
+    params : list of str, optional
+        Ordered parameters present in every input. Defaults to the first Fisher's
+        parameters. Fishers are marginalized, never conditioned, to this subset.
+    colors : list of str, optional
+        One color per case, shared by its Fisher and chain. A shorter palette
+        cycles by case, including cases without a chain.
+    nsigmas : float, optional
+        Automatic limits use each visible Fisher fiducial +/- nsigmas marginalized
+        standard deviations and visible chain weighted quantiles at Phi(-nsigmas)
+        and Phi(nsigmas). Default is 3 (central 99.73% posterior mass).
+        Quantiles interpolate at cumulative-weight midpoints. Limits are the
+        union of visible cases in this call; sparse prior tails do not set them.
+    extents : dict, optional
+        Explicit parameter limits, overriding automatic limits for those keys.
+    show_fisher, show_chains : bool, optional
+        Independently display forecasts and posteriors. Both default to True;
+        at least one must be True. Missing chains are skipped without shifting
+        case colors. Hidden inputs do not contribute to limits or get plotted.
+    **plot_kwargs
+        Additional ``make_triangle_plot`` options, e.g. param_labels, figsize,
+        legend_kwargs, or savefile. Defaults are dashed unfilled Fishers and
+        shaded chains. Parameter transformations must be applied before calling
+        this helper; use make_triangle_plot for its transform_params interface.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        Figure for the caller to display, save, or close.
+
+    Examples
+    --------
+    Compare two forecasts when only the second has a completed posterior::
+
+        fig = make_fisher_chain_plot(
+            [fisher_a, fisher_b], [None, chain_b],
+            labels=['A', 'B'], params=['Omegam', 'h'],
+        )
+    """
+    fishers = list(fishers)
+    if not show_fisher and not show_chains:
+        raise ValueError("At least one of show_fisher and show_chains must be True")
+    if not fishers:
+        raise ValueError("At least one Fisher matrix is required")
+    chains = [None] * len(fishers) if chains is None else list(chains)
+    labels = [f"Case {i+1}" for i in range(len(fishers))] if labels is None else list(labels)
+    if len(chains) != len(fishers) or len(labels) != len(fishers):
+        raise ValueError("chains and labels must have one entry per Fisher (use None for no chain)")
+    if len(set(labels)) != len(labels):
+        raise ValueError("Case labels must be unique")
+    params = list(fishers[0].param_names if params is None else params)
+    if not params or len(set(params)) != len(params):
+        raise ValueError("params must be nonempty and unique")
+    if not np.isfinite(nsigmas) or nsigmas <= 0:
+        raise ValueError("nsigmas must be positive and finite")
+    if plot_kwargs.get("transform_params") is not None:
+        raise ValueError("Apply parameter transformations before calling make_fisher_chain_plot")
+    palette = (
+        ["#3a86ff", "#fb5607", "#8338ec", "#ffbe0b", "#d11149"] if colors is None else list(colors)
+    )
+    if not palette:
+        raise ValueError("colors must be nonempty")
+    case_colors = [palette[i % len(palette)] for i in range(len(fishers))]
+
+    from statistics import NormalDist
+
+    probabilities = [NormalDist().cdf(-nsigmas), NormalDist().cdf(nsigmas)]
+    selected_fishers, selected_chains, chain_labels, chain_colors = [], [], [], []
+    lower = np.full(len(params), np.inf)
+    upper = np.full(len(params), -np.inf)
+    for fisher, chain, label, color in zip(fishers, chains, labels, case_colors):
+        if show_fisher:
+            missing = set(params).difference(fisher.param_names)
+            if missing:
+                raise ValueError(f"Fisher {label!r} is missing parameters: {sorted(missing)}")
+            marginal = fo.marginalise(fisher, params, update_names=False)
+            selected_fishers.append(marginal)
+            sigma = np.sqrt(np.diag(marginal.inverse_fisher_matrix()))
+            lower = np.minimum(lower, marginal.param_fiducial - nsigmas * sigma)
+            upper = np.maximum(upper, marginal.param_fiducial + nsigmas * sigma)
+        if show_chains and chain is not None:
+            missing = set(params).difference(chain.columns)
+            if missing:
+                raise ValueError(f"Chain {label!r} is missing parameters: {sorted(missing)}")
+            columns = params + (["weight"] if "weight" in chain.columns else [])
+            samples = chain.loc[:, columns].copy()
+            if "weight" in samples:
+                samples = samples.loc[samples["weight"] > 0].copy()
+            if samples.empty or not np.isfinite(samples.to_numpy()).all():
+                raise ValueError(f"Chain {label!r} needs finite samples with positive weight")
+            weights = samples.get("weight", pd.Series(1.0, index=samples.index)).to_numpy()
+            weights = weights / weights.max()
+            weights = weights / weights.sum()
+            bounds = []
+            for p in params:
+                order = np.argsort(samples[p].to_numpy(), kind="stable")
+                sorted_weights = weights[order]
+                positions = np.cumsum(sorted_weights) - 0.5 * sorted_weights
+                bounds.append(np.interp(probabilities, positions, samples[p].to_numpy()[order]))
+            lower = np.minimum(lower, np.array(bounds)[:, 0])
+            upper = np.maximum(upper, np.array(bounds)[:, 1])
+            selected_chains.append(samples)
+            chain_labels.append(f"{label} chain")
+            chain_colors.append(color)
+
+    if not selected_fishers and not selected_chains:
+        raise ValueError("No visible Fishers or completed chains to plot")
+    limits = {p: (float(lo), float(hi)) for p, lo, hi in zip(params, lower, upper)}
+    limits.update(extents or {})
+    options = dict(ls_fisher="--", shade_fisher=False, shade_chains=True)
+    options.update(plot_kwargs)
+    return make_triangle_plot(
+        fishers=selected_fishers or None,
+        chains=selected_chains or None,
+        fisher_labels=[f"{label} Fisher" for label in labels] if show_fisher else None,
+        chain_labels=chain_labels or None,
+        params=params,
+        colors=(case_colors if show_fisher else []) + chain_colors,
+        extents=limits,
+        **options,
+    )
+
+
 def plot_chain_summary(
     chains,
     chain_names=None,
@@ -1047,14 +1199,18 @@ def plot_chain_summary(
     blind_params : list, optional
         List of parameter names to blind (exclude) from the plot
 
+    plot_config_kwargs : dict, optional
+        Extra keyword arguments passed to ``chainconsumer.PlotConfig``
+
     Returns
     -------
-    matplotlib.figure.Figure
-        The generated summary plot figure
+    tuple
+        ``(ChainConsumer, matplotlib.figure.Figure)``: the ChainConsumer instance and the
+        generated summary plot figure
 
     Examples
     --------
-    >>> fig = plot_chain_summary(
+    >>> c, fig = plot_chain_summary(
     ...     chains=[chain1, chain2],
     ...     chain_names=['MCMC Run 1', 'MCMC Run 2'],
     ...     truth_values=fiducial_values,
@@ -1104,7 +1260,29 @@ def plot_chain_summary(
 
 
 def load_Nautilus_chains_from_txt(filename, param_cols, log_weights=False):
-    """Load Nautilus chains from a text file."""
+    """Load Nautilus chains from a text file.
+
+    The file is the one written by ``NautilusSampler``, with columns
+    ``<params...> weights loglike``. The last two columns are returned as ``weight`` and
+    ``posterior``. Note that ``posterior`` holds the log-likelihood stored by the sampler (the
+    name is kept for ChainConsumer and backwards compatibility); it equals the log-posterior
+    only for flat priors.
+
+    Parameters
+    ----------
+    filename : str
+        Path to the chain ``.txt`` file.
+    param_cols : list or dict
+        Names of the sampled parameters, in the column order of the file (a dict is
+        converted to its keys). Read them from the chain header if unsure.
+    log_weights : bool, optional
+        If True, the weight column holds log-weights and is exponentiated.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Samples with non-zero weight.
+    """
     if isinstance(param_cols, dict):
         param_cols = list(param_cols.keys())
     elif not isinstance(param_cols, list):
@@ -1142,7 +1320,7 @@ def parse_log_param(log_file_path):
                     param_name = line.split("['")[1].split("']")[0]
                     values_str = line.split("=")[1].strip()
                     try:
-                        values = eval(values_str)
+                        values = ast.literal_eval(values_str)
                         truth_values[param_name] = values[0]
                     except Exception as e:
                         print(
@@ -1175,14 +1353,14 @@ def load_montepython_chains(
     base_path : str
         Path to the folder containing chains and log.param
     chain_root : str
-        Root name of the chain files (e.g., "2024-09-11_200000_")
+        Root name of the chain files (e.g., ``"2024-09-11_200000_"``)
     num_chains : int
         Number of chains to load
     burn_in : float, optional
         Fraction of initial chain to remove (default: 0.3)
     param_names : list, optional
         List of parameter names. If None, will try to read from '.paramnames' file
-    param_conversion_dict : dict, optional
+    param_names_conversion_dict : dict, optional
         Dictionary to convert parameter names (e.g., {'omega_cdm': 'wc'})
     derived_params : dict, optional
         Dictionary of derived parameters to compute. Each key is the new parameter name
@@ -1377,6 +1555,9 @@ class FishConsumer:
 
     def make_triangle_plot(self, *args, **kwargs):
         return make_triangle_plot(*args, **kwargs)
+
+    def make_fisher_chain_plot(self, *args, **kwargs):
+        return make_fisher_chain_plot(*args, **kwargs)
 
     def load_Nautilus_chains_from_txt(self, filename, param_cols, log_weights=False):
         return load_Nautilus_chains_from_txt(filename, param_cols, log_weights=log_weights)

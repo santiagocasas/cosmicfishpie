@@ -18,7 +18,7 @@ logger = logging.getLogger("cosmicfishpie.likelihood.photo")
 
 
 def _dict_with_updates(template: Dict[str, Any], pool: Dict[str, Any]) -> Dict[str, Any]:
-    updated = deepcopy(template)
+    updated = dict(template)
     for key in template:
         if key in pool:
             updated[key] = pool.pop(key)
@@ -120,10 +120,6 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
         super().__init__(cosmo_data=cosmo_data, cosmo_theory=cosmo_theory, leg_flag="cells")
 
     def compute_data(self) -> Dict[str, np.ndarray]:
-        if self._preloaded_cells is not None:
-            self._ells = np.array(self._preloaded_cells.get("ells"), copy=True)
-            return self._preloaded_cells
-
         photo_cls = getattr(self.cosmo_data, "photo_obs_fid", None)
         if photo_cls is None:
             photo_cls = pobs.ComputeCls(
@@ -132,6 +128,7 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
                 IApars=self.cosmo_data.IApars,
                 biaspars=self.cosmo_data.photobiaspars,
                 fiducial_cosmo=self.cosmo_data.fiducialcosmo,
+                configuration=self.cosmo_data,
             )
 
         self.photo_cov_data = getattr(self.cosmo_data, "photo_LSS", None)
@@ -142,10 +139,15 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
                 IApars=self.cosmo_data.IApars,
                 biaspars=self.cosmo_data.photobiaspars,
                 fiducial_Cls=photo_cls,
+                configuration=self.cosmo_data,
             )
 
-        cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
-        self._ells = cells["ells"]
+        if self._preloaded_cells is None:
+            cells = _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
+        else:
+            cells = self._preloaded_cells
+
+        self._ells = np.array(cells["ells"], copy=True)
         self._ellmax_WL = self.cosmo_data.specs.get("lmax_WL")
         self._ellmax_GC = self.cosmo_data.specs.get("lmax_GCph")
         if self._ellmax_WL is not None and self._ellmax_GC is not None:
@@ -174,7 +176,9 @@ class PhotometricLikelihood(Likelihood, NautilusMixin):
             IApars=IApars,
             biaspars=photobias,
             fiducial_cosmo=None,
+            configuration=self.cosmo_theory,
         )
+        assert self.photo_cov_data is not None
         return _cells_from_cls(photo_cls, self.photo_cov_data, self.observables)
 
     def compute_chi2(self, theory_obs: Dict[str, np.ndarray]) -> float:

@@ -31,9 +31,14 @@ Follow existing patterns and keep changes minimal and focused.
 - Tests live in `tests/` and are typically named `*_test.py`.
 
 ## Docs
+- Install docs dependencies: `uv sync --extra docs`
 - Live docs build (autobuild): `make docs`
-- Standard Sphinx build: `make -C docs html`
-- API docs are built from module docstrings; keep them clean and complete.
+- Docs are published by `.github/workflows/docs.yml` to the `docs/` folder of `gh-pages`
+  (https://www.santicasas.space/cosmicfishpie/docs/) on pushes to `main` and version tags.
+- Strict build (as in CI and the publishing workflow): `uv run --extra docs sphinx-build -W --keep-going -b html docs/source docs/build/html`
+- Link check: `uv run --extra docs sphinx-build -b linkcheck docs/source docs/build/linkcheck`
+- API docs are built from module docstrings with autosummary (`docs/source/api/`); keep them clean and complete.
+- Use raw docstrings (`r"""`) when a docstring contains LaTeX backslashes.
 
 ## Repository layout
 - `cosmicfishpie/` is the main package.
@@ -115,10 +120,10 @@ Follow existing patterns and keep changes minimal and focused.
 - Scripts often create `scripts/benchmark_results/` and `chains/` folders.
 
 ## Scripts and benchmarks
-- `scripts/photometric_benchmark.py` runs photometric benchmarks and FAST vs SLOW checks.
-- `scripts/run_fisher_compare_backends.py` compares Fisher matrices across backends.
+- `scripts/archive/benchmarks/photometric_benchmark.py` retains the historical photometric benchmark.
+- `scripts/validation/run_fisher_compare_backends.py` compares Fisher matrices across backends.
 - Scripts are not imported by the library; keep them CLI-friendly.
-- Prefer `uv run python scripts/<name>.py` to ensure the right environment.
+- Prefer `uv run python scripts/<category>/<name>.py` to ensure the right environment.
 - Benchmark outputs are stored under `scripts/benchmark_results/`.
 
 ## Environment variables
@@ -144,6 +149,18 @@ Follow existing patterns and keep changes minimal and focused.
 - Package version lives in `cosmicfishpie/version.py`.
 - Citation metadata is in `CITATION.cff`.
 - Update `CHANGELOG.md` for user-facing changes.
+
+## ARA research trace (maintainer workflow)
+- The ARA provenance trace (`ara/`) is NOT part of `main` or feature branches. It lives on the
+  `dev` branch, checked out as the sibling worktree `../cfp-dev`.
+- In `../cfp-dev`, `ara/` is a real, tracked directory. In every OTHER worktree (main,
+  perf-v2, symbolic_overhaul, ...), `ara` is a symlink to `../cfp-dev/ara`, listed in the shared
+  `.git/info/exclude`, so every branch writes to the same single trace.
+- Only run the `research-manager` skill (or write to `ara/`) if the `ara` symlink exists and
+  resolves. If `ara` is missing or dangling, skip it; do NOT create a new `ara/` directory.
+- Never `git add` or commit `ara` outside `../cfp-dev`. Do not add it to `.gitignore`.
+- To sync the trace, commit inside `../cfp-dev` with `git add -f ara` (the exclude rule hides
+  new files from a plain `git add`), then `git commit`. Pushing is done by the maintainer.
 
 ## Cursor and Copilot rules
 - No `.cursor/rules/`, `.cursorrules`, or `.github/copilot-instructions.md` found.

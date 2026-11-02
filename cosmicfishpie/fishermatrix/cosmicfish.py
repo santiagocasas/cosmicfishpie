@@ -24,22 +24,6 @@ from cosmicfishpie.utilities.utils import printing as upt
 from cosmicfishpie.version import VERSION
 
 
-def ray_session(num_cpus=4, restart=True, shutdown=False):
-    import ray
-
-    if shutdown:
-        if ray.is_initialized():
-            ray.shutdown()
-            return None
-    elif restart:
-        if ray.is_initialized():
-            print("ray is shutting down...")
-            ray.shutdown()
-        if not ray.is_initialized():
-            ray.init(num_cpus=num_cpus)
-        return None
-
-
 class FisherMatrix:
     # update version at every release
     cf_version = f"CosmicFish_v{VERSION}"
@@ -62,8 +46,7 @@ class FisherMatrix:
         surveyName="Euclid",
         cosmoModel="w0waCDM",
         latexnames=None,
-        parallel=False,
-        parallel_cpus=4,
+        derivative_provider=None,
     ):
         """This is the main class of cosmicfishpie that is used to do a Fisher matrix forecast for current and upcoming experiments in cosmology. If you want to compute the Fisher matrix you can pass all specifications and options here.
 
@@ -97,10 +80,8 @@ class FisherMatrix:
                                A string of the name of the cosmological model used in the calculations. Defaults to flat "w0waCDM" cosmology
         latexnames           : dict, optional
                                A dictionary that contains the Latex names of the cosmological parameters
-        parallel             : bool, optional
-                               If True will compute the Fisher matrix using ray parallelization. Defaults to False
-        parallel_cpus        : int, optional
-                               Number of CPUs that should be used when computing the results using ray parallelization.
+        derivative_provider  : object, optional
+                               Backend-neutral provider implementing ``compute(DerivativeRequest)``. Defaults to the existing finite-difference provider.
 
         Attributes
         ----------
@@ -125,7 +106,11 @@ class FisherMatrix:
         freeparams        : dict
                              A dictionary containing all names and the corresponding rel. step size for all parameters
         allparams_fidus   : dict
-                            A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
+                             A dictionary that contains all fiducial cosmological and nuisance parameters needed to compute the observable of all probes.
+        derivs_dict       : dict
+                             Derivatives keyed by varied parameter after ``compute()``. Values
+                             retain their probe-specific format: angular spectra for photo/CMB,
+                             redshift-binned power spectra for GCsp/IM.
         """
         if options["feedback"] > 0:
             print("****************************************************************")
@@ -139,44 +124,60 @@ class FisherMatrix:
             print("****************************************************************")
             sys.stdout.flush()
 
-        cfg.init(
-            options=options,
-            specifications=specifications,
-            observables=observables,
-            freepars=freepars,
-            extfiles=extfiles,
-            fiducialpars=fiducialpars,
-            photobiaspars=photobiaspars,
-            photopars=photopars,
-            IApars=IApars,
-            spectrononlinearpars=spectrononlinearpars,
-            spectrobiaspars=spectrobiaspars,
-            IMbiaspars=IMbiaspars,
-            PShotpars=PShotpars,
-            surveyName=surveyName,
-            cosmoModel=cosmoModel,
-            latexnames=latexnames,
-        )
-        self.settings = deepcopy(cfg.settings)
-        self.specs = deepcopy(cfg.specs)
-        self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
-        self.fiducialparams = self.fiducialcosmopars  ## for compatibility
-        self.fiducialcosmo = copy(cfg.fiducialcosmo)
-        self.photopars = deepcopy(cfg.photoparams)
-        self.photobiaspars = deepcopy(cfg.Photobiasparams)
-        self.IApars = deepcopy(cfg.IAparams)
-        self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
-        self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
-        self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
-        self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
-        self.IMbiaspars = deepcopy(cfg.IMbiasparams)
-        self.IMbiasparams = self.IMbiaspars  ## for compatibility
-        self.PShotpars = deepcopy(cfg.PShotparams)
-        self.PShotparams = self.PShotpars  ## for compatibility
-        self.observables = deepcopy(cfg.obs)
-        self.obs = self.observables  ## for compatibility
-        self.input_type = deepcopy(cfg.input_type)  ## for compatibility
-        self.freeparams = deepcopy(cfg.freeparams)
+        # `cfg.init()` mutates the shared `cosmicfishpie.configs.config` module's
+        # global state, which is then immediately read back below. Hold the
+        # shared lock for the full init-then-read-back sequence so a concurrent
+        # `cfg.init()` call (from another `FisherMatrix` instance or from
+        # `build_analysis_context`) cannot interleave and corrupt the read-back
+        # values.
+        with cfg._CONFIG_INIT_LOCK:
+            cfg.init(
+                options=options,
+                specifications=specifications,
+                observables=observables,
+                freepars=freepars,
+                extfiles=extfiles,
+                fiducialpars=fiducialpars,
+                photobiaspars=photobiaspars,
+                photopars=photopars,
+                IApars=IApars,
+                spectrononlinearpars=spectrononlinearpars,
+                spectrobiaspars=spectrobiaspars,
+                IMbiaspars=IMbiaspars,
+                PShotpars=PShotpars,
+                surveyName=surveyName,
+                cosmoModel=cosmoModel,
+                latexnames=latexnames,
+            )
+            self.settings = deepcopy(cfg.settings)
+            self.specs = deepcopy(cfg.specs)
+            self.fiducialcosmopars = deepcopy(cfg.fiducialparams)
+            self.fiducialparams = self.fiducialcosmopars  ## for compatibility
+            self.fiducialcosmo = copy(cfg.fiducialcosmo)
+            self.photopars = deepcopy(cfg.photoparams)
+            self.photobiaspars = deepcopy(cfg.Photobiasparams)
+            self.IApars = deepcopy(cfg.IAparams)
+            self.Spectrobiaspars = deepcopy(cfg.Spectrobiasparams)
+            self.Spectrobiasparams = self.Spectrobiaspars  ## for compatibility
+            self.Spectrononlinpars = deepcopy(cfg.Spectrononlinearparams)
+            self.Spectrononlinearparams = self.Spectrononlinpars  ## for compatibility
+            self.IMbiaspars = deepcopy(cfg.IMbiasparams)
+            self.IMbiasparams = self.IMbiaspars  ## for compatibility
+            self.PShotpars = deepcopy(cfg.PShotparams)
+            self.PShotparams = self.PShotpars  ## for compatibility
+            self.observables = deepcopy(cfg.obs)
+            self.obs = self.observables  ## for compatibility
+            self.external = deepcopy(cfg.external)
+            self.input_type = deepcopy(cfg.input_type)  ## for compatibility
+            backend_attribute = {
+                "camb": "boltzmann_cambpars",
+                "class": "boltzmann_classpars",
+                "symbolic": "boltzmann_symbolicpars",
+            }.get(self.input_type)
+            self.backend_parameters = (
+                deepcopy(getattr(cfg, backend_attribute, {})) if backend_attribute else {}
+            )
+            self.freeparams = deepcopy(cfg.freeparams)
         self.allparams_fidus = {
             **self.fiducialcosmopars,
             **self.photopars,
@@ -187,9 +188,11 @@ class FisherMatrix:
             **self.IMbiaspars,
             **self.PShotpars,
         }
-        self.parallel = parallel
+        self.derivative_provider = derivative_provider
+        # Shared derivative entry point for every probe after compute(). The
+        # nested values retain their probe-specific spectra and grid shapes.
+        self.derivs_dict = {}
         self.feed_lvl = self.settings["feedback"]
-        self.feed_lvl = cfg.settings["feedback"]
         allpars = {}
         allpars.update(self.fiducialcosmopars)
         allpars.update(self.photobiaspars)
@@ -201,10 +204,7 @@ class FisherMatrix:
         allpars.update(self.PShotpars)
         self.allparams = allpars
 
-        # self.parallel=True
         self.recap_options()
-        if self.parallel:
-            ray_session(num_cpus=parallel_cpus, restart=True, shutdown=False)
 
     def compute(self, max_z_bins=None):
         """This function will compute the Fisher information matrix and export using the specified settings.
@@ -223,10 +223,11 @@ class FisherMatrix:
 
         tfishstart = time()
         if "GCph" in self.observables or "WL" in self.observables:
+            tphoto_start = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing photo Fisher matrix",
+                text=f"----> Computing photometric Fisher matrix for {self.observables}",
                 instance=self,
             )
             self.photo_obs_fid = photo_obs.ComputeCls(
@@ -235,6 +236,7 @@ class FisherMatrix:
                 self.IApars,
                 self.photobiaspars,
                 print_info_specs=True,
+                configuration=self,
             )
             self.photo_LSS = photo_cov.PhotoCov(
                 self.fiducialcosmopars,
@@ -242,19 +244,58 @@ class FisherMatrix:
                 self.IApars,
                 self.photobiaspars,
                 fiducial_Cls=self.photo_obs_fid,
+                configuration=self,
             )
+            tcov_start = time()
             noisy_cls, covmat = self.photo_LSS.compute_covmat()
-            self.photo_derivs = self.photo_LSS.compute_derivs()
+            tcov_end = time()
+            tderivs_start = time()
+            self.photo_derivs = self.photo_LSS.compute_derivs(
+                derivative_provider=self.derivative_provider
+            )
+            self.derivs_dict = self.photo_derivs
+            tderivs_end = time()
+            tfisher_start = time()
             photoFM = self.photo_LSS_fishermatrix_einsum(
                 noisy_cls=noisy_cls, covmat=covmat, derivs=self.photo_derivs
             )
+            tfisher_end = time()
             finalFisher = deepcopy(photoFM)
+            if self.settings.get("timing", False):
+                upt.time_print(
+                    feedback_level=1,
+                    min_level=1,
+                    text="[timing] Photometric covariance: ",
+                    time_ini=tcov_start,
+                    time_fin=tcov_end,
+                )
+                upt.time_print(
+                    feedback_level=1,
+                    min_level=1,
+                    text="[timing] Photometric derivatives: ",
+                    time_ini=tderivs_start,
+                    time_fin=tderivs_end,
+                )
+                upt.time_print(
+                    feedback_level=1,
+                    min_level=1,
+                    text="[timing] Photometric Fisher assembly: ",
+                    time_ini=tfisher_start,
+                    time_fin=tfisher_end,
+                )
+                upt.time_print(
+                    feedback_level=1,
+                    min_level=1,
+                    text="[timing] Photometric compute subtotal: ",
+                    time_ini=tphoto_start,
+                    time_fin=time(),
+                )
 
         elif "GCsp" in self.observables or "IM" in self.observables:
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing Pk-spectro Fisher matrix",
+                text=f"----> Computing spectroscopic P(k) Fisher matrix for {self.observables}",
                 instance=self,
             )
             self.set_pk_settings()
@@ -291,7 +332,6 @@ class FisherMatrix:
                 nbins = len(self.zmids)
             tini = time()
             self.derivs_dict = dict()
-            # if self.parallel == False:
             k_mesh = self.Pk_kmesh
             mu_mesh = self.Pk_mumesh
             self.veff_arr = []
@@ -337,13 +377,15 @@ class FisherMatrix:
             upt.time_print(
                 feedback_level=self.feed_lvl,
                 min_level=1,
-                text="----> Computing CMB Fisher matrix",
+                text=f"----> Computing CMB Fisher matrix for {self.observables}",
                 instance=self,
             )
-            CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True)
+            CMB = CMB_cov.CMBCov(self.fiducialcosmopars, print_info_specs=True, configuration=self)
             noisy_cls, covmat = CMB.compute_covmat()
-            derivs = CMB.compute_derivs()
-            CMB_FM = self.CMB_fishermatrix(noisy_cls=noisy_cls, covmat=covmat, derivs=derivs)
+            self.derivs_dict = CMB.compute_derivs(derivative_provider=self.derivative_provider)
+            CMB_FM = self.CMB_fishermatrix(
+                noisy_cls=noisy_cls, covmat=covmat, derivs=self.derivs_dict
+            )
             finalFisher = deepcopy(CMB_FM)
             # return CMB_FM
         else:
@@ -357,9 +399,6 @@ class FisherMatrix:
             time_fin=tfishend,
         )
         fishMat_object = self.export_fisher(finalFisher, totaltime=tfishend - tfishstart)
-
-        if self.parallel:
-            ray_session(restart=False, shutdown=True)
 
         return fishMat_object
 
@@ -401,7 +440,10 @@ class FisherMatrix:
             bias_samples=self.obs_spectrum,
             configuration=self,
         )
-        allpars_deriv = self.pk_deriv.compute_derivs(freeparams=self.freeparams)
+        allpars_deriv = self.pk_deriv.compute_derivs(
+            freeparams=self.freeparams,
+            derivative_provider=self.derivative_provider,
+        )
         return allpars_deriv
 
     def pk_LSS_Fisher(self, nbins):
@@ -570,10 +612,10 @@ class FisherMatrix:
         if covmat is None and lss_obj is not None:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
-            derivs = lss_obj.compute_derivs()
+            derivs = lss_obj.compute_derivs(derivative_provider=self.derivative_provider)
         tini = time()
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]
@@ -633,7 +675,7 @@ class FisherMatrix:
         tfin = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
+            min_level=1,
             text="Finished calculation of Fisher Matrix for {} in: ".format(self.observables),
             time_ini=tini,
             time_fin=tfin,
@@ -670,11 +712,11 @@ class FisherMatrix:
         if covmat is None and lss_obj is not None:
             noisy_cls, covmat = lss_obj.compute_covmat()
         if derivs is None and lss_obj is not None:
-            derivs = lss_obj.compute_derivs()
+            derivs = lss_obj.compute_derivs(derivative_provider=self.derivative_provider)
 
         tini = time()
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
 
         # compute fisher matrix
@@ -736,8 +778,8 @@ class FisherMatrix:
         tfin = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
-            min_level=0,
-            text=f"Finished calculation of Fisher Matrix for {self.observables} in: ",
+            min_level=2,
+            text=f"Photometric Fisher assembly finished for {self.observables} in: ",
             time_ini=tini,
             time_fin=tfin,
         )
@@ -747,10 +789,10 @@ class FisherMatrix:
         if covmat is None and cmb_obj is not None:
             noisy_cls, covmat = cmb_obj.compute_covmat()
         if derivs is None and cmb_obj is not None:
-            derivs = cmb_obj.compute_derivs()
+            derivs = cmb_obj.compute_derivs(derivative_provider=self.derivative_provider)
 
         upt.time_print(
-            feedback_level=self.feed_lvl, min_level=0, text="Computing Fisher matrix", instance=self
+            feedback_level=self.feed_lvl, min_level=1, text="Computing Fisher matrix", instance=self
         )
         # compute fisher matrix
         lvec = noisy_cls["ells"]
@@ -896,7 +938,7 @@ class FisherMatrix:
                         + "    "
                         + str(cfg.latex_names.get(par, str(par)))
                         + "    "
-                        + "{:.6f}".format(self.allparams[par])
+                        + "{:.16E}".format(self.allparams[par])
                     )
                     f.write("\n")
             fishMat_obj = fm.fisher_matrix(file_name=root + ".txt")

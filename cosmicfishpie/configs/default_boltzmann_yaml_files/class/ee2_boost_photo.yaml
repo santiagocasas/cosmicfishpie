@@ -1,0 +1,22 @@
+# CLASS linear spectra multiplied by the EuclidEmulator2 total-matter boost for photometric forecasts.
+# EE2 is calibrated for z <= 10 and k <= ~9.4 h/Mpc. P_k_max_1/Mpc = 5.0 matches EE2's native boundary.
+PARAMETER_TRANSLATION:
+  'neutrino_scheme': 'three_degenerate'
+  'N_ur': 0.00641
+  'neutrino_mass_fac': 93.14
+NONLINEAR:
+  'model': 'ee2'
+ACCURACY: {}
+COSMO_SETTINGS:
+  'P_k_max_1/Mpc': 5.0
+  'output': 'mPk,mTk'
+  'non linear': 'none'
+  'z_max_pk': 3.0
+  'N_ncdm': 3
+  'tau_reio': 0.0561
+LCDM:
+  'Omega_Lambda': 0.0
+  'Omega_k': 0.0
+w0waCDM:
+  'Omega_Lambda': 0.0
+  'Omega_k': 0.0

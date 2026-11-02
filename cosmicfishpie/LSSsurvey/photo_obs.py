@@ -162,7 +162,15 @@ def much_faster_integral_efficiency(i, ngal_func, comoving_func, zarr):
 
 class ComputeCls:
     def __init__(
-        self, cosmopars, photopars, IApars, biaspars, print_info_specs=False, fiducial_cosmo=None
+        self,
+        cosmopars,
+        photopars,
+        IApars,
+        biaspars,
+        print_info_specs=False,
+        fiducial_cosmo=None,
+        *,
+        configuration=None,
     ):
         """Main class to obtain the angular power spectrum of the photometric probe.
 
@@ -218,7 +226,12 @@ class ComputeCls:
         dz               : numpy.ndarray
                            array containing the numerical distance of the redshifts in z
         """
-        self.feed_lvl = cfg.settings["feedback"]
+        self.configuration = cfg if configuration is None else configuration
+        self.settings = self.configuration.settings
+        self.specs = self.configuration.specs
+        self.input_type = self.configuration.input_type
+        self.configured_observables = tuple(self.configuration.obs)
+        self.feed_lvl = self.settings["feedback"]
         upt.time_print(
             feedback_level=self.feed_lvl,
             min_level=2,
@@ -229,7 +242,9 @@ class ComputeCls:
         tcosmo1 = time()
         self.cosmopars = cosmopars
         if fiducial_cosmo is None:
-            self.cosmo = cosmology.cosmo_functions(cosmopars, cfg.input_type)
+            self.cosmo = cosmology.cosmo_functions(
+                cosmopars, self.input_type, configuration=self.configuration
+            )
         else:
             self.cosmo = fiducial_cosmo
         tcosmo2 = time()
@@ -243,21 +258,21 @@ class ComputeCls:
         )
         self.observables = []
         self.binrange = {}
-        for key in cfg.obs:
+        for key in self.configured_observables:
             if key in ["GCph", "WL"]:
                 self.observables.append(key)
                 if key == "GCph":
-                    self.binrange[key] = cfg.specs["binrange_GCph"]
+                    self.binrange[key] = self.specs["binrange_GCph"]
                 elif key == "WL":
-                    self.binrange[key] = cfg.specs["binrange_WL"]
+                    self.binrange[key] = self.specs["binrange_WL"]
 
-        self.binrange_WL = cfg.specs["binrange_WL"]
-        self.binrange_GCph = cfg.specs["binrange_GCph"]
+        self.binrange_WL = self.specs["binrange_WL"]
+        self.binrange_GCph = self.specs["binrange_GCph"]
 
         tnuis1 = time()
         self.biaspars = biaspars
         self.IApars = IApars
-        self.nuisance = nuisance.Nuisance()
+        self.nuisance = nuisance.Nuisance(configuration=self.configuration)
         # if 'GCph' in self.observables: self.bfunction = self.nuisance.bias(self.biaspars)
         if "WL" in self.observables:
             self.IAvalue = self.nuisance.IA(self.IApars, self.cosmo)
@@ -273,7 +288,7 @@ class ComputeCls:
 
         tngal1 = time()
         self.photopars = photopars
-        self.window = photo_window.GalaxyPhotoDist(self.photopars)
+        self.window = photo_window.GalaxyPhotoDist(self.photopars, specifications=self.specs)
         tngal2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -285,33 +300,31 @@ class ComputeCls:
         )
 
         if "GCph" in self.observables and "WL" in self.observables:
-            cfg.specs["ellmax"] = max(cfg.specs["lmax_GCph"], cfg.specs["lmax_WL"])
-            cfg.specs["ellmin"] = min(cfg.specs["lmin_GCph"], cfg.specs["lmin_WL"])
+            self.ellmax = max(self.specs["lmax_GCph"], self.specs["lmax_WL"])
+            self.ellmin = min(self.specs["lmin_GCph"], self.specs["lmin_WL"])
         elif "GCph" in self.observables:
-            cfg.specs["ellmax"] = cfg.specs["lmax_GCph"]
-            cfg.specs["ellmin"] = cfg.specs["lmin_GCph"]
+            self.ellmax = self.specs["lmax_GCph"]
+            self.ellmin = self.specs["lmin_GCph"]
         elif "WL" in self.observables:
-            cfg.specs["ellmax"] = cfg.specs["lmax_WL"]
-            cfg.specs["ellmin"] = cfg.specs["lmin_WL"]
+            self.ellmax = self.specs["lmax_WL"]
+            self.ellmin = self.specs["lmin_WL"]
         else:
             raise ValueError("Observables not specified correctly")
 
-        self.tracer = cfg.settings["GCph_Tracer"]
-        #        self.binrange = cfg.specs["binrange"]
-        self.zsamp = int(round(200 * cfg.settings["accuracy"]))
-        if cfg.settings["ell_sampling"] == "accuracy":
-            self.ellsamp = int(round(100 * cfg.settings["accuracy"]))
+        self.tracer = self.settings["GCph_Tracer"]
+        #        self.binrange = self.specs["binrange"]
+        self.zsamp = int(round(200 * self.settings["accuracy"]))
+        if self.settings["ell_sampling"] == "accuracy":
+            self.ellsamp = int(round(100 * self.settings["accuracy"]))
         else:
-            if isinstance(cfg.settings["ell_sampling"], int):
-                self.ellsamp = cfg.settings["ell_sampling"]
+            if isinstance(self.settings["ell_sampling"], int):
+                self.ellsamp = self.settings["ell_sampling"]
             else:
                 raise ValueError("ell_sampling should be an integer or 'accuracy'")
-        self.ell = np.logspace(
-            np.log10(cfg.specs["ellmin"]), np.log10(cfg.specs["ellmax"] + 10), num=self.ellsamp
-        )
+        self.ell = np.logspace(np.log10(self.ellmin), np.log10(self.ellmax + 10), num=self.ellsamp)
 
-        self.z_min = np.min([cfg.specs["z_bins_GCph"][0], cfg.specs["z_bins_WL"][0]])
-        self.z_max = np.max([cfg.specs["z_bins_GCph"][-1], cfg.specs["z_bins_WL"][-1]])
+        self.z_min = np.min([self.specs["z_bins_GCph"][0], self.specs["z_bins_WL"][0]])
+        self.z_max = np.max([self.specs["z_bins_GCph"][-1], self.specs["z_bins_WL"][-1]])
         self.z = np.linspace(self.z_min, self.z_max, self.zsamp)
         self.dz = np.mean(np.diff(self.z))
         # Precompute comoving distance (major hotspot) once; reuse everywhere
@@ -396,10 +409,10 @@ class ComputeCls:
         if self.feed_lvl >= 2:
             print("***")
             print("Numerical specifications: ")
-            print("WL ell max = ", str(cfg.specs["lmax_WL"]))
-            print("GCph ell max = ", str(cfg.specs["lmax_GCph"]))
-            print("ell min = ", str(cfg.specs["ellmin"]))
-            print("ell max = ", str(cfg.specs["ellmax"]))
+            print("WL ell max = ", str(self.specs["lmax_WL"]))
+            print("GCph ell max = ", str(self.specs["lmax_GCph"]))
+            print("ell min = ", str(self.ellmin))
+            print("ell max = ", str(self.ellmax))
             print("ell sampling: ", str(self.ellsamp))
             print("z sampling: ", str(self.zsamp))
             print("z_min : ", str(self.z_min))
@@ -423,7 +436,7 @@ class ComputeCls:
             chi = self._chi_z  # reuse precomputed
             ell_grid = self.ell[None, :] + 0.5
             kappa = ell_grid / chi[:, None]
-            mask = kappa <= cfg.specs["kmax"]
+            mask = kappa <= self.specs["kmax"]
             if np.any(mask):
                 for iz, chi_val in enumerate(chi):
                     row_mask = mask[iz]
@@ -434,7 +447,7 @@ class ComputeCls:
                     self.Pell[iz, row_mask] = (
                         (self.cosmo.SigmaMG(zval, kappas_row) ** 2)
                         * self.cosmo.matpow(
-                            zval, kappas_row, nonlinear=cfg.settings["nonlinear_photo"]
+                            zval, kappas_row, nonlinear=self.settings["nonlinear_photo"]
                         )
                         / (chi_val**2.0)
                     )
@@ -442,11 +455,11 @@ class ComputeCls:
             chi = self.cosmo.comoving(self.z)
             for ell, zin in product(range(self.ellsamp), range(self.zsamp)):
                 kappa = (self.ell[ell] + 0.5) / chi[zin]
-                if kappa <= cfg.specs["kmax"]:
+                if kappa <= self.specs["kmax"]:
                     self.Pell[zin, ell] = (
                         (self.cosmo.SigmaMG(self.z[zin], kappa) ** 2)
                         * self.cosmo.matpow(
-                            self.z[zin], kappa, nonlinear=cfg.settings["nonlinear_photo"]
+                            self.z[zin], kappa, nonlinear=self.settings["nonlinear_photo"]
                         )
                         / (chi[zin] ** 2.0)
                     )
@@ -479,36 +492,26 @@ class ComputeCls:
         }
         chi = self._chi_z  # reuse cached
         kappa = (self.ell[:, None] + 1 / 2) / chi
-        index_pknn = np.array(np.where(kappa < cfg.specs["kmax"])).T
-
-        for ell, zin in index_pknn:
-            self.sqrtPell["WL"][zin, ell] = (
-                self.cosmo.SigmaMG(self.z[zin], kappa[ell, zin])
-                * np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin], kappa[ell, zin], nonlinear=cfg.settings["nonlinear"]
-                    )
-                )
-            ) / chi[zin]
-            self.sqrtPell["WL_IA"][zin, ell] = (
-                np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin], kappa[ell, zin], nonlinear=cfg.settings["nonlinear"]
-                    )
-                )
-                / chi[zin]
-            )
-            self.sqrtPell["GCph"][zin, ell] = (
-                np.sqrt(
-                    self.cosmo.matpow(
-                        self.z[zin],
-                        kappa[ell, zin],
-                        nonlinear=cfg.settings["nonlinear"],
-                        tracer=self.tracer,
-                    )
-                )
-                / chi[zin]
-            )
+        kmax = self.specs["kmax"]
+        nonlinear = self.settings["nonlinear"]
+        # Row-wise vectorization: one vector `matpow` call per redshift instead of
+        # one scalar call per (ell, z) pair. WL and GCph share the same matter P(k)
+        # when the GCph tracer is matter, so it is computed only once per row.
+        for iz in range(self.zsamp):
+            col = kappa[:, iz]
+            mask = col < kmax
+            if not np.any(mask):
+                continue
+            kn = col[mask]
+            Pmm_val = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear)
+            sqrtPmm = np.sqrt(np.maximum(Pmm_val, 0.0))
+            self.sqrtPell["WL"][iz, mask] = self.cosmo.SigmaMG(self.z[iz], kn) * sqrtPmm / chi[iz]
+            self.sqrtPell["WL_IA"][iz, mask] = sqrtPmm / chi[iz]
+            if self.tracer == "matter":
+                self.sqrtPell["GCph"][iz, mask] = sqrtPmm / chi[iz]
+            else:
+                Pgcph = self.cosmo.matpow(self.z[iz], kn, nonlinear=nonlinear, tracer=self.tracer)
+                self.sqrtPell["GCph"][iz, mask] = np.sqrt(np.maximum(Pgcph, 0.0)) / chi[iz]
         return None
 
     def galaxy_kernel(self, z, i):
@@ -631,7 +634,15 @@ class ComputeCls:
         # be performed if cosmopars and photopars are the same
         z = self.z
         ngal_func = self.window.norm_ngal_photoz
-        comoving_func = self.cosmo.comoving
+        # Reuse the comoving distance precomputed in __init__ when the helper
+        # asks for the same grid; each fresh call would redo one quad per point.
+        chi_z = self._chi_z
+
+        def comoving_func(zz):
+            if zz is z:
+                return chi_z
+            return self.cosmo.comoving(zz)
+
         if not _USE_FAST_EFF:
             # Fallback to vectorized O(N^2) implementation
             return faster_integral_efficiency(i, ngal_func, comoving_func, z)
@@ -677,17 +688,14 @@ class ComputeCls:
             self.efficiency = self.lensing_efficiency()
             # Sakr Fix June 2023
             # self.WL         = [interp1d(self.z,self.lensing_kernel(self.z,ind), kind='cubic') for ind in self.binrange]
-            self.WL = [
-                interp1d(self.z, self.lensing_kernel(self.z, ind)[0], kind="cubic")
-                for ind in self.binrange_WL
-            ]
+            wl_kernels = [self.lensing_kernel(self.z, ind) for ind in self.binrange_WL]
+            self.WL = [interp1d(self.z, kern[0], kind="cubic") for kern in wl_kernels]
             self.WL.insert(0, None)
             # Sakr Fix June 2023
-            self.WL_IA = [
-                interp1d(self.z, self.lensing_kernel(self.z, ind)[1], kind="cubic")
-                for ind in self.binrange_WL
-            ]
+            self.WL_IA = [interp1d(self.z, kern[1], kind="cubic") for kern in wl_kernels]
             self.WL_IA.insert(0, None)
+        # Memoized window-function samples on the integration grid (used by clsintegral)
+        self._win_cache = {}
         return None
 
     def genwindow(self, z, obs, i):
@@ -744,7 +752,7 @@ class ComputeCls:
             text="Computing Cls integral for {}".format(self.observables),
             instance=self,
         )
-        # full_ell = np.linspace(cfg.specs['ellmin'],cfg.specs['ellmax'],cfg.specs['ellmax']-cfg.specs['ellmin'])
+        # full_ell = np.linspace(self.specs['ellmin'],self.specs['ellmax'],self.specs['ellmax']-self.specs['ellmin'])
         # full_ell = np.round(full_ell, 0)
         full_ell = self.ell
 
@@ -765,8 +773,8 @@ class ComputeCls:
 
                 finalcls = np.zeros((len(full_ell)))
                 for ind, lval in enumerate(full_ell):
-                    if (cfg.specs["lmin_" + obs1] <= lval <= cfg.specs["lmax_" + obs1]) and (
-                        cfg.specs["lmin_" + obs2] <= lval <= cfg.specs["lmax_" + obs2]
+                    if (self.specs["lmin_" + obs1] <= lval <= self.specs["lmax_" + obs1]) and (
+                        self.specs["lmin_" + obs2] <= lval <= self.specs["lmax_" + obs2]
                     ):
                         finalcls[ind] = clinterp(lval)
 
@@ -836,8 +844,8 @@ class ComputeCls:
 
         # Vectorized computation of finalcls
         for (obs1, obs2, bin1, bin2), clinterp in clinterps.items():
-            lmin1, lmax1 = cfg.specs[f"lmin_{obs1}"], cfg.specs[f"lmax_{obs1}"]
-            lmin2, lmax2 = cfg.specs[f"lmin_{obs2}"], cfg.specs[f"lmax_{obs2}"]
+            lmin1, lmax1 = self.specs[f"lmin_{obs1}"], self.specs[f"lmax_{obs1}"]
+            lmin2, lmax2 = self.specs[f"lmin_{obs2}"], self.specs[f"lmax_{obs2}"]
 
             mask = (
                 (full_ell >= lmin1)
@@ -875,6 +883,29 @@ class ComputeCls:
 
         return cls
 
+    def _window_matrix(self, obs, i):
+        """Cached hub-independent Limber factor for one observable/bin pair.
+
+        Combines the clustering and IA terms into
+        ``sqrtP * W + sqrtP_IA * W_IA`` evaluated on the redshift grid, so that
+        each pair of the ``O(nbins^2)`` Cl terms reuses the same array instead of
+        rebuilding the window functions and bias callables. The Hubble factor is
+        deliberately applied by ``clsintegral`` because it is an input to that
+        public method and may differ between calls.
+        """
+        cache = getattr(self, "_win_cache", None)
+        if cache is None:
+            cache = self._win_cache = {}
+        cached = cache.get((obs, i))
+        if cached is None:
+            win, win_IA = self.genwindow(self.z, obs, i)
+            cached = (
+                self.sqrtPell[obs] * win[:, np.newaxis]
+                + self.sqrtPell[obs + "_IA"] * win_IA[:, np.newaxis]
+            )
+            cache[(obs, i)] = cached
+        return cached
+
     def clsintegral(self, obs1, obs2, bin1, bin2, hub):
         """function to obtain the angular power spectrum as an function of the multipole.
 
@@ -896,27 +927,11 @@ class ComputeCls:
         callable
             Function that receives an array multipole and returns the angular power spectrum for these multipoles.
         """
-        mask1 = (self.ell >= cfg.specs["lmin_" + obs1]) & (self.ell <= cfg.specs["lmax_" + obs1])
-        mask2 = (self.ell >= cfg.specs["lmin_" + obs2]) & (self.ell <= cfg.specs["lmax_" + obs2])
+        mask1 = (self.ell >= self.specs["lmin_" + obs1]) & (self.ell <= self.specs["lmax_" + obs1])
+        mask2 = (self.ell >= self.specs["lmin_" + obs2]) & (self.ell <= self.specs["lmax_" + obs2])
 
-        # Sakr Fix June 2023
-        # pz_arr = self.genwindow(self.z,obs1,bin1)*self.genwindow(self.z,obs2,bin2)/hub
-        # intgn  = self.sqrtPell[obs1]* self.sqrtPell[obs2] * pz_arr[:,np.newaxis]
-        intgn = (
-            self.sqrtPell[obs1]
-            * self.genwindow(self.z, obs1, bin1)[0][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-            + self.sqrtPell[obs1 + "_IA"]
-            * self.genwindow(self.z, obs1, bin1)[1][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-        ) * (
-            self.sqrtPell[obs2]
-            * self.genwindow(self.z, obs2, bin2)[0][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-            + self.sqrtPell[obs2 + "_IA"]
-            * self.genwindow(self.z, obs2, bin2)[1][:, np.newaxis]
-            / np.sqrt(hub)[:, np.newaxis]
-        )
+        hub_inv_sqrt = (1.0 / np.sqrt(hub))[:, np.newaxis]
+        intgn = self._window_matrix(obs1, bin1) * self._window_matrix(obs2, bin2) * hub_inv_sqrt**2
 
         clint = integrate.trapezoid(intgn, dx=self.dz, axis=0)
 

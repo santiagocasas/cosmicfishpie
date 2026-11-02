@@ -53,6 +53,31 @@ class TestYAMLOperations:
         assert len(loaded_yaml["specifications"]["z_bins"]) == 3
 
 
+def test_resolve_spec_path_falls_back_to_packaged_survey_specs(tmp_path):
+    other_specs = tmp_path / "packaged"
+    other_specs.mkdir()
+    fallback = other_specs / "SKAO-IM-Redbook.yaml"
+    fallback.write_text("specifications: {}\n")
+
+    resolved = config._resolve_spec_path(tmp_path, "SKAO-IM-Redbook", other_specs)
+
+    assert resolved == str(fallback)
+
+
+def test_resolve_spec_path_prefers_custom_specs_dir(tmp_path):
+    custom_specs = tmp_path / "custom"
+    packaged_specs = tmp_path / "packaged"
+    custom_specs.mkdir()
+    packaged_specs.mkdir()
+    custom = custom_specs / "SKAO-IM-Redbook.yaml"
+    (packaged_specs / custom.name).write_text("specifications: {source: packaged}\n")
+    custom.write_text("specifications: {source: custom}\n")
+
+    resolved = config._resolve_spec_path(custom_specs, "SKAO-IM-Redbook", packaged_specs)
+
+    assert resolved == str(custom)
+
+
 class TestConfigInitFunction:
     """Test the main config.init() function with various parameters."""
 

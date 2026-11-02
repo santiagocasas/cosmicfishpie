@@ -9,8 +9,11 @@ and the FishConsumer class.
 from unittest.mock import Mock, patch
 
 import numpy as np
+import pandas as pd
+import pytest
 
 from cosmicfishpie.analysis import fishconsumer as fc
+from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
 
 
 class TestUtilityFunctions:
@@ -302,6 +305,127 @@ class TestPandasIntegration:
             # Check that weights were exponentiated
             assert np.isclose(result["weight"].iloc[0], 1.0)
             assert result["weight"].iloc[1] < 1.0
+
+
+class TestFisherChainPlot:
+    """Protect the marginal/conditional distinction and incomplete pair alignment."""
+
+    @staticmethod
+    def correlated_fisher():
+        covariance = np.array([[4.0, 1.5, 0.5], [1.5, 1.0, 0.2], [0.5, 0.2, 2.0]])
+        return (
+            fisher_matrix(
+                fisher_matrix=np.linalg.inv(covariance),
+                param_names=["x", "ns", "y"],
+                fiducial=[0.0, 1.0, 2.0],
+            ),
+            covariance,
+        )
+
+    def test_marginalizes_correlated_parameter_and_preserves_inputs(self):
+        fisher, covariance = self.correlated_fisher()
+        original = fisher.fisher_matrix.copy()
+        chain = pd.DataFrame(
+            {
+                "x": [-1.0, 1.0],
+                "ns": [0.9, 1.1],
+                "y": [1.0, 3.0],
+                "weight": [0.25, 0.75],
+                "posterior": [-2.0, -3.0],
+            }
+        )
+        with patch.object(fc, "make_triangle_plot") as plot:
+            fc.make_fisher_chain_plot([fisher], [chain], params=["y", "x"])
+        args = plot.call_args.kwargs
+        marginal = args["fishers"][0]
+        assert marginal.param_names == ["y", "x"]
+        np.testing.assert_allclose(
+            marginal.inverse_fisher_matrix(), covariance[np.ix_([2, 0], [2, 0])]
+        )
+        # Conditioning on ns would make the x variance smaller than four.
+        assert np.isclose(marginal.inverse_fisher_matrix()[1, 1], 4.0)
+        np.testing.assert_array_equal(fisher.fisher_matrix, original)
+        assert fisher.param_names == ["x", "ns", "y"]
+        pd.testing.assert_frame_equal(args["chains"][0], chain[["y", "x", "weight"]])
+        assert "ns" in chain and "posterior" in chain
+
+    def test_missing_chain_keeps_case_colors_and_limits(self):
+        fisher, _ = self.correlated_fisher()
+        chain = pd.DataFrame(
+            {"x": [-30.0, 1.0, 999.0], "y": [2.0, 3.0, 999.0], "weight": [0.4, 0.6, 0.0]}
+        )
+        with patch.object(fc, "make_triangle_plot") as plot:
+            fc.make_fisher_chain_plot(
+                [fisher, fisher, fisher],
+                [None, chain, None],
+                labels=["A", "B", "C"],
+                colors=["red", "blue", "green"],
+                params=["x", "y"],
+                extents={"y": (-10.0, 10.0)},
+            )
+        args = plot.call_args.kwargs
+        assert args["colors"] == ["red", "blue", "green", "blue"]
+        assert args["fisher_labels"] == ["A Fisher", "B Fisher", "C Fisher"]
+        assert args["chain_labels"] == ["B chain"]
+        np.testing.assert_allclose(args["extents"]["x"], [-30.0, 6.0])
+        assert args["extents"]["y"] == (-10.0, 10.0)
+        assert len(args["chains"][0]) == 2
+        assert len(chain) == 3
+
+    def test_fisher_only_and_wrapper(self):
+        fisher, _ = self.correlated_fisher()
+        with patch.object(fc, "make_triangle_plot") as plot:
+            result = fc.FishConsumer().make_fisher_chain_plot([fisher])
+        assert result is plot.return_value
+        args = plot.call_args.kwargs
+        assert args["chains"] is None and args["chain_labels"] is None
+        np.testing.assert_allclose(args["extents"]["x"], [-6.0, 6.0])
+
+    def test_chain_quantiles_ignore_tiny_weight_tails_and_hidden_fishers(self):
+        fisher, _ = self.correlated_fisher()
+        # Importance weights convert a uniform grid into a standard Gaussian.
+        x = np.linspace(-8, 8, 16001)
+        chain = pd.DataFrame({"x": x, "weight": np.exp(-(x**2) / 2)})
+        chain = pd.concat([chain, pd.DataFrame({"x": [-100, 100], "weight": [1e-20] * 2})])
+        with patch.object(fc, "make_triangle_plot") as plot:
+            fc.make_fisher_chain_plot(
+                [fisher, fisher],
+                [None, chain],
+                params=["x"],
+                labels=["missing", "Gaussian"],
+                colors=["red", "blue"],
+                show_fisher=False,
+            )
+        args = plot.call_args.kwargs
+        assert args["fishers"] is None and args["fisher_labels"] is None
+        assert args["colors"] == ["blue"]
+        np.testing.assert_allclose(args["extents"]["x"], [-3, 3], atol=0.002)
+
+    def test_hidden_chain_does_not_set_limits(self):
+        fisher, _ = self.correlated_fisher()
+        chain = pd.DataFrame({"x": [-1000, 1000]})
+        with patch.object(fc, "make_triangle_plot") as plot:
+            fc.make_fisher_chain_plot([fisher], [chain], params=["x"], show_chains=False)
+        args = plot.call_args.kwargs
+        assert args["chains"] is None and args["chain_labels"] is None
+        np.testing.assert_allclose(args["extents"]["x"], [-6, 6])
+
+    @pytest.mark.parametrize(
+        "kwargs, message",
+        [
+            ({"chains": []}, "one entry per Fisher"),
+            ({"params": ["absent"]}, "missing parameters"),
+            ({"params": ["x", "x"]}, "nonempty and unique"),
+            ({"nsigmas": 0}, "positive and finite"),
+            ({"colors": []}, "nonempty"),
+            ({"show_fisher": False, "show_chains": False}, "At least one"),
+            ({"show_fisher": False}, "No visible"),
+        ],
+    )
+    def test_invalid_inputs(self, kwargs, message):
+        fisher, _ = self.correlated_fisher()
+        with pytest.raises(ValueError, match=message):
+            fc.make_fisher_chain_plot([fisher], **kwargs)
 
 
 class TestConstants:

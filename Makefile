@@ -1,7 +1,7 @@
 .PHONY : docs
 docs :
 	rm -rf docs/build/
-	sphinx-autobuild -b html --watch cosmicfishpie/ docs/source/ docs/build/
+	uv run --extra docs sphinx-autobuild -b html --watch cosmicfishpie/ docs/source/ docs/build/
 
 .PHONY : run-checks
 run-checks :

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Upgrade the development Black requirement to `>=26.5.1,<27.0`, apply its formatting
+  with an explicit Python 3.10 target, and refresh the development dependency lockfile.
+
 - Add `fishconsumer.make_fisher_chain_plot` for paired Fisher/posterior overlays,
   with marginalization to plotted parameters, matched colors for missing-chain
   cases, independent `show_fisher`/`show_chains` switches, and per-call limits

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Upgrade the development Black requirement to `>=26.5.1,<27.0`, apply its formatting
+  with an explicit Python 3.10 target, and refresh the development dependency lockfile.
 - Validate `jaxcosmo` inputs further: reject theta-like expansion parameters, conflicting
   amplitude aliases and non-positive `sigma8`; fail when the Halofit nonlinear scale has no
   root instead of returning a spurious spectrum; keep the wavenumber axis in the Halofit

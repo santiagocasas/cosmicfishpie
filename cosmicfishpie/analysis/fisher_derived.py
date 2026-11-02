@@ -355,13 +355,13 @@ class fisher_derived:
         AT = np.transpose(temp_derived_matrix)
         fisher_new_inverse = np.dot(np.dot(AT, fisher_matrix.get_fisher_inverse()), A)
         # get initial PCA and spectral cutoff:
-        (w, v) = fisher_matrix.PCA()
+        w, v = fisher_matrix.PCA()
         initial_cutoff = fisher_matrix.fisher_cutoff
         constrained_eigen = [i for i in w if i > 1.1 * initial_cutoff]
         initial_best_mode = 1.0 / np.amax(constrained_eigen)
         initial_worse_mode = 1.0 / np.amin(constrained_eigen)
         # get the new matrix spectrum:
-        (w_new, v_new) = np.linalg.eigh(fisher_new_inverse)
+        w_new, v_new = np.linalg.eigh(fisher_new_inverse)
         # establish the cutoff. This is chosen to leave unaltered the original
         # eigenvalues of the Fisher matrix as much as we can.
         spectral_width = (

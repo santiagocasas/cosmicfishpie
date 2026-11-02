@@ -14,8 +14,8 @@
 # ----------------------------------------------------------------------------------------
 
 """
-   :synopsis: Module that contains operations that can be performed on Fisher matrices.
-              All of them are safeguarded against non-Fisher input.
+:synopsis: Module that contains operations that can be performed on Fisher matrices.
+           All of them are safeguarded against non-Fisher input.
 """
 
 # ***************************************************************************************

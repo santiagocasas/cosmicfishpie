@@ -424,10 +424,10 @@
 <span class="c1"># ----------------------------------------------------------------------------------------</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">   :synopsis: Module that contains the fisher_matrix class and the operations defined on it.</span>
-<span class="sd">              The idea is that of creating a Fisher matrix safely, with all operations being</span>
-<span class="sd">              well defined and safe-guarded once the input matrix is accepted as a Fisher</span>
-<span class="sd">              matrix.</span>
+<span class="sd">:synopsis: Module that contains the fisher_matrix class and the operations defined on it.</span>
+<span class="sd">           The idea is that of creating a Fisher matrix safely, with all operations being</span>
+<span class="sd">           well defined and safe-guarded once the input matrix is accepted as a Fisher</span>
+<span class="sd">           matrix.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># ***************************************************************************************</span>
@@ -755,7 +755,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">param_names_dict</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">param_names_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="c1"># do PCA and store results:</span>
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
         <span class="c1"># protect against degenerate parameters:</span>
         <span class="c1"># self.protect_degenerate()</span>
         <span class="c1"># invert the Fisher matrix and store the result:</span>
@@ -1152,7 +1152,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check cache:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cache</span><span class="p">:</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
         <span class="c1"># get the eigenvalues and eigenvactors:</span>
         <span class="n">fisher_eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span>
         <span class="c1">#</span>
@@ -1184,7 +1184,7 @@
             <span class="c1"># get the Fisher:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fisher_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">fisher_eigenvectors</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">fisher_eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
             <span class="c1"># redo PCA:</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span></div>
 
 
     <span class="c1"># -----------------------------------------------------------------------------------</span>
@@ -1263,7 +1263,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">param_names_dict</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">param_names_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="c1"># do PCA and store results:</span>
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvalues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PCA</span><span class="p">()</span>
         <span class="c1"># protect against degenerate parameters:</span>
         <span class="c1"># self.protect_degenerate( )</span>
         <span class="c1"># invert the Fisher matrix and store the result:</span>

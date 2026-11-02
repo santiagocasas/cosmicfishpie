@@ -14,7 +14,7 @@ def test_fisheroperations(spectro_fisher_matrix):
     assert "h" not in post.get_param_names()
     assert np.isclose(fish.get_confidence_bounds()[0], post.get_confidence_bounds()[0])
     assert np.isclose(
-        post.get_confidence_bounds(marginal=False)[0], 0.007891362317701697, rtol=1.0e-3
+        post.get_confidence_bounds(marginal=False)[0], 0.007858877490180728, rtol=1.0e-3
     )
 
     # Fixing
@@ -23,11 +23,11 @@ def test_fisheroperations(spectro_fisher_matrix):
     assert np.isclose(
         fish.get_confidence_bounds(marginal=False)[0], post.get_confidence_bounds(marginal=False)[0]
     )
-    assert np.isclose(post.get_confidence_bounds()[0], 0.00333069850284891, rtol=1.0e-3)
+    assert np.isclose(post.get_confidence_bounds()[0], 0.003256258516041765, rtol=1.0e-3)
 
     # Reshuffeling
     post = cfo.reshuffle(fish, ["Omegam", "lnbg_1", "Ps_1"])
-    assert np.isclose(post.get_confidence_bounds()[0], 0.00333069850284891, rtol=1.0e-3)
+    assert np.isclose(post.get_confidence_bounds()[0], 0.003256258516041765, rtol=1.0e-3)
 
 
 def test_getdist_plotters(spectro_fisher_matrix):

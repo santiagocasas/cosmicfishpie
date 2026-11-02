@@ -11,7 +11,7 @@ import numpy as np
 
 import cosmicfishpie.configs.config as cfg
 import cosmicfishpie.LSSsurvey.spectro_obs as spec_obs
-from cosmicfishpie.fishermatrix.derivatives import derivatives
+from cosmicfishpie.fishermatrix.derivatives import compute_derivatives
 from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
 
@@ -560,7 +560,7 @@ class SpectroDerivs:
             kron_delta = 0
         return kron_delta
 
-    def compute_derivs(self, freeparams=dict()):
+    def compute_derivs(self, freeparams=None, *, derivative_provider=None):
         """Calls the common derivative engine to compute the derivatives of the observed power spectrum
 
         Parameters
@@ -574,19 +574,20 @@ class SpectroDerivs:
             A dictionary containing lists of derivatives of the observed power spectrum for each redshift bin and parameter
         """
         derivs = dict()
-        if freeparams != dict():
+        if freeparams is not None:
             self.freeparams = freeparams
         compute_derivs = True
         if compute_derivs:
             tder1 = time()
             print(">> Computing Derivs >>")
-            deriv_engine = derivatives(
+            derivs = compute_derivatives(
                 observable=self.get_obs,
                 fiducial=self.fiducial_allpars,
                 special_deriv_function=self.exact_derivs,
                 freeparams=self.freeparams,
+                configuration=self.config,
+                provider=derivative_provider,
             )
-            derivs = deriv_engine.result
             tder2 = time()
             upt.time_print(
                 feedback_level=self.feed_lvl,

@@ -3,6 +3,8 @@
 
 import glob
 import os
+import sys
+import threading
 from copy import deepcopy
 from time import time
 
@@ -14,11 +16,30 @@ from cosmicfishpie.utilities.utils import misc as ums
 from cosmicfishpie.utilities.utils import physmath as upm
 from cosmicfishpie.utilities.utils import printing as upt
 
+# `init()` below mutates this module's global variables in place. Callers that
+# call `init()` and then immediately read back those globals (e.g. to snapshot
+# them into an instance/context object) must hold this lock for the full
+# init-then-read-back sequence, otherwise a concurrent `init()` call from
+# another thread can interleave and corrupt the read-back values. See
+# `cosmicfishpie.cosmology.cosmology._COLOSSUS_SETTINGS_LOCK` for the same
+# pattern applied to a different piece of global state.
+_CONFIG_INIT_LOCK = threading.RLock()
+
 
 def _load_boltzmann_yaml(path):
     """Load a solver settings YAML."""
     with open(path, "r") as yaml_file:
         return yaml.safe_load(yaml_file) or {}
+
+
+def _resolve_spec_path(foldername, filename, other_specs_dir):
+    """Resolve a survey YAML, preferring the requested specs directory."""
+    path = os.path.join(foldername, filename + ".yaml")
+    if not os.path.isfile(path):
+        alt_path = os.path.join(other_specs_dir, filename + ".yaml")
+        if os.path.isfile(alt_path):
+            return alt_path
+    return path
 
 
 def _add_free_ia_parameters(freeparams, ia_params, variation):
@@ -98,7 +119,8 @@ def init(
     camb_path                   : str
                                   Path to camb. Defaults to the camb in your current environment
     specs_dir                   : str
-                                  Path to the survey specifications. Defaults to the `specs_dir_default`
+                                  Path to the survey specifications. Defaults to the `specs_dir_default`.
+                                  Names not found there are also searched in the packaged `other_survey_specifications` folder
     specs_dir_default           : str
                                   Path to the default survey specifications. Defaults to the `survey_specifications` folder in the config directory of cosmicfishpie
     survey_name                 : str
@@ -108,7 +130,7 @@ def init(
     survey_name_spectro         : str
                                   Name of the survey specifications file for a spectrocopic probe
     survey_name_radio_IM        : str
-                                  Name of the survey specifications file for a line intensity mapping probe
+                                  Name of the survey specifications file for a line intensity mapping probe. Defaults to `SKAO-IM-Redbook`
     derivatives                 : str
                                   String of the name of the derivative method. Either `3PT`, `4PT_FWD`, `STEM` or `POLY`. Defaults to `3PT`
     nonlinear                   : bool
@@ -135,6 +157,8 @@ def init(
                                   Global rescaling of the amount of points that are used in internal calculations or interpolations for the probes. Defaults to 1
     feedback                    : int
                                   Number indicating the verbosity of the output. Higher numbers generally mean more output. Defaults to 2
+    timing                      : bool
+                                  If True, print phase timings for Fisher calculations. Defaults to False
     activateMG                  : bool
                                   If True will also consider modified gravity in the calculations of the observables. Defaults to False
     external_activateMG         : bool
@@ -242,7 +266,7 @@ def init(
     settings.setdefault("survey_name_spectro", "Euclid-Spectroscopic-ISTF-Pessimistic")
     # settings.setdefault("survey_name_radio_photo", "SKA1-Photometric-Redbook-Optimistic")
     # settings.setdefault("survey_name_radio_spectro", "SKA1-Spectroscopic-Redbook-Optimistic")
-    settings.setdefault("survey_name_radio_IM", "SKA1-IM-Redbook-Optimistic")
+    settings.setdefault("survey_name_radio_IM", "SKAO-IM-Redbook")
     settings.setdefault("fail_on_specs_not_found", False)
     settings.setdefault("derivatives", "3PT")
     settings.setdefault("nonlinear", True)
@@ -259,6 +283,7 @@ def init(
     settings.setdefault("spectro_Pk_k_samples", 1025)
     settings.setdefault("spectro_Pk_mu_samples", 17)
     settings.setdefault("feedback", 2)
+    settings.setdefault("timing", False)
     settings.setdefault("activateMG", False)
     settings.setdefault("external_activateMG", False)
     settings.setdefault("cosmo_model", cosmoModel)
@@ -408,7 +433,10 @@ def init(
 
     # Add additional surveys here
     available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
-    available_survey_names = ["Euclid", "SKAO", "DESI", "Planck", "Rubin"]
+
+    other_specs_dir = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "other_survey_specifications"
+    )
 
     def create_ph_dict(foldername, filename):
         photo_dict = dict()
@@ -420,7 +448,7 @@ def init(
             )
             return photo_dict
         try:
-            ph_file_path = os.path.join(foldername, filename + ".yaml")
+            ph_file_path = _resolve_spec_path(foldername, filename, other_specs_dir)
             if not os.path.isfile(ph_file_path):
                 raise FileNotFoundError(f"specifications file : {ph_file_path} not found!")
         except FileNotFoundError as e:
@@ -474,7 +502,7 @@ def init(
             )
             return spec_dict
         try:
-            sp_file_path = os.path.join(foldername, filename + ".yaml")
+            sp_file_path = _resolve_spec_path(foldername, filename, other_specs_dir)
             if not os.path.isfile(sp_file_path):
                 raise FileNotFoundError(f"specifications file : {sp_file_path} not found!")
         except FileNotFoundError as e:
@@ -672,7 +700,9 @@ def init(
         text="-> Computing cosmology at the fiducial point",
     )
     tcosmo1 = time()
-    fiducialcosmo = cosmology.cosmo_functions(fiducialparams, input_type)
+    fiducialcosmo = cosmology.cosmo_functions(
+        fiducialparams, input_type, configuration=sys.modules[__name__]
+    )
     tcosmo2 = time()
     upt.time_print(
         feedback_level=feed_lvl,
@@ -823,6 +853,8 @@ def init(
         "h": r"h",
         "ns": r"n_{\rm s}",
         "tau": r"\tau",
+        "As": r"A_{\rm s}",
+        "10^9As": r"10^9 A_{\rm s}",
         "sigma8": r"\sigma_8",
         "s8": r"\sigma_8",
         "Mnu": r"M_\nu",

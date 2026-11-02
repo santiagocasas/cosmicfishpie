@@ -1,5 +1,6 @@
 ACCURACY:
   'emulator_precision' : 'max_precision' # 'max_precision' or 'fiducial'
+  'provider' : 'syren_new' # 'syren_new' or 'legacy'
 NUMERICS:
   'kmax_pk' : 9      ##h/Mpc
   'kmin_pk' : 1.0e-3 ##h/Mpc

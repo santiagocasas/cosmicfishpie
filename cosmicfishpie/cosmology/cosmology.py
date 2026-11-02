@@ -8,7 +8,10 @@ This module contains useful cosmological functions.
 
 import os
 import sys
+import threading
 import types
+from collections.abc import Mapping
+from contextlib import contextmanager
 from copy import deepcopy
 from glob import glob
 from time import time
@@ -31,6 +34,120 @@ from cosmicfishpie.utilities.utils import printing as upr
 
 cachedir = "memory_cache"
 memory = Memory(cachedir, verbose=0)
+
+_COLOSSUS_SETTINGS_LOCK = threading.RLock()
+
+
+def _thaw(value):
+    """Recursively copy frozen context values into mutable backend inputs."""
+
+    if isinstance(value, Mapping):
+        return {key: _thaw(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw(item) for item in value]
+    return deepcopy(value)
+
+
+def _normalize_camb_import_path(camb_path):
+    """Return the directory that must be on ``sys.path`` to import CAMB."""
+
+    resolved_path = os.path.realpath(os.path.join(os.getcwd(), camb_path))
+    if os.path.isfile(os.path.join(resolved_path, "__init__.py")):
+        return os.path.dirname(resolved_path)
+    return resolved_path
+
+
+def _class_pk_grid(classres, k, z, *, nonlinear, cb=False):
+    """Evaluate CLASS P(k, z) or P_cb(k, z) on explicit samples without padded-grid checks."""
+
+    if cb and hasattr(classres, "get_pk_cb_array"):
+        values = classres.get_pk_cb_array(k, z, len(k), len(z), nonlinear)
+    else:
+        values = classres.get_pk_array(k, z, len(k), len(z), nonlinear)
+    return np.asarray(values).reshape((len(z), len(k))).T
+
+
+def _class_nonlinear_pk_grid(classres, k, z, *, cb=False):
+    """Evaluate nonlinear CLASS spectra only inside the configured P(k, z) domain."""
+
+    k_max = float(classres.pars["P_k_max_1/Mpc"])
+    z_max = float(classres.pars["z_max_pk"])
+    supported_k = np.asarray(k)[np.asarray(k) <= k_max]
+    supported_z = np.asarray(z)[np.asarray(z) <= z_max]
+    grid = _class_pk_grid(classres, supported_k, supported_z, nonlinear=True, cb=cb)
+    if not np.isfinite(grid).all():
+        spectrum = "P_cb" if cb else "P_m"
+        bad_count = np.size(grid) - np.count_nonzero(np.isfinite(grid))
+        raise FloatingPointError(
+            f"CLASS returned {bad_count} non-finite {spectrum}(k, z) values "
+            "inside its configured nonlinear domain"
+        )
+    return grid, supported_k, supported_z
+
+
+def _class_cb_subtraction_grid(classres, pk_nl, k, z):
+    """Matched CAMB/CLASS cb recipe, evaluated on the supported nonlinear grid.
+
+    Neutrino cross and auto spectra remain linear in this approximation. CLASS's
+    native nonlinear cb prediction is a different prescription and is opt-in.
+    """
+    transfer, kt, zt = classres.get_transfer_and_k_and_z()
+    f_b = classres.Omega_b() / classres.Omega_m()
+    f_cdm = classres.Omega0_cdm() / classres.Omega_m()
+    f_cb = f_b + f_cdm
+    f_nu = 1 - f_cb
+    t_cb = (f_b * transfer["d_b"] + f_cdm * transfer["d_cdm"]) / f_cb
+    t_nu = transfer["d_ncdm[0]"]
+    primordial = classres.get_primordial()
+    pk_prim = (
+        UnivariateSpline(primordial["k [1/Mpc]"], primordial["P_scalar(k)"])(kt)
+        * (2 * np.pi**2)
+        / kt**3
+    )
+    correction = (2 * f_nu * f_cb * t_nu * t_cb + f_nu**2 * t_nu**2) * pk_prim[:, None]
+    correction_spline = RectBivariateSpline(zt[::-1], kt, correction[:, ::-1].T)
+    return (pk_nl - correction_spline(z[::-1], k).T[:, ::-1]) / f_cb**2
+
+
+def _backend_parameters(configuration, code):
+    """Return a mutable backend-parameter snapshot owned by ``configuration``."""
+
+    selected = getattr(configuration, "backend_parameters", None)
+    if selected is not None:
+        configured_code = getattr(configuration, "input_type", None)
+        if code != configured_code:
+            raise ValueError(
+                f"Explicit configuration resolves backend {configured_code!r}; "
+                f"cannot construct runtime for {code!r}."
+            )
+        return _thaw(selected)
+
+    attribute = {
+        "camb": "boltzmann_cambpars",
+        "class": "boltzmann_classpars",
+        "symbolic": "boltzmann_symbolicpars",
+    }.get(code)
+    if attribute is None:
+        return {}
+    return deepcopy(getattr(configuration, attribute))
+
+
+@contextmanager
+def _scoped_colossus_settings(settings, colossus_settings):
+    """Temporarily apply run-local Colossus settings and always restore them."""
+
+    with _COLOSSUS_SETTINGS_LOCK:
+        base_dir = colossus_settings.BASE_DIR
+        persistence = colossus_settings.PERSISTENCE
+        try:
+            if settings.get("colossus_base_dir") is not None:
+                colossus_settings.BASE_DIR = settings["colossus_base_dir"]
+            if settings.get("colossus_persistence") is not None:
+                colossus_settings.PERSISTENCE = settings["colossus_persistence"]
+            yield
+        finally:
+            colossus_settings.BASE_DIR = base_dir
+            colossus_settings.PERSISTENCE = persistence
 
 
 def _dcom_func_trapz(zi, interpolfunc):
@@ -90,71 +207,74 @@ class boltzmann_code:
     hardcoded_neutrino_mass_fac = 94.07
     hardcoded_mnu_massive_min = 0.001
 
-    def __init__(self, cosmopars, code="camb"):
-        """
-        Initialize the boltzmann_code class.
+    def __init__(self, cosmopars, code="camb", *, configuration=None):
+        """Initialize a backend bound to one resolved run configuration.
 
-        Parameters
-        ----------
-        cosmopars : dict
-            The cosmological parameters object to be copied.
-        code : str, optional
-            The Boltzmann code to be used (default is 'camb').
-
-        Raises
-        ------
-        ValueError
-            If an unsupported Boltzmann code is specified.
+        ``configuration`` is optional for legacy callers; when omitted, the
+        legacy ``cfg`` module is captured once at construction.
         """
+        self.configuration = cfg if configuration is None else configuration
         self.cosmopars = deepcopy(cosmopars)
-        self.feed_lvl = cfg.settings["feedback"]
-        self.settings = cfg.settings
-        upr.SUPPRESS_WARNINGS = cfg.settings["SUPPRESS_WARNINGS"]
+        self.feed_lvl = self.configuration.settings["feedback"]
+        self.settings = self.configuration.settings
+        upr.SUPPRESS_WARNINGS = self.settings["SUPPRESS_WARNINGS"]
         self.set_cosmicfish_defaults()
         if code == "camb":
-            camb_path = os.path.realpath(os.path.join(os.getcwd(), self.settings["camb_path"]))
-            sys.path.insert(0, camb_path)
+            camb_path = _normalize_camb_import_path(self.settings["camb_path"])
+            if camb_path not in sys.path:
+                sys.path.insert(0, camb_path)
             import camb as camb
 
-            self.boltzmann_cambpars = cfg.boltzmann_cambpars
+            self.boltzmann_cambpars = _backend_parameters(self.configuration, code)
             self.camb_setparams(self.cosmopars, camb)
             self.camb_results(camb)
         elif code == "class":
-            self.boltzmann_classpars = cfg.boltzmann_classpars
+            self.boltzmann_classpars = _backend_parameters(self.configuration, code)
             from classy import Class
 
             self.class_setparams(self.cosmopars)
             self.class_results(Class)
         elif code == "symbolic":
+            self.boltzmann_symbolicpars = _backend_parameters(self.configuration, code)
+            provider_name = self.boltzmann_symbolicpars["ACCURACY"].get("provider", "legacy")
+            if provider_name == "syren_new":
+                from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider
+
+                provider = SyrenNewProvider(
+                    self.cosmopars,
+                    self.boltzmann_symbolicpars,
+                    self.settings["cosmo_model"],
+                )
+                self.symbcosmopars = provider.cosmopars
+                self.h_now = self.symbcosmopars["h"]
+                self.results = provider.build()
+                self.zgrid = self.results.zgrid
+                self.kgrid_1Mpc = self.results.kgrid
+                return
+            if provider_name != "legacy":
+                raise ValueError(
+                    f"Unknown symbolic provider {provider_name!r}; expected 'syren_new' or 'legacy'."
+                )
             try:
                 import colossus.cosmology as colmo
                 import colossus.settings as colossus_settings
+
+                # Respect CosmicFishPie configuration before symbolic backend objects are created.
+                # Empty persistence disables Colossus disk caching but keeps in-memory caching.
+                colossus_persistence = self.settings.get("colossus_persistence", "")
+                if colossus_persistence is None:
+                    colossus_persistence = ""
+                colossus_settings.PERSISTENCE = colossus_persistence
                 import symbolic_pofk.linear as symblin
                 import symbolic_pofk.syrenhalofit as symbfit
 
                 self.colmo = colmo
+                self.colossus_settings = colossus_settings
                 self.symblin = symblin
                 self.symbfit = symbfit
-                colossus_base_dir = cfg.settings.get("colossus_base_dir")
-                if colossus_base_dir is not None:
-                    colossus_settings.BASE_DIR = colossus_base_dir
-                colossus_persistence = cfg.settings.get("colossus_persistence")
-                if colossus_persistence is not None:
-                    colossus_settings.PERSISTENCE = colossus_persistence
-                if not hasattr(colmo.cosmology, "_cfp_wrapped_setCosmology"):
-                    orig_setCosmology = colmo.cosmology.setCosmology
-
-                    def _setCosmology_with_persistence(cosmo_name, params=None, **kwargs):
-                        if "persistence" not in kwargs and colossus_persistence is not None:
-                            kwargs["persistence"] = colossus_persistence
-                        return orig_setCosmology(cosmo_name, params=params, **kwargs)
-
-                    colmo.cosmology.setCosmology = _setCosmology_with_persistence
-                    colmo.cosmology._cfp_wrapped_setCosmology = True
             except ImportError:
                 print("Module symbolic_pofk not properly installed. Aborting")
                 sys.exit()
-            self.boltzmann_symbolicpars = cfg.boltzmann_symbolicpars
             self.halofit_version = self.boltzmann_symbolicpars["COSMO_SETTINGS"][
                 "halofit_version"
             ]  # 'syren' or 'halofit+' or 'takahashi'
@@ -441,21 +561,34 @@ class boltzmann_code:
             cambpars["omk"] = cambpars.pop("Omegak")
         if "w0" in cambpars:
             cambpars["w"] = cambpars.pop("w0")
+        # Public order-one amplitude; CAMB expects physical dimensionless As.
+        if "10^9As" in cambpars:
+            cambpars["As"] = cambpars.pop("10^9As") * 1.0e-9
         if "logAs" in cambpars:
             cambpars["As"] = np.exp(cambpars.pop("logAs")) * 1.0e-10
 
         upr.debug_print("DEBUG:  --> ", cosmopars)
-        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        shareDeltaNeff = self.settings["ShareDeltaNeff"]
         # Keep CAMB's matching field aligned with the CosmicFishPie convention below.
         # _set_camb_params assigns it after construction to avoid CAMB's deprecation log.
         cambpars["share_delta_neff"] = shareDeltaNeff
         fidNeff = boltzmann_code.hardcoded_Neff
         minmassmnu = boltzmann_code.hardcoded_mnu_massive_min
+        if "nnu" in cambpars:
+            if "Neff" in cambpars:
+                raise ValueError(
+                    "Pass only one of 'nnu' and 'Neff' to specify the effective neutrino count."
+                )
+            cambpars["Neff"] = cambpars.pop("nnu")
         if "mnu" in cambpars:
             if cambpars["mnu"] < minmassmnu and cambpars["num_nu_massive"] > 0:
                 raise ValueError(
                     f"mnu is less than {minmassmnu} and num_nu_massive is greater than 0. Check your yaml file."
                 )
+        # Neff is a fixed input unless the user varies it. If neither Neff nor the number of
+        # massless species is given, fall back to the standard value (as the CLASS translation does).
+        if "Neff" not in cambpars and "num_nu_massless" not in cambpars:
+            cambpars["Neff"] = fidNeff
         if "Neff" in cambpars:
             Neff = cambpars.pop("Neff")
             if shareDeltaNeff:
@@ -752,6 +885,19 @@ class boltzmann_code:
         This method sets up CLASS parameters and prepares for power spectrum computation.
         """
         tini_basis = time()
+        self.nonlinear_model = self.boltzmann_classpars.get("NONLINEAR", {}).get(
+            "model", "class_native"
+        )
+        if self.nonlinear_model not in ("class_native", "ee2"):
+            raise ValueError(
+                f"Unknown CLASS nonlinear model {self.nonlinear_model!r}; "
+                "expected 'class_native' or 'ee2'."
+            )
+        self.cb_prescription = self.boltzmann_classpars.get("NONLINEAR", {}).get(
+            "cb_prescription", "neutrino_subtraction"
+        )
+        if self.cb_prescription not in ("neutrino_subtraction", "class_native"):
+            raise ValueError(f"Unknown CLASS cb_prescription={self.cb_prescription!r}.")
         self.classcosmopars = {
             **self.boltzmann_classpars["ACCURACY"],
             **self.boltzmann_classpars["COSMO_SETTINGS"],
@@ -793,11 +939,23 @@ class boltzmann_code:
             classpars["H0"] = classpars.pop("H0")
             h = classpars["H0"] / 100.0
 
-        shareDeltaNeff = cfg.settings["ShareDeltaNeff"]
+        parameter_translation = getattr(self, "boltzmann_classpars", {}).get(
+            "PARAMETER_TRANSLATION", {}
+        )
+        neutrino_scheme = parameter_translation.get("neutrino_scheme", "cosmicfishpie")
+        shareDeltaNeff = self.settings["ShareDeltaNeff"]
         fidNeff = boltzmann_code.hardcoded_Neff
         Neff = classpars.pop("Neff", fidNeff)
 
-        if shareDeltaNeff:
+        neutrino_mass_fac = parameter_translation.get(
+            "neutrino_mass_fac", boltzmann_code.hardcoded_neutrino_mass_fac
+        )
+        if neutrino_scheme == "three_degenerate":
+            classpars["N_ur"] = parameter_translation["N_ur"]
+            neutrino_mass_fac = parameter_translation["neutrino_mass_fac"]
+        elif neutrino_scheme != "cosmicfishpie":
+            raise ValueError(f"Unsupported CLASS neutrino_scheme={neutrino_scheme!r}.")
+        elif shareDeltaNeff:
             classpars["N_ur"] = (
                 2.0 / 3.0 * Neff
             )  # This version does not have the discontinuity at Nur = 1.99
@@ -806,27 +964,26 @@ class boltzmann_code:
             classpars["N_ur"] = Neff - fidNeff / 3.0
             g_factor = fidNeff / 3.0
 
-        neutrino_mass_fac = boltzmann_code.hardcoded_neutrino_mass_fac
-
+        omega_ncdm = 0.0
         if "mnu" in classpars:
-            classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
-            classpars["Omega_ncdm"] = (
-                classpars["mnu"] * g_factor ** (0.75) / neutrino_mass_fac / h**2
-            )
-            classpars.pop("mnu")
-            # classpars['m_ncdm'] = classpars.pop('mnu')
-            # Om_ncdm = classpars['m_ncdm'] / 93.13858 /h/h
+            mnu = classpars.pop("mnu")
+            if neutrino_scheme == "three_degenerate":
+                classpars["m_ncdm"] = ",".join(f"{mnu / 3.0:g}" for _ in range(3))
+                omega_ncdm = mnu / neutrino_mass_fac / h**2
+            else:
+                classpars["T_ncdm"] = (4.0 / 11.0) ** (1.0 / 3.0) * g_factor ** (1.0 / 4.0)
+                classpars["Omega_ncdm"] = mnu * g_factor ** (0.75) / neutrino_mass_fac / h**2
+                omega_ncdm = classpars["Omega_ncdm"]
         elif "Omeganu" in classpars:
-            classpars["Omega_ncdm"] = classpars.pop("Omeganu")
+            omega_ncdm = classpars.pop("Omeganu")
+            classpars["Omega_ncdm"] = omega_ncdm
 
         if "100omega_b" in classpars:
             classpars["omega_b"] = (1 / 100) * classpars.pop("100omega_b")
         if "Omegab" in classpars:
             classpars["Omega_b"] = classpars.pop("Omegab")
         if "Omegam" in classpars:
-            classpars["Omega_cdm"] = (
-                classpars.pop("Omegam") - classpars["Omega_b"] - classpars["Omega_ncdm"]
-            )
+            classpars["Omega_cdm"] = classpars.pop("Omegam") - classpars["Omega_b"] - omega_ncdm
 
         if self.settings["cosmo_model"] == "LCDM":
             # CLASS rejects dark-energy evolution parameters in LCDM mode,
@@ -840,6 +997,9 @@ class boltzmann_code:
                 classpars["w0_fld"] = classpars.pop("w0")
             if "wa" in classpars:
                 classpars["wa_fld"] = classpars.pop("wa")
+        # Public As is dimensionless; CLASS spells the same amplitude A_s.
+        if "As" in classpars:
+            classpars["A_s"] = classpars.pop("As")
         if "logAs" in classpars:
             classpars["A_s"] = np.exp(classpars.pop("logAs")) * 1.0e-10
         if "10^9As" in classpars:
@@ -897,26 +1057,41 @@ class boltzmann_code:
         self.results.zgrid = z[::-1]
 
         ## interpolating function Pk_nl (k,z)
-        Pk_nl, k, z = classres.get_pk_and_k_and_z(nonlinear=cfg.settings["nonlinear"])
-        self.results.Pk_nl = RectBivariateSpline(z[::-1], k, (np.flip(Pk_nl, axis=1)).transpose())
+        z_nl = z
+        k_nl = k
+        if self.nonlinear_model == "ee2" and self.settings["nonlinear"]:
+            from cosmicfishpie.cosmology.ee2 import class_ee2_boost
 
-        tk, k, z = classres.get_transfer_and_k_and_z()
-        T_cb = (f_b * tk["d_b"] + f_cdm * tk["d_cdm"]) / f_cb
-        T_nu = tk["d_ncdm[0]"]
+            boost = class_ee2_boost(classres, k, z)
+            Pk_nl = Pk_l * boost
+            # EE2 supplies a total-matter boost. Reusing it for cb is an
+            # approximation, not a separate cb emulator prediction.
+            Pk_cb_nl = Pk_cb_l * boost
+        else:
+            if self.settings["nonlinear"]:
+                # CLASS pads the returned grids beyond the configured domain.
+                # HMcode can return non-finite values at those unsupported points.
+                Pk_nl, k_nl, z_nl = _class_nonlinear_pk_grid(classres, k, z)
+            else:
+                Pk_nl = _class_pk_grid(classres, k, z, nonlinear=False)
+            if f_nu > 1e-5:
+                if self.settings["nonlinear"] and self.cb_prescription == "neutrino_subtraction":
+                    Pk_cb_nl = _class_cb_subtraction_grid(classres, Pk_nl, k_nl, z_nl)
+                elif self.settings["nonlinear"]:
+                    if not hasattr(classres, "get_pk_cb_array"):
+                        raise ValueError("CLASS native cb prescription requires get_pk_cb_array.")
+                    Pk_cb_nl, _, _ = _class_nonlinear_pk_grid(classres, k, z, cb=True)
+                else:
+                    Pk_cb_nl = Pk_cb_l.copy()
+            else:
+                Pk_cb_nl = Pk_nl.copy()
 
-        pm = classres.get_primordial()
-        pk_prim = (
-            UnivariateSpline(pm["k [1/Mpc]"], pm["P_scalar(k)"])(k)
-            * (2.0 * np.pi**2)
-            / np.power(k, 3)
+        self.results.Pk_nl = RectBivariateSpline(
+            z_nl[::-1], k_nl, (np.flip(Pk_nl, axis=1)).transpose()
         )
 
-        pk_cnu = T_nu * T_cb * pk_prim[:, None]
-        pk_nunu = T_nu * T_nu * pk_prim[:, None]
-        Pk_cb_nl = 1.0 / f_cb**2 * (Pk_nl - 2 * pk_cnu * f_nu * f_cb - pk_nunu * f_nu * f_nu)
-
         self.results.Pk_cb_nl = RectBivariateSpline(
-            z[::-1], k, (np.flip(Pk_cb_nl, axis=1)).transpose()
+            z_nl[::-1], k_nl, (np.flip(Pk_cb_nl, axis=1)).transpose()
         )
 
         def create_growth():
@@ -1086,7 +1261,7 @@ class boltzmann_code:
             If the cosmological model is not supported by the symbolic code.
         """
         tini_basis = time()
-        if cfg.settings["cosmo_model"] != "LCDM":
+        if self.settings["cosmo_model"] != "LCDM":
             print("Symbolic_pofk only supports LCDM at the moment")
             raise ValueError("Cosmo model not supported by cosmo code")
         self.symbcosmopars = dict()
@@ -1134,14 +1309,15 @@ class boltzmann_code:
             "H0": self.symbcosmopars["h"] * 100,
             "ns": self.symbcosmopars["ns"],
         }
-        colossus_persistence = cfg.settings.get("colossus_persistence")
+        colossus_persistence = self.settings.get("colossus_persistence")
         if colossus_persistence is not None:
             symb_colmo_pars["persistence"] = colossus_persistence
         self.results.zgrid = self.zgrid
         self.h_now = self.symbcosmopars["h"]
         self.kgrid_hMpc = self.kgrid_1Mpc / self.h_now
         self.results.kgrid = self.kgrid_1Mpc  # results kgrid is in units of 1/Mpc
-        self.symbcosmo = self.colmo.cosmology.setCosmology("colmo", **symb_colmo_pars)
+        with _scoped_colossus_settings(self.settings, self.colossus_settings):
+            self.symbcosmo = self.colmo.cosmology.setCosmology("colmo", **symb_colmo_pars)
         self.results.h_of_z = np.vectorize(
             lambda zz: self.symbcosmo.Hz(zz) / cosmo_functions.c
         )  # H(z) in 1/Mpc
@@ -1206,7 +1382,7 @@ class boltzmann_code:
 
 
 class external_input:
-    def __init__(self, cosmopars, fiducialcosmopars=dict(), external=dict(), extra_settings=dict()):
+    def __init__(self, cosmopars, fiducialcosmopars=None, external=None, extra_settings=None):
         """
         Initialize the external_input class.
 
@@ -1227,10 +1403,12 @@ class external_input:
             If the external_input class has been initialized wrongly.
         """
         self.cosmopars = cosmopars
+        if not fiducialcosmopars or not external or not extra_settings:
+            raise ValueError("The external_input class has been initialized wrongly")
         self.fiducialpars = fiducialcosmopars
-        self.feed_lvl = cfg.settings["feedback"]
-        self.external = external  # cfg.external
-        self.settings = extra_settings  # cfg.settings
+        self.feed_lvl = extra_settings["feedback"]
+        self.external = external
+        self.settings = extra_settings
         self.activate_MG = None
         if (
             self.settings["external_activateMG"] is True
@@ -1259,8 +1437,8 @@ class external_input:
         )
         self.cb_files_on = False
         if (
-            cfg.settings["GCsp_Tracer"] == "clustering"
-            or cfg.settings["GCph_Tracer"] == "clustering"
+            self.settings["GCsp_Tracer"] == "clustering"
+            or self.settings["GCph_Tracer"] == "clustering"
         ):
             self.cb_files_on = True
         self.load_txt_files(parameter_string=param_folder_string)
@@ -1566,36 +1744,24 @@ class external_input:
 class cosmo_functions:
     c = sconst.speed_of_light / 1000  ##speed of light in km/s
 
-    def __init__(self, cosmopars, input=None):
-        """
-        Initialize the cosmo_functions class.
-
-        Parameters
-        ----------
-        cosmopars : dict
-            Dictionary containing the cosmological parameters.
-        input : str, optional
-            Input type for the cosmological code (default is None).
-
-        Raises
-        ------
-        ValueError
-            If an unsupported input type is specified.
-        """
-        self.settings = cfg.settings
-        self.fiducialcosmopars = cfg.fiducialparams
-        self.input = input
-        if input is None:
-            input = cfg.input_type
-        if input == "camb":
-            cambresults = boltzmann_code(cosmopars, code="camb")
+    def __init__(self, cosmopars, input=None, *, configuration=None):
+        """Initialize cosmological functions bound to one configuration snapshot."""
+        self.configuration = cfg if configuration is None else configuration
+        self.settings = self.configuration.settings
+        self.fiducialcosmopars = getattr(self.configuration, "fiducialcosmopars", None)
+        if self.fiducialcosmopars is None:
+            self.fiducialcosmopars = self.configuration.fiducialparams
+        effective_input = self.configuration.input_type if input is None else input
+        self.input = effective_input
+        if effective_input == "camb":
+            cambresults = boltzmann_code(cosmopars, code="camb", configuration=self.configuration)
             self.code = "camb"
             self.results = cambresults.results
             self.kgrid = cambresults.results.kgrid
             self.cosmopars = cambresults.cosmopars
             self.cambcosmopars = cambresults.cambclasspars
-        elif input == "external":
-            self.external = cfg.external
+        elif effective_input == "external":
+            self.external = self.configuration.external
             ## filter settings which contain the word 'external_'
             # extra_settings = dict([[kk, self.settings[kk]] for kk in self.settings.keys() if 'external_' in kk])
             # externalinput = external_input(cosmopars,  fiducialcosmopars=self.fiducialcosmopars,
@@ -1615,23 +1781,25 @@ class cosmo_functions:
             self.results = externalinput.results
             self.kgrid = externalinput.results.kgrid
             self.cosmopars = externalinput.cosmopars
-        elif input == "class":
-            classresults = boltzmann_code(cosmopars, code="class")
+        elif effective_input == "class":
+            classresults = boltzmann_code(cosmopars, code="class", configuration=self.configuration)
             self.code = "class"
             self.results = classresults.results
             self.Classres = classresults.Classres
             self.kgrid = classresults.results.kgrid
             self.cosmopars = classresults.cosmopars
             self.classcosmopars = classresults.classcosmopars
-        elif input == "symbolic":
-            symbresults = boltzmann_code(cosmopars, code="symbolic")
+        elif effective_input == "symbolic":
+            symbresults = boltzmann_code(
+                cosmopars, code="symbolic", configuration=self.configuration
+            )
             self.code = "symbolic"
             self.results = symbresults.results
             self.kgrid = symbresults.results.kgrid
             self.cosmopars = symbresults.cosmopars
             self.symbcosmopars = symbresults.symbcosmopars
         else:
-            print(input, ":  This input type is not implemented yet")
+            print(effective_input, ":  This input type is not implemented yet")
 
     def Hubble(self, z, physical=False):
         """
@@ -1756,7 +1924,7 @@ class cosmo_functions:
             power = self.results.Pk_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_l(z, k, grid=False)
-        return power  # type: ignore
+        return np.maximum(power, 0.0)  # type: ignore
 
     def Pcb(self, z, k, nonlinear=False):
         """
@@ -1771,11 +1939,15 @@ class cosmo_functions:
         Returns:
             The value of the CB power spectrum at the given redshift and wavenumber.
         """
+        if self.code == "symbolic" and not hasattr(self.results, "Pk_cb_l"):
+            raise ValueError(
+                "SYREN-NEW provides total-matter power only; tracer='clustering' is unsupported."
+            )
         if nonlinear is True:
             power = self.results.Pk_cb_nl(z, k, grid=False)
         elif nonlinear is False:
             power = self.results.Pk_cb_l(z, k, grid=False)
-        return power
+        return np.maximum(power, 0.0)
 
     def nonwiggle_pow(self, z, k, nonlinear=False, tracer="matter"):
         """

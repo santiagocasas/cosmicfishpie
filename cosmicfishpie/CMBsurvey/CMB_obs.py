@@ -44,8 +44,12 @@ class ComputeCls:
     - `<obs1>x<obs2>` arrays for each requested combination (e.g. `CMB_TxCMB_T`)
     """
 
-    def __init__(self, cosmopars, print_info_specs=False):
-        self.feed_lvl = cfg.settings["feedback"]
+    def __init__(self, cosmopars, print_info_specs=False, *, configuration=None):
+        self.configuration = cfg if configuration is None else configuration
+        self.settings = self.configuration.settings
+        self.specs = self.configuration.specs
+        self.input_type = self.configuration.input_type
+        self.feed_lvl = self.settings["feedback"]
 
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -56,7 +60,9 @@ class ComputeCls:
 
         tcosmo1 = time()
         self.cosmopars = cosmopars
-        self.cosmo = cosmology.cosmo_functions(cosmopars, cfg.input_type)
+        self.cosmo = cosmology.cosmo_functions(
+            cosmopars, self.input_type, configuration=self.configuration
+        )
         tcosmo2 = time()
         upt.time_print(
             feedback_level=self.feed_lvl,
@@ -69,12 +75,12 @@ class ComputeCls:
 
         # MM: CMB lensing to be added (optional?)
         self.observables = []
-        for key in cfg.obs:  # LENSING TO BE ADDED
+        for key in self.configuration.obs:  # LENSING TO BE ADDED
             if key in ["CMB_T", "CMB_E", "CMB_B"]:
                 self.observables.append(key)
 
-        cfg.specs["ellmax"] = cfg.specs["lmax_CMB"]
-        cfg.specs["ellmin"] = cfg.specs["lmin_CMB"]
+        self.ellmax = self.specs["lmax_CMB"]
+        self.ellmin = self.specs["lmin_CMB"]
 
         if print_info_specs:
             self.print_numerical_specs()
@@ -103,11 +109,11 @@ class ComputeCls:
         )
 
     def print_numerical_specs(self):
-        """Print the contents of `cfg.specs` (debug helper)."""
+        """Print the instance-owned numerical specifications (debug helper)."""
         print("***")
         print("Numerical specifications: ")
-        for key in cfg.specs:
-            print(key + " = " + str(cfg.specs[key]))
+        for key in self.specs:
+            print(key + " = " + str(self.specs[key]))
         print("***")
 
     def computecls(self):
@@ -119,12 +125,10 @@ class ComputeCls:
             Dictionary with `ells` and `obs1xobs2` arrays.
         """
 
-        cls = {"ells": np.arange(cfg.specs["ellmin"], cfg.specs["ellmax"])}
+        cls = {"ells": np.arange(self.ellmin, self.ellmax)}
 
-        # Compute all spectra combinations requested by cfg.obs.
+        # Compute all spectra combinations requested by the explicit configuration.
         for obs1, obs2 in product(self.observables, self.observables):
-            cls[obs1 + "x" + obs2] = self.cosmo.cmb_power(
-                cfg.specs["ellmin"], cfg.specs["ellmax"], obs1, obs2
-            )
+            cls[obs1 + "x" + obs2] = self.cosmo.cmb_power(self.ellmin, self.ellmax, obs1, obs2)
 
         return cls

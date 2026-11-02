@@ -1,14 +1,90 @@
-# Photometric Benchmarks and Profiling
+# Archived Benchmarks and Maintained Workflows
 
-This folder contains helper scripts to benchmark and profile the photometric pipeline in CosmicFishPie.
+Photometric benchmark and profiling scripts are archived under `archive/benchmarks/`; profiling-only runners are in `archive/profiling/`. Maintained validation, Planck, likelihood, HPC, and release workflows live in the categorized subdirectories below.
 
-The main entry point is `photometric_benchmark.py`, which can:
+The historical entry point is `archive/benchmarks/photometric_benchmark.py`, which can:
 - Run a regular Fisher benchmark for selected observables and backend
-- Compare SLOW vs FAST code paths end‑to‑end (SLOW = optimizations off, FAST = optimizations on)
-- Run a single FAST run for profiling (no SLOW), to use with profilers
-- Optionally benchmark the lensing‑efficiency integrators (`bench_efficiency.py`)
+- Compare SLOW vs FAST code paths end‑to‑end (SLOW = optimizations off, FAST = optimizations on) with `--fast-benchmark`
+- Optionally benchmark the lensing‑efficiency integrators with `--efficiency` (see also `archive/benchmarks/bench_efficiency.py`)
+
+Run all commands from the repository root: results go to `scripts/benchmark_results/`
+relative to the current directory.
 
 Below you’ll find setup instructions, usage examples, and details on outputs.
+
+### Sequential five-parameter LCDM Nautilus campaign (36 CPUs)
+
+```bash
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh --dry-run
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh
+```
+
+Samples GCsp and photometric GCph+WL (including their cross-correlation), each
+with CLASS, CAMB and SYREN-NEW, **one posterior at a time**. The five sampled
+parameters are `Omegam, Omegab, h, ns, sigma8`; all nuisance parameters, mnu,
+Neff, w0=-1 and wa=0 are fixed. Each backend generates its own self-consistent
+noiseless fiducial data. These are conditional five-parameter posteriors.
+No Fisher matrices or Fisher-derived priors are computed.
+
+Resource defaults follow the JURECA notes in
+[`cjfp-data/jobs_punch/nautilus_jureca_findings.md`](../../cjfp-data/jobs_punch/nautilus_jureca_findings.md):
+
+| Backend | Likelihood workers | OMP threads per worker | Batch size |
+|---|---:|---:|---:|
+| CLASS / CAMB | 18 | 2 | 36 |
+| SYREN-NEW | 36 | 1 | 72 |
+
+BLAS threads stay at one and inherited OpenMP affinity variables are removed
+to avoid pinning every spawned worker to the same core. Sampling defaults are
+`n_live=1000`, `n_eff=3000`, `n_networks=8`, and `n_batch=2*workers`, with
+`discard_exploration=True`. Override with `--n-live`, `--n-eff`, `--n-networks`,
+`--n-batch`, `--workers` or `--omp-threads`. The launcher checks a 36-CPU budget
+and any Slurm CPU allocation.
+
+Identical uniform cosmology priors are used for all six runs:
+Omega_m [0.28,0.36], Omega_b [0.04,0.06], h [0.60,0.74], n_s [0.90,1.02],
+sigma8 [0.75,0.87]. Fiducials and solver profiles are the MP-validation settings
+documented below, with the model changed to LCDM.
+
+Outputs default to a new timestamped `../cjfp-data/chains/euclid_mp_lcdm_*`
+directory (`--outdir` or `CFP_DATA_REPO` overrides this). Each run has its own
+`run.log`, requested configuration, input hashes, fiducial likelihood check,
+HDF5 checkpoint, weighted posterior text file and metadata. `campaign.json`
+records exit codes and per-backend resources. Checkpoints are updated while
+sampling; archive/upload only after the campaign is stopped or complete.
+
+To resume an interrupted campaign, keep the original code and inputs and use:
+
+```bash
+bash scripts/likelihood/nautilus/run_euclid_mp_nautilus.sh \
+  --outdir /path/to/original/campaign --resume
+```
+
+Repeat any original sampling overrides when resuming. Changed inputs, priors,
+sampling settings or Git revision are rejected before reusing a checkpoint.
+`--check-only` initializes and checks the likelihoods without sampling.
+
+### Quick MP-validation Pessimistic campaign (36 CPUs)
+
+```bash
+bash scripts/validation/run_euclid_mp_fishers.sh --dry-run
+bash scripts/validation/run_euclid_mp_fishers.sh
+```
+
+Runs six independent Fishers: GCsp and GCph+WL (including their cross-correlation,
+i.e. photo 3×2pt), each with CLASS, CAMB and SYREN-NEW. Defaults to six processes,
+six OpenMP threads each; BLAS threads are capped at one. Uses the existing
+`common_specs_w0waCDM.json`, Paper-Pessimistic surveys, CLASS `mpvalidation_hp`,
+CAMB `mpvalidation_p3`, and symbolic `syren_new_photo` profiles. The seven free
+cosmological parameters are Omegam, Omegab, h, ns, sigma8, w0 and wa; mnu/Neff stay
+fixed, as in the MP cases. No new parameter or emulator validation is implied.
+
+Outputs and per-worker `run.log` files go into a new timestamped directory under
+`../cjfp-data/validation/fisher/` (override with `--outdir` or `CFP_DATA_REPO`).
+`campaign.json` records the code commit, thread budget and exit statuses.
+Use `--jobs 3 --omp-threads 12` to run three Fishers concurrently instead.
+Run inside `screen` or a Slurm allocation with at least 36 CPUs; outputs are not
+uploaded automatically. Keep the checkout unchanged while the campaign runs.
 
 ---
 
@@ -29,13 +105,13 @@ Below you’ll find setup instructions, usage examples, and details on outputs.
 
 ---
 
-## 2) The Benchmark Script: `photometric_benchmark.py`
+## 2) The Benchmark Script: `archive/benchmarks/photometric_benchmark.py`
 
-This script focuses on photometric Fisher matrices. It supports three workflows:
+This script focuses on photometric Fisher matrices. It supports these workflows:
 
-- Regular Fisher benchmark (single run)
-- Flags benchmark (SLOW vs FAST comparison)
-- FAST‑only run (one FAST run, ideal for profiling)
+- Regular Fisher benchmark (single run, with the FAST paths on by default)
+- Flags benchmark (`--fast-benchmark`, SLOW vs FAST comparison)
+- Lensing‑efficiency benchmark (`--efficiency`)
 
 ### Key concepts
 
@@ -53,12 +129,15 @@ These flags are managed by the script; you do not need to set environment variab
 
 - `--accuracy N`  Integer sampling multiplier (affects z/ell grids). Higher means slower, more precise. Default: `1`.
 - `--code {symbolic,class,camb}`  Cosmology backend to use. Default: `symbolic` (fastest).
+- `--codes <list|all>`  Comma‑separated backends (or `all`); overrides `--code` and compares them.
 - `--observables <list>`  Comma‑separated list among `GCph` and `WL`. Examples:
   - `--observables GCph,WL` (default combined photometric)
   - `--observables GCph`
   - `--observables WL`
 
-All runs write results to `scripts/benchmark_results/` by default.
+All runs write results to `scripts/benchmark_results/` by default. Output file names start
+with `Euclid-Photo-ISTF-Pess-Benchmark_<timestamp>_<hash>_`, where the hash identifies the
+command‑line arguments.
 
 ---
 
@@ -67,7 +146,7 @@ All runs write results to `scripts/benchmark_results/` by default.
 Runs a single Fisher for the selected observables and backend, then exports a summary comparison JSON (mainly useful when running multiple combos).
 
 ```bash
-python scripts/photometric_benchmark.py \
+python scripts/archive/benchmarks/photometric_benchmark.py \
   --code symbolic \
   --observables GCph,WL \
   --accuracy 1
@@ -75,7 +154,7 @@ python scripts/photometric_benchmark.py \
 
 Outputs:
 - Fisher matrix text/CSV/paramnames/specs under `scripts/benchmark_results/` with a descriptive filename that includes the backend and observables.
-- Summary JSON: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_fisher_comparison.json`.
+- Timings (`..._timings.json`) and summary (`..._fisher_comparison.json`) JSON files in `scripts/benchmark_results/`.
 
 ---
 
@@ -86,8 +165,8 @@ Runs two full Fisher computations back‑to‑back for the selected observables/
 2) FAST: fast flags on (by default)
 
 ```bash
-python scripts/photometric_benchmark.py \
-  --flags-benchmark \
+python scripts/archive/benchmarks/photometric_benchmark.py \
+  --fast-benchmark \
   --code symbolic \
   --observables GCph,WL \
   --accuracy 1
@@ -102,9 +181,8 @@ This is useful if you want to isolate the effect of one fast path.
 
 Outputs:
 - Two Fisher matrices, clearly tagged in filenames:
-  - `..._SLOW__<obs>_fishermatrix.txt`
-  - `..._FAST__<obs>_fishermatrix.txt`
-- JSON summary: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_flags_fisher_benchmark.json` with:
+  - `..._SLOW_...` and `..._FAST_...` Fisher matrix files (the tag is part of the output root)
+- JSON summary: `..._flags_fisher_benchmark.json` in `scripts/benchmark_results/` with:
   - `accuracy`, `code`, `observables`
   - `runs`: SLOW/FAST timestamps, env flags actually used, exported matrix paths
   - `metrics`: per‑run (trace, Frobenius, robust logdet) and comparisons (entrywise relative max, abs diff near zero, Frobenius relative diff, diagonal ratio stats)
@@ -117,32 +195,24 @@ Interpretation tips:
 
 ---
 
-## 6) FAST‑Only Run (single run, ideal for profiling)
+## 6) Single FAST run (for profiling)
 
-Runs one Fisher with fast flags enabled and stops. Use this with profilers like `cProfile`, `line_profiler`, or `memory_profiler`.
-
-```bash
-python scripts/photometric_benchmark.py \
-  --fast-only \
-  --code symbolic \
-  --observables GCph,WL
-```
-
-Outputs:
-- Fisher matrix with `FASTONLY` tag in filename.
-- JSON summary: `scripts/benchmark_results/Euclid-Photo-ISTF-Pess-Benchmark_fast_only.json` with wall‑clock time, flags used, and matrix path.
+There is no separate FAST‑only flag: a regular run (section 4) already has all FAST paths
+enabled unless you turn one off with `--fast-eff off`, `--fast-p off` or
+`--fast-kernel off` (or all at once with `--fast off`). Use it with profilers like
+`cProfile`, `line_profiler`, or `memory_profiler`.
 
 Profiling examples:
 
 - cProfile:
   ```bash
   python -m cProfile -o scripts/benchmark_results/fast.prof \
-    scripts/photometric_benchmark.py --fast-only --code symbolic --observables GCph,WL
+    scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   ```
 - line_profiler:
   ```bash
   kernprof -l -o scripts/benchmark_results/fast.lprof \
-    scripts/photometric_benchmark.py --fast-only --code symbolic --observables GCph,WL
+    scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   python -m line_profiler scripts/benchmark_results/fast.lprof
   ```
 
@@ -150,14 +220,14 @@ Profiling examples:
 
 ## 7) Lensing‑Efficiency Micro‑Benchmark (optional)
 
-`bench_efficiency.py` compares three internal implementations of the WL lensing‑efficiency integral:
+`archive/benchmarks/bench_efficiency.py` compares three internal implementations of the WL lensing‑efficiency integral:
 - `memo_integral_efficiency` (legacy O(N²), corrected reference)
 - `faster_integral_efficiency` (vectorized O(N²))
 - `much_faster_integral_efficiency` (O(N) cumulative trapezoids)
 
 Run:
 ```bash
-python scripts/bench_efficiency.py
+python scripts/archive/benchmarks/bench_efficiency.py
 ```
 
 It prints construction/evaluation timings and agreement metrics (ratios), and uses a `ComputeCls` compatible configuration.
@@ -192,19 +262,19 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
 
 - Regular (symbolic, combined):
   ```bash
-  python scripts/photometric_benchmark.py --code symbolic --observables GCph,WL
+  python scripts/archive/benchmarks/photometric_benchmark.py --code symbolic --observables GCph,WL
   ```
 - Compare SLOW vs FAST (class, WL only):
   ```bash
-  python scripts/photometric_benchmark.py --flags-benchmark --code class --observables WL
+  python scripts/archive/benchmarks/photometric_benchmark.py --fast-benchmark --code class --observables WL
   ```
-- FAST‑only for profiling (camb, GCph only):
+- Single run for profiling (camb, GCph only):
   ```bash
-  python scripts/photometric_benchmark.py --fast-only --code camb --observables GCph
+  python scripts/archive/benchmarks/photometric_benchmark.py --code camb --observables GCph
   ```
-- FAST but only enable efficiency fast path:
+- SLOW vs FAST, with only the efficiency fast path enabled in the FAST run:
   ```bash
-  python scripts/photometric_benchmark.py --flags-benchmark --fast-p off --fast-kernel off
+  python scripts/archive/benchmarks/photometric_benchmark.py --fast-benchmark --fast-p off --fast-kernel off
   ```
 
 ---
@@ -216,24 +286,95 @@ Use these scripts to run two backends, compare, plot, and render shareable repor
 ### Maintained paper-validation workflow
 
 The maintained validation entry point covers the Casas et al. w0waCDM cases and the
-paper-faithful neutrino cases:
+paper-faithful neutrino cases. Cases run sequentially by default; `--jobs` bounds
+parallel cases, and `--omp-threads` sets the OpenMP thread count for each case:
 
 ```bash
-bash scripts/run_selected_validations.sh --all --omp-threads 8
+bash scripts/validation/run_selected_validations.sh --all --jobs 2 --omp-threads 4
 ```
+
+This uses up to eight OpenMP threads total. On a Slurm allocation, reserve at least
+`--jobs` × `--omp-threads` CPUs. The runner checks `SLURM_CPUS_PER_TASK` or
+`SLURM_CPUS_ON_NODE` when available and rejects requests larger than the allocation.
+Keep the source checkout and `cjfp-data` as sibling directories. The parallel
+convenience wrapper writes Fisher outputs, batch logs, and the dashboard directly to
+`../cjfp-data/validation/fisher/`:
+
+```bash
+uv sync
+bash scripts/validation/run_parallel_validations.sh
+```
+
+It defaults to two concurrent cases with four threads each. Set `CFP_DATA_REPO` if the
+data checkout is elsewhere, or `CFP_VALIDATION_RESULTS_DIR` to choose a different
+output path. Override concurrency with `CFP_VALIDATION_JOBS` and `CFP_OMP_THREADS`.
+This Fisher workflow does not read or require the archived
+Nautilus chains. After reviewing results, use DVC from the data checkout to register
+and upload them if they should be retained remotely.
 
 Completed cases are reused when their numerical inputs and backend provenance still
 match; pass `--force` to recompute them. The command refreshes the clean dashboard at
-`scripts/benchmark_results/dashboard/index.html`. Superseded one-off and batch runners
-are retained for provenance under `scripts/archive/` and are not part of the maintained
+`<results-directory>/dashboard/index.html`. Superseded one-off and batch runners are
+retained for provenance under `scripts/archive/` and are not part of the maintained
 workflow.
+
+For a fresh campaign that prioritizes previously failing comparisons:
+
+```bash
+bash scripts/validation/run_parallel_validations.sh --failed-first
+```
+
+This reads saved numerical FAIL gates directly from the result files, runs those cases
+first with the usual concurrency, **waits for that whole phase**, then runs all remaining
+selected cases. It implies `--force`: even previously passing cases are recomputed.
+Use `--cases LIST` to restrict the campaign. With no saved FAIL results, all selected
+cases run in the remaining phase. The intentional P_mm failure control is included
+when selected. A failed case does not prevent the second phase from running.
+
+The campaign records its starting revision in `<batch-directory>/git_commit.txt` and
+stops launching cases if HEAD changes. Keep the checkout unchanged during execution;
+commit the intended numerical changes before launching a single-commit campaign.
+Normal reuse is based on changes to **relevant code/inputs**, not every new Git commit:
+a docs-only commit does not require fresh Fishers. `--failed-first` bypasses reuse.
+The dashboard still shows the latest available completed comparisons, so if a new
+attempt exits before producing results, it can continue to show older results.
+
+To render the dashboard from whatever completed results are currently available:
+
+```bash
+uv run python scripts/validation/render_validation_dashboard.py
+```
+
+Preview it locally with:
+
+```bash
+uv run python scripts/validation/render_validation_dashboard.py --serve
+```
+
+Open `http://127.0.0.1:8000/` and press Ctrl-C once to stop the preview server.
+
+The generated `scripts/benchmark_results/` directory is gitignored. To publish the
+dashboard and landing page to the `gh-pages` branch after rendering, run:
+
+```bash
+bash scripts/validation/publish_validation_dashboard.sh
+```
+
+The publisher uses a temporary worktree, commits the generated site on `gh-pages`, and
+pushes that branch. It does not add benchmark output to the feature PR. If the site must
+be updated only after the feature branch is merged, run the publisher from the updated
+main branch instead.
+
+The validation runner isolates each case in its own process group. Press Ctrl-C once to
+terminate the active backend comparison and stop the batch; completed cases remain
+reusable on the next run.
 
 ### One-off CLI workflow
 
 1) Run two backends and compare (writes to scripts/benchmark_results/compare_<mode>_<timestamp>/):
 
 ```bash
-uv run python scripts/run_fisher_compare_backends.py \
+uv run python scripts/validation/run_fisher_compare_backends.py \
   --mode photo \
   --code-a class --code-b camb \
   --compare --plot \
@@ -243,7 +384,7 @@ uv run python scripts/run_fisher_compare_backends.py \
 2) Render per-run reports, index, and a single-file HTML report:
 
 ```bash
-uv run python scripts/render_compare_reports.py \
+uv run python scripts/validation/render_compare_reports.py \
   scripts/benchmark_results/compare_photo_YYYYMMDD_HHMMSS \
   --single-file scripts/benchmark_results/compare_reports_single.html
 ```
@@ -251,7 +392,7 @@ uv run python scripts/render_compare_reports.py \
 For multiple runs, use a glob:
 
 ```bash
-uv run python scripts/render_compare_reports.py \
+uv run python scripts/validation/render_compare_reports.py \
   --glob "scripts/benchmark_results/compare_*" \
   --single-file scripts/benchmark_results/compare_reports_single.html
 ```
@@ -259,7 +400,7 @@ uv run python scripts/render_compare_reports.py \
 Optional bundle and zip:
 
 ```bash
-uv run python scripts/render_compare_reports.py \
+uv run python scripts/validation/render_compare_reports.py \
   --glob "scripts/benchmark_results/compare_*" \
   --bundle-dir scripts/benchmark_results/compare_reports_bundle \
   --zip
@@ -270,18 +411,18 @@ uv run python scripts/render_compare_reports.py \
 Create a local config file:
 
 ```bash
-cp scripts/validation_configs/compare_run_config.env.example \
-  scripts/validation_configs/compare_run_config.env
+cp scripts/validation/configs/compare_run_config.env.example \
+  scripts/validation/configs/compare_run_config.env
 ```
 
-Edit `scripts/validation_configs/compare_run_config.env`, then run:
+Edit `scripts/validation/configs/compare_run_config.env`, then run:
 
 ```bash
-bash scripts/compare_backends_report.sh --config scripts/validation_configs/compare_run_config.env
+bash scripts/validation/compare_backends_report.sh --config scripts/validation/configs/compare_run_config.env
 ```
 
 Notes:
-- `scripts/validation_configs/compare_run_config.env` is gitignored; commit only the example file.
+- `scripts/validation/configs/compare_run_config.env` is gitignored; commit only the example file.
 - Leave YAML_A/YAML_B empty to use defaults inferred from backend.
 - COMMON_SPECS_JSON can point to a *_FM_specs.json or a small JSON with fiducialpars/freepars/options.
 - Values in the env file override anything set in the JSON.
@@ -296,7 +437,7 @@ Notes:
 - The helper script defaults to deterministic names using a config hash. Set USE_TIMESTAMP=true
   to append a timestamp and keep multiple runs with identical settings.
 - For pipelines, create multiple config files and run in a loop, e.g.:
-  `for cfg in scripts/compare_configs/*.env; do bash scripts/compare_backends_report.sh --config "$cfg"; done`
+  `for cfg in scripts/compare_configs/*.env; do bash scripts/validation/compare_backends_report.sh --config "$cfg"; done`
 
 Defaults:
 - class: `cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml`
@@ -325,8 +466,10 @@ The SO/S4 YAMLs use a conservative common `lmax_CMB=3000`.
 
 ### Single run (smoke)
 
+The CMB scripts live in `scripts/archive/cmb/`. Run them from the repository root:
+
 ```bash
-uv run python scripts/run_cmb_fisher_smoke.py \
+uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
   --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
@@ -338,10 +481,11 @@ uv run python scripts/run_cmb_fisher_smoke.py \
 ### Run the three presets
 
 ```bash
-uv run python scripts/run_cmb_benchmarks.py \
-  --outdir tmp/cmb_bench \
-  --which planck,so,s4
+uv run python scripts/archive/cmb/run_cmb_benchmarks.py \
+  --which planck,so,s4 --observables CMB_T,CMB_E --outdir tmp/cmb_bench
 ```
+
+Add `--lmax 120` for a quick test. See [CMB benchmarks](../docs/source/cmb_benchmarks.md).
 
 ---
 
@@ -356,14 +500,14 @@ To run a Planck-like CMB Fisher at the Planck chain best-fit point:
 Example (`h`-based):
 
 ```bash
-uv run python scripts/run_planck_bestfit_fisher.py \
+uv run python scripts/planck/run_planck_bestfit_fisher.py \
   --outdir tmp/planck_bestfit_h
 ```
 
 Example (`theta`-based, for direct Planck covmat direction checks):
 
 ```bash
-uv run python scripts/run_planck_bestfit_fisher.py \
+uv run python scripts/planck/run_planck_bestfit_fisher.py \
   --parameterization theta \
   --outdir tmp/planck_bestfit_theta
 ```
@@ -371,7 +515,7 @@ uv run python scripts/run_planck_bestfit_fisher.py \
 To use the paper-consistent Knox noise model with low-ell EE noise boost:
 
 ```bash
-uv run python scripts/run_planck_bestfit_fisher.py \
+uv run python scripts/planck/run_planck_bestfit_fisher.py \
   --parameterization theta \
   --cmb-noise-model knox \
   --ee-lowell-noise-boost 8 \
@@ -390,7 +534,7 @@ Then compare the resulting Fisher constraints against Planck published
 `.margestats`:
 
 ```bash
-uv run python scripts/compare_planck_published.py \
+uv run python scripts/planck/compare_planck_published.py \
   tmp/planck_bestfit_h/<your_fisher_file>_CMB_TCMB_E_FM.txt
 ```
 
@@ -401,20 +545,20 @@ To generate all Fisher products used by
 `notebooks/7-Planck-covmat-noise-diagnostics.ipynb` in one shot:
 
 ```bash
-uv run bash scripts/run_planck_diagnostics_suite.sh
+uv run bash scripts/planck/run_planck_diagnostics_suite.sh
 ```
 
 Optional positional argument: custom Planck chain directory.
 
 ```bash
-uv run bash scripts/run_planck_diagnostics_suite.sh /path/to/plikHM_TTTEEE_lowl_lowE
+uv run bash scripts/planck/run_planck_diagnostics_suite.sh /path/to/plikHM_TTTEEE_lowl_lowE
 ```
 
 For correlation-direction validation, overlay your theta-based Fisher against
 the published Planck Gaussian approximation from `.covmat`:
 
 ```bash
-uv run python scripts/plot_planck_covmat_vs_fisher.py \
+uv run python scripts/planck/plot_planck_covmat_vs_fisher.py \
   tmp/planck_bestfit_theta/<your_theta_fisher>_CMB_TCMB_E_FM.txt
 ```
 

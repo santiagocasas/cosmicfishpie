@@ -1,5 +1,12 @@
 # Phase 2 Validation Summary
 
+> **Historical snapshot, superseded.** This records an early ad hoc run (flat case
+> numbering 01-06) from before the validation suite moved to the dotted case family under
+> `scripts/validation/configs/` (e.g. `01.1.0`, `02.2.1`, ...; see
+> [backend validation](source/backend_validation.md)). For current results, use the live
+> dashboard (`uv run python scripts/validation/render_validation_dashboard.py` or the
+> published dashboard), not the numbers below.
+
 **Branch:** `phase-1-validation-integration` (commit: 73ace12)  
 **Date:** 2026-08-17  
 **Status:** ✓ All 6 validation cases completed  

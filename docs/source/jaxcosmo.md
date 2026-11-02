@@ -134,8 +134,9 @@ compare SYREN against the standard JAXcosmo route to assess theory dependence.
 
 With `ns` and `mnu` fixed, the marginalized `10^9As` error differs by about
 10% between SYREN-NEW and JAXcosmo. The autodiff and finite-difference routes
-through the same JAX observable agree to `1.8e-5` in the Fisher matrix, so the
-difference is not a differentiation problem. The following decomposition
+through the same JAX observable agree to `1.8e-5` in `max|dF|/max|F|` (the largest Fisher
+change divided by the largest Fisher entry), so the difference is not a differentiation
+problem. The following decomposition
 locates it.
 
 | `10^9As` error, fiducial 1 | SYREN-NEW | JAXcosmo AD | AD/SYREN |

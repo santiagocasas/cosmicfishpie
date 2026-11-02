@@ -86,7 +86,47 @@ def test_halofit_autodiff_matches_finite_difference_quadratically():
         assert np.max(np.abs(grad / fd - 1.0)) < 20 * eps**2 + 1e-8
 
 
+# ------------------------------------------------------------------ provider parameter maps
+def test_resolve_parameters_rejects_theta_like_expansion_parameters():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
+    for key in ("theta", "cosmomc_theta", "thetastar"):
+        with pytest.raises(ValueError, match=key):
+            provider.resolve_parameters(dict(base, **{key: 1.04}), "LCDM")
+
+
+def test_resolve_parameters_rejects_conflicting_amplitude_aliases():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
+    for aliases in ({"10^9As": 2.1, "As": 2.1e-9}, {"10^9As": 2.1, "sigma8": 0.8}):
+        with pytest.raises(ValueError, match="Ambiguous primordial amplitude"):
+            provider.resolve_parameters(dict(base, **aliases), "LCDM")
+
+
+def test_resolve_parameters_rejects_non_positive_sigma8():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    with pytest.raises(ValueError, match="sigma8 > 0"):
+        provider.resolve_parameters({"sigma8": -0.8, "Omegam": 0.32, "Omegab": 0.05}, "LCDM")
+
+
+def test_resolve_parameters_accepts_a_single_amplitude_alias():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    resolved = provider.resolve_parameters({"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}, "LCDM")
+    assert resolved["As"] == pytest.approx(2.1)
+
+
 # ---------------------------------------------------------------------------- theory tables
+def test_halofit_keeps_a_single_wavenumber_axis():
+    tab = theory.compute_tables(
+        FIDUCIAL, jnp.array([0.0, 0.5]), jnp.array([0.3]), theory.TheoryConfig(), True
+    )
+    assert tab["Pnl"].shape == (2, 1)
+
+
 def test_tables_units_shapes_and_normalisation():
     z = jnp.array([0.0, 0.5, 1.0, 2.0])
     k = jnp.geomspace(1e-3, 5.0, 16)

@@ -131,6 +131,28 @@ def test_autodiff_compute_keeps_special_derivatives_and_adds_the_jacobian(stub):
     assert result["h"] == "d(h)"
 
 
+@pytest.mark.parametrize(
+    "observables", [("GCsp", "GCph"), ("GCsp", "WL"), ("GCph", "CMB"), ("GCsp", "CMB")]
+)
+def test_mixed_or_unsupported_probe_requests_are_rejected(stub, observables):
+    request = _request(observables=observables)
+    with pytest.raises(ValueError, match=r"GCph\+WL or GCsp"):
+        jd.JaxAutodiffProvider()._get_observable(request)
+
+
+def test_shot_noise_parameters_use_the_jax_jacobian(stub):
+    provider = jd.JaxAutodiffProvider()
+    configuration = _request().configuration
+    request = _derivative_request(
+        configuration,
+        ("Ps_0", "h"),
+        lambda name: "legacy-Ps" if name == "Ps_0" else None,
+    )
+    result = provider.compute(request)
+    assert result["Ps_0"] == "d(Ps_0)"
+    assert result["h"] == "d(h)"
+
+
 def test_finite_difference_compute_delegates_to_the_standard_engine(stub, monkeypatch):
     seen = {}
 
@@ -146,3 +168,22 @@ def test_finite_difference_compute_delegates_to_the_standard_engine(stub, monkey
     result = provider.compute(request)
     assert result == {"h": ("fd", "h")}
     assert seen["request"].observable is provider._observable
+
+
+def test_finite_difference_provider_leaves_shot_noise_to_the_engine(stub, monkeypatch):
+    seen = {}
+
+    class _Engine:
+        def compute(self, request):
+            seen["request"] = request
+            return {name: ("fd", name) for name in request.freeparams}
+
+    monkeypatch.setattr(jd, "FiniteDifferenceProvider", _Engine)
+    provider = jd.JaxFiniteDifferenceProvider()
+    configuration = _request().configuration
+    special = lambda name: "legacy"  # noqa: E731
+    request = _derivative_request(configuration, ("Ps_0", "h"), special)
+    provider.compute(request)
+    forwarded = seen["request"].special_deriv_function
+    assert forwarded("Ps_0") is None
+    assert forwarded("h") == "legacy"

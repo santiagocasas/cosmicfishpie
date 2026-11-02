@@ -87,3 +87,28 @@ def test_unclamped_default_agrees_where_the_grid_stays_inside_the_table(tmp_path
     jax_out = observable.lnp(fiducial)
     for ibin in range(observable.nbins):
         assert np.max(np.abs(jax_out[ibin] - legacy[ibin])) < ATOL
+
+
+def test_jacobian_matches_finite_differences(tmp_path):
+    """The autodiff derivatives agree with central differences of the same ``ln P``."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "jacobian")
+    compare._legacy_engine(calc)  # builds the legacy observable and its fiducial dictionary
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    observable = JaxSpectroObservable(calc, fiducial)
+    names = ("Omegam", *observable.pshot_keys[:1])
+    jac = observable.jacobian(names)
+    for name in names:
+        value = float(observable.base_values[name])
+        # The de-wiggled power is interpolated on a fixed k grid, so the observed P(k, mu)
+        # has harmless kinks where a sample crosses a grid node; a small step keeps the
+        # central difference inside one cell, where the function is smooth.
+        step = 1.0e-6 * abs(value) if value else 1.0e-6
+        plus = dict(fiducial, **{name: value + step})
+        minus = dict(fiducial, **{name: value - step})
+        lp, lm = observable.lnp(plus), observable.lnp(minus)
+        for ibin in range(observable.nbins):
+            fd = (lp[ibin] - lm[ibin]) / (2.0 * step)
+            scale = max(float(np.max(np.abs(fd))), 1.0)
+            assert np.max(np.abs(jac[name][ibin] - fd)) < 1.0e-6 * scale

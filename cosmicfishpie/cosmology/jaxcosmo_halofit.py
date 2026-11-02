@@ -103,7 +103,9 @@ def _solve_logr(target, lnk, pk3):
     lnr = lax.fori_loop(0, _NEWTON_ITERATIONS, newton, jnp.asarray(_LNR_START))
     lnr = lax.stop_gradient(lnr)
     sigma2, dsigma2 = _sigma2(lnr, lnk, pk3)
-    return lnr - (sigma2 - target) / dsigma2
+    # Keep the scale finite even if the bracket holds no root: a cosmology without a root
+    # then produces a wrong but finite Pnl, which the provider rejects explicitly.
+    return jnp.clip(lnr - (sigma2 - target) / dsigma2, _LNR_MIN, _LNR_MAX)
 
 
 def _scale_inputs(cosmo, a, transfer_fn):
@@ -212,4 +214,4 @@ def halofit(cosmo, k, a, transfer_fn, prescription="takahashi2012"):
     d2hprime = a_n * y ** (3 * f1) / (1.0 + b_n * y**f2 + (c_n * f3 * y) ** (3.0 - gamma_n))
     d2h = d2hprime / (1.0 + mu_n / y + nu_n / y**2)
     pk_nl = 2.0 * jnp.pi**2 / k**3 * (d2q + d2h)
-    return pk_nl.squeeze()
+    return pk_nl

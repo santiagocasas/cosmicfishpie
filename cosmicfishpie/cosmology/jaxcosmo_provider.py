@@ -66,6 +66,12 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
     for key in ("Omegak", "omk", "Omega_k"):
         if key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE:
             raise ValueError("The jaxcosmo backend supports flat cosmologies only.")
+    for key in ("theta", "cosmomc_theta", "thetastar"):
+        if key in pars:
+            raise ValueError(
+                f"The jaxcosmo backend does not support the {key!r} parameterization; "
+                "pass h or H0 instead."
+            )
 
     h = _as_scalar(pars["h"]) if "h" in pars else _as_scalar(pars.get("H0", 67.0)) / 100.0
     omega_b = _as_scalar(pars["Omegab"]) if "Omegab" in pars else None
@@ -88,9 +94,10 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         raise ValueError("The jaxcosmo backend requires Omegam > Omegab > 0.")
 
     given = [key for key in (*_AMPLITUDE_KEYS, "sigma8") if key in pars]
-    if "sigma8" in given and len(given) > 1:
+    if len(given) > 1:
         raise ValueError(
-            f"Ambiguous primordial amplitude: both sigma8 and {given} were given. Pass one."
+            f"Ambiguous primordial amplitude: {', '.join(given)} were all given. "
+            "Pass exactly one of 10^9As, As, logAs, ln_A_s_1e10 or sigma8."
         )
     if "10^9As" in pars:
         as_value = _as_scalar(pars["10^9As"])
@@ -102,6 +109,8 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         as_value = float(np.exp(_as_scalar(pars["ln_A_s_1e10"])) * 0.1)
     else:
         sigma8 = _as_scalar(pars.get("sigma8", 0.815583))
+        if sigma8 <= 0.0:
+            raise ValueError(f"The jaxcosmo backend requires sigma8 > 0 (got {sigma8}).")
         as_value = float(sigma8_to_As(sigma8, omega_m, omega_b, h, ns, 0.0, w0, wa))
 
     return {
@@ -175,6 +184,12 @@ class JaxCosmoProvider:
         pk = self._to_numpy(
             tables_jit(params, zgrid, kgrid_hmpc, config=self.config, nonlinear=nonlinear)
         )
+        if not np.all(np.isfinite(pk["Pnl"])):
+            raise ValueError(
+                "The jaxcosmo Halofit solve is not finite for this cosmology: the nonlinear "
+                "scale has no root in the Newton bracket. Inspect "
+                "cosmicfishpie.cosmology.jaxcosmo_halofit.nonlinear_scale_residual."
+            )
 
         def _spline(values: np.ndarray) -> InterpolatedUnivariateSpline:
             return InterpolatedUnivariateSpline(zbg, values, k=3)

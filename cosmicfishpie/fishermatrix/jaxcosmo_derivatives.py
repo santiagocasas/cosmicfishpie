@@ -112,6 +112,12 @@ class _JaxObservableProvider:
             )
         fiducial = dict(request.fiducial)
         observables = tuple(request.observables_type)
+        unsupported = sorted(set(observables) - {"GCph", "WL", "GCsp"})
+        if unsupported or ("GCsp" in observables and {"GCph", "WL"} & set(observables)):
+            raise ValueError(
+                f"{type(self).__name__} supports GCph+WL or GCsp per request; "
+                f"got {observables!r}."
+            )
         observable: Any
         if "GCsp" in observables:
             from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
@@ -156,11 +162,15 @@ class JaxAutodiffProvider(_JaxObservableProvider):
         """Return ``{parameter: derivative}`` for ``request.freeparams``.
 
         Parameters with an analytic derivative in ``request.special_deriv_function`` keep it,
-        exactly as the finite-difference engine does.
+        exactly as the finite-difference engine does.  The ``Ps_`` shot-noise parameters are
+        the exception: the legacy closed form differentiates the legacy power spectrum, while
+        this provider must differentiate the JAX one, so they always use the JAX jacobian.
         """
         observable = self._get_observable(request)
         result = self._special_derivs(request)
-        names = [name for name in request.freeparams if name not in result]
+        names = [
+            name for name in request.freeparams if name not in result or name.startswith("Ps_")
+        ]
         if names:
             result.update(dict(observable.jacobian(tuple(names))))
         return {name: result[name] for name in request.freeparams}
@@ -183,4 +193,13 @@ class JaxFiniteDifferenceProvider(_JaxObservableProvider):
             request.observable(dict(request.fiducial))
         observable = self._get_observable(request)
         jax_request = replace(request, observable=observable)
+        if request.special_deriv_function is not None:
+            special = request.special_deriv_function
+
+            def jax_special(name: str):
+                # ``Ps_*``: the legacy closed form differentiates the legacy spectrum; let the
+                # engine finite-difference the JAX observable for these instead.
+                return None if name.startswith("Ps_") else special(name)
+
+            jax_request = replace(jax_request, special_deriv_function=jax_special)
         return FiniteDifferenceProvider().compute(jax_request)

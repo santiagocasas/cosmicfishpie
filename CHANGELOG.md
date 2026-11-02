@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Validate `jaxcosmo` inputs further: reject theta-like expansion parameters, conflicting
+  amplitude aliases and non-positive `sigma8`; fail when the Halofit nonlinear scale has no
+  root instead of returning a spurious spectrum; keep the wavenumber axis in the Halofit
+  output; accept only GCph+WL or GCsp per derivative request, and differentiate `Ps_*`
+  shot-noise parameters with the JAX Jacobian rather than the legacy analytic formulas.
 - Harden the `jaxcosmo` backend in response to review: reject the unsupported
   `clustering` tracer, non-integer `distance_steps` and non-zero neutrino densities;
   validate only the probes each observable was asked for; keep the WL kernel finite at a
@@ -55,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use a smooth Halofit root find in the `jaxcosmo` theory layer: `jax-cosmo` locates the
   nonlinear scale by interpolating `sigma(R) = 1` on a fixed 256-node grid, which makes the
-  power spectrum jump between nodes and spoils finite differences even at small steps. The
+  derivative of the power spectrum jump between nodes and spoils finite differences even at
+  small steps. The
   replacement integrates `sigma^2(R)` on a fine grid and solves it with a fixed-count Newton
   iteration, which converges to machine precision. The values stay within 5e-4 of `jax-cosmo`
   at the fiducial point and within 0.6% over the validation parameter box (the difference is

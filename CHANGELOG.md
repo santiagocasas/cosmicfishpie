@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- CI and docs for the `jaxcosmo` backend: add a `test (jaxcosmo)` job that installs the
+  `jaxcosmo` extra and runs the JAX tests (they skip themselves in the default job, where
+  JAX is not installed), uploading coverage with the `jaxcosmo` Codecov flag; mock `jax`
+  and `jax_cosmo` in the Sphinx build (`autodoc_mock_imports`) so the strict API docs build
+  succeeds without the extra.
+
 - Document that the roughly 10% difference in the marginalized `10^9As` error between
   SYREN-NEW and JAXcosmo is a matter-power-model difference, not an implementation or
   differentiation artefact: unmarginalized errors agree to 2.6%, the gap appears through

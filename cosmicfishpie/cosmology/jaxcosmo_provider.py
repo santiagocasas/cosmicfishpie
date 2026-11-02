@@ -56,10 +56,12 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
     pars = dict(cosmopars)
 
     mnu = _as_scalar(pars.get("mnu", pars.get("m_nu", 0.0)))
-    if abs(mnu) > _MNU_TOLERANCE:
+    if abs(mnu) > _MNU_TOLERANCE or any(
+        key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE for key in ("Omeganu", "omnuh2")
+    ):
         raise ValueError(
             "The jaxcosmo backend supports massless neutrinos only; "
-            f"got mnu={mnu}. Set mnu=0 in the fiducial cosmology."
+            f"got mnu={mnu}. Set mnu=0 and Omeganu=omnuh2=0 in the fiducial cosmology."
         )
     for key in ("Omegak", "omk", "Omega_k"):
         if key in pars and abs(_as_scalar(pars[key])) > _MNU_TOLERANCE:
@@ -125,7 +127,8 @@ class JaxCosmoProvider:
     cosmo_model : str
         ``"LCDM"`` or ``"w0waCDM"``.
     settings : dict, optional
-        Global ``cfg.settings`` (currently unused, kept for interface symmetry).
+        Global ``cfg.settings``.  Its ``nonlinear`` flag selects the Halofit power
+        (default ``True``).
     """
 
     def __init__(
@@ -166,8 +169,11 @@ class JaxCosmoProvider:
         bg = self._to_numpy(
             tables_jit(params, zbg, kgrid_hmpc[:4], config=self.config, nonlinear=False)
         )
+        nonlinear = True
+        if self.settings is not None:
+            nonlinear = bool(self.settings.get("nonlinear", True))
         pk = self._to_numpy(
-            tables_jit(params, zgrid, kgrid_hmpc, config=self.config, nonlinear=True)
+            tables_jit(params, zgrid, kgrid_hmpc, config=self.config, nonlinear=nonlinear)
         )
 
         def _spline(values: np.ndarray) -> InterpolatedUnivariateSpline:

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Harden the `jaxcosmo` backend in response to review: reject the unsupported
+  `clustering` tracer, non-integer `distance_steps` and non-zero neutrino densities;
+  validate only the probes each observable was asked for; keep the WL kernel finite at a
+  zero bin edge; parse `Ps_*` shot-noise bins from their names; honour
+  `settings["nonlinear"]`; and make the photometric comparison report reference spectra
+  that the candidate is missing.
+
 - Test the JAX photometric observable against the legacy `ComputeCls`: the fiducial `C_ell`,
   a shifted cosmology and shifted bias / intrinsic-alignment amplitudes agree to
   `max |dC|/max|C| < 1e-3` (observed ~2e-5), and the autodiff derivatives match central

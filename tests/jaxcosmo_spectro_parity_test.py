@@ -35,6 +35,7 @@ CASES = {
     "h_bug_after_error": {"kh_rescaling_bug": True},
     "h_bug_before_error": {"kh_rescaling_bug": True, "kh_rescaling_beforespecerr_bug": True},
     "linear": {"GCsp_linear": True},
+    "fog_off": {"FoG_switch": False},
 }
 
 

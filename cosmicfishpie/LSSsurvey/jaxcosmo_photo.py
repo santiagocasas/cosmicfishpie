@@ -107,6 +107,9 @@ class JaxPhotoObservable:
         object that ``PhotoCov`` passes as ``allparsfid``.
     backend_parameters : mapping, optional
         Content of ``jaxcosmo/default.yaml``.  Defaults to the one carried by ``configuration``.
+    observables : sequence of str, optional
+        Probes this observable computes.  Defaults to ``configuration.obs``; pass the requested
+        subset when the configuration carries probes computed by another observable.
     """
 
     def __init__(
@@ -114,18 +117,20 @@ class JaxPhotoObservable:
         configuration: Any,
         fiducial: Mapping[str, Any],
         backend_parameters: Mapping[str, Any] | None = None,
+        observables: Sequence[str] | None = None,
     ):
         self.configuration = configuration
         self.settings = configuration.settings
         self.specs = configuration.specs
         self.fiducial = dict(fiducial)
 
-        self.observables = [o for o in configuration.obs if o in _PHOTO_OBS]
-        unsupported = [o for o in configuration.obs if o not in _PHOTO_OBS]
+        requested = tuple(configuration.obs if observables is None else observables)
+        self.observables = [o for o in requested if o in _PHOTO_OBS]
+        unsupported = [o for o in requested if o not in _PHOTO_OBS]
         if unsupported or not self.observables:
             raise NotImplementedError(
                 "The jaxcosmo autodiff path supports only the photometric probes "
-                f"'GCph' and 'WL'; got observables {tuple(configuration.obs)}."
+                f"'GCph' and 'WL'; got observables {requested}."
             )
         if self.settings.get("GCph_Tracer", "matter") != "matter":
             raise NotImplementedError(
@@ -335,7 +340,9 @@ class JaxPhotoObservable:
                 windows.append(n_i * hub * self._bias(ibin, v))
             else:
                 i1 = _backward_trapezoid(n_i, self.dz)
-                i2 = _backward_trapezoid(n_i / chi, self.dz)
+                safe_chi = jnp.where(chi > 0, chi, 1.0)
+                n_over_chi = jnp.where(chi > 0, n_i / safe_chi, 0.0)
+                i2 = _backward_trapezoid(n_over_chi, self.dz)
                 w_wl = prefac * (1 + z) * chi * (i1 - chi * i2)
                 windows.append(w_wl + n_i * ia_win * hub)
         w_mat = jnp.stack(windows) * jnp.sqrt(jnp.asarray(self.z_weights) / hub)[None, :]

@@ -2073,6 +2073,11 @@ class cosmo_functions:
 
         """
         if tracer == "clustering":
+            if self.code == "jaxcosmo":
+                raise ValueError(
+                    "The jaxcosmo backend provides total-matter power only; "
+                    "tracer='clustering' is unsupported."
+                )
             return self.results.s8_cb_of_z(z)
         elif tracer == "matter":
             return self.results.s8_of_z(z)
@@ -2159,6 +2164,11 @@ class cosmo_functions:
             k = 0.0001
 
         if tracer == "clustering":
+            if self.code == "jaxcosmo":
+                raise ValueError(
+                    "The jaxcosmo backend provides total-matter power only; "
+                    "tracer='clustering' is unsupported."
+                )
             fg = self.results.f_growthrate_cb_zk(z, k, grid=False)
             return fg
         if tracer != "matter":

@@ -112,12 +112,14 @@ def _relative_stats(reference: np.ndarray, candidate: np.ndarray) -> dict:
 
 def _compare_dicts(reference: dict, candidate: dict) -> dict:
     keys = [k for k in reference if k != "ells" and k in candidate]
+    missing = [k for k in reference if k != "ells" and k not in candidate]
     if not keys:
-        return {"n_keys": 0}
+        return {"n_keys": 0, "missing_keys": missing}
     ref = np.concatenate([np.ravel(reference[k]) for k in keys])
     new = np.concatenate([np.ravel(candidate[k]) for k in keys])
     stats = _relative_stats(ref, new)
     stats["n_keys"] = len(keys)
+    stats["missing_keys"] = missing
 
     per_key = {}
     for key in keys:
@@ -233,7 +235,12 @@ def main() -> int:
     (outdir / "REPORT.md").write_text(_report(summary))
     print(json.dumps({k: v["sigma"] for k, v in summary["variants"].items()}, indent=2))
     print(f"Wrote {outdir / 'summary.json'} and {outdir / 'REPORT.md'}")
-    return 0
+    missing = bool(summary["cls"].get("missing_keys")) or any(
+        stats.get("missing_keys")
+        for per_param in summary["derivatives"].values()
+        for stats in per_param.values()
+    )
+    return 1 if missing else 0
 
 
 def _report(summary: dict) -> str:
@@ -249,6 +256,7 @@ def _report(summary: dict) -> str:
     )
     worst = ", ".join(f"`{k}` {v:.2e}" for k, v in cls.get("worst_keys", []))
     lines.append(f"- worst spectra: {worst}")
+    lines.append(f"- missing reference spectra: {cls.get('missing_keys', [])}")
     lines.append("")
     lines.append("## Derivatives")
     for label, per_param in summary["derivatives"].items():

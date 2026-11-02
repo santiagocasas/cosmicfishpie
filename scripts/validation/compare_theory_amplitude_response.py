@@ -11,9 +11,9 @@ causes of the ~10% difference in the marginalized ``10^9As`` error:
    error after fixing or marginalizing subsets of the nuisance parameters. This shows
    whether the covariance, the derivatives or the marginalization drives the difference.
 3. Hybrid test -- put the SYREN-NEW power spectrum inside the *JAX* photometric
-   observable. If the hybrid reproduces the SYREN error, the observable implementation,
-   the Fisher assembly and the autodiff are all exonerated and the difference is a genuine
-   theory difference.
+   observable. If the hybrid reproduces the SYREN error, the observable and the Fisher
+   assembly are exonerated and the difference is a genuine theory difference. The hybrid
+   uses finite-difference derivatives, so it does not test autodiff.
 4. Fiducial stability -- repeat the marginalized comparison at a second cosmology.
 
 The JAXcosmo finite-difference control (same JAX theory and observable, finite-difference
@@ -402,9 +402,7 @@ def hybrid_forecast(jax_run: dict, syren_cls: dict) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--outdir", type=Path, default=None, help="write summary.json and REPORT.md"
-    )
+    parser.add_argument("--outdir", type=Path, default=None, help="write summary.json")
     arguments = parser.parse_args()
 
     summary: dict = {"fiducials": {}, "theory": theory_response(FIDUCIALS[0][1])}

@@ -87,7 +87,9 @@ class _JaxObservableProvider:
     def _make_cache_key(self, request: DerivativeRequest, configuration) -> str:
         backend = getattr(configuration, "backend_parameters", None)
         if not backend:
-            backend = getattr(configuration, "boltzmann_jaxcosmopars", None)
+            from cosmicfishpie.configs import config as legacy
+
+            backend = getattr(legacy, "boltzmann_jaxcosmopars", None)
         return _fingerprint(
             dict(request.fiducial),
             getattr(configuration, "settings", None),
@@ -114,11 +116,11 @@ class _JaxObservableProvider:
         if "GCsp" in observables:
             from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
-            observable = JaxSpectroObservable(configuration, fiducial)
+            observable = JaxSpectroObservable(configuration, fiducial, observables=observables)
         else:
             from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
-            observable = JaxPhotoObservable(configuration, fiducial)
+            observable = JaxPhotoObservable(configuration, fiducial, observables=observables)
         self._observable, self._cache_key = observable, key
         return observable
 

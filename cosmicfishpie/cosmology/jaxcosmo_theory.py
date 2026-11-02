@@ -19,7 +19,7 @@ Model
 Units
 -----
 Public functions of this module return the *CosmicFishPie* conventions:
-distances in ``Mpc``, ``H/c`` in ``1/Mpc``, wavenumbers in ``1/Mpc`` and power spectra in
+distances in ``Mpc``, ``H/c`` in ``1/Mpc``, wavenumbers in ``h/Mpc`` and power spectra in
 ``Mpc^3``.  Internally ``jax_cosmo`` works in ``Mpc/h``, ``h/Mpc`` and ``(Mpc/h)^3``; the
 conversions are done in :func:`compute_tables` only.
 
@@ -104,8 +104,10 @@ class TheoryConfig:
                 f"Unsupported halofit prescription '{self.halofit}'. "
                 f"Choose one of {_SUPPORTED_HALOFIT}."
             )
-        if int(self.distance_steps) < 16:
+        steps = int(self.distance_steps)
+        if steps != self.distance_steps or steps < 16:
             raise ValueError("distance_steps must be an integer >= 16.")
+        object.__setattr__(self, "distance_steps", steps)
 
     @classmethod
     def from_backend_parameters(cls, backend_parameters: Mapping | None) -> "TheoryConfig":

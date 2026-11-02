@@ -1,8 +1,9 @@
-"""Tests for the cache and pickling behaviour of the jaxcosmo derivative providers."""
+"""Tests for the derivative results, cache and pickling behaviour of the jaxcosmo providers."""
 
 from __future__ import annotations
 
 import pickle
+from dataclasses import replace
 from types import SimpleNamespace
 
 import numpy as np
@@ -18,10 +19,14 @@ from cosmicfishpie.LSSsurvey import jaxcosmo_photo  # noqa: E402
 class _StubObservable:
     built = 0
 
-    def __init__(self, configuration, fiducial):
+    def __init__(self, configuration, fiducial, observables=None):
         type(self).built += 1
         self.configuration = configuration
         self.fiducial = fiducial
+        self.observables = observables
+
+    def jacobian(self, names):
+        return {name: f"d({name})" for name in names}
 
 
 @pytest.fixture
@@ -91,3 +96,53 @@ def test_provider_pickles_without_compiled_state(stub):
     clone = pickle.loads(pickle.dumps(provider))
     assert clone._observable is None
     assert clone._cache_key is None
+
+
+def _derivative_request(configuration, freeparams, special=None):
+    return jd.DerivativeRequest(
+        observable=lambda fiducial: None,
+        fiducial={"h": 0.67, "Omegam": 0.32, "bias_model": "binned"},
+        freeparams=freeparams,
+        observables_type=("GCph", "WL"),
+        external_settings=None,
+        feed_lvl=0,
+        method="jax",
+        special_deriv_function=special,
+        configuration=configuration,
+    )
+
+
+def test_observable_gets_the_requested_probe_subset(stub):
+    configuration = _request().configuration
+    request = replace(_derivative_request(configuration, ("h",)), observables_type=("WL",))
+    observable = jd.JaxAutodiffProvider()._get_observable(request)
+    assert observable.observables == ("WL",)
+
+
+def test_autodiff_compute_keeps_special_derivatives_and_adds_the_jacobian(stub):
+    provider = jd.JaxAutodiffProvider()
+    configuration = _request().configuration
+    request = _derivative_request(
+        configuration, ("b1", "h"), lambda name: "analytic-b1" if name == "b1" else None
+    )
+    result = provider.compute(request)
+    assert list(result) == ["b1", "h"]
+    assert result["b1"] == "analytic-b1"
+    assert result["h"] == "d(h)"
+
+
+def test_finite_difference_compute_delegates_to_the_standard_engine(stub, monkeypatch):
+    seen = {}
+
+    class _Engine:
+        def compute(self, request):
+            seen["request"] = request
+            return {name: ("fd", name) for name in request.freeparams}
+
+    monkeypatch.setattr(jd, "FiniteDifferenceProvider", _Engine)
+    provider = jd.JaxFiniteDifferenceProvider()
+    configuration = _request().configuration
+    request = _derivative_request(configuration, ("h",))
+    result = provider.compute(request)
+    assert result == {"h": ("fd", "h")}
+    assert seen["request"].observable is provider._observable

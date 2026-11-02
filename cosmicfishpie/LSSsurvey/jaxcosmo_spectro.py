@@ -84,6 +84,9 @@ class JaxSpectroObservable:
     backend_parameters : mapping, optional
         Content of ``jaxcosmo/default.yaml``.  Defaults to the one carried by
         ``configuration``.
+    observables : sequence of str, optional
+        Probes this observable computes.  Defaults to ``configuration.obs``; pass the requested
+        subset when the configuration carries probes computed by another observable.
     """
 
     def __init__(
@@ -91,18 +94,20 @@ class JaxSpectroObservable:
         configuration: Any,
         fiducial: Mapping[str, Any],
         backend_parameters: Mapping[str, Any] | None = None,
+        observables: Sequence[str] | None = None,
     ):
         self.configuration = configuration
         self.settings = configuration.settings
         self.specs = configuration.specs
         self.fiducial = dict(fiducial)
 
-        self.observables = [o for o in configuration.obs if o in _SPECTRO_OBS]
-        unsupported = [o for o in configuration.obs if o not in _SPECTRO_OBS]
+        requested = tuple(configuration.obs if observables is None else observables)
+        self.observables = [o for o in requested if o in _SPECTRO_OBS]
+        unsupported = [o for o in requested if o not in _SPECTRO_OBS]
         if unsupported or not self.observables:
             raise NotImplementedError(
                 "The jaxcosmo spectroscopic autodiff path supports only the 'GCsp' probe; "
-                f"got observables {tuple(configuration.obs)}."
+                f"got observables {requested}."
             )
         s = self.settings
         if s.get("GCsp_Tracer", "matter") != "matter":
@@ -195,6 +200,8 @@ class JaxSpectroObservable:
         for _, interval in self.specs["z_bins_sp"].items():
             edges.append(interval)
             mids.append(0.5 * (interval[0] + interval[1]))
+        if edges != sorted(edges):
+            raise ValueError("z_bins_sp must list bins in ascending redshift order.")
         self.bin_edges = np.array(sorted(edges))
         self.z = np.array(mids)
         self.nbins = self.z.size
@@ -268,6 +275,24 @@ class JaxSpectroObservable:
         self.theta_moments = np.stack(moments)
         self.extra_shot = float(self.settings.get("Pshot_nuisance_fiducial", 0.0))
         self.pshot_keys = tuple(k for k in self.fiducial if k.startswith("Ps_"))
+        self.pshot_bins = tuple(self._pshot_bin(key) for key in self.pshot_keys)
+        if len(set(self.pshot_bins)) != len(self.pshot_bins):
+            raise ValueError(f"Duplicate shot-noise bins in {self.pshot_keys}.")
+
+    def _pshot_bin(self, key: str) -> int:
+        """Zero-based redshift bin named by a ``Ps_<bin>`` shot-noise parameter."""
+        try:
+            index = int(key.rsplit("_", 1)[-1]) - 1
+        except ValueError:
+            raise ValueError(
+                f"Cannot read a redshift bin from shot-noise parameter {key!r}."
+            ) from None
+        if not 0 <= index < self.nbins:
+            raise ValueError(
+                f"Shot-noise parameter {key!r} refers to bin {index + 1}, but there are "
+                f"{self.nbins} spectroscopic bins."
+            )
+        return index
 
     # ------------------------------------------------------------------ equations
     def _bias(self, v: Mapping) -> jnp.ndarray:
@@ -369,7 +394,9 @@ class JaxSpectroObservable:
         # Shot-noise parameters enter the observed power spectrum additively, exactly as the
         # analytic derivative in SpectroDerivs.exact_derivs assumes.
         if self.pshot_keys:
-            pshot = jnp.asarray([v[k] for k in self.pshot_keys])
+            values = jnp.asarray([v[k] for k in self.pshot_keys])
+            pshot = jnp.zeros(self.nbins, dtype=values.dtype)
+            pshot = pshot.at[jnp.asarray(self.pshot_bins)].set(values)
             pobs = pobs + pshot[:, None, None]
         return jnp.log(pobs)
 

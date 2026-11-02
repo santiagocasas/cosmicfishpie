@@ -2,7 +2,7 @@
 """
 REFERENCE TEST SUITE - NOT RUN IN CI PIPELINE
 
-Test suite for edge cases, performance, and numerical stability 
+Test suite for edge cases, performance, and numerical stability
 of the spectro_obs module.
 
 This file contains comprehensive tests for boundary conditions, numerical edge cases,

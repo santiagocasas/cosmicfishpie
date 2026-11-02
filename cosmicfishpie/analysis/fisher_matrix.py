@@ -14,10 +14,10 @@
 # ----------------------------------------------------------------------------------------
 
 """
-   :synopsis: Module that contains the fisher_matrix class and the operations defined on it.
-              The idea is that of creating a Fisher matrix safely, with all operations being
-              well defined and safe-guarded once the input matrix is accepted as a Fisher
-              matrix.
+:synopsis: Module that contains the fisher_matrix class and the operations defined on it.
+           The idea is that of creating a Fisher matrix safely, with all operations being
+           well defined and safe-guarded once the input matrix is accepted as a Fisher
+           matrix.
 """
 
 # ***************************************************************************************
@@ -304,7 +304,7 @@ class fisher_matrix:
             self.param_names_dict[i + 1] = self.param_names[i]
             self.param_names_dict[self.param_names[i]] = i + 1
         # do PCA and store results:
-        (self.fisher_eigenvalues, self.fisher_eigenvectors) = self.PCA()
+        self.fisher_eigenvalues, self.fisher_eigenvectors = self.PCA()
         # protect against degenerate parameters:
         # self.protect_degenerate()
         # invert the Fisher matrix and store the result:
@@ -666,7 +666,7 @@ class fisher_matrix:
         """
         # check cache:
         if not cache:
-            (self.fisher_eigenvalues, self.fisher_eigenvectors) = self.PCA()
+            self.fisher_eigenvalues, self.fisher_eigenvectors = self.PCA()
         # get the eigenvalues and eigenvactors:
         fisher_eigenvectors = self.fisher_eigenvectors
         #
@@ -698,7 +698,7 @@ class fisher_matrix:
             # get the Fisher:
             self.fisher_matrix = np.dot(fisher_eigenvectors, np.dot(temp, fisher_eigenvectors.T))
             # redo PCA:
-            (self.fisher_eigenvalues, self.fisher_eigenvectors) = self.PCA()
+            self.fisher_eigenvalues, self.fisher_eigenvectors = self.PCA()
 
     # -----------------------------------------------------------------------------------
 
@@ -771,7 +771,7 @@ class fisher_matrix:
             self.param_names_dict[i + 1] = self.param_names[i]
             self.param_names_dict[self.param_names[i]] = i + 1
         # do PCA and store results:
-        (self.fisher_eigenvalues, self.fisher_eigenvectors) = self.PCA()
+        self.fisher_eigenvalues, self.fisher_eigenvectors = self.PCA()
         # protect against degenerate parameters:
         # self.protect_degenerate( )
         # invert the Fisher matrix and store the result:

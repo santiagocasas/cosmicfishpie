@@ -7,6 +7,7 @@ Usage:
 
 Outputs a markdown-style table plus a JSON diff summary with speedups.
 """
+
 from __future__ import annotations
 
 import argparse

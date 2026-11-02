@@ -199,7 +199,7 @@ def _sigma_max_dev(entry: dict[str, Any]) -> tuple[str | None, float | None, flo
 
 
 def _yaml_top_summary(
-    entry: dict[str, Any]
+    entry: dict[str, Any],
 ) -> tuple[int | None, int | None, int | None, list[str]]:
     yaml_block = entry.get("yaml")
     if not isinstance(yaml_block, dict):

@@ -4,6 +4,7 @@
 This module contains cls calculations (only LSS atm).
 
 """
+
 import copy
 from time import time
 

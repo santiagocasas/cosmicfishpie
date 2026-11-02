@@ -18,6 +18,7 @@ Flags:
 
 The script does not modify library code; it measures wall-clock times and (optionally) cProfile data.
 """
+
 from __future__ import annotations
 
 import argparse

@@ -31,6 +31,7 @@ Notes:
 - Function cumulative times are taken from pstats (cumulative includes time in subcalls).
 - You can diff JSON outputs between branches to assess speedups.
 """
+
 from __future__ import annotations
 
 import argparse

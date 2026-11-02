@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------------------------
 
 """
-   :synopsis: Module that contains a set of tools to perform the analysis of a set of Fisher matrices.
+:synopsis: Module that contains a set of tools to perform the analysis of a set of Fisher matrices.
 """
 
 import copy

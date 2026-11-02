@@ -10,6 +10,7 @@ Usage:
   ... --ref results/ref.npz        # dump reference Cls for correctness checks
   ... --check results/ref.npz      # compare current Cls vs reference (max rel err)
 """
+
 from __future__ import annotations
 
 import argparse

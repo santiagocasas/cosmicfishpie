@@ -25,3 +25,36 @@ jobs:
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+  # The ``jaxcosmo`` extra is not installed in the job above, so the JAX tests
+  # skip themselves there (``pytest.importorskip``). This job installs the extra and
+  # runs them, so the differentiable backend is tested and counted in coverage.
+  test-jax:
+    name: test (jaxcosmo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Install dependencies (with the jaxcosmo extra)
+        run: |
+          uv sync --extra dev --extra jaxcosmo
+      - name: Check that JAX is available
+        run: |
+          uv run python -c "import jax, jax_cosmo; print('jax', jax.__version__)"
+      - name: Run JAX tests
+        env:
+          CUDA_VISIBLE_DEVICES: ''
+        run: |
+          uv run pytest tests/jaxcosmo_derivatives_test.py tests/jaxcosmo_spectro_parity_test.py tests/jaxcosmo_spectro_test.py tests/jaxcosmo_theory_test.py -rs
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: jaxcosmo

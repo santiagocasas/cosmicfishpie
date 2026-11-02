@@ -28,7 +28,7 @@ dependencies = [
     "camb==2.0.3",
     "classy==3.3.4.0",
     "Cython==3.3.0",
-    "getdist==1.7.5",
+    "getdist==1.7.7",
     "h5py==3.16.0",
     "ipython==8.39.0",
     "joblib==1.6.0",

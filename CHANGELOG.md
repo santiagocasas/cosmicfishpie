@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Tighten `jaxcosmo` input validation for conflicting density, expansion-rate, and dark-energy aliases; reject invalid `h` and fractional sample counts. Permit unchanged unit `sigmap_*`/`sigmav_*` fiducials while rejecting unsupported non-unit rescaling.
 - Tighten the `jaxcosmo` guards after review: check every neutrino alias, reject
   density keys the backend ignores, require a positive finite primordial amplitude, enforce
   minimum `NUMERICS` grid sizes, validate `distance_steps` before truncation, refuse a

@@ -179,6 +179,43 @@ def test_resolve_parameters_rejects_ignored_density_parameterizations():
     assert resolved["Omegam"] == pytest.approx(0.12 / 0.67**2 + 0.05)
 
 
+def test_resolve_parameters_rejects_conflicting_density_and_expansion_aliases():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67}
+    with pytest.raises(ValueError, match="Conflicting values for Omegab, ombh2"):
+        provider.resolve_parameters(dict(base, ombh2=0.022), "LCDM")
+    with pytest.raises(ValueError, match="Conflicting values for Omegam, omch2"):
+        provider.resolve_parameters(dict(base, omch2=0.12), "LCDM")
+    consistent = provider.resolve_parameters(dict(base, ombh2=0.05 * 0.67**2), "LCDM")
+    assert consistent["Omegab"] == pytest.approx(0.05)
+    consistent = provider.resolve_parameters(dict(base, omch2=(0.32 - 0.05) * 0.67**2), "LCDM")
+    assert consistent["Omegam"] == pytest.approx(0.32)
+    for alias in ("omega_b", "Omega_b", "100omega_b", "omega_cdm", "Omega_cdm"):
+        with pytest.raises(ValueError, match="does not read"):
+            provider.resolve_parameters(dict(base, **{alias: 0.02}), "LCDM")
+    with pytest.raises(ValueError, match="Conflicting values for h and H0"):
+        provider.resolve_parameters(dict(base, H0=70.0), "LCDM")
+
+
+def test_resolve_parameters_rejects_invalid_h_and_h0():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
+    for key, value in (("h", 0.0), ("h", float("nan")), ("H0", float("inf"))):
+        with pytest.raises(ValueError, match="positive, finite h"):
+            provider.resolve_parameters(dict(base, **{key: value}), "LCDM")
+
+
+def test_resolve_parameters_rejects_conflicting_w0wa_aliases():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
+    for aliases in ({"w0": -0.8, "w0_fld": -0.9}, {"wa": 0.2, "wa_fld": 0.3}):
+        with pytest.raises(ValueError, match="Conflicting values"):
+            provider.resolve_parameters(dict(base, **aliases), "w0waCDM")
+
+
 def test_resolve_parameters_rejects_non_finite_amplitude():
     from cosmicfishpie.cosmology import jaxcosmo_provider as provider
 
@@ -235,6 +272,15 @@ def test_numerics_grids_need_enough_nodes_for_cubic_splines():
     for key in ("z_samples", "k_samples", "z_samples_background"):
         with pytest.raises(ValueError, match=key):
             provider.JaxCosmoProvider(cosmopars, _backend({key: 3}), "LCDM")
+
+
+def test_numerics_sample_counts_must_be_integers():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    cosmopars = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67, "ns": 0.96}
+    for key in ("z_samples", "k_samples", "z_samples_background"):
+        with pytest.raises(ValueError, match="integer >= 4"):
+            provider.JaxCosmoProvider(cosmopars, _backend({key: 12.5}), "LCDM")
 
 
 def test_provider_rejects_a_cosmology_whose_halofit_root_is_outside_the_bracket():

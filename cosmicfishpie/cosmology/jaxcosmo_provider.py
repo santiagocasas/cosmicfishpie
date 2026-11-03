@@ -73,15 +73,29 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
             )
 
     h = _as_scalar(pars["h"]) if "h" in pars else _as_scalar(pars.get("H0", 67.0)) / 100.0
+    if "h" in pars and "H0" in pars and not np.isclose(h, _as_scalar(pars["H0"]) / 100.0):
+        raise ValueError("Conflicting values for h and H0; pass only one or matching values.")
+    if not np.isfinite(h) or h <= 0.0:
+        raise ValueError(f"The jaxcosmo backend requires a positive, finite h (got {h}).")
     for keys, supported, target in (
         (("omega_b", "Omega_b", "100omega_b"), ("Omegab", "ombh2"), "Omegab or ombh2"),
         (("omega_cdm", "Omega_cdm"), ("Omegam", "omch2"), "Omegam or omch2"),
     ):
         ignored = [key for key in keys if key in pars]
-        if ignored and not any(key in pars for key in supported):
+        if ignored:
             raise ValueError(
                 f"The jaxcosmo backend does not read {', '.join(ignored)}; pass {target} instead."
             )
+        supplied = [key for key in supported if key in pars]
+        if len(supplied) > 1:
+            if supported[0] == "Omegab":
+                equivalent = _as_scalar(pars["ombh2"]) / h**2
+            else:
+                equivalent = _as_scalar(pars["omch2"]) / h**2 + _as_scalar(
+                    pars.get("Omegab", pars.get("ombh2", 0.05 * h**2) / h**2)
+                )
+            if not np.isclose(_as_scalar(pars[supported[0]]), equivalent):
+                raise ValueError(f"Conflicting values for {', '.join(supplied)}.")
     omega_b = _as_scalar(pars["Omegab"]) if "Omegab" in pars else None
     if omega_b is None:
         omega_b = _as_scalar(pars.get("ombh2", 0.05 * h**2)) / h**2
@@ -101,6 +115,13 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
                 )
         w0, wa = -1.0, 0.0
     else:
+        for canonical, alias in (("w0", "w0_fld"), ("wa", "wa_fld")):
+            if (
+                canonical in pars
+                and alias in pars
+                and not np.isclose(_as_scalar(pars[canonical]), _as_scalar(pars[alias]))
+            ):
+                raise ValueError(f"Conflicting values for {canonical} and {alias}.")
         w0 = _as_scalar(pars.get("w0", pars.get("w0_fld", -1.0)))
         wa = _as_scalar(pars.get("wa", pars.get("wa_fld", 0.0)))
 
@@ -168,8 +189,16 @@ class JaxCosmoProvider:
     ):
         self.numerics = dict(backend_parameters["NUMERICS"])
         for key in ("z_samples", "k_samples", "z_samples_background"):
-            if key in self.numerics and int(self.numerics[key]) < 4:
-                raise ValueError(f"NUMERICS['{key}'] must be at least 4 for cubic splines.")
+            if key in self.numerics:
+                count = self.numerics[key]
+                try:
+                    integer_count = int(count)
+                except (TypeError, ValueError, OverflowError):
+                    integer_count = -1
+                if integer_count != count or integer_count < 4:
+                    raise ValueError(
+                        f"NUMERICS['{key}'] must be an integer >= 4 for cubic splines."
+                    )
         self.config = theory.TheoryConfig.from_backend_parameters(backend_parameters)
         self.cosmo_model = cosmo_model
         self.settings = settings

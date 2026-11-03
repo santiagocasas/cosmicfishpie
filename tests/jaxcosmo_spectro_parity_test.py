@@ -60,6 +60,7 @@ def test_lnp_matches_legacy_at_fiducial_and_perturbed_cosmology(name, clamp_yaml
     engine = compare._legacy_engine(calc)
     fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
     observable = JaxSpectroObservable(calc, fiducial)
+    assert observable.lnp(fiducial)
     assert observable.legacy_pk_clamp
 
     perturbed = dict(fiducial)
@@ -138,7 +139,11 @@ def test_rescale_sigma_pv_parameters_are_rejected(tmp_path):
     fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
     fiducial["sigmap_0"] = 1.0
     observable = JaxSpectroObservable(calc, fiducial)
+    observable.lnp(fiducial)
     with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
         observable.canonical_name("sigmap_0")
     with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
         observable.lnp({"sigmap_0": 1.1})
+    fiducial["sigmap_0"] = 1.3
+    with pytest.raises(NotImplementedError, match="non-unit fiducial"):
+        JaxSpectroObservable(calc, fiducial)

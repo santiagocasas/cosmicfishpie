@@ -183,6 +183,13 @@ class JaxSpectroObservable:
         self.nonlinear_names = tuple(
             key for key in numeric if key.startswith(("sigmap_", "sigmav_"))
         )
+        non_unit = [key for key in self.nonlinear_names if not _same_value(numeric[key], 1.0)]
+        if non_unit:
+            raise NotImplementedError(
+                "The jaxcosmo spectroscopic observable does not implement the "
+                "rescale_sigma_pv parameterization; non-unit fiducial values are unsupported: "
+                f"{non_unit}."
+            )
         self.nuisance_names = tuple(k for k in numeric if k not in self.nonlinear_names)
         self.base_values: dict[str, float] = {**base, **numeric}
 
@@ -442,7 +449,7 @@ class JaxSpectroObservable:
     def _values(self, overrides: Mapping[str, Any] | None = None) -> dict[str, Any]:
         values = dict(self.base_values)
         for name, val in (overrides or {}).items():
-            if name in self.nonlinear_names:
+            if name in self.nonlinear_names and not _same_value(val, self.fiducial[name]):
                 raise NotImplementedError(
                     "The jaxcosmo spectroscopic observable does not implement the "
                     f"rescale_sigma_pv parameterization; '{name}' cannot be varied."

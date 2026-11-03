@@ -23,6 +23,14 @@ html[data-theme="dark"] {
 }
 
 /* Landing page hero */
+.cfp-logo-banner {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  margin: 0 auto 1.5rem;
+  border-radius: 0.5rem;
+}
+
 .cfp-hero {
   margin: 0 0 2.5rem 0;
   padding: 0.75rem 2rem 2.5rem 2rem;

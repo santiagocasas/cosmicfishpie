@@ -103,9 +103,14 @@ html_static_path = ["_static"]
 
 html_css_files = ["css/custom.css"]
 
-html_favicon = "_static/favicon.ico"
+html_favicon = "_static/logo/favicon.ico"
 
 html_theme_options = {
+    "logo": {
+        "image_light": "_static/logo/icon-light.svg",
+        "image_dark": "_static/logo/icon-dark.svg",
+        "text": "cosmicjellyfish",
+    },
     "icon_links": [
         {
             "name": "GitHub",

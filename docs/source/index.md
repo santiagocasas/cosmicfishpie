@@ -19,6 +19,16 @@ development
 
 ::::{div} cfp-hero
 
+```{image} _static/logo/banner-light.svg
+:alt: CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX
+:class: only-light cfp-logo-banner
+```
+
+```{image} _static/logo/banner-dark.svg
+:alt: CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX
+:class: only-dark cfp-logo-banner
+```
+
 :::{div} cfp-tagline
 Fisher-matrix forecasts for galaxy clustering, weak lensing and CMB surveys,
 with CAMB, CLASS, a built-in symbolic backend or optional JAXcosmo.

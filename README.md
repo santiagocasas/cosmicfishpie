@@ -1,5 +1,13 @@
 # cosmicjellyfish
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-light.svg">
+    <img alt="CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX" width="600" src="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-dark@2x.png">
+  </picture>
+</p>
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -12,10 +20,6 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/santiagocasas/cosmicjellyfish)
 
 `cosmicjellyfish` is a Python package for cosmological Fisher forecasts. It helps prepare and compare forecasts for surveys such as Euclid, DESI, SKAO and CMB experiments.
-
-<div align="center">
-  <img src="https://github.com/santiagocasas/cosmicjellyfish/assets/6987716/1816b3b7-0920-4a2c-aafd-9c4ba1dc3e2b" width="280">
-</div>
 
 ## Validation data
 

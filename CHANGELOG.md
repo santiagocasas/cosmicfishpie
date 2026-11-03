@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add the CosmicJellyfish logo, theme-aware README and documentation banners,
+  navbar icons, landing-page wordmark and updated favicons.
+
 - Move the YAML sampler examples to `scripts/likelihood/sampler/`, remove the
   bundled chain samples, and document cjfp-data downloads and validation workflows
   with a real chain-metadata example. The default sampler output remains `./chains/`.

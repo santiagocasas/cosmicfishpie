@@ -1,0 +1,6 @@
+halofit
+=======
+
+.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_halofit
+
+.. autofunction:: halofit

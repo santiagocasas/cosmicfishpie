@@ -54,7 +54,7 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Likelihood sampling with Nautilus" href="likelihood_sampling.html" />
+    <link rel="next" title="JAXcosmo and automatic differentiation" href="jaxcosmo.html" />
     <link rel="prev" title="Comprehensive guide" href="comprehensive_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -374,6 +374,7 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="comprehensive_guide.html">Comprehensive guide</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Derivative methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jaxcosmo.html">JAXcosmo and automatic differentiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood_sampling.html">Likelihood sampling with Nautilus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cmb_benchmarks.html">CMB benchmarks</a></li>
 </ul>
@@ -444,6 +445,11 @@ to the free cosmological and nuisance parameters. The method used for these
 derivatives is selected via <code class="docutils literal notranslate"><span class="pre">options[&quot;derivatives&quot;]</span></code> and implemented in
 <a class="reference internal" href="api/generated/cosmicfishpie.fishermatrix.derivatives.html#module-cosmicfishpie.fishermatrix.derivatives" title="cosmicfishpie.fishermatrix.derivatives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.derivatives</span></code></a>. Four methods are available:
 <code class="docutils literal notranslate"><span class="pre">3PT</span></code> (default), <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code>, <code class="docutils literal notranslate"><span class="pre">POLY</span></code>, and <code class="docutils literal notranslate"><span class="pre">STEM</span></code>.</p>
+<p>For automatic differentiation of JAX-native photometric and spectroscopic
+observables, pass <code class="docutils literal notranslate"><span class="pre">JaxAutodiffProvider()</span></code> to <code class="docutils literal notranslate"><span class="pre">FisherMatrix(derivative_provider=...)</span></code>.
+<code class="docutils literal notranslate"><span class="pre">JaxFiniteDifferenceProvider()</span></code> applies these finite-difference schemes to the
+same JAX observable for a controlled comparison. Both currently require
+<code class="docutils literal notranslate"><span class="pre">options[&quot;code&quot;]</span> <span class="pre">=</span> <span class="pre">&quot;jaxcosmo&quot;</span></code>; see <a class="reference internal" href="jaxcosmo.html"><span class="doc">JAXcosmo and automatic differentiation</span></a> for examples and scope.</p>
 <p>This page documents the algorithm behind each method, the relative cost of
 using them, and an empirical comparison across two different backends
 (<code class="docutils literal notranslate"><span class="pre">symbolic</span></code> and <code class="docutils literal notranslate"><span class="pre">camb</span></code>) that motivated a bug fix to the <code class="docutils literal notranslate"><span class="pre">POLY</span></code> method
@@ -776,11 +782,11 @@ full set of options.</p>
       </div>
     </a>
     <a class="right-next"
-       href="likelihood_sampling.html"
+       href="jaxcosmo.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Likelihood sampling with Nautilus</p>
+        <p class="prev-next-title">JAXcosmo and automatic differentiation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -395,7 +395,7 @@
 <div class="cfp-hero docutils">
 <div class="cfp-tagline docutils">
 <p>Fisher-matrix forecasts for galaxy clustering, weak lensing and CMB surveys,
-with CAMB, CLASS or a built-in symbolic backend.</p>
+with CAMB, CLASS, a built-in symbolic backend or optional JAXcosmo.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cosmicfishpie
 </pre></div>
@@ -472,6 +472,8 @@ external Einstein–Boltzmann solver, or precomputed <code class="docutils liter
 forecasts, CMB (<code class="docutils literal notranslate"><span class="pre">CMB_T</span></code>, <code class="docutils literal notranslate"><span class="pre">CMB_E</span></code>, <code class="docutils literal notranslate"><span class="pre">CMB_B</span></code>) and intensity mapping (<code class="docutils literal notranslate"><span class="pre">IM</span></code>).</p></li>
 <li><p><strong>Finite-difference derivatives.</strong> <code class="docutils literal notranslate"><span class="pre">3PT</span></code>, <code class="docutils literal notranslate"><span class="pre">STEM</span></code>, <code class="docutils literal notranslate"><span class="pre">POLY</span></code> and <code class="docutils literal notranslate"><span class="pre">4PT_FWD</span></code> schemes, selected with
 a single option.</p></li>
+<li><p><strong>Automatic differentiation.</strong> Optional JAXcosmo theory and JAX-native photometric and
+spectroscopic observables, with matched AD/FD comparisons (<a class="reference internal" href="jaxcosmo.html"><span class="doc">JAXcosmo and automatic differentiation</span></a>).</p></li>
 <li><p><strong>Analysis and plotting.</strong> Marginalise, reshuffle and combine Fisher matrices, and draw
 triangle plots to compare surveys and settings.</p></li>
 <li><p><strong>Likelihood sampling.</strong> Run Nautilus posterior sampling with the same observables and

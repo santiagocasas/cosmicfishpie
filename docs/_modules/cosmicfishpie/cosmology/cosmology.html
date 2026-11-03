@@ -536,6 +536,7 @@
         <span class="s2">&quot;camb&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_cambpars&quot;</span><span class="p">,</span>
         <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_classpars&quot;</span><span class="p">,</span>
         <span class="s2">&quot;symbolic&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_symbolicpars&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_jaxcosmopars&quot;</span><span class="p">,</span>
     <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">attribute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span>
@@ -646,6 +647,23 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">class_setparams</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmopars</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">class_results</span><span class="p">(</span><span class="n">Class</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_jaxcosmopars</span> <span class="o">=</span> <span class="n">_backend_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+            <span class="c1"># Lazy import: jax / jax-cosmo are an optional extra (``pip install .[jaxcosmo]``).</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.jaxcosmo_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">JaxCosmoProvider</span>
+
+            <span class="n">provider</span> <span class="o">=</span> <span class="n">JaxCosmoProvider</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cosmopars</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_jaxcosmopars</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;cosmo_model&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jaxcosmopars</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">cosmopars</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaxcosmopars</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zgrid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">zgrid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kgrid_1Mpc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">kgrid</span>
+            <span class="k">return</span>
         <span class="k">elif</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_symbolicpars</span> <span class="o">=</span> <span class="n">_backend_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
             <span class="n">provider_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boltzmann_symbolicpars</span><span class="p">[</span><span class="s2">&quot;ACCURACY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;provider&quot;</span><span class="p">,</span> <span class="s2">&quot;legacy&quot;</span><span class="p">)</span>
@@ -2267,6 +2285,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">kgrid</span> <span class="o">=</span> <span class="n">symbresults</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">kgrid</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cosmopars</span> <span class="o">=</span> <span class="n">symbresults</span><span class="o">.</span><span class="n">cosmopars</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">symbcosmopars</span> <span class="o">=</span> <span class="n">symbresults</span><span class="o">.</span><span class="n">symbcosmopars</span>
+        <span class="k">elif</span> <span class="n">effective_input</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+            <span class="n">jaxresults</span> <span class="o">=</span> <span class="n">boltzmann_code</span><span class="p">(</span>
+                <span class="n">cosmopars</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;jaxcosmo&quot;</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;jaxcosmo&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">jaxresults</span><span class="o">.</span><span class="n">results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kgrid</span> <span class="o">=</span> <span class="n">jaxresults</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">kgrid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmopars</span> <span class="o">=</span> <span class="n">jaxresults</span><span class="o">.</span><span class="n">cosmopars</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jaxcosmopars</span> <span class="o">=</span> <span class="n">jaxresults</span><span class="o">.</span><span class="n">jaxcosmopars</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">effective_input</span><span class="p">,</span> <span class="s2">&quot;:  This input type is not implemented yet&quot;</span><span class="p">)</span>
 
@@ -2429,6 +2456,11 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;SYREN-NEW provides total-matter power only; tracer=&#39;clustering&#39; is unsupported.&quot;</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The jaxcosmo backend provides total-matter power only; &quot;</span>
+                <span class="s2">&quot;tracer=&#39;clustering&#39; is unsupported.&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">nonlinear</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">power</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">Pk_cb_nl</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">nonlinear</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -2536,6 +2568,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tracer</span> <span class="o">==</span> <span class="s2">&quot;clustering&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The jaxcosmo backend provides total-matter power only; &quot;</span>
+                    <span class="s2">&quot;tracer=&#39;clustering&#39; is unsupported.&quot;</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">s8_cb_of_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">tracer</span> <span class="o">==</span> <span class="s2">&quot;matter&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">s8_of_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
@@ -2631,6 +2668,11 @@
             <span class="n">k</span> <span class="o">=</span> <span class="mf">0.0001</span>
 
         <span class="k">if</span> <span class="n">tracer</span> <span class="o">==</span> <span class="s2">&quot;clustering&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The jaxcosmo backend provides total-matter power only; &quot;</span>
+                    <span class="s2">&quot;tracer=&#39;clustering&#39; is unsupported.&quot;</span>
+                <span class="p">)</span>
             <span class="n">fg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">f_growthrate_cb_zk</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">fg</span>
         <span class="k">if</span> <span class="n">tracer</span> <span class="o">!=</span> <span class="s2">&quot;matter&quot;</span><span class="p">:</span>

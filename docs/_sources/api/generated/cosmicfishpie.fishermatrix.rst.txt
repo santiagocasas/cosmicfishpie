@@ -29,4 +29,5 @@
 
    cosmicfish
    derivatives
+   jaxcosmo_derivatives
 

@@ -528,7 +528,11 @@
 <span class="sd">        Returns a value rounded up to a specific number of decimal places.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">numerics</span><span class="o">.</span><span class="n">old_round_decimals_up</span><span class="p">:</span>
-            <span class="n">number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">))</span>
+            <span class="c1"># Quantise through float16 (legacy behaviour), then compute in float64.</span>
+            <span class="c1"># Under NumPy&gt;=2 (NEP 50) a Python int is a &quot;weak&quot; scalar, so keeping the</span>
+            <span class="c1"># float16 dtype here would make ``number * factor`` overflow the precision</span>
+            <span class="c1"># of float16 and silently change the result.</span>
+            <span class="n">number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">format_float_positional</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)))</span>
             <span class="c1"># this function protects from precision issues with floats</span>
             <span class="k">if</span> <span class="n">decimals</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>

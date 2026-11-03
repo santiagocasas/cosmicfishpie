@@ -479,10 +479,13 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emulators</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">euclidemu2</span></code>, for the EuclidEmulator2 nonlinear boost with CLASS</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">docs</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jaxcosmo</span></code></p></td>
+<td><p>JAX, <code class="docutils literal notranslate"><span class="pre">jax-cosmo</span></code> and compatibility dependencies for the optional differentiable backend</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">docs</span></code></p></td>
 <td><p>Sphinx and the theme needed to build this documentation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></td>
 <td><p>Linters, type checker, <code class="docutils literal notranslate"><span class="pre">pytest</span></code> and coverage, packaging tools</p></td>
 </tr>
 </tbody>
@@ -493,6 +496,9 @@ uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </
 uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>docs<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w">         </span><span class="c1"># several extras</span>
 </pre></div>
 </div>
+<p>For the optional differentiable backend, use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--extra</span> <span class="pre">jaxcosmo</span></code> from a
+checkout containing that implementation. See <a class="reference internal" href="jaxcosmo.html"><span class="doc">JAXcosmo and automatic differentiation</span></a> for the supported
+models, derivative providers and notebook setup.</p>
 </section>
 <section id="survey-data">
 <h2>Survey data<a class="headerlink" href="#survey-data" title="Link to this heading">#</a></h2>

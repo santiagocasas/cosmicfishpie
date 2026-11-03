@@ -1,0 +1,6 @@
+params\_from\_vector
+====================
+
+.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_theory
+
+.. autofunction:: params_from_vector

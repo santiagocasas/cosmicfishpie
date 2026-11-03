@@ -1,0 +1,32 @@
+cosmicfishpie.cosmology.jaxcosmo\_amplitude
+===========================================
+
+.. automodule:: cosmicfishpie.cosmology.jaxcosmo_amplitude
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      As_to_sigma8
+      sigma8_to_As
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

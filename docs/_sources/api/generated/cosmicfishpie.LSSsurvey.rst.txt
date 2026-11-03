@@ -27,6 +27,8 @@
    :toctree:
    :recursive:
 
+   jaxcosmo_photo
+   jaxcosmo_spectro
    photo_cov
    photo_obs
    photo_window

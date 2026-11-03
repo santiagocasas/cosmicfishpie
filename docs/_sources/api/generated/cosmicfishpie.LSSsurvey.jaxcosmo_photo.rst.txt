@@ -1,0 +1,45 @@
+cosmicfishpie.LSSsurvey.jaxcosmo\_photo
+=======================================
+
+.. automodule:: cosmicfishpie.LSSsurvey.jaxcosmo_photo
+
+   
+   
+   .. rubric:: Module attributes
+
+   .. autosummary::
+   
+      COSMO_FREE_NAMES
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      is_bias_key
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      JaxPhotoObservable
+   
+   
+
+   
+   
+   
+
+
+

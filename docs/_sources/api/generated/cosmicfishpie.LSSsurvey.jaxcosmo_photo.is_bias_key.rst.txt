@@ -1,0 +1,6 @@
+is\_bias\_key
+=============
+
+.. currentmodule:: cosmicfishpie.LSSsurvey.jaxcosmo_photo
+
+.. autofunction:: is_bias_key

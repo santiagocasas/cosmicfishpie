@@ -1,0 +1,50 @@
+cosmicfishpie.cosmology.jaxcosmo\_theory
+========================================
+
+.. automodule:: cosmicfishpie.cosmology.jaxcosmo_theory
+
+   
+   
+   .. rubric:: Module attributes
+
+   .. autosummary::
+   
+      PARAM_ORDER
+      FREE_NAME_MAP
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      compute_tables
+      enable_x64
+      make_cosmology
+      params_from_vector
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      JaxCosmoTheory
+      TheoryConfig
+   
+   
+
+   
+   
+   
+
+
+

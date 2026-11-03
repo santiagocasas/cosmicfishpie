@@ -585,6 +585,7 @@
                 <span class="s2">&quot;camb&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_cambpars&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_classpars&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;symbolic&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_symbolicpars&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span> <span class="s2">&quot;boltzmann_jaxcosmopars&quot;</span><span class="p">,</span>
             <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_type</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backend_parameters</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">backend_attribute</span><span class="p">,</span> <span class="p">{}))</span> <span class="k">if</span> <span class="n">backend_attribute</span> <span class="k">else</span> <span class="p">{}</span>

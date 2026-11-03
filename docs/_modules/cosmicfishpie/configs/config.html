@@ -718,6 +718,10 @@
         <span class="s2">&quot;symbolic_config_yaml&quot;</span><span class="p">,</span>
         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">],</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">,</span> <span class="s2">&quot;default.yaml&quot;</span><span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+        <span class="s2">&quot;jaxcosmo_config_yaml&quot;</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;boltzmann_yaml_path&quot;</span><span class="p">],</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">,</span> <span class="s2">&quot;default.yaml&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
     <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fishermatrix_file_extension&quot;</span><span class="p">,</span> <span class="s2">&quot;.txt&quot;</span><span class="p">)</span>
     <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_window&quot;</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
     <span class="n">settings</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;savgol_polyorder&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -822,10 +826,18 @@
         <span class="n">parsed_boltzmann</span> <span class="o">=</span> <span class="n">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;symbolic_config_yaml&quot;</span><span class="p">])</span>
         <span class="n">boltzmann_symbolicpars</span> <span class="o">=</span> <span class="n">parsed_boltzmann</span>
         <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">:</span>
+        <span class="c1"># Optional differentiable backend: jax / jax-cosmo are imported lazily by the</span>
+        <span class="c1"># provider, so selecting it never costs anything for the other backends.</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="k">global</span> <span class="n">boltzmann_jaxcosmopars</span>
+        <span class="n">parsed_boltzmann</span> <span class="o">=</span> <span class="n">_load_boltzmann_yaml</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;jaxcosmo_config_yaml&quot;</span><span class="p">])</span>
+        <span class="n">boltzmann_jaxcosmopars</span> <span class="o">=</span> <span class="n">parsed_boltzmann</span>
+        <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No external input files used in this calculation.&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Einstein-Boltzmann-Solver (EBS) specified.&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No symbolic_pofk specified.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No symbolic_pofk or jaxcosmo specified.&quot;</span><span class="p">)</span>
         <span class="c1"># settings[&#39;code&#39;] = &#39;camb&#39;</span>
         <span class="n">external</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No cosmology calculator specified&quot;</span><span class="p">)</span>

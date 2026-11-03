@@ -1,0 +1,6 @@
+nonlinear\_scale\_residual
+==========================
+
+.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_halofit
+
+.. autofunction:: nonlinear_scale_residual

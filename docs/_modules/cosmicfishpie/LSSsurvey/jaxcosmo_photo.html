@@ -1,0 +1,963 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cosmicfishpie.LSSsurvey.jaxcosmo_photo &#8212; cosmicfishpie v1.3.1</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=5b17a67c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/cosmicfishpie/LSSsurvey/jaxcosmo_photo';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../development.html">
+    Development
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">cosmicfishpie.LSSsurvey.jaxcosmo_photo</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for cosmicfishpie.LSSsurvey.jaxcosmo_photo</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;JAX-native photometric (``GCph`` + ``WL``) angular power spectra for the ``jaxcosmo`` backend.</span>
+
+<span class="sd">This module re-implements, with ``jax.numpy`` only, the Limber computation done by</span>
+<span class="sd">:class:`cosmicfishpie.LSSsurvey.photo_obs.ComputeCls` so that the full chain</span>
+
+<span class="sd">``(cosmology, bias, IA, photo-z) -&gt; C_ell``</span>
+
+<span class="sd">is traceable by ``jax.jit`` / ``jax.jacfwd``.  The existing NumPy/SciPy pipeline is left</span>
+<span class="sd">untouched; this is a *parallel* observable used by</span>
+<span class="sd">:class:`cosmicfishpie.fishermatrix.jaxcosmo_derivatives.JaxAutodiffProvider`.</span>
+
+<span class="sd">Scope (explicitly rejected otherwise)</span>
+<span class="sd">-------------------------------------</span>
+<span class="sd">* observables: ``GCph`` and ``WL`` only (no spectroscopic, no CMB);</span>
+<span class="sd">* total-matter tracer (``GCph_Tracer = &quot;matter&quot;``), no modified gravity;</span>
+<span class="sd">* flat, massless-neutrino cosmology (see :mod:`cosmicfishpie.cosmology.jaxcosmo_theory`);</span>
+<span class="sd">* intrinsic alignment model ``eNLA``; bias models ``sqrt``, ``binned``, ``binned_constant``,</span>
+<span class="sd">  ``flagship``.</span>
+
+<span class="sd">Numerical differences from ``ComputeCls``</span>
+<span class="sd">-----------------------------------------</span>
+<span class="sd">* ``P(k, z)`` is evaluated directly (Halofit) at the Limber wavenumbers</span>
+<span class="sd">  ``kappa = (ell + 1/2) / chi(z)`` on the Limber redshift grid, with ``kappa`` capped at</span>
+<span class="sd">  ``kmax`` (the contribution above ``kmax`` is masked to zero anyway).  ``ComputeCls`` instead</span>
+<span class="sd">  reads a bicubic spline built on a coarser ``z`` / ``k`` table, which clamps at the table</span>
+<span class="sd">  edges.  Evaluating the model directly keeps the result smooth in the parameters, which both</span>
+<span class="sd">  autodiff and finite differences need.</span>
+<span class="sd">* The luminosity-ratio table is interpolated with ``numpy.interp`` (clamped), whereas the</span>
+<span class="sd">  original code uses ``scipy.interpolate.interp1d`` (raises outside the table).</span>
+
+<span class="sd">Everything else (``z`` grid, ``ell`` grid, kernels, trapezoid rules, masks, dictionary keys and</span>
+<span class="sd">their order) follows ``ComputeCls`` literally.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">jax.scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+        <span class="s2">&quot;The jaxcosmo photometric observable requires jax. &quot;</span>
+        <span class="s2">&quot;Install it with: pip install &#39;cosmicfishpie[jaxcosmo]&#39;&quot;</span>
+    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.jax_theory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_jax_theory</span>
+
+<span class="c1">#: CosmicFishPie names of the cosmological parameters that can be differentiated.</span>
+<span class="c1">#: Kept for backwards compatibility; the authoritative mapping is ``theory.free_name_map``.</span>
+<span class="n">COSMO_FREE_NAMES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;10^9As&quot;</span><span class="p">:</span> <span class="s2">&quot;As&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Omegam&quot;</span><span class="p">:</span> <span class="s2">&quot;Omegam&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Omegab&quot;</span><span class="p">:</span> <span class="s2">&quot;Omegab&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;ns&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w0&quot;</span><span class="p">:</span> <span class="s2">&quot;w0&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wa&quot;</span><span class="p">:</span> <span class="s2">&quot;wa&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1">#: Every key that describes the background cosmology in a CosmicFishPie fiducial dictionary.</span>
+<span class="n">_COSMO_KEYS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;10^9As&quot;</span><span class="p">,</span> <span class="s2">&quot;As&quot;</span><span class="p">,</span> <span class="s2">&quot;logAs&quot;</span><span class="p">,</span> <span class="s2">&quot;ln_A_s_1e10&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma8&quot;</span><span class="p">,</span> <span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;omch2&quot;</span><span class="p">,</span> <span class="s2">&quot;Omegab&quot;</span><span class="p">,</span> <span class="s2">&quot;ombh2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;H0&quot;</span><span class="p">,</span> <span class="s2">&quot;ns&quot;</span><span class="p">,</span> <span class="s2">&quot;n_s&quot;</span><span class="p">,</span> <span class="s2">&quot;mnu&quot;</span><span class="p">,</span> <span class="s2">&quot;m_nu&quot;</span><span class="p">,</span> <span class="s2">&quot;w0&quot;</span><span class="p">,</span> <span class="s2">&quot;w0_fld&quot;</span><span class="p">,</span> <span class="s2">&quot;wa&quot;</span><span class="p">,</span> <span class="s2">&quot;wa_fld&quot;</span><span class="p">,</span> <span class="s2">&quot;Omegak&quot;</span><span class="p">,</span> <span class="s2">&quot;omk&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Omega_k&quot;</span><span class="p">,</span> <span class="s2">&quot;Neff&quot;</span><span class="p">,</span> <span class="s2">&quot;N_eff&quot;</span><span class="p">,</span> <span class="s2">&quot;tau&quot;</span><span class="p">,</span> <span class="s2">&quot;Tcmb&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>  <span class="c1"># fmt: skip</span>
+<span class="n">PHOTO_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;cb&quot;</span><span class="p">,</span> <span class="s2">&quot;co&quot;</span><span class="p">,</span> <span class="s2">&quot;fout&quot;</span><span class="p">,</span> <span class="s2">&quot;zo&quot;</span><span class="p">,</span> <span class="s2">&quot;zb&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_o&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_b&quot;</span><span class="p">)</span>
+<span class="n">IA_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;AIA&quot;</span><span class="p">,</span> <span class="s2">&quot;betaIA&quot;</span><span class="p">,</span> <span class="s2">&quot;etaIA&quot;</span><span class="p">)</span>
+<span class="n">_STRING_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;bias_model&quot;</span><span class="p">,</span> <span class="s2">&quot;IA_model&quot;</span><span class="p">)</span>
+<span class="n">_PHOTO_OBS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;GCph&quot;</span><span class="p">,</span> <span class="s2">&quot;WL&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_backward_trapezoid</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cumulative trapezoid integral from ``z_k`` to the last grid point (``photo_obs`` rule).&quot;&quot;&quot;</span>
+    <span class="n">yr</span> <span class="o">=</span> <span class="n">y</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">yr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">yr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">dx</span>
+    <span class="n">cum</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">seg</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">cum</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_same_value</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare a repeated fiducial value (numbers or model-name strings).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+            <span class="n">rtol</span><span class="o">=</span><span class="mf">1.0e-12</span><span class="p">,</span>
+            <span class="n">atol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="JaxPhotoObservable">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JaxPhotoObservable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Differentiable photometric angular power spectra.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    configuration : object</span>
+<span class="sd">        Analysis configuration exposing ``settings``, ``specs`` and ``obs`` (a</span>
+<span class="sd">        :class:`~cosmicfishpie.configs.context.AnalysisContext` or the legacy ``cfg`` module).</span>
+<span class="sd">    fiducial : mapping</span>
+<span class="sd">        Merged fiducial dictionary (cosmology + intrinsic alignment + bias + photo-z), the same</span>
+<span class="sd">        object that ``PhotoCov`` passes as ``allparsfid``.</span>
+<span class="sd">    backend_parameters : mapping, optional</span>
+<span class="sd">        Content of ``jaxcosmo/default.yaml``.  Defaults to the one carried by ``configuration``.</span>
+<span class="sd">    observables : sequence of str, optional</span>
+<span class="sd">        Probes this observable computes.  Defaults to ``configuration.obs``; pass the requested</span>
+<span class="sd">        subset when the configuration carries probes computed by another observable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">configuration</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">fiducial</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">backend_parameters</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">observables</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">=</span> <span class="n">configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specs</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">specs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fiducial</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fiducial</span><span class="p">)</span>
+
+        <span class="n">requested</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">obs</span> <span class="k">if</span> <span class="n">observables</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">observables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">requested</span> <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">_PHOTO_OBS</span><span class="p">]</span>
+        <span class="n">unsupported</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">requested</span> <span class="k">if</span> <span class="n">o</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PHOTO_OBS</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">unsupported</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;The jaxcosmo autodiff path supports only the photometric probes &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;GCph&#39; and &#39;WL&#39;; got observables </span><span class="si">{</span><span class="n">requested</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GCph_Tracer&quot;</span><span class="p">,</span> <span class="s2">&quot;matter&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;matter&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;The jaxcosmo backend provides total-matter power only; &quot;</span>
+                <span class="s2">&quot;GCph_Tracer=&#39;clustering&#39; is unsupported.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">backend_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">backend_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_backend_parameters</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_parameters</span> <span class="o">=</span> <span class="n">backend_parameters</span>
+        <span class="n">numerics</span> <span class="o">=</span> <span class="n">backend_parameters</span><span class="p">[</span><span class="s2">&quot;NUMERICS&quot;</span><span class="p">]</span>
+        <span class="c1"># The theory backend is selected by options[&quot;code&quot;]; this observable only relies on the</span>
+        <span class="c1"># backend-neutral contract of cosmicfishpie.cosmology.jax_theory.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theory</span> <span class="o">=</span> <span class="n">get_jax_theory</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;jaxcosmo&quot;</span><span class="p">),</span>
+            <span class="n">backend_parameters</span><span class="p">,</span>
+            <span class="n">cosmo_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cosmo_model&quot;</span><span class="p">,</span> <span class="s2">&quot;LCDM&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_hmpc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">numerics</span><span class="p">[</span><span class="s2">&quot;kmin_pk&quot;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">numerics</span><span class="p">[</span><span class="s2">&quot;kmax_pk&quot;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">numerics</span><span class="p">[</span><span class="s2">&quot;k_samples&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nonlinear&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_fiducial</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_grids</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_bins</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jac_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cls_jit</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cls_from_values</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------ setup helpers</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_default_backend_parameters</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="s2">&quot;backend_parameters&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">params</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.configs</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">cfg</span>
+
+        <span class="k">return</span> <span class="n">cfg</span><span class="o">.</span><span class="n">boltzmann_jaxcosmopars</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split_fiducial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fiducial</span>
+        <span class="n">cosmo_in</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fid</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_COSMO_KEYS</span><span class="p">}</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">resolve_cosmology</span><span class="p">(</span><span class="n">cosmo_in</span><span class="p">)</span>  <span class="c1"># canonical names, floats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_model</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bias_model&quot;</span><span class="p">,</span> <span class="s2">&quot;binned&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ia_model</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;IA_model&quot;</span><span class="p">,</span> <span class="s2">&quot;eNLA&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ia_model</span> <span class="o">!=</span> <span class="s2">&quot;eNLA&quot;</span> <span class="ow">and</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Only the &#39;eNLA&#39; intrinsic alignment model is supported.&quot;</span><span class="p">)</span>
+        <span class="n">numeric</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fid</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_COSMO_KEYS</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_STRING_KEYS</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">cosmo_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuisance_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">numeric</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">base</span><span class="p">,</span> <span class="o">**</span><span class="n">numeric</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_grids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span>
+        <span class="n">lmax</span> <span class="o">=</span> <span class="p">[</span><span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmax_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">]</span>
+        <span class="n">lmin</span> <span class="o">=</span> <span class="p">[</span><span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmin_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">]</span>
+        <span class="n">ellmax</span><span class="p">,</span> <span class="n">ellmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lmax</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">lmin</span><span class="p">)</span>
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">]</span>
+        <span class="n">zsamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">accuracy</span><span class="p">))</span>
+        <span class="n">ellsamp</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">accuracy</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;accuracy&quot;</span>
+            <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;ell_sampling&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ellmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ellmax</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="n">ellsamp</span><span class="p">)</span>
+        <span class="n">z_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">z_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z_max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span><span class="p">,</span> <span class="n">zsamp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="s2">&quot;kmax&quot;</span><span class="p">])</span>
+        <span class="c1"># trapezoid weights on the redshift grid</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">zsamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dz</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+        <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_weights</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ell_mask</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&gt;=</span> <span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmin_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span> <span class="o">&lt;=</span> <span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;lmax_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obs</span>
+        <span class="p">}</span>
+        <span class="c1"># coarse redshift grid used by Nuisance (bias, IA)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="nb">min</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_WL&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z_bins_GCph&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="mi">50</span> <span class="o">*</span> <span class="n">accuracy</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dz_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_max</span> <span class="o">/</span> <span class="mi">1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pivot_z_IA</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pivot_z_IA&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lumratio_nuis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_lumratio</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_lumratio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;external_data_dir&quot;</span><span class="p">],</span> <span class="s2">&quot;lumratio_file.dat&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span><span class="p">,</span> <span class="n">table</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">table</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;lumratio_file.dat not found: using &lt;L&gt;/L* = 1 for the intrinsic alignments.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;binrange_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_bins</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;z_bins_</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">}</span>
+        <span class="c1"># stack order: (obs, bin) for obs in observables for bin in binrange[obs]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="n">o</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">o</span><span class="p">]]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">pair</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)}</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ia</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ib</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">masks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">o1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="n">o2</span><span class="p">]):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">o1</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b1</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">o2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">ia</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[(</span><span class="n">o1</span><span class="p">,</span> <span class="n">b1</span><span class="p">)])</span>
+                <span class="n">ib</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[(</span><span class="n">o2</span><span class="p">,</span> <span class="n">b2</span><span class="p">)])</span>
+                <span class="n">masks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell_mask</span><span class="p">[</span><span class="n">o1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ell_mask</span><span class="p">[</span><span class="n">o2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pair_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pair_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ib</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pair_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;GCph&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_model</span> <span class="o">==</span> <span class="s2">&quot;binned&quot;</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bins</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_binned_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------ physics (traced)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ngal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ibin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Photo-z convolved, un-normalised ``n_i(z)`` (``GalaxyPhotoDist.ngal_photoz``).&quot;&quot;&quot;</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_bins</span><span class="p">[</span><span class="n">obs</span><span class="p">]</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">ibin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="n">ibin</span><span class="p">]</span>
+        <span class="n">cb</span><span class="p">,</span> <span class="n">co</span><span class="p">,</span> <span class="n">fout</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;cb&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;co&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;fout&quot;</span><span class="p">]</span>
+        <span class="n">zo</span><span class="p">,</span> <span class="n">zb</span><span class="p">,</span> <span class="n">so</span><span class="p">,</span> <span class="n">sb</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;zo&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;zb&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;sigma_o&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;sigma_b&quot;</span><span class="p">]</span>
+        <span class="n">dndz</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z0_p&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">z</span> <span class="o">/</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;z0&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="n">sp</span><span class="p">[</span><span class="s2">&quot;ngamma&quot;</span><span class="p">]))</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">fout</span> <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">zo</span> <span class="o">-</span> <span class="n">co</span> <span class="o">*</span> <span class="n">lo</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">so</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)))</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="o">-</span><span class="n">cb</span> <span class="o">*</span> <span class="n">fout</span> <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">zo</span> <span class="o">-</span> <span class="n">co</span> <span class="o">*</span> <span class="n">hi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">so</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)))</span>
+        <span class="n">t3</span> <span class="o">=</span> <span class="n">co</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fout</span><span class="p">)</span> <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">zb</span> <span class="o">-</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">lo</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sb</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)))</span>
+        <span class="n">t4</span> <span class="o">=</span> <span class="o">-</span><span class="n">co</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fout</span><span class="p">)</span> <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">zb</span> <span class="o">-</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">hi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sb</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">dndz</span> <span class="o">*</span> <span class="p">(</span><span class="n">t1</span> <span class="o">+</span> <span class="n">t2</span> <span class="o">+</span> <span class="n">t3</span> <span class="o">+</span> <span class="n">t4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">co</span> <span class="o">*</span> <span class="n">cb</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ngal_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ibin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ngal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_norm</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">ibin</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">dx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dz_norm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ngal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">ibin</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ibin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">zc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;sqrt&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">zc</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;b0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">zc</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;binned&quot;</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">v</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;b</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binrange</span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">]])</span>
+            <span class="k">return</span> <span class="n">table</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_binned_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;binned_constant&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;b</span><span class="si">{</span><span class="n">ibin</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;flagship&quot;</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">zc</span> <span class="o">-</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">])))</span>
+            <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">zc</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown galaxy bias model &#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ia_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">omegam0</span><span class="p">,</span> <span class="n">growth_nuis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eNLA intrinsic alignment amplitude on the Limber grid (``Nuisance.IA``).&quot;&quot;&quot;</span>
+        <span class="n">cia</span> <span class="o">=</span> <span class="mf">0.0134</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot_z_IA</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;AIA&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">cia</span> <span class="o">*</span> <span class="n">omegam0</span>
+        <span class="n">z_dep</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot_z_IA</span><span class="p">)</span>
+        <span class="n">win</span> <span class="o">=</span> <span class="n">fac</span> <span class="o">*</span> <span class="n">z_dep</span> <span class="o">**</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;etaIA&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lumratio_nuis</span> <span class="o">**</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;betaIA&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">growth_nuis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span><span class="p">,</span> <span class="n">win</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cls_from_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;All requested ``C_ell`` as an array of shape ``(len(self.keys), len(self.ell))``.&quot;&quot;&quot;</span>
+        <span class="n">cosmo</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_names</span><span class="p">}</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="c1"># Background only; the power spectrum is evaluated directly at the Limber wavenumbers</span>
+        <span class="c1"># below, which avoids the slope kinks of a fixed-grid interpolation.</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">tables</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_hmpc</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">chi</span><span class="p">,</span> <span class="n">hub</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">chi</span><span class="p">,</span> <span class="n">tab</span><span class="o">.</span><span class="n">h_over_c</span>
+        <span class="n">hub0</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">h0_over_c</span>
+        <span class="n">omegam0</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">omega_m0</span>
+
+        <span class="c1"># Limber: P(kappa_l(z), z) / chi^2, zero above kmax.   shapes (nz, nell)</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="c1"># Clamp only for evaluation: masked entries are zeroed by ``q`` and clamping keeps</span>
+        <span class="c1"># Halofit away from absurd wavenumbers at the lowest redshifts.</span>
+        <span class="n">k_eval</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmax</span><span class="p">)</span> <span class="o">/</span> <span class="n">cosmo</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span>
+        <span class="n">p_kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">k_eval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmax</span><span class="p">,</span> <span class="n">p_kappa</span> <span class="o">/</span> <span class="n">chi</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">growth_nuis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;WL&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observables</span><span class="p">:</span>
+            <span class="n">tab_nuis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">tables</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_nuis</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_hmpc</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">growth_nuis</span> <span class="o">=</span> <span class="n">tab_nuis</span><span class="o">.</span><span class="n">growth</span>
+            <span class="n">ia_win</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ia_window</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">omegam0</span><span class="p">,</span> <span class="n">growth_nuis</span><span class="p">)</span>
+            <span class="n">prefac</span> <span class="o">=</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">hub0</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">omegam0</span>
+
+        <span class="n">windows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obs</span><span class="p">,</span> <span class="n">ibin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
+            <span class="n">n_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ngal_norm</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">ibin</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obs</span> <span class="o">==</span> <span class="s2">&quot;GCph&quot;</span><span class="p">:</span>
+                <span class="n">windows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_i</span> <span class="o">*</span> <span class="n">hub</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bias</span><span class="p">(</span><span class="n">ibin</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">i1</span> <span class="o">=</span> <span class="n">_backward_trapezoid</span><span class="p">(</span><span class="n">n_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dz</span><span class="p">)</span>
+                <span class="n">safe_chi</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">chi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="n">n_over_chi</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">chi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_i</span> <span class="o">/</span> <span class="n">safe_chi</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">i2</span> <span class="o">=</span> <span class="n">_backward_trapezoid</span><span class="p">(</span><span class="n">n_over_chi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dz</span><span class="p">)</span>
+                <span class="n">w_wl</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">chi</span> <span class="o">*</span> <span class="p">(</span><span class="n">i1</span> <span class="o">-</span> <span class="n">chi</span> <span class="o">*</span> <span class="n">i2</span><span class="p">)</span>
+                <span class="n">windows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w_wl</span> <span class="o">+</span> <span class="n">n_i</span> <span class="o">*</span> <span class="n">ia_win</span> <span class="o">*</span> <span class="n">hub</span><span class="p">)</span>
+        <span class="n">w_mat</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">hub</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">cl_all</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;az,bz,zl-&gt;abl&quot;</span><span class="p">,</span> <span class="n">w_mat</span><span class="p">,</span> <span class="n">w_mat</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">cl_all</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pair_a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pair_b</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pair_mask</span><span class="p">),</span> <span class="bp">cls</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------ public API</span>
+<div class="viewcode-block" id="JaxPhotoObservable.canonical_name">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.canonical_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">canonical_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map a CosmicFishPie parameter name to the name used inside the traced function.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">:</span>
+            <span class="n">canon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">canon</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_names</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not part of the jaxcosmo model.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">canon</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuisance_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_COSMO_KEYS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cosmological parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; cannot be differentiated by the jaxcosmo &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;autodiff provider; supported: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; for the jaxcosmo photometric observable.&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_values</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="n">overrides</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuisance_names</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># The finite-difference engine replays the whole fiducial dictionary, including</span>
+                <span class="c1"># parameters this model keeps fixed (``mnu``, ``bias_model`` ...).  Repeating a</span>
+                <span class="c1"># fiducial value is harmless; varying it is not supported.</span>
+                <span class="n">fid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fiducial</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_same_value</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">fid</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_COSMO_KEYS</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Cosmological parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is fixed by the jaxcosmo model and &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;cannot be varied; supported: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">free_name_map</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unknown parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; for the jaxcosmo photometric observable.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">values</span>
+
+<div class="viewcode-block" id="JaxPhotoObservable.as_dict">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.as_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a ``(nkeys, nell)`` array into the CosmicFishPie ``C_ell`` dictionary.&quot;&quot;&quot;</span>
+        <span class="n">out</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ells&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ell</span><span class="p">)}</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="JaxPhotoObservable.cls">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.cls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Angular power spectra at the fiducial point (optionally with parameter overrides).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cls_jit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">(</span><span class="n">overrides</span><span class="p">)))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allpars</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the spectra for a full CosmicFishPie parameter dictionary.</span>
+
+<span class="sd">        This is the callable signature expected by the finite-difference engine in</span>
+<span class="sd">        :mod:`cosmicfishpie.fishermatrix.derivatives`, which lets autodiff and finite</span>
+<span class="sd">        differences be compared on *identical* observables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="p">(</span><span class="n">allpars</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JaxPhotoObservable.jacobian">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.jacobian">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exact derivatives ``dC_ell/dtheta`` for each name, as ``{name: Cl dictionary}``.</span>
+
+<span class="sd">        Cosmological and nuisance parameters are differentiated in two separate forward-mode</span>
+<span class="sd">        passes so that the (expensive) theory tables carry tangents only when needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">canon</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">canonical_name</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+        <span class="n">cosmo_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">canon</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_names</span><span class="p">]</span>
+        <span class="n">nuis_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">canon</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_names</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cosmo_idx</span><span class="p">,</span> <span class="n">nuis_idx</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">idx</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">canon</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">)</span>
+            <span class="n">jac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian_fn</span><span class="p">(</span><span class="n">group</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_point</span><span class="p">(</span><span class="n">group</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(</span><span class="n">jac</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">col</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_group_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">base_values</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jac_cache</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_values</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">fn</span><span class="p">(</span><span class="n">vec</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cls_from_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_jac_cache</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jacfwd</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jac_cache</span><span class="p">[</span><span class="n">group</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="is_bias_key">
+<a class="viewcode-back" href="../../../api/generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.is_bias_key.html#cosmicfishpie.LSSsurvey.jaxcosmo_photo.is_bias_key">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_bias_key</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether ``name`` looks like a galaxy-bias nuisance parameter (``b1``, ``b0``, ...).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;b\d+&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, RWTH Aachen University.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+enable\_x64
+===========
+
+.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_theory
+
+.. autofunction:: enable_x64

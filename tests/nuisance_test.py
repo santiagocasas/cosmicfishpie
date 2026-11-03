@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from cosmicfishpie.cosmology.nuisance import Nuisance
+from cosmicjellyfish.cosmology.nuisance import Nuisance
 
 
 def _base_specs():

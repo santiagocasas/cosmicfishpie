@@ -4,7 +4,7 @@ See {ref}`Supported observables and survey settings <observables>` for how to
 pass CMB observables and the Planck survey name to `FisherMatrix`. This page
 covers the shipped experiment specs and the smoke-test/benchmark scripts.
 
-CosmicFishPie includes a basic CMB Fisher path for the observables:
+CosmicJellyfish includes a basic CMB Fisher path for the observables:
 
 - `CMB_T`
 - `CMB_E`
@@ -19,9 +19,9 @@ implemented yet.
 The following example CMB experiment specifications are shipped as survey spec
 YAMLs:
 
-- `cosmicfishpie/configs/default_survey_specifications/Planck.yaml`
-- `cosmicfishpie/configs/default_survey_specifications/Simons-Observatory-PlanckLowEll.yaml`
-- `cosmicfishpie/configs/default_survey_specifications/CMB-Stage4-PlanckLowEll.yaml`
+- `cosmicjellyfish/configs/default_survey_specifications/Planck.yaml`
+- `cosmicjellyfish/configs/default_survey_specifications/Simons-Observatory-PlanckLowEll.yaml`
+- `cosmicjellyfish/configs/default_survey_specifications/CMB-Stage4-PlanckLowEll.yaml`
 
 For Simons Observatory and Stage-IV, we use a conservative common `lmax_CMB=3000`
 as an approximation.
@@ -34,7 +34,7 @@ Run from the repository root:
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
+  --spec-yaml cosmicjellyfish/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
   --lmax 120 \
   --outdir tmp/cmb_planck_smoke \

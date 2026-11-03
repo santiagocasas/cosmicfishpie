@@ -15,9 +15,9 @@ default-precision (DP) CLASS and P3 CAMB in Case 01.
 
 By default this script compares:
   - CLASS with the HP (high-precision) selector:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
+    cosmicjellyfish/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
   - CAMB with the existing P3 YAML (already high precision):
-    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
+    cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
 
 See CONFIG_DIAGNOSIS.md and EUCLID_VALIDATION_FINDINGS.md at the repo root for
 the full root-cause analysis and the rationale for the HP settings.
@@ -38,7 +38,7 @@ Compare against the original (failing) DP CLASS config instead, to reproduce
 the regression on just 2 parameters::
 
   uv run python scripts/archive/run_fisher_compare_w0wa_fast.py \
-    --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml \
+    --yaml-a cosmicjellyfish/configs/default_boltzmann_yaml_files/class/mpvalidation_dp.yaml \
     --compare
 """
 
@@ -54,7 +54,7 @@ import sys
 import time
 from pathlib import Path
 
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 # Full fiducial cosmology from the Case 01 validation config
 # (scripts/validation_configs/common_specs_w0waCDM.json). All of these stay
@@ -340,7 +340,7 @@ def _run_fisher(
 
 def main() -> int:
     repo_root = _repo_root()
-    cfg_dir = repo_root / "cosmicfishpie" / "configs"
+    cfg_dir = repo_root / "cosmicjellyfish" / "configs"
     default_specs_dir = str(cfg_dir / "default_survey_specifications") + "/"
     default_yaml_a = str(
         cfg_dir / "default_boltzmann_yaml_files" / "class" / "mpvalidation_hp.yaml"

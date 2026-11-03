@@ -20,9 +20,9 @@ from pathlib import Path
 
 import numpy as np
 
-from cosmicfishpie.configs import config as cfg
-from cosmicfishpie.fishermatrix import cosmicfish
-from cosmicfishpie.LSSsurvey import photo_obs
+from cosmicjellyfish.configs import config as cfg
+from cosmicjellyfish.fishermatrix import cosmicfish
+from cosmicjellyfish.LSSsurvey import photo_obs
 
 
 def resolve_specs_dir() -> str:

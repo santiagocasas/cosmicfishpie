@@ -1,10 +1,10 @@
 # Derivative methods
 
-CosmicFishPie computes Fisher matrices from numerical derivatives of
+CosmicJellyfish computes Fisher matrices from numerical derivatives of
 observables (angular power spectra, galaxy power spectra, etc.) with respect
 to the free cosmological and nuisance parameters. The method used for these
 derivatives is selected via `options["derivatives"]` and implemented in
-{mod}`cosmicfishpie.fishermatrix.derivatives`. Four methods are available:
+{mod}`cosmicjellyfish.fishermatrix.derivatives`. Four methods are available:
 `3PT` (default), `4PT_FWD`, `POLY`, and `STEM`.
 
 For automatic differentiation of JAX-native photometric and spectroscopic
@@ -117,7 +117,7 @@ derivative of 12 at any fiducial value other than 0. The fix (this branch)
 replaces this with `fit[3]`, i.e. reading off the linear coefficient of the
 fit directly, since the fit is already expressed in the offset coordinate
 where the fiducial point is 0. See
-{func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly`
+{func}`cosmicjellyfish.fishermatrix.derivatives.derivatives.derivative_poly`
 and the regression tests
 `test_derivative_poly_cubic_exact_at_fiducial` /
 `test_derivative_poly_matches_3pt_for_power_spectrum_observable` in
@@ -168,24 +168,24 @@ Creating a `derivatives` object with `POLY` or `STEM` for a non-photometric prob
 or with `4PT_FWD` for a CMB probe, emits a `UserWarning` pointing to `3PT`.
 Use `3PT` (or `4PT_FWD` for `GCsp`/`IM`) outside the photometric probes until
 these gaps are closed; see
-{func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_poly` and
-{func}`cosmicfishpie.fishermatrix.derivatives.derivatives.derivative_stem` for
+{func}`cosmicjellyfish.fishermatrix.derivatives.derivatives.derivative_poly` and
+{func}`cosmicjellyfish.fishermatrix.derivatives.derivatives.derivative_stem` for
 the exact dispatch logic.
 
 (custom-derivative-providers)=
 ## Custom derivative providers
 
 The four methods above all live in the default provider,
-{class}`~cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider`. To replace
+{class}`~cosmicjellyfish.fishermatrix.derivatives.FiniteDifferenceProvider`. To replace
 them (analytic formulae, an emulator, autodiff...), pass any object with a
 `compute(request)` method, i.e. the
-{class}`~cosmicfishpie.fishermatrix.derivatives.DerivativeProvider` protocol, as
+{class}`~cosmicjellyfish.fishermatrix.derivatives.DerivativeProvider` protocol, as
 `FisherMatrix(..., derivative_provider=MyProvider())`. If it is `None` (the default),
 `FiniteDifferenceProvider` is used. The *Comprehensive guide* ("Project status") mentions
 this interface; no autodiff backend ships with the package.
 
 `compute` receives a frozen
-{class}`~cosmicfishpie.fishermatrix.derivatives.DerivativeRequest` with these fields:
+{class}`~cosmicjellyfish.fishermatrix.derivatives.DerivativeRequest` with these fields:
 `observable` (callable taking a full parameter dict), `fiducial`, `freeparams` (parameter ->
 relative step), `observables_type`, `external_settings`, `feed_lvl`, `method` (the
 `3PT`/`STEM`/... string), `special_deriv_function` and `configuration`. It must return
@@ -196,7 +196,7 @@ parameter holding the `ells` axis plus one derivative array per spectrum (`z_bin
 ```python
 import copy
 
-from cosmicfishpie.fishermatrix.derivatives import DerivativeRequest
+from cosmicjellyfish.fishermatrix.derivatives import DerivativeRequest
 
 
 class MyProvider:

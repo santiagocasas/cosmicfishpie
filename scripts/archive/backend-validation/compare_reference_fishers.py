@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compare marginalized 1-sigma errors between two raw Fisher matrix files.
 
-Thin CLI wrapper around cosmicfishpie's own
-:class:`cosmicfishpie.analysis.fisher_matrix.fisher_matrix` for comparing
+Thin CLI wrapper around cosmicjellyfish's own
+:class:`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix` for comparing
 external reference Fisher matrices (e.g. the
 ``CosmicFish_v1.0_*_fishermatrix.txt`` files shipped in a companion results
 repository such as ``Euclid_KP_nu``) against each other, or against this
@@ -28,7 +28,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
+from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
 
 
 def marginalized_sigmas(fisher_path: Path) -> tuple[list[str], dict[str, float]]:

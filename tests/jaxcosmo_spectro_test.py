@@ -10,7 +10,7 @@ pytest.importorskip("jax_cosmo")
 
 from scipy.signal import savgol_filter  # noqa: E402
 
-from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import (  # noqa: E402
+from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import (  # noqa: E402
     _linear_interp_rows,
     _savgol_operator,
 )

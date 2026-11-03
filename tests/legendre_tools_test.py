@@ -1,12 +1,12 @@
 """
-Test suite for cosmicfishpie.utilities.legendre_tools module.
+Test suite for cosmicjellyfish.utilities.legendre_tools module.
 
 This module tests Legendre polynomial tools to improve coverage.
 """
 
 import numpy as np
 
-from cosmicfishpie.utilities.legendre_tools import (
+from cosmicjellyfish.utilities.legendre_tools import (
     gauss_lobatto_abscissa_and_weights,
     m00,
     m00l,

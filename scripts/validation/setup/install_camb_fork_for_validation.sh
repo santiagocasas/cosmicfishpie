@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install and pin the Santiago Casas CAMB fork (hard-coded low-tolerance
 # Halofit convergence) into this project's venv, for backend validation
-# scripts only. Standard cosmicfishpie usage keeps using the pinned PyPI
+# scripts only. Standard cosmicjellyfish usage keeps using the pinned PyPI
 # camb from pyproject.toml/uv.lock; this script never modifies that pin.
 #
 # Installs directly from the git commit via a VCS URL (no persistent local

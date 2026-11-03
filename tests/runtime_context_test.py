@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from cosmicfishpie.cosmology import cosmology
-from cosmicfishpie.cosmology.cosmology import boltzmann_code, cosmo_functions
+from cosmicjellyfish.cosmology import cosmology
+from cosmicjellyfish.cosmology.cosmology import boltzmann_code, cosmo_functions
 
 
 def _context(*, input_type="symbolic", omegam=0.31, nonlinear=False):

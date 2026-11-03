@@ -19,8 +19,8 @@ from pathlib import Path
 import pandas as pd
 import wl_gcsp_fisher_nautilus_demo as demo
 
-from cosmicfishpie.analysis import fishconsumer as fico
-from cosmicfishpie.analysis import fisher_matrix as fm
+from cosmicjellyfish.analysis import fishconsumer as fico
+from cosmicjellyfish.analysis import fisher_matrix as fm
 
 
 def _read_case(run_dir: Path, label: str) -> tuple[dict, pd.DataFrame, object]:

@@ -1,7 +1,7 @@
 .PHONY : docs
 docs :
 	rm -rf docs/build/
-	uv run --extra docs sphinx-autobuild -b html --watch cosmicfishpie/ docs/source/ docs/build/
+	uv run --extra docs sphinx-autobuild -b html --watch cosmicjellyfish/ docs/source/ docs/build/
 
 .PHONY : run-checks
 run-checks :
@@ -9,7 +9,7 @@ run-checks :
 	uv run black --check --diff .
 	uv run ruff check .
 #mypy .
-	CUDA_VISIBLE_DEVICES='' uv run pytest -v --color=yes --doctest-modules tests/ cosmicfishpie/
+	CUDA_VISIBLE_DEVICES='' uv run pytest -v --color=yes --doctest-modules tests/ cosmicjellyfish/
 
 .PHONY : build
 build :

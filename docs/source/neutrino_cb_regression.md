@@ -166,7 +166,8 @@ summary. Local evidence is under `scripts/benchmark_results/` in
 `neutrino_isolation_20261012b/` and `neutrino_fixed_03.2.0b/`; these generated
 files are ignored by Git and have not been uploaded to the DVC archive.
 The archived reference is
-`compare_photo_camb_vs_class_cfg_13fddbddf6_20261007_175905` in `cjfp-data`.
+`compare_photo_camb_vs_class_cfg_13fddbddf6_20261007_175905` in `cjfp-data`
+(see {doc}`validation_data` for access).
 
 After transferring the corrected package code to Frey, rerun the affected cases
 and the fixed-neutrino/Pmm controls before claiming campaign-wide resolution:

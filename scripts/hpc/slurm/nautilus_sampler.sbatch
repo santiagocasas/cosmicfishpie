@@ -1,9 +1,9 @@
 #!/bin/bash
-# Generic spawn-safe launcher for sampler_scripts/run_sampler.py.
+# Generic spawn-safe launcher for scripts/likelihood/sampler/run_sampler.py.
 #
 # Submit from the repository root, for example:
 #   sbatch --cpus-per-task=32 --export=ALL,REPO_ROOT=$PWD,\
-#   CONFIG_FILE=sampler_scripts/fresh_wl_gcsp_symbolic_independent_32x1.yaml,\
+#   CONFIG_FILE=scripts/likelihood/sampler/fresh_lcdm_symbolic_small.yaml,\
 #   OUTPUT_DIR=$SCRATCH/cfp/wl-gcsp-r001 scripts/hpc/slurm/nautilus_sampler.sbatch
 #
 # CFP_ENV_SETUP may name a site-local shell script that activates the project
@@ -42,5 +42,5 @@ cd "$REPO_ROOT"
 echo "Config: $CONFIG_FILE"
 echo "Output directory: $OUTPUT_DIR"
 echo "Allocated CPUs: ${SLURM_CPUS_PER_TASK:-unknown}"
-srun --cpu-bind=cores python -u sampler_scripts/run_sampler.py \
+srun --cpu-bind=cores python -u scripts/likelihood/sampler/run_sampler.py \
     "$CONFIG_FILE" --output-dir "$OUTPUT_DIR"

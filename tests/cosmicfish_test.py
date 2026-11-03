@@ -1,7 +1,7 @@
 import numpy as np
 
-from cosmicfishpie.analysis.fisher_operations import marginalise_over
-from cosmicfishpie.utilities.utils import printing as cpr
+from cosmicjellyfish.analysis.fisher_operations import marginalise_over
+from cosmicjellyfish.utilities.utils import printing as cpr
 
 
 def test_FisherMatrix_GCsp(spectro_fisher_matrix):

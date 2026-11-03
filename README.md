@@ -1,21 +1,32 @@
-# cosmicfishpie
+# cosmicjellyfish
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-light.svg">
+    <img alt="CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX" width="600" src="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/docs/source/_static/logo/banner-dark@2x.png">
+  </picture>
+</p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![Documentation](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/docs.yml/badge.svg)](https://www.santicasas.space/cosmicfishpie/docs/)
-[![codecov](https://codecov.io/github/santiagocasas/cosmicfishpie/graph/badge.svg?token=BXTVDPXPUO)](https://codecov.io/github/santiagocasas/cosmicfishpie)
+[![Documentation](https://github.com/santiagocasas/cosmicjellyfish/actions/workflows/docs.yml/badge.svg)](https://www.santicasas.space/cosmicjellyfish/docs/)
+[![codecov](https://codecov.io/github/santiagocasas/cosmicjellyfish/graph/badge.svg?token=BXTVDPXPUO)](https://codecov.io/github/santiagocasas/cosmicjellyfish)
 [![37.50 % FAIR](https://img.shields.io/badge/FAIR_assessment-37.50_%25-red)](https://fair-checker.france-bioinformatique.fr/assessment/68da9e3cc49e421b3e2cf501)
-[![CI](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/santiagocasas/cosmicfishpie/actions/workflows/ci.yml)
+[![CI](https://github.com/santiagocasas/cosmicjellyfish/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/santiagocasas/cosmicjellyfish/actions/workflows/ci.yml)
 ![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/santiagocasas/cosmicfishpie)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/santiagocasas/cosmicjellyfish)
 
-`cosmicfishpie` is a Python package for cosmological Fisher forecasts. It helps prepare and compare forecasts for surveys such as Euclid, DESI, SKAO and CMB experiments.
+`cosmicjellyfish` is a Python package for cosmological Fisher forecasts. It helps prepare and compare forecasts for surveys such as Euclid, DESI, SKAO and CMB experiments.
 
-<div align="center">
-  <img src="https://github.com/santiagocasas/cosmicfishpie/assets/6987716/1816b3b7-0920-4a2c-aafd-9c4ba1dc3e2b" width="280">
-</div>
+## Validation data
+
+Published validation results, posterior chains and HPC workflows live in the
+public [cjfp-data repository on DagsHub](https://dagshub.com/santiagocasas/cjfp-data).
+See the [download and workflow guide](https://www.santicasas.space/cosmicjellyfish/docs/validation_data.html)
+for targeted DVC downloads and instructions to run the comparisons.
 
 ## Features
 
@@ -27,34 +38,34 @@
 
 ## Installation
 
-`cosmicfishpie` supports Python `>=3.10,<3.13`.
+`cosmicjellyfish` supports Python `>=3.10,<3.13`.
 
 ```bash
-pip install cosmicfishpie
+pip install cosmicjellyfish
 ```
 
 To work from a source checkout, use [`uv`](https://docs.astral.sh/uv/):
 
 ```bash
-git clone https://github.com/santiagocasas/cosmicfishpie.git
-cd cosmicfishpie
+git clone https://github.com/santiagocasas/cosmicjellyfish.git
+cd cosmicjellyfish
 uv sync --extra dev
 ```
 
 Check the installation with
 
 ```bash
-python -c "import cosmicfishpie; print('cosmicfishpie import OK')"
+python -c "import cosmicjellyfish; print('cosmicjellyfish import OK')"
 ```
 
-and, from a source checkout, run the tests with `uv run pytest`. Conda setup, optional extras and more are in the [installation guide](https://www.santicasas.space/cosmicfishpie/docs/installation.html).
+and, from a source checkout, run the tests with `uv run pytest`. Conda setup, optional extras and more are in the [installation guide](https://www.santicasas.space/cosmicjellyfish/docs/installation.html).
 
 ## Minimal example
 
 A photometric forecast with the `symbolic` backend. It needs no solver setup and runs in a few seconds from any directory, writing its output to `results/`:
 
 ```python
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 options = {
     "accuracy": 1,
@@ -89,8 +100,8 @@ print(fisher.fisher_matrix.shape, fisher.get_param_names())
 
 ## Documentation
 
-- [Documentation](https://www.santicasas.space/cosmicfishpie/docs/): getting started, user guide, tutorials, API reference and development notes.
-- [Validation dashboard](https://www.santicasas.space/cosmicfishpie/dashboard/)
+- [Documentation](https://www.santicasas.space/cosmicjellyfish/docs/): getting started, user guide, tutorials, API reference and development notes.
+- [Validation dashboard](https://www.santicasas.space/cosmicjellyfish/dashboard/)
 - [Citation metadata](CITATION.cff) (`CITATION.cff`)
 
 To build the documentation locally:
@@ -116,9 +127,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Sefa76"><img src="https://avatars.githubusercontent.com/u/19888927?v=4?s=100" width="100px;" alt="Sefa Pamuk"/><br /><sub><b>Sefa Pamuk</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=Sefa76" title="Code">💻</a> <a href="#design-Sefa76" title="Design">🎨</a> <a href="#ideas-Sefa76" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=Sefa76" title="Tests">⚠️</a> <a href="#research-Sefa76" title="Research">🔬</a> <a href="https://github.com/santiagocasas/cosmicfishpie/pulls?q=is%3Apr+reviewed-by%3ASefa76" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-Sefa76" title="User Testing">📓</a> <a href="#example-Sefa76" title="Examples">💡</a> <a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=Sefa76" title="Documentation">📖</a> <a href="#content-Sefa76" title="Content">🖋</a> <a href="https://github.com/santiagocasas/cosmicfishpie/issues?q=author%3ASefa76" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://www.santicasas.xyz"><img src="https://avatars.githubusercontent.com/u/6987716?v=4?s=100" width="100px;" alt="Santiago Casas"/><br /><sub><b>Santiago Casas</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicfishpie/issues?q=author%3Asantiagocasas" title="Bug reports">🐛</a> <a href="#content-santiagocasas" title="Content">🖋</a> <a href="#data-santiagocasas" title="Data">🔣</a> <a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=santiagocasas" title="Documentation">📖</a> <a href="#example-santiagocasas" title="Examples">💡</a> <a href="#ideas-santiagocasas" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-santiagocasas" title="Maintenance">🚧</a> <a href="#projectManagement-santiagocasas" title="Project Management">📆</a> <a href="#research-santiagocasas" title="Research">🔬</a> <a href="https://github.com/santiagocasas/cosmicfishpie/pulls?q=is%3Apr+reviewed-by%3Asantiagocasas" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=santiagocasas" title="Tests">⚠️</a> <a href="#tutorial-santiagocasas" title="Tutorials">✅</a> <a href="#userTesting-santiagocasas" title="User Testing">📓</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matmartinelli"><img src="https://avatars.githubusercontent.com/u/17426508?v=4?s=100" width="100px;" alt="Matteo Martinelli"/><br /><sub><b>Matteo Martinelli</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicfishpie/commits?author=matmartinelli" title="Code">💻</a> <a href="#design-matmartinelli" title="Design">🎨</a> <a href="#ideas-matmartinelli" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Sefa76"><img src="https://avatars.githubusercontent.com/u/19888927?v=4?s=100" width="100px;" alt="Sefa Pamuk"/><br /><sub><b>Sefa Pamuk</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=Sefa76" title="Code">💻</a> <a href="#design-Sefa76" title="Design">🎨</a> <a href="#ideas-Sefa76" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=Sefa76" title="Tests">⚠️</a> <a href="#research-Sefa76" title="Research">🔬</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/pulls?q=is%3Apr+reviewed-by%3ASefa76" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-Sefa76" title="User Testing">📓</a> <a href="#example-Sefa76" title="Examples">💡</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=Sefa76" title="Documentation">📖</a> <a href="#content-Sefa76" title="Content">🖋</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/issues?q=author%3ASefa76" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.santicasas.xyz"><img src="https://avatars.githubusercontent.com/u/6987716?v=4?s=100" width="100px;" alt="Santiago Casas"/><br /><sub><b>Santiago Casas</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicjellyfish/issues?q=author%3Asantiagocasas" title="Bug reports">🐛</a> <a href="#content-santiagocasas" title="Content">🖋</a> <a href="#data-santiagocasas" title="Data">🔣</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=santiagocasas" title="Documentation">📖</a> <a href="#example-santiagocasas" title="Examples">💡</a> <a href="#ideas-santiagocasas" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-santiagocasas" title="Maintenance">🚧</a> <a href="#projectManagement-santiagocasas" title="Project Management">📆</a> <a href="#research-santiagocasas" title="Research">🔬</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/pulls?q=is%3Apr+reviewed-by%3Asantiagocasas" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=santiagocasas" title="Tests">⚠️</a> <a href="#tutorial-santiagocasas" title="Tutorials">✅</a> <a href="#userTesting-santiagocasas" title="User Testing">📓</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matmartinelli"><img src="https://avatars.githubusercontent.com/u/17426508?v=4?s=100" width="100px;" alt="Matteo Martinelli"/><br /><sub><b>Matteo Martinelli</b></sub></a><br /><a href="https://github.com/santiagocasas/cosmicjellyfish/commits?author=matmartinelli" title="Code">💻</a> <a href="#design-matmartinelli" title="Design">🎨</a> <a href="#ideas-matmartinelli" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>

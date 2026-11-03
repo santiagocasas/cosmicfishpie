@@ -12,8 +12,8 @@ import pytest
 pytest.importorskip("jax")
 pytest.importorskip("jax_cosmo")
 
-from cosmicfishpie.fishermatrix import jaxcosmo_derivatives as jd  # noqa: E402
-from cosmicfishpie.LSSsurvey import jaxcosmo_photo  # noqa: E402
+from cosmicjellyfish.fishermatrix import jaxcosmo_derivatives as jd  # noqa: E402
+from cosmicjellyfish.LSSsurvey import jaxcosmo_photo  # noqa: E402
 
 
 class _StubObservable:

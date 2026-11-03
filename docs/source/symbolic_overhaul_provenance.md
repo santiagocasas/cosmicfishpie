@@ -7,7 +7,7 @@
 
 ## Objective
 
-Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).
+Integrate SYREN-NEW as the default symbolic backend in CosmicJellyfish, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).
 
 ## Design decisions
 
@@ -24,24 +24,24 @@ Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie, add CLASS+
 
 **Completed**
 
-- `SyrenNewProvider` implemented in `cosmicfishpie/cosmology/symbolic_new.py`; wired into `cosmology.py` via `input_type='symbolic'` dispatch; uses Astropy backgrounds, physical-unit `Pmm`, total-matter only.
+- `SyrenNewProvider` implemented in `cosmicjellyfish/cosmology/symbolic_new.py`; wired into `cosmology.py` via `input_type='symbolic'` dispatch; uses Astropy backgrounds, physical-unit `Pmm`, total-matter only.
 - SYREN-NEW GCsp and WL Fisher matrices produced and matched CLASS/symbolic YAML profiles, the `three_degenerate` CLASS neutrino scheme, and aggregate derivative plotting put in place.
 - 3-point GCsp derivatives run through the `derivatives.py` engine for all 4 matched configs (CLASS LCDM/w0wa, SYREN LCDM/w0wa); all derivatives finite.
 - `scripts/likelihood/diagnostics/run_syren_new_likelihoods.py` created; fiducial `loglike(param_dict={})` verified (GCsp and WL+GCph both finite); parameter responsiveness confirmed.
-- CLASS+EE2 implemented in `cosmicfishpie/cosmology/ee2.py` and `cosmology.py`, with a new `class/ee2_boost.yaml` profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.
+- CLASS+EE2 implemented in `cosmicjellyfish/cosmology/ee2.py` and `cosmology.py`, with a new `class/ee2_boost.yaml` profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.
 - Focused adapter and CLASS+EE2 integration tests passed for both `A_s` and `sigma8` normalization.
 
 **Active / next**
 
 1. Review the CLASS+EE2 integration in representative spectra/derivatives/forecasts as the broader comparison work proceeds.
-2. Select `class_config_yaml=cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml` with `code=class` and `nonlinear=True` for a CLASS+EE2 comparison.
+2. Select `class_config_yaml=cosmicjellyfish/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml` with `code=class` and `nonlinear=True` for a CLASS+EE2 comparison.
 3. Compare spectra, derivatives and forecasts against the matched CLASS HMcode and SYREN-NEW configurations.
 
 ## Relevant files
 
-- `cosmicfishpie/cosmology/ee2.py`: CLASS to EE2 parameter mapping and boost grid adapter.
-- `cosmicfishpie/cosmology/cosmology.py`: `class_setparams()` selector and `class_results()` multiplication.
-- `cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml`: opt-in CLASS+EE2 profile.
+- `cosmicjellyfish/cosmology/ee2.py`: CLASS to EE2 parameter mapping and boost grid adapter.
+- `cosmicjellyfish/cosmology/cosmology.py`: `class_setparams()` selector and `class_results()` multiplication.
+- `cosmicjellyfish/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml`: opt-in CLASS+EE2 profile.
 - `tests/cosmology_test.py`: unit and integration checks.
 
 The plan was to make SYREN-NEW the default symbolic backend, separate nonlinear modelling from the underlying cosmology calculation, and validate the result against CLASS-based references through representative forecasts, per the design decisions above. The sections below describe the wider roadmap that followed from that plan.
@@ -66,7 +66,7 @@ Nonlinear prescription
 Optional baryonic correction
         │
         ▼
-Existing CosmicFishPie observables and forecasts
+Existing CosmicJellyfish observables and forecasts
 ```
 
 This accommodates the requested combinations:
@@ -86,7 +86,7 @@ SYREN-NEW remains a **direct nonlinear-spectrum provider**: its implementation e
 
 ## 2. Replace the symbolic calculation completely
 
-The main integration point is `cosmicfishpie/cosmology/cosmology.py`, especially `changebasis_symb`, `symbolic_setparams`, and `symbolic_results`.
+The main integration point is `cosmicjellyfish/cosmology/cosmology.py`, especially `changebasis_symb`, `symbolic_setparams`, and `symbolic_results`.
 
 ### Parameter handling
 
@@ -109,7 +109,7 @@ Changes include:
 
 Evaluate the new linear spectrum **at each redshift**, rather than scaling a \(z=0\) spectrum with the old scale-independent Colossus growth.
 
-Preserve CosmicFishPie’s physical-unit interface:
+Preserve CosmicJellyfish’s physical-unit interface:
 
 \[
 k_{\rm symbolic}=k_{\rm CFP}/h,\qquad
@@ -156,7 +156,7 @@ P_{\rm nl}(k,z)=B_{\rm EE2}(k,z)\,P_{\rm lin}(k,z).
 
 For CLASS+EE2:
 
-- Use CosmicFishPie’s existing CLASS linear calculation.
+- Use CosmicJellyfish’s existing CLASS linear calculation.
 - Avoid computing native CLASS nonlinear power unnecessarily.
 - Keep CLASS backgrounds and linear growth.
 - Obtain \(A_s\), densities, and neutrino parameters from the same resolved cosmology.
@@ -195,7 +195,7 @@ For initial forecast acceptance, I recommend a clearly labelled common-domain su
 
 Start with a fiducial and a small deterministic set of cosmologies, then extend coverage.
 
-The CLASS settings need a dedicated profile: the notebook uses three degenerate massive neutrinos and a density convention that differs from CosmicFishPie’s current CLASS mapping. Match those conventions deliberately before attributing residuals to the emulator.
+The CLASS settings need a dedicated profile: the notebook uses three degenerate massive neutrinos and a density convention that differs from CosmicJellyfish’s current CLASS mapping. Match those conventions deliberately before attributing residuals to the emulator.
 
 ### Stage B — Validate cosmology outputs
 
@@ -250,7 +250,7 @@ Extend the current validation machinery to record:
 
 Relevant files include:
 
-- `cosmicfishpie/configs/config.py` and `configs/context.py`;
+- `cosmicjellyfish/configs/config.py` and `configs/context.py`;
 - `configs/default_boltzmann_yaml_files/symbolic/`;
 - `scripts/validation/run_fisher_compare_backends.py`;
 - `scripts/validation/render_validation_dashboard.py`;

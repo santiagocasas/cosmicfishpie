@@ -38,7 +38,7 @@ photometric_optimization_results
 :maxdepth: 1
 :caption: Links
 
-License <https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE>
-GitHub repository <https://github.com/santiagocasas/cosmicfishpie>
-Validation dashboard <https://www.santicasas.space/cosmicfishpie/dashboard/>
+License <https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/LICENSE>
+GitHub repository <https://github.com/santiagocasas/cosmicjellyfish>
+Validation dashboard <https://www.santicasas.space/cosmicjellyfish/dashboard/>
 ```

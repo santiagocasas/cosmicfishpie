@@ -6,7 +6,7 @@ The three forecasts share everything except the derivative route:
     The standard NumPy/SciPy galaxy-clustering ``GCsp`` observable with the finite-difference
     engine.
 ``jax-fd``
-    The JAX-native observable (:mod:`cosmicfishpie.LSSsurvey.jaxcosmo_spectro`) with the *same*
+    The JAX-native observable (:mod:`cosmicjellyfish.LSSsurvey.jaxcosmo_spectro`) with the *same*
     finite-difference engine.
 ``jax-ad``
     The same JAX-native observable differentiated with ``jax.jacfwd``.
@@ -59,7 +59,7 @@ def _options(outdir: Path, tag: str, extra: dict | None = None) -> dict:
         "nonlinear": True,
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
-        "specs_dir": str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+        "specs_dir": str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
         "cosmo_model": "LCDM",
         "code": "jaxcosmo",
         "results_dir": str(results) + "/",
@@ -71,7 +71,7 @@ def _options(outdir: Path, tag: str, extra: dict | None = None) -> dict:
 
 
 def _make_calc(outdir: Path, tag: str, provider=None, extra_options: dict | None = None):
-    from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
+    from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
 
     return FisherMatrix(
         options=_options(outdir, tag, extra_options),
@@ -86,7 +86,7 @@ def _make_calc(outdir: Path, tag: str, provider=None, extra_options: dict | None
 
 def _legacy_engine(calc):
     """Build the legacy fiducial observable and the ``SpectroDerivs`` engine of ``calc``."""
-    from cosmicfishpie.LSSsurvey import spectro_cov, spectro_obs
+    from cosmicjellyfish.LSSsurvey import spectro_cov, spectro_obs
 
     calc.set_pk_settings()
     calc.obs_spectrum = ["g", "g"]
@@ -173,7 +173,7 @@ def main() -> int:
         "--fd-step",
         type=float,
         default=0.01,
-        help="relative finite-difference step (default 0.01, the CosmicFishPie default)",
+        help="relative finite-difference step (default 0.01, the CosmicJellyfish default)",
     )
     parser.add_argument(
         "--legacy-pk-clamp",
@@ -186,9 +186,9 @@ def main() -> int:
     if args.legacy_pk_clamp:
         import yaml
 
-        import cosmicfishpie
+        import cosmicjellyfish
 
-        yaml_dir = Path(cosmicfishpie.__file__).parent / "configs/default_boltzmann_yaml_files"
+        yaml_dir = Path(cosmicjellyfish.__file__).parent / "configs/default_boltzmann_yaml_files"
         params = yaml.safe_load((yaml_dir / "jaxcosmo/default.yaml").read_text())
         params["NUMERICS"]["legacy_pk_clamp"] = True
         clamp_yaml = outdir / "jaxcosmo_legacy_pk_clamp.yaml"
@@ -197,12 +197,12 @@ def main() -> int:
     if args.fd_step != 0.01:
         FREE.update({name: args.fd_step for name in FREE})
 
-    from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
-    from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import (
+    from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
+    from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import (
         JaxAutodiffProvider,
         JaxFiniteDifferenceProvider,
     )
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     summary: dict = {"fiducial": FIDUCIAL, "freeparams": FREE, "variants": {}}
 

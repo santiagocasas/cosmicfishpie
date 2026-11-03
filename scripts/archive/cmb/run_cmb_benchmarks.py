@@ -73,7 +73,7 @@ def main() -> int:
     )
     outdir.mkdir(parents=True, exist_ok=True)
 
-    spec_dir = repo / "cosmicfishpie" / "configs" / "default_survey_specifications"
+    spec_dir = repo / "cosmicjellyfish" / "configs" / "default_survey_specifications"
     presets = {
         "planck": spec_dir / "Planck.yaml",
         "so": spec_dir / "Simons-Observatory-PlanckLowEll.yaml",

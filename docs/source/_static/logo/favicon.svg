@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 24 380 380" width="48" height="48" role="img" aria-label="cosmicjellyfish"><title>cosmicjellyfish</title><rect x="0.0" y="24.0" width="380" height="380" rx="76" fill="#0b1530"/>
+<path d="M60 175 C60 55 340 55 340 175 Q310 197 280 178 Q250 197 220 178 Q190 197 160 178 Q130 197 100 178 Q78 192 60 175 Z" fill="#7dd3fc" fill-opacity="0.15" stroke="#7dd3fc" stroke-width="14" stroke-linejoin="round"/>
+<g transform="translate(212 127) rotate(-12) scale(0.84)">
+<path d="M72 0 C50 -32 0 -40 -50 -8 L-50 8 C0 40 50 32 72 0 Z" fill="#7dd3fc" fill-opacity="0.12" stroke="#7dd3fc" stroke-width="14" stroke-linejoin="round"/>
+<path d="M-50 -8 L-94 -36 C-82 -14 -82 14 -94 36 L-50 8" fill="#7dd3fc" fill-opacity="0.4" stroke="#7dd3fc" stroke-width="14" stroke-linejoin="round"/>
+<ellipse cx="6" cy="0" rx="20" ry="9" transform="rotate(-8 6 0)" fill="#fbbf24"/>
+</g>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M200 192 L200 270 A48 48 0 0 1 152 318" stroke="#fbbf24" stroke-width="28" stroke-dasharray="26 40"/>
+<path d="M152.0 318.0 L141.4 313.9 L133.7 306.6 L129.7 297.5 L129.4 288.3 L132.5 280.2 L138.1 274.4 L145.0 271.3 L152.0 271.2 L158.1 273.5 L162.6 277.7 L164.9 283.0 L165.0 288.3 L163.2 293.0 L160.0 296.3 L156.1 298.1 L152.0 298.2" stroke="#fbbf24" stroke-width="14"/>
+<path d="M120 188 C100 235 80 262 92 335" stroke="#7dd3fc" stroke-width="26" stroke-dasharray="24 40"/>
+<path d="M274 190 C298 238 254 272 280 346" stroke="#7dd3fc" stroke-width="26" stroke-dasharray="24 40"/>
+</g>
+</svg>

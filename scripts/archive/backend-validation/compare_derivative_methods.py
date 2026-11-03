@@ -17,7 +17,7 @@ as the reference baseline. Two backends are supported:
   method is designed to be robust against.
 
 This is meant as a manual validation/regression check for the derivative
-engine in ``cosmicfishpie/fishermatrix/derivatives.py`` -- in particular to
+engine in ``cosmicjellyfish/fishermatrix/derivatives.py`` -- in particular to
 confirm that the POLY method (fixed in this branch to correctly evaluate the
 polynomial fit at the fiducial point) now agrees with the well-tested 3PT
 central-difference method to good precision, in both the noise-free
@@ -39,7 +39,7 @@ import time
 
 import yaml
 
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 ALL_METHODS = ["3PT", "4PT_FWD", "POLY", "STEM"]
 
@@ -55,7 +55,7 @@ FIDUCIAL = {
 }
 FREEPARS = {name: 0.01 for name in FIDUCIAL}
 
-# cosmicfishpie.configs.config.init() uses a caller-provided ``fiducialpars``
+# cosmicjellyfish.configs.config.init() uses a caller-provided ``fiducialpars``
 # dict wholesale (it only falls back to its own built-in defaults when
 # ``fiducialpars is None``), so passing a minimal 5-key dict drops keys that
 # CAMB's parameter-basis conversion needs (num_nu_massless in particular,
@@ -70,14 +70,14 @@ CAMB_EXTRA_FIDUCIAL = {
 }
 
 RESULTS_DIR = "scripts/benchmark_results/compare_derivative_methods/"
-DEFAULT_CAMB_YAML = "cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml"
+DEFAULT_CAMB_YAML = "cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/default.yaml"
 
 
 def _camb_yaml_with_halofit(halofit_version: str) -> str:
     """Write a temp copy of the fast default CAMB yaml with halofit_version overridden.
 
     The CAMB solver settings are only loadable from a YAML file path (see
-    ``cosmicfishpie.configs.config._load_boltzmann_yaml``); there is no way to
+    ``cosmicjellyfish.configs.config._load_boltzmann_yaml``); there is no way to
     override an individual key via ``options``. So we copy the repository's
     fast default profile and only change ``halofit_version``, writing the
     result under the (gitignored) results directory.
@@ -101,7 +101,7 @@ def build_options(derivatives_method: str, backend: str) -> dict:
         "ell_sampling": 25,
         "nonlinear": True,
         "feedback": 1,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",

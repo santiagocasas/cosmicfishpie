@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from cosmicfishpie.cosmology.nuisance import Nuisance
-from cosmicfishpie.LSSsurvey.spectro_obs import ComputeGalSpectro
+from cosmicjellyfish.cosmology.nuisance import Nuisance
+from cosmicjellyfish.LSSsurvey.spectro_obs import ComputeGalSpectro
 
 
 @pytest.fixture

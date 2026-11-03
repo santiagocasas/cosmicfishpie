@@ -12,8 +12,8 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from cosmicfishpie.analysis import fisher_matrix as fm_mod
-from cosmicfishpie.analysis import plot_comparison as pc
+from cosmicjellyfish.analysis import fisher_matrix as fm_mod
+from cosmicjellyfish.analysis import plot_comparison as pc
 
 
 def _load(path: Path) -> dict:

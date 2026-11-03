@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 
 def test_photometric_fisher_compute_with_timing():
@@ -15,7 +15,7 @@ def test_photometric_fisher_compute_with_timing():
         "nonlinear": True,
         "feedback": 0,
         "timing": True,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",

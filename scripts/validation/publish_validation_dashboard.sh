@@ -22,7 +22,7 @@ if [[ ! -f "$landing_dir/index.html" ]]; then
     exit 1
 fi
 
-worktree=$(mktemp -d "${TMPDIR:-/tmp}/cosmicfishpie-pages.XXXXXX")
+worktree=$(mktemp -d "${TMPDIR:-/tmp}/cosmicjellyfish-pages.XXXXXX")
 cleanup() {
     git worktree remove --force "$worktree" >/dev/null 2>&1 || true
 }

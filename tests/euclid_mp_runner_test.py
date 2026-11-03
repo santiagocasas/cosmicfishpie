@@ -30,7 +30,7 @@ def test_worker_preserves_mp_cosmology_and_uses_correct_probe_and_backend(
             return SimpleNamespace(file_name="mock_FM.txt")
 
     monkeypatch.setitem(
-        sys.modules, "cosmicfishpie.fishermatrix.cosmicfish", SimpleNamespace(FisherMatrix=Matrix)
+        sys.modules, "cosmicjellyfish.fishermatrix.cosmicfish", SimpleNamespace(FisherMatrix=Matrix)
     )
     assert runner.worker(mode, code, tmp_path) == 0
     args = received[0]

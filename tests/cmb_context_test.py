@@ -4,10 +4,10 @@ from types import SimpleNamespace
 
 import numpy as np
 
-import cosmicfishpie.configs.config as cfg
-from cosmicfishpie.CMBsurvey import CMB_obs
-from cosmicfishpie.CMBsurvey.CMB_cov import CMBCov
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+import cosmicjellyfish.configs.config as cfg
+from cosmicjellyfish.CMBsurvey import CMB_obs
+from cosmicjellyfish.CMBsurvey.CMB_cov import CMBCov
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 
 def test_cmb_computecls_uses_explicit_context_without_mutation(monkeypatch):

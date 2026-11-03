@@ -4,7 +4,7 @@
 """Compare a CosmicFish Planck Fisher against Planck published margestats.
 
 This script compares marginalized 1-sigma constraints between:
-- a Fisher matrix produced by CosmicFishPie, and
+- a Fisher matrix produced by CosmicJellyfish, and
 - Planck GetDist `.margestats` published in the PLA products.
 
 Current parameter mapping focuses on the h-based 6-parameter primary basis used
@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 from typing import Any, Callable, cast
 
-from cosmicfishpie.analysis import fisher_matrix as fm_mod
+from cosmicjellyfish.analysis import fisher_matrix as fm_mod
 
 DEFAULT_PLANCK_REL = Path(
     "Planck-Results/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3.00/base/plikHM_TTTEEE_lowl_lowE"

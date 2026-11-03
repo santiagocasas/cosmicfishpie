@@ -1,5 +1,5 @@
 """
-Test suite for cosmicfishpie.analysis.fisher_derived module.
+Test suite for cosmicjellyfish.analysis.fisher_derived module.
 
 This module tests the fisher_derived class to improve coverage significantly.
 """
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
-from cosmicfishpie.analysis import fisher_derived as fd
+from cosmicjellyfish.analysis import fisher_derived as fd
 
 
 class TestFisherDerived:

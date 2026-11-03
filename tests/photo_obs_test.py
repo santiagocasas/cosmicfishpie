@@ -1,6 +1,6 @@
 import numpy as np
 
-from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
+from cosmicjellyfish.LSSsurvey.photo_obs import ComputeCls
 
 
 def test_compute_cls_initialization(computecls_fid):
@@ -22,7 +22,7 @@ def test_wl_kernel_fast_kernel_equivalence(computecls_fid, monkeypatch):
     ComputeCls instance to compare both the WL and IA components.
     """
     # Import module to toggle the flag reliably
-    import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+    import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
     _, cls, _ = computecls_fid
 
@@ -48,7 +48,7 @@ def test_wl_kernel_fast_kernel_equivalence(computecls_fid, monkeypatch):
 
 def test_wl_efficiency_fast_eff_equivalence(computecls_fid, monkeypatch):
     """Check that enabling/disabling _USE_FAST_EFF yields the same lensing efficiency."""
-    import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+    import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
     _, cls, _ = computecls_fid
 
@@ -74,7 +74,7 @@ def test_wl_efficiency_fast_eff_equivalence(computecls_fid, monkeypatch):
 
 def test_P_limber_fast_P_equivalence(computecls_fid, monkeypatch):
     """Check that enabling/disabling _USE_FAST_P yields identical Pell."""
-    import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+    import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
     _, cls, _ = computecls_fid
 

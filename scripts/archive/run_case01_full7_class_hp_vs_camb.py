@@ -12,9 +12,9 @@ just invoked directly in Python instead of via the shell/env-file wrapper.
 
 This variant pairs:
   - CLASS with the HP (high-precision) selector:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
+    cosmicjellyfish/configs/default_boltzmann_yaml_files/class/mpvalidation_hp.yaml
   - CAMB with the P3 YAML:
-    cosmicfishpie/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
+    cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/mpvalidation_p3.yaml
 
 CAMB is expected to be the local fork with a hardcoded Halofit tolerance of
 1e-6 in fortran/halofit.f90 (commit c52551a4c4cc9bf8d6fa64b4cb829365c89242b5,
@@ -49,7 +49,7 @@ from pathlib import Path
 
 ENGINE = Path(__file__).resolve().parent / "run_fisher_compare_w0wa_fast.py"
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CFG_DIR = REPO_ROOT / "cosmicfishpie" / "configs" / "default_boltzmann_yaml_files"
+CFG_DIR = REPO_ROOT / "cosmicjellyfish" / "configs" / "default_boltzmann_yaml_files"
 
 FULL7_PARAMS = "Omegam,Omegab,h,ns,sigma8,w0,wa"
 CLASS_HP_YAML = str(CFG_DIR / "class" / "mpvalidation_hp.yaml")

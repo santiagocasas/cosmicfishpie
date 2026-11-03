@@ -1,10 +1,24 @@
 import json
 import os
+from pathlib import Path
 
 import numpy as np
 import pytest
 
-from cosmicfishpie.likelihood import sampler as sampler_mod
+from cosmicjellyfish.likelihood import sampler as sampler_mod
+
+
+def test_documented_chain_metadata_is_readable():
+    examples = Path(__file__).resolve().parents[1] / "docs/source/examples"
+    chain, fiducial, metadata, labels = sampler_mod.load_chain_metadata(
+        examples, metadata_filename="chain_metadata_example.json"
+    )
+
+    assert Path(chain) == examples / "symbolic_2param.txt"
+    assert fiducial == {"Omegam": 0.3191, "Omegab": 0.049795}
+    assert set(labels) == set(fiducial)
+    assert metadata["cosmicfishpie_version"] == "1.0.0"
+    assert metadata["evidence_log_z"] == pytest.approx(-5.643129673483542)
 
 
 class _FakeContext:
@@ -704,7 +718,7 @@ def test_sampler_freepars_defaults():
 
 
 def test_sampler_does_not_mutate_caller_config_and_writes_version(tmp_path, monkeypatch):
-    from cosmicfishpie.version import VERSION
+    from cosmicjellyfish.version import VERSION
 
     monkeypatch.chdir(tmp_path)
     fake_context = _FakeContext(
@@ -775,6 +789,6 @@ def test_overwrite_removes_existing_chain_and_resamples(tmp_path, monkeypatch):
 
 
 def test_load_chain_metadata_is_exported():
-    from cosmicfishpie.likelihood import load_chain_metadata
+    from cosmicjellyfish.likelihood import load_chain_metadata
 
     assert callable(load_chain_metadata)

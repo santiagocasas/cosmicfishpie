@@ -31,8 +31,8 @@ import time
 from pathlib import Path
 from pathlib import Path as _P
 
-from cosmicfishpie.configs import config as cfg
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.configs import config as cfg
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 
 def _discover_specs_dir():

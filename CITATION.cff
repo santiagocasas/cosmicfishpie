@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: Please cite this project if you use it.
 title: CosmicJellyFish
 version: 0.1.0
-repository-code: https://github.com/santiagocasas/cosmicfishpie
+repository-code: https://github.com/santiagocasas/cosmicjellyfish
 authors:
   - family-names: Casas Castro
     given-names: Santiago

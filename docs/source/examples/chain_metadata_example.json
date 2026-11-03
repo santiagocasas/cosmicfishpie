@@ -1,0 +1,31 @@
+{
+  "cosmicfishpie_version": "1.0.0",
+  "name": "symbolic_32x1_15623397",
+  "start_time": "2026-09-15 12:36:00",
+  "outroot path": "symbolic_2param",
+  "cosmo_fiducial_params": {
+    "Omegam": 0.3191,
+    "Omegab": 0.049795,
+    "h": 0.6674,
+    "ns": 0.96605,
+    "sigma8": 0.81,
+    "w0": -1.0,
+    "wa": 0.0,
+    "mnu": 0.0,
+    "Neff": 3.044
+  },
+  "sampled_fiducial_params": {"Omegam": 0.3191, "Omegab": 0.049795},
+  "priors": {
+    "Omegam": "[0.24, 0.4]",
+    "Omegab": "{'type': 'gaussian', 'loc': 0.049795, 'scale': 0.00055}"
+  },
+  "sampler_settings": {"n_live": 300, "n_networks": 64, "n_batch": 32, "pool": 32},
+  "observables": ["GCph", "WL"],
+  "cosmo_model": "LCDM",
+  "survey_name": "Euclid-Photometric-ISTF-Pessimistic",
+  "code": "symbolic",
+  "finish_time": "2026-09-15 12:43:04",
+  "elapsed_time": "00:07:03",
+  "evidence_log_z": -5.643129673483542,
+  "chain_file": "symbolic_2param.txt"
+}

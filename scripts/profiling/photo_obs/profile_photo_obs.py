@@ -47,8 +47,8 @@ import time
 from pathlib import Path
 from pathlib import Path as _P
 
-from cosmicfishpie.configs import config as cfg
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.configs import config as cfg
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 
 def _resolve_repo_root():
@@ -60,7 +60,7 @@ def _resolve_repo_root():
 
 
 def _resolve_configs_dir(repo_root: Path):
-    candidate = repo_root / "cosmicfishpie" / "configs"
+    candidate = repo_root / "cosmicjellyfish" / "configs"
     if candidate.is_dir():
         return candidate
     # fallback to installed package location
@@ -98,7 +98,7 @@ def _discover_specs_dir(user_override: str | None = None):
         if isinstance(cand, str) and cand and os.path.isdir(cand):
             return cand if cand.endswith(os.sep) else cand + os.sep
     # Package local (parent already points to configs dir) -> just append directory directly
-    pkg_root = _P(cfg.__file__).resolve().parent  # .../cosmicfishpie/configs
+    pkg_root = _P(cfg.__file__).resolve().parent  # .../cosmicjellyfish/configs
     candidate = pkg_root / "default_survey_specifications"
     if candidate.is_dir():
         return str(candidate) + os.sep
@@ -331,7 +331,7 @@ def main():
     # Optionally enable fast efficiency optimization (applied after imports via monkey patch)
     if args.fast_eff:
         try:
-            import cosmicfishpie.LSSsurvey.photo_obs as _photo_obs
+            import cosmicjellyfish.LSSsurvey.photo_obs as _photo_obs
 
             _photo_obs._USE_FAST_EFF = True  # type: ignore[attr-defined]
         except Exception as e:  # pragma: no cover

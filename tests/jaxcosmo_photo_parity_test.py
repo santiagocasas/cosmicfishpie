@@ -1,7 +1,7 @@
 """Legacy-vs-JAX parity of the photometric ``C_ell`` for ``GCph`` + ``WL`` (jaxcosmo extra).
 
-:mod:`cosmicfishpie.LSSsurvey.jaxcosmo_photo` is a ``jax.numpy`` re-implementation of
-:class:`cosmicfishpie.LSSsurvey.photo_obs.ComputeCls`.  Two differences are deliberate and
+:mod:`cosmicjellyfish.LSSsurvey.jaxcosmo_photo` is a ``jax.numpy`` re-implementation of
+:class:`cosmicjellyfish.LSSsurvey.photo_obs.ComputeCls`.  Two differences are deliberate and
 documented in the module: ``P(k, z)`` is evaluated directly at the Limber wavenumbers instead of
 being read off a coarse bicubic table, and the luminosity-ratio table is clamped instead of
 raising outside its range.  Everything else (``z``/``ell`` grids, photo-z convolution, kernels,
@@ -73,7 +73,7 @@ def _assert_cls_matches_legacy(legacy: dict, jax_cls: dict) -> None:
 @pytest.fixture(scope="module")
 def reference(tmp_path_factory):
     """Legacy observable and JAX observable at the fiducial point (built once)."""
-    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
     tmp_path = tmp_path_factory.mktemp("photo_parity")
     calc = compare._make_calc(tmp_path, "fiducial")
@@ -83,7 +83,7 @@ def reference(tmp_path_factory):
 
 @pytest.mark.parametrize("name", list(CASES))
 def test_cls_matches_legacy(name, reference, tmp_path):
-    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
     base_calc, base_legacy, base_allpars, _ = reference
     shifts = CASES[name]
@@ -101,7 +101,7 @@ def test_cls_matches_legacy(name, reference, tmp_path):
 
 
 def test_cls_matches_legacy_at_shifted_bias_and_ia(reference, tmp_path):
-    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
     base_calc, _, base_allpars, _ = reference
     calc = compare._make_calc(tmp_path, "nuisance")
@@ -150,7 +150,7 @@ def test_jacobian_matches_finite_differences(name, reference):
 
 
 def test_near_fiducial_override_is_not_silently_ignored():
-    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import _same_value
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import _same_value
 
     assert _same_value(0.32, 0.32)
     assert _same_value(0.32, 0.32 + 1.0e-15)

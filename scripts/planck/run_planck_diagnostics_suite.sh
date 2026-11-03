@@ -106,7 +106,7 @@ uv run python - <<'PY'
 import os
 from pathlib import Path
 
-from cosmicfishpie.analysis import fisher_matrix as fm
+from cosmicjellyfish.analysis import fisher_matrix as fm
 
 root = Path(os.environ["CFP_ROOT"])
 base = root / "tmp/planck_bestfit_theta_knox_3part"

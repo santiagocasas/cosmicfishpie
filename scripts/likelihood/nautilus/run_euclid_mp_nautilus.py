@@ -48,12 +48,12 @@ def run_config(mode: str, code: str, outdir: Path, args) -> dict:
         survey_name_spectro=(
             "Euclid-Spectroscopic-Paper-Pessimistic" if mode == "spectro" else False
         ),
-        specs_dir=str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+        specs_dir=str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
         results_dir=str(outdir / "runtime") + "/",
         feedback=0,
     )
     options[f"{code}_config_yaml"] = str(
-        ROOT / "cosmicfishpie/configs/default_boltzmann_yaml_files" / code / f"{profile}.yaml"
+        ROOT / "cosmicjellyfish/configs/default_boltzmann_yaml_files" / code / f"{profile}.yaml"
     )
     fiducial = dict(common["fiducialpars"], w0=-1.0, wa=0.0)
     workers, _ = resources(code, args)
@@ -78,7 +78,7 @@ def run_config(mode: str, code: str, outdir: Path, args) -> dict:
 
 
 def worker(mode: str, code: str, outdir: Path, args) -> int:
-    from cosmicfishpie.likelihood.sampler import NautilusSampler
+    from cosmicjellyfish.likelihood.sampler import NautilusSampler
 
     config = run_config(mode, code, outdir, args)
     survey = config["options"][f"survey_name_{mode}"]

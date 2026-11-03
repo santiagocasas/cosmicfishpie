@@ -1,6 +1,6 @@
 # Comprehensive guide
 
-This guide covers the options you can choose when building a Cosmicfishpie
+This guide covers the options you can choose when building a Cosmicjellyfish
 Fisher forecast, and what you can do with the result. For a runnable end-to-end
 example, start with {ref}`A verified first forecast <first-forecast>`. For
 installation, see the [installation guide](installation.md).
@@ -26,11 +26,11 @@ Set `options["code"]` to choose where the cosmology comes from:
 | `symbolic` | Built-in backend; no Boltzmann solver is run, so it is much faster. |
 | `external` | Precomputed tables read from files (see {ref}`below <external-backend>`). |
 
-CAMB and CLASS are installed together with Cosmicfishpie (as the `camb` and
+CAMB and CLASS are installed together with Cosmicjellyfish (as the `camb` and
 `classy` packages), so `camb` and `class` work without extra setup. They run a
 Boltzmann solver for every derivative step and are therefore slower than
 `symbolic`. Omit the YAML path to use the default configurations in
-`cosmicfishpie/configs/default_boltzmann_yaml_files/`.
+`cosmicjellyfish/configs/default_boltzmann_yaml_files/`.
 
 If the fiducial cosmology has no `Neff`, both solvers use the standard value
 3.044. It is a fixed input: it is only varied if you put it in `freepars`.
@@ -65,9 +65,9 @@ For a custom survey, pass a complete `specifications` dictionary to
 ### Shipped survey files
 
 Pass a file name (without `.yaml`) as `survey_name_photo`, `survey_name_spectro`
-or `survey_name_radio_IM`. Cosmicfishpie looks in `specs_dir` first (by default
-`cosmicfishpie/configs/default_survey_specifications`) and then in
-`cosmicfishpie/configs/other_survey_specifications`, so every shipped file below
+or `survey_name_radio_IM`. Cosmicjellyfish looks in `specs_dir` first (by default
+`cosmicjellyfish/configs/default_survey_specifications`) and then in
+`cosmicjellyfish/configs/other_survey_specifications`, so every shipped file below
 can be selected by name alone.
 
 `default_survey_specifications/`
@@ -124,7 +124,7 @@ before using anything other than `3PT` for CMB, `GCsp` or `IM`.
 Nuisance parameters are survey- and model-specific. For example, the default
 Euclid spectroscopic specification uses `lnbg_1` to `lnbg_4` for its logarithmic
 galaxy bias. Check the survey YAML before adding nuisance parameters to
-`freepars`. The `Nuisance` class (`cosmicfishpie.cosmology.nuisance`) builds the
+`freepars`. The `Nuisance` class (`cosmicjellyfish.cosmology.nuisance`) builds the
 bias, shot-noise and intrinsic-alignment functions from these settings; you
 rarely need to call it directly.
 
@@ -154,13 +154,13 @@ combined = fisher_a + fisher_b
 print(combined.get_param_names())
 ```
 
-The module `cosmicfishpie.analysis.fisher_operations` provides `marginalise`,
+The module `cosmicjellyfish.analysis.fisher_operations` provides `marginalise`,
 `marginalise_over`, `reshuffle` and `information_gain` (the Fisher approximation
 of the Kullback-Leibler divergence between two experiments, given a prior).
 To keep `Omegam` and `h` and marginalise over everything else:
 
 ```python
-from cosmicfishpie.analysis.fisher_operations import marginalise
+from cosmicjellyfish.analysis.fisher_operations import marginalise
 
 reduced = marginalise(fisher, ["Omegam", "h"])
 ```
@@ -170,7 +170,7 @@ columns without marginalising), use `eliminate_parameters(fisher, names)`, or
 `eliminate_columns_rows(fisher, indexes)` with zero-based positions.
 
 A forecast with a non-empty `outroot` also writes a `*_specs.json` snapshot next
-to the Fisher matrix. `cosmicfishpie.utilities.utils.load_fisher_from_json(path)`
+to the Fisher matrix. `cosmicjellyfish.utilities.utils.load_fisher_from_json(path)`
 rebuilds the `FisherMatrix` from it and returns `(forecast, snapshot)`; call
 `forecast.compute()` to rerun it.
 
@@ -182,18 +182,18 @@ do not exist.
 
 ## Plot and compare Fisher matrices
 
-- `CosmicFish_FisherAnalysis` (`cosmicfishpie.analysis.fisher_plot_analysis`)
+- `CosmicFish_FisherAnalysis` (`cosmicjellyfish.analysis.fisher_plot_analysis`)
   holds a list of Fisher matrices, or loads them from files, and applies
   `marginalise` / `reshuffle` to all of them at once.
-- `fisher_plotting` (`cosmicfishpie.analysis.fisher_plotting`) draws comparison
+- `fisher_plotting` (`cosmicjellyfish.analysis.fisher_plotting`) draws comparison
   contour plots for such a group.
-- `cosmicfishpie.analysis.fishconsumer` provides `make_triangle_plot` (Fisher
+- `cosmicjellyfish.analysis.fishconsumer` provides `make_triangle_plot` (Fisher
   matrices and MCMC chains), `fishtable_to_pandas` for error tables, and chain
   loaders; see {doc}`likelihood_sampling`.
 
 ```python
-from cosmicfishpie.analysis.fisher_plot_analysis import CosmicFish_FisherAnalysis
-from cosmicfishpie.analysis.fishconsumer import make_triangle_plot
+from cosmicjellyfish.analysis.fisher_plot_analysis import CosmicFish_FisherAnalysis
+from cosmicjellyfish.analysis.fishconsumer import make_triangle_plot
 
 fisher.name = "WL+GCph"
 analysis = CosmicFish_FisherAnalysis(fisher_list=[fisher])
@@ -207,7 +207,7 @@ fig = make_triangle_plot(fishers=[fisher], fisher_labels=["WL+GCph"], params=["O
 (external-backend)=
 ### Precomputed cosmologies (`code="external"`)
 
-With `code="external"`, Cosmicfishpie reads background, growth and power-spectrum
+With `code="external"`, Cosmicjellyfish reads background, growth and power-spectrum
 tables from text files instead of running a solver. Pass `extfiles` to
 `FisherMatrix`, with a `directory` holding one folder for the fiducial cosmology
 and one for each finite-difference step:
@@ -249,8 +249,8 @@ without running a Fisher calculation. It reads the global configuration, so call
 `config.init` first:
 
 ```python
-from cosmicfishpie.configs import config as cfg
-from cosmicfishpie.cosmology.cosmology import cosmo_functions
+from cosmicjellyfish.configs import config as cfg
+from cosmicjellyfish.cosmology.cosmology import cosmo_functions
 
 cfg.init(
     options={"code": "symbolic", "feedback": 0},
@@ -266,7 +266,7 @@ cosmo.Pmm(0.5, 0.1, nonlinear=False)    # P(k) at z=0.5, k=0.1 1/Mpc
 cosmo.sigma8_of_z(0.5)                  # sigma_8(z)
 ```
 
-To avoid global state, `cosmicfishpie.configs.context.build_analysis_context`
+To avoid global state, `cosmicjellyfish.configs.context.build_analysis_context`
 takes the same arguments as `config.init` and returns an immutable
 `AnalysisContext`. Pass it as
 `cosmo_functions(dict(ctx.fiducialparams), configuration=ctx)`.
@@ -279,12 +279,12 @@ set one to `0` to compare against the slower path.
 
 ## Project status and citation
 
-Cosmicfishpie has a backend-neutral derivative-provider interface, so a future
+Cosmicjellyfish has a backend-neutral derivative-provider interface, so a future
 differentiable solver or emulator can supply derivatives. JAX is not currently
 an implemented backend.
 
 To cite the project, use the repository's
-[CITATION.cff](https://github.com/santiagocasas/cosmicfishpie/blob/main/CITATION.cff).
+[CITATION.cff](https://github.com/santiagocasas/cosmicjellyfish/blob/main/CITATION.cff).
 
 ## Next steps
 

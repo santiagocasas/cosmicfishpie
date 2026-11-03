@@ -32,8 +32,8 @@ def test_photo_cov_covmat_cached(photo_cov_cached):
 
 def test_photo_cov_compute_derivs_stub(monkeypatch, photo_cov_cached):
     """Stub derivative engine so we only test integration & shape, not heavy recomputation."""
-    import cosmicfishpie.configs.config as cfg
-    import cosmicfishpie.fishermatrix.derivatives as fishderiv
+    import cosmicjellyfish.configs.config as cfg
+    import cosmicjellyfish.fishermatrix.derivatives as fishderiv
 
     freeparams_obj = cfg.freeparams or {}
     subset_key = next((k for k in freeparams_obj if k.startswith("b")), None)

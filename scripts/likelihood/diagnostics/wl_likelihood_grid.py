@@ -78,14 +78,14 @@ def build_problem(outdir: Path, free_params: tuple[str, ...]):
     """Build the WL Fisher matrix and a callable that returns -log L.
 
     The Fisher matrix is computed with ``free_params`` varied, which makes
-    CosmicFishPie add its intrinsic-alignment nuisances automatically.  The
+    CosmicJellyfish add its intrinsic-alignment nuisances automatically.  The
     returned likelihood reuses the ``FisherMatrix`` instance, so the cached
     ``photo_obs_fid`` and ``photo_LSS`` attributes are not recomputed.
 
     Parameters
     ----------
     outdir : Path
-        Directory for CosmicFishPie's own exported Fisher files.
+        Directory for CosmicJellyfish's own exported Fisher files.
     free_params : tuple of str
         Parameters varied when building the Fisher matrix.
 
@@ -97,8 +97,8 @@ def build_problem(outdir: Path, free_params: tuple[str, ...]):
         ``full`` matrix, ``param_names``, and the fiducial values of every
         parameter the Fisher matrix knows about.
     """
-    from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
-    from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
+    from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
+    from cosmicjellyfish.likelihood.photo_like import PhotometricLikelihood
 
     outdir.mkdir(parents=True, exist_ok=True)
 

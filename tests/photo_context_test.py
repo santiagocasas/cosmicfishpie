@@ -4,10 +4,10 @@ from types import SimpleNamespace
 
 import numpy as np
 
-import cosmicfishpie.configs.config as cfg
-from cosmicfishpie.configs.context import AnalysisContext
-from cosmicfishpie.LSSsurvey.photo_cov import PhotoCov
-from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
+import cosmicjellyfish.configs.config as cfg
+from cosmicjellyfish.configs.context import AnalysisContext
+from cosmicjellyfish.LSSsurvey.photo_cov import PhotoCov
+from cosmicjellyfish.LSSsurvey.photo_obs import ComputeCls
 
 
 def test_computecls_uses_explicit_context_without_mutation(photo_fisher_matrix):

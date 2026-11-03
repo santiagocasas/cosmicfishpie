@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import wl_gcsp_fisher_nautilus_demo as demo
 
-from cosmicfishpie.analysis import fishconsumer as fico
-from cosmicfishpie.analysis import fisher_matrix as fm
+from cosmicjellyfish.analysis import fishconsumer as fico
+from cosmicjellyfish.analysis import fisher_matrix as fm
 
 NAUTILUS_SCRIPT_DIR = Path(__file__).resolve().parents[1] / "nautilus"
 if str(NAUTILUS_SCRIPT_DIR) not in sys.path:

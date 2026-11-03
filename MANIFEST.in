@@ -1,5 +1,5 @@
 include README.md
 include LICENSE
-include cosmicfishpie/py.typed
+include cosmicjellyfish/py.typed
 
-recursive-include cosmicfishpie/configs *.yaml *.dat *.md
+recursive-include cosmicjellyfish/configs *.yaml *.dat *.md

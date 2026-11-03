@@ -26,11 +26,11 @@ with the same shapes reuse compiled functions.
 
 This example keeps both the neutrino mass and the spectral index fixed. Parameters
 omitted from `freepars` retain their fiducial values; the usual survey nuisance
-parameters are added by CosmicFishPie.
+parameters are added by CosmicJellyfish.
 
 ```python
-from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
-from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider
+from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
+from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider
 
 fiducial = {
     "10^9As": 2.1,
@@ -72,18 +72,18 @@ value is zero), as described in {doc}`derivatives`.
 
 | Route | `derivative_provider` | Observable used for derivatives |
 | --- | --- | --- |
-| JAX AD | `JaxAutodiffProvider()` | JAX-native CosmicFishPie observable |
+| JAX AD | `JaxAutodiffProvider()` | JAX-native CosmicJellyfish observable |
 | JAX FD | `JaxFiniteDifferenceProvider()` | The same JAX-native observable |
 | Standard FD | Omitted, or `None` | Existing NumPy/SciPy observable |
 
 Import both providers from
-`cosmicfishpie.fishermatrix.jaxcosmo_derivatives`. All three routes can use
+`cosmicjellyfish.fishermatrix.jaxcosmo_derivatives`. All three routes can use
 `options["code"] = "jaxcosmo"`.
 
 **AD versus JAX FD isolates the derivative method.** Decrease the FD step to check
 convergence. **JAX FD versus standard FD checks the observable port**, including its
 interpolation, integration and boundary choices. The JAX observables reproduce
-CosmicFishPie's photometric Limber and spectroscopic galaxy-power calculations;
+CosmicJellyfish's photometric Limber and spectroscopic galaxy-power calculations;
 they do not call `jax_cosmo.angular_cl`. The existing covariance and Fisher
 assembly are retained; selecting AD does not add covariance-derivative terms.
 
@@ -101,7 +101,7 @@ checkout's Python environment, for example `.venv/bin/python`, as the Jupyter
 kernel. Install `jupyterlab` and `ipykernel` into that environment if needed.
 
 The notebook compares the three JAXcosmo routes above with the standard
-CosmicFishPie SYREN-NEW forecast. It includes:
+CosmicJellyfish SYREN-NEW forecast. It includes:
 
 - linear and nonlinear matter power, and the response to the spectral index;
 - angular spectra from the JAX and standard observable implementations;
@@ -249,11 +249,11 @@ supports the implemented photo-z distributions, galaxy-bias models and eNLA
 intrinsic alignments. Unsupported modelling choices raise explicit errors.
 
 Backend configuration lives in
-`cosmicfishpie/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml`.
+`cosmicjellyfish/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml`.
 To customise it, copy the profile and set
 `options["jaxcosmo_config_yaml"]` to the copy's path. Key controls are
 `ACCURACY.transfer`, `ACCURACY.halofit`, `ACCURACY.distance_steps`, and the
-`NUMERICS` power/background grids and `x64` flag. Public CosmicFishPie power uses
+`NUMERICS` power/background grids and `x64` flag. Public CosmicJellyfish power uses
 `k` in inverse Mpc and `P(k)` in cubic Mpc; the theory adapter converts the
 internal `jax-cosmo` h-scaled units.
 

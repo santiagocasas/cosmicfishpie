@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from cosmicfishpie.analysis.fishconsumer import make_triangle_plot
+from cosmicjellyfish.analysis.fishconsumer import make_triangle_plot
 
 PREFERRED_COSMOLOGY_PARAMS = ("Omegam", "Omegab", "h", "ns", "sigma8", "w0", "wa")
 NON_SAMPLE_COLUMNS = {"weight", "weights", "loglike", "log_posterior", "posterior"}

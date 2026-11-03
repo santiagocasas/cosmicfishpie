@@ -1,10 +1,10 @@
 """
-Test suite for cosmicfishpie.analysis.colors module.
+Test suite for cosmicjellyfish.analysis.colors module.
 
 This module tests color utility functions to improve coverage.
 """
 
-from cosmicfishpie.analysis.colors import bash_colors, nice_colors
+from cosmicjellyfish.analysis.colors import bash_colors, nice_colors
 
 
 class TestNiceColors:

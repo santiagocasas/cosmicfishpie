@@ -4,7 +4,7 @@ import yaml
 
 
 def test_packaged_config_files_exist_and_parse():
-    cfg_dir = resources.files("cosmicfishpie") / "configs"
+    cfg_dir = resources.files("cosmicjellyfish") / "configs"
 
     yaml_paths = [
         cfg_dir / "default_survey_specifications" / "Euclid-Photometric-ISTF-Pessimistic.yaml",

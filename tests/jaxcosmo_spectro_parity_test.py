@@ -41,9 +41,9 @@ CASES = {
 
 @pytest.fixture(scope="module")
 def clamp_yaml(tmp_path_factory):
-    import cosmicfishpie
+    import cosmicjellyfish
 
-    src = Path(cosmicfishpie.__file__).parent / "configs/default_boltzmann_yaml_files"
+    src = Path(cosmicjellyfish.__file__).parent / "configs/default_boltzmann_yaml_files"
     params = yaml.safe_load((src / "jaxcosmo/default.yaml").read_text())
     params["NUMERICS"]["legacy_pk_clamp"] = True
     path = tmp_path_factory.mktemp("yaml") / "jaxcosmo_clamp.yaml"
@@ -53,7 +53,7 @@ def clamp_yaml(tmp_path_factory):
 
 @pytest.mark.parametrize("name", list(CASES))
 def test_lnp_matches_legacy_at_fiducial_and_perturbed_cosmology(name, clamp_yaml, tmp_path):
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     extra = dict(CASES[name], jaxcosmo_config_yaml=clamp_yaml)
     calc = compare._make_calc(tmp_path, name, extra_options=extra)
@@ -77,7 +77,7 @@ def test_lnp_matches_legacy_at_fiducial_and_perturbed_cosmology(name, clamp_yaml
 
 def test_unclamped_default_agrees_where_the_grid_stays_inside_the_table(tmp_path):
     """Direct evaluation (the default) equals the legacy value away from the table edge."""
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     calc = compare._make_calc(tmp_path, "direct")
     engine = compare._legacy_engine(calc)
@@ -92,7 +92,7 @@ def test_unclamped_default_agrees_where_the_grid_stays_inside_the_table(tmp_path
 
 def test_jacobian_matches_finite_differences(tmp_path):
     """The autodiff derivatives agree with central differences of the same ``ln P``."""
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     calc = compare._make_calc(tmp_path, "jacobian")
     compare._legacy_engine(calc)  # builds the legacy observable and its fiducial dictionary
@@ -117,7 +117,7 @@ def test_jacobian_matches_finite_differences(tmp_path):
 
 def test_h_fid_is_taken_from_the_resolved_cosmology(tmp_path):
     """An ``H0`` fiducial must set the same ``h`` the theory uses for its k grid."""
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     calc = compare._make_calc(tmp_path, "h_fid")
     compare._legacy_engine(calc)
@@ -132,7 +132,7 @@ def test_h_fid_is_taken_from_the_resolved_cosmology(tmp_path):
 
 def test_rescale_sigma_pv_parameters_are_rejected(tmp_path):
     """``sigmap_*``/``sigmav_*`` have no JAX implementation, so they must not look fixed."""
-    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
 
     calc = compare._make_calc(tmp_path, "nonlinear")
     compare._legacy_engine(calc)

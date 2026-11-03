@@ -2,7 +2,7 @@
 
 ## Scope
 
-This validation compares the Fisher forecasts produced by CosmicFishPie with
+This validation compares the Fisher forecasts produced by CosmicJellyfish with
 posterior samples from its Nautilus likelihood interface. It is intentionally a
 focused integration test rather than a claim that every likelihood,
 configuration, or cosmological model has been validated.
@@ -22,7 +22,7 @@ The raw chains and checkpoints are intentionally excluded from the repository.
 
 ## Results
 
-The figures were generated with CosmicFishPie's ChainConsumer integration from
+The figures were generated with CosmicJellyfish's ChainConsumer integration from
 the weighted Nautilus chains. Each probe has a stable color pair: dark contours
 are marginal Fisher forecasts and lighter contours are Nautilus posterior
 samples. WL is blue, GCsp is green, and the joint result is orange. Dashed

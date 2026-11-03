@@ -1,10 +1,10 @@
 """
-Test suite for cosmicfishpie.likelihood.base module.
+Test suite for cosmicjellyfish.likelihood.base module.
 
 This module tests the base likelihood functionality to improve coverage.
 """
 
-# from cosmicfishpie.likelihood.base import *  # Use defensive imports
+# from cosmicjellyfish.likelihood.base import *  # Use defensive imports
 
 
 class TestBaseLikelihood:
@@ -15,7 +15,7 @@ class TestBaseLikelihood:
         # This tests basic import and class instantiation
         try:
             # Try to import and instantiate if possible
-            from cosmicfishpie.likelihood.base import BaseLikelihood
+            from cosmicjellyfish.likelihood.base import BaseLikelihood
 
             # Create an instance if class exists
             base_like = BaseLikelihood()
@@ -24,13 +24,13 @@ class TestBaseLikelihood:
         except (ImportError, AttributeError, TypeError):
             # If class doesn't exist or can't be instantiated,
             # just test that the module can be imported
-            import cosmicfishpie.likelihood.base
+            import cosmicjellyfish.likelihood.base
 
-            assert cosmicfishpie.likelihood.base is not None
+            assert cosmicjellyfish.likelihood.base is not None
 
     def test_likelihood_functions_exist(self):
         """Test that likelihood functions are accessible."""
-        import cosmicfishpie.likelihood.base as base_module
+        import cosmicjellyfish.likelihood.base as base_module
 
         # Check that module has attributes (functions/classes)
         assert hasattr(base_module, "__file__")
@@ -45,7 +45,7 @@ class TestBaseLikelihood:
     def test_compute_likelihood_basic(self):
         """Test basic likelihood computation if function exists."""
         try:
-            from cosmicfishpie.likelihood.base import compute_likelihood
+            from cosmicjellyfish.likelihood.base import compute_likelihood
 
             # Test with basic parameters
             result = compute_likelihood()
@@ -59,7 +59,7 @@ class TestBaseLikelihood:
     def test_log_likelihood_basic(self):
         """Test log likelihood computation if function exists."""
         try:
-            from cosmicfishpie.likelihood.base import log_likelihood
+            from cosmicjellyfish.likelihood.base import log_likelihood
 
             # Test basic functionality
             result = log_likelihood()
@@ -72,7 +72,7 @@ class TestBaseLikelihood:
     def test_chi_squared_basic(self):
         """Test chi-squared computation if function exists."""
         try:
-            from cosmicfishpie.likelihood.base import chi_squared
+            from cosmicjellyfish.likelihood.base import chi_squared
 
             # Test basic functionality
             result = chi_squared()
@@ -85,7 +85,7 @@ class TestBaseLikelihood:
 
     def test_module_constants(self):
         """Test module-level constants and variables."""
-        import cosmicfishpie.likelihood.base as base_module
+        import cosmicjellyfish.likelihood.base as base_module
 
         # Check for common constants that might be defined
         possible_constants = ["PI", "TWOPI", "LOG2PI", "DEFAULT_TOLERANCE", "MAX_ITERATIONS"]
@@ -98,7 +98,7 @@ class TestBaseLikelihood:
     def test_error_handling(self):
         """Test error handling in likelihood functions."""
         try:
-            from cosmicfishpie.likelihood.base import BaseLikelihood
+            from cosmicjellyfish.likelihood.base import BaseLikelihood
 
             # Test with invalid parameters if possible
             base_like = BaseLikelihood()
@@ -116,7 +116,7 @@ class TestBaseLikelihood:
     def test_likelihood_utilities(self):
         """Test utility functions in the module."""
         try:
-            from cosmicfishpie.likelihood.base import normalize_likelihood
+            from cosmicjellyfish.likelihood.base import normalize_likelihood
 
             # Test normalization
             test_values = [1.0, 2.0, 3.0]
@@ -130,7 +130,7 @@ class TestBaseLikelihood:
     def test_parameter_validation(self):
         """Test parameter validation functions."""
         try:
-            from cosmicfishpie.likelihood.base import validate_parameters
+            from cosmicjellyfish.likelihood.base import validate_parameters
 
             # Test with simple parameters
             params = {"param1": 1.0, "param2": 2.0}
@@ -148,13 +148,13 @@ class TestCompositeLikelihoodAndNautilus:
     def test_empty_composite_likelihood_raises(self):
         import pytest
 
-        from cosmicfishpie.likelihood.base import CompositeLikelihood
+        from cosmicjellyfish.likelihood.base import CompositeLikelihood
 
         with pytest.raises(ValueError, match="at least one likelihood"):
             CompositeLikelihood([])
 
     def test_run_nautilus_builds_sampler_with_likelihood_kwargs(self, monkeypatch):
-        import cosmicfishpie.likelihood.base as base
+        import cosmicjellyfish.likelihood.base as base
 
         constructed = {}
 

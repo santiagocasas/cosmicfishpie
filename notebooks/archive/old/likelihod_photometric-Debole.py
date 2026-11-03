@@ -12,17 +12,17 @@ from pathlib import Path
 import numpy as np
 from nautilus import Prior, Sampler
 
-from cosmicfishpie.fishermatrix import cosmicfish
-from cosmicfishpie.LSSsurvey import photo_cov as pcov
-from cosmicfishpie.LSSsurvey import photo_obs as pobs
-from cosmicfishpie.utilities.utils import printing as upr
+from cosmicjellyfish.fishermatrix import cosmicfish
+from cosmicjellyfish.LSSsurvey import photo_cov as pcov
+from cosmicjellyfish.LSSsurvey import photo_obs as pobs
+from cosmicjellyfish.utilities.utils import printing as upr
 
 
 def is_indexable_iterable(var):
     return isinstance(var, (list, np.ndarray, Sequence)) and not isinstance(var, (str, bytes))
 
 
-logger = logging.getLogger("cosmicfishpie.cosmology.nuisance")
+logger = logging.getLogger("cosmicjellyfish.cosmology.nuisance")
 logger.setLevel(logging.INFO)
 
 
@@ -71,7 +71,7 @@ options = {
     "survey_name": "Euclid",
     "survey_name_photo": "Euclid-Photometric-DeboleR1",
     "survey_name_spectro": False,
-    "specs_dir": "./cosmicfishpie/configs/other_survey_specifications/",
+    "specs_dir": "./cosmicjellyfish/configs/other_survey_specifications/",
     "cosmo_model": "LCDM",
 }
 cosmoFM_fid = cosmicfish.FisherMatrix(

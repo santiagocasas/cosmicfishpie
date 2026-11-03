@@ -120,17 +120,17 @@ The selected survey name and survey-YAML content hash are part of each run's con
 hash and metadata, preventing pessimistic and optimistic outputs from colliding or
 being reused across scenarios.
 
-## Parameter name mapping (paper / MontePython aliases -> CosmicFishPie canonical keys)
+## Parameter name mapping (paper / MontePython aliases -> CosmicJellyfish canonical keys)
 
 The reference materials this track was built from (student MontePython `.param` files
 and paper appendix notation) use MontePython-style parameter labels that are **not**
-valid CosmicFishPie inputs. CosmicFishPie's canonical keys are `mnu` and `Neff` only.
+valid CosmicJellyfish inputs. CosmicJellyfish's canonical keys are `mnu` and `Neff` only.
 No `mnu_camb`, `m_nu_camb`, `N_eff_camb`, or `Omega_m_camb` aliases exist or are
-accepted anywhere in this codebase (`cosmicfishpie/cosmology/cosmology.py`). The
+accepted anywhere in this codebase (`cosmicjellyfish/cosmology/cosmology.py`). The
 mapping below documents the correspondence purely for readers cross-referencing the
 paper/MontePython materials against this repository's configs:
 
-| Paper / MontePython label | CosmicFishPie canonical key | Where used                                  |
+| Paper / MontePython label | CosmicJellyfish canonical key | Where used                                  |
 |----------------------------|------------------------------|----------------------------------------------|
 | `Omega_m_camb`             | `Omegam`                     | `fiducialpars` / `freepars` in common specs   |
 | `omega_b` / implied `Omega_b_camb` | `Omegab`              | `fiducialpars` / `freepars` in common specs   |
@@ -147,7 +147,7 @@ All seven `common_specs_paper_*.json` files set `"ShareDeltaNeff": false`. This 
 controls whether the `mnu -> omnuh2` (CAMB) / `mnu -> Omega_ncdm` (CLASS) mass-mapping
 factor `g_factor` scales with the *free* `Neff` parameter (`g_factor = Neff/3` when
 `true`) or stays fixed at the fiducial value (`g_factor = fidNeff/3` when `false`); see
-`changebasis_camb`/`changebasis_class` in `cosmicfishpie/cosmology/cosmology.py`.
+`changebasis_camb`/`changebasis_class` in `cosmicjellyfish/cosmology/cosmology.py`.
 
 **This was initially set to `true` and was found to be the root cause of early
 photometric `mnu` gate failures in the LCDM+mnu and LCDM+mnu+Neff cases (now `06.2.0` and
@@ -156,7 +156,7 @@ in the companion `Euclid_KP_nu` repository
 (`results/cosmicfish_internal/.../_specifications.dat`) showed that **every** paper
 production run (`nulcdm` = LCDM+mnu+Neff, and `wCDM+mnu+Neff`, both probes, both
 optimistic/pessimistic) uses `ShareDeltaNeff: False`, not `True`. Recomputing those
-reference matrices with `cosmicfishpie.analysis.fisher_matrix` confirmed they stay
+reference matrices with `cosmicjellyfish.analysis.fisher_matrix` confirmed they stay
 comfortably within gate-level agreement (worst photo deviation 3.83%, worst spectro
 1.51% for the `wCDM+mnu+Neff` family; 1.66% for `nulcdm` optimistic).
 
@@ -178,7 +178,7 @@ validation convention and this repo's own diagonal-level CAMB/CLASS agreement.
 
 CAMB 2.0.3 deprecated `share_delta_neff` as a direct `set_cosmology()` kwarg. This
 repository now assigns it directly on the constructed `CAMBparams` object via a small
-`_set_camb_params()` helper in `cosmicfishpie/cosmology/cosmology.py` (see git history:
+`_set_camb_params()` helper in `cosmicjellyfish/cosmology/cosmology.py` (see git history:
 "fix for deprecated sharedeltaneff in camb"), which sets `share_delta_neff` explicitly
 and unconditionally after `camb.set_params(...)` without emitting CAMB's deprecation
 log. This was verified empirically: omitting `share_delta_neff` shifts `N_eff` from
@@ -209,7 +209,7 @@ stress test: `mnu`/`w0`/`wa` free, only `Neff` fixed) are similarly named but di
 ## Boltzmann solver profiles
 
 Every paper-validation case uses the self-contained, paper-validated high-precision
-selectors under `cosmicfishpie/configs/default_boltzmann_yaml_files/` (see that
+selectors under `cosmicjellyfish/configs/default_boltzmann_yaml_files/` (see that
 directory's README.md for the full picture; note that `camb/default.yaml`,
 `class/default.yaml`, and `class/default_spectro.yaml` are now the package's fast,
 *non-validated* fallback defaults, not the paper profiles -- do not confuse them):
@@ -228,7 +228,7 @@ directory's README.md for the full picture; note that `camb/default.yaml`,
   `non linear` key in that profile (and in `camb/nuvalidation_hp.yaml`) is **inert
   legacy configuration** for the spectroscopic observable: `GCsp_linear` in the common
   specs JSON drives the actual dewiggling/damping treatment in
-  `cosmicfishpie/LSSsurvey/spectro_obs.py`, and the spectro Pk is always computed from
+  `cosmicjellyfish/LSSsurvey/spectro_obs.py`, and the spectro Pk is always computed from
   the linear transfer function, never from Halofit/HMcode. This mirrors the paper's
   own treatment (Halofit is explicitly unsuitable for extended-neutrino forecasts, per
   the paper).
@@ -264,7 +264,7 @@ platform) to `run_metadata.json` in its output directory via
 ## Cross-checking against paper reference Fisher matrices
 
 `scripts/compare_reference_fishers.py` is a standalone CLI (built on
-`cosmicfishpie.analysis.fisher_matrix.fisher_matrix`, no hand-rolled linear algebra)
+`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`, no hand-rolled linear algebra)
 for comparing any two raw `*_fishermatrix.txt` + `.paramnames` pairs and reporting
 per-parameter 1-sigma deviations:
 

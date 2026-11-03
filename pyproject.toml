@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 # See https://setuptools.pypa.io/en/latest/userguide/quickstart.html for more project configuration options.
-name = "cosmicfishpie"
+name = "cosmicjellyfish"
 dynamic = ["version"]
 readme = "README.md"
 classifiers = [
@@ -47,10 +47,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/santiagocasas/cosmicfishpie"
-Repository = "https://github.com/santiagocasas/cosmicfishpie"
-Changelog = "https://github.com/santiagocasas/cosmicfishpie/blob/main/CHANGELOG.md"
-Documentation = "https://www.santicasas.space/cosmicfishpie/docs/"
+Homepage = "https://github.com/santiagocasas/cosmicjellyfish"
+Repository = "https://github.com/santiagocasas/cosmicjellyfish"
+Changelog = "https://github.com/santiagocasas/cosmicjellyfish/blob/main/CHANGELOG.md"
+Documentation = "https://www.santicasas.space/cosmicjellyfish/docs/"
 
 [project.optional-dependencies]
 emulators = [
@@ -104,14 +104,15 @@ exclude = [
     "tests.*",
     "tests",
     "docs*",
-    "scripts*"
+    "scripts*",
+    "chains*"
 ]
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.package-data]
-cosmicfishpie = [
+cosmicjellyfish = [
     "py.typed",
     "configs/default_boltzmann_yaml_files/*.md",
     "configs/default_boltzmann_yaml_files/*.yaml",
@@ -122,7 +123,7 @@ cosmicfishpie = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "cosmicfishpie.version.VERSION"}
+version = {attr = "cosmicjellyfish.version.VERSION"}
 
 [tool.black]
 line-length = 100

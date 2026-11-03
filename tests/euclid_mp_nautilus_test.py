@@ -61,7 +61,7 @@ def test_worker_samples_only_five_parameters_and_guards_resume(tmp_path, monkeyp
 
     monkeypatch.setitem(
         sys.modules,
-        "cosmicfishpie.likelihood.sampler",
+        "cosmicjellyfish.likelihood.sampler",
         SimpleNamespace(NautilusSampler=FakeSampler),
     )
     args = settings()
@@ -83,7 +83,7 @@ def test_worker_refuses_unintended_extra_parameter(tmp_path, monkeypatch):
 
     monkeypatch.setitem(
         sys.modules,
-        "cosmicfishpie.likelihood.sampler",
+        "cosmicjellyfish.likelihood.sampler",
         SimpleNamespace(NautilusSampler=fake_sampler),
     )
     with pytest.raises(RuntimeError, match="Expected exactly five"):

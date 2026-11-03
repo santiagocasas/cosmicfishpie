@@ -29,7 +29,7 @@ from typing import Any
 
 import yaml
 
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 
 def _repo_root() -> Path:
@@ -193,7 +193,7 @@ def main() -> int:
     )
     outdir.mkdir(parents=True, exist_ok=True)
 
-    cfg_dir = repo_root / "cosmicfishpie" / "configs" / "default_boltzmann_yaml_files"
+    cfg_dir = repo_root / "cosmicjellyfish" / "configs" / "default_boltzmann_yaml_files"
     default_yaml = cfg_dir / args.code / "default.yaml"
     yaml_in = (
         Path(args.boltzmann_yaml).expanduser().resolve() if args.boltzmann_yaml else default_yaml

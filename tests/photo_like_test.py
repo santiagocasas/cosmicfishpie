@@ -3,8 +3,8 @@ import math
 import numpy as np
 import pytest
 
-from cosmicfishpie.fishermatrix import cosmicfish
-from cosmicfishpie.likelihood import PhotometricLikelihood
+from cosmicjellyfish.fishermatrix import cosmicfish
+from cosmicjellyfish.likelihood import PhotometricLikelihood
 
 
 @pytest.fixture(scope="module")
@@ -17,7 +17,7 @@ def photometric_fiducial_obs():
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "survey_name_spectro": False,
-        "specs_dir": "../cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "../cosmicjellyfish/configs/default_survey_specifications/",
         "cosmo_model": "LCDM",
     }
 

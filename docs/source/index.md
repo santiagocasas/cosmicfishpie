@@ -1,5 +1,5 @@
 ---
-title: cosmicfishpie
+title: cosmicjellyfish
 html_theme.sidebar_primary.remove: true
 ---
 
@@ -7,15 +7,27 @@ html_theme.sidebar_primary.remove: true
 :hidden:
 
 getting_started
+migration_cosmicjellyfish
+validation_data
 user_guide
 tutorials
 api/index
 development
 ```
 
-# cosmicfishpie
+# cosmicjellyfish
 
 ::::{div} cfp-hero
+
+```{image} _static/logo/banner-light.svg
+:alt: CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX
+:class: only-light cfp-logo-banner
+```
+
+```{image} _static/logo/banner-dark.svg
+:alt: CosmicJellyfish: Fisher and Monte Carlo cosmological forecasts with Python and JAX
+:class: only-dark cfp-logo-banner
+```
 
 :::{div} cfp-tagline
 Fisher-matrix forecasts for galaxy clustering, weak lensing and CMB surveys,
@@ -23,7 +35,7 @@ with CAMB, CLASS, a built-in symbolic backend or optional JAXcosmo.
 :::
 
 ```bash
-pip install cosmicfishpie
+pip install cosmicjellyfish
 ```
 
 :::{div} cfp-buttons
@@ -115,13 +127,13 @@ Contribution guidelines, changelog, validation reports and the scripts reference
 ## Cite us
 
 Please cite the software if you use it. The repository's
-[`CITATION.cff`](https://github.com/santiagocasas/cosmicfishpie/blob/main/CITATION.cff) is the
+[`CITATION.cff`](https://github.com/santiagocasas/cosmicjellyfish/blob/main/CITATION.cff) is the
 maintained source of citation metadata; a minimal BibTeX entry is:
 
 ```bibtex
-@software{cosmicfishpie,
+@software{cosmicjellyfish,
   author = {Casas, Santiago and Martinelli, Matteo and Pamuk, Sefa and Sabarish, V. M.},
-  title  = {cosmicfishpie: Fisher-matrix forecasts for cosmological surveys},
-  url    = {https://github.com/santiagocasas/cosmicfishpie}
+  title  = {cosmicjellyfish: Fisher-matrix forecasts for cosmological surveys},
+  url    = {https://github.com/santiagocasas/cosmicjellyfish}
 }
 ```

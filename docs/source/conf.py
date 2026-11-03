@@ -17,11 +17,11 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.abspath("../../"))
 
-from cosmicfishpie import VERSION, VERSION_SHORT  # noqa: E402
+from cosmicjellyfish import VERSION, VERSION_SHORT  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
-project = "cosmicfishpie"
+project = "cosmicjellyfish"
 copyright = f"{datetime.today().year}, RWTH Aachen University"
 author = "S. Casas, M. Martinelli, S. Pamuk, Sabarish V.M."
 version = VERSION_SHORT
@@ -63,7 +63,7 @@ source_suffix = [".rst", ".md"]
 # GitHub renders README anchors client-side, so the anchor checker cannot see them.
 linkcheck_anchors_ignore_for_url = [r"https://github\.com/.*"]
 
-modindex_common_prefix = ["cosmicfishpie."]
+modindex_common_prefix = ["cosmicjellyfish."]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -94,7 +94,7 @@ napoleon_preprocess_types = True
 #
 html_theme = "pydata_sphinx_theme"
 
-html_title = f"cosmicfishpie v{VERSION}"
+html_title = f"cosmicjellyfish v{VERSION}"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -103,18 +103,23 @@ html_static_path = ["_static"]
 
 html_css_files = ["css/custom.css"]
 
-html_favicon = "_static/favicon.ico"
+html_favicon = "_static/logo/favicon.ico"
 
 html_theme_options = {
+    "logo": {
+        "image_light": "_static/logo/icon-light.svg",
+        "image_dark": "_static/logo/icon-dark.svg",
+        "text": "cosmicjellyfish",
+    },
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/santiagocasas/cosmicfishpie",
+            "url": "https://github.com/santiagocasas/cosmicjellyfish",
             "icon": "fa-brands fa-github",
         },
         {
             "name": "PyPI",
-            "url": "https://pypi.org/project/cosmicfishpie/",
+            "url": "https://pypi.org/project/cosmicjellyfish/",
             "icon": "fa-brands fa-python",
         },
     ],
@@ -131,7 +136,7 @@ html_theme_options = {
 html_context = {
     "default_mode": "auto",
     "github_user": "santiagocasas",
-    "github_repo": "cosmicfishpie",
+    "github_repo": "cosmicjellyfish",
     "github_version": "main",
     "doc_path": "docs/source",
 }

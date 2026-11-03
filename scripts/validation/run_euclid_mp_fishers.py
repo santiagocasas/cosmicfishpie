@@ -20,7 +20,7 @@ JOBS = [(mode, code) for mode in ("spectro", "photo") for code in ("class", "cam
 def run_specs(mode: str, code: str, outdir: Path) -> dict:
     """Use the existing MP case inputs, changing only runtime/output selection."""
     common = json.loads(COMMON.read_text())
-    profiles = ROOT / "cosmicfishpie/configs/default_boltzmann_yaml_files"
+    profiles = ROOT / "cosmicjellyfish/configs/default_boltzmann_yaml_files"
     profile = {
         "class": "mpvalidation_hp",
         "camb": "mpvalidation_p3",
@@ -31,7 +31,7 @@ def run_specs(mode: str, code: str, outdir: Path) -> dict:
         code=code,
         outroot=f"mp_pessimistic_{mode}_{code}",
         results_dir=str(outdir) + "/",
-        specs_dir=str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+        specs_dir=str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
         survey_name_photo="Euclid-Photometric-Paper-Pessimistic" if mode == "photo" else False,
         survey_name_spectro=(
             "Euclid-Spectroscopic-Paper-Pessimistic" if mode == "spectro" else False
@@ -48,7 +48,7 @@ def run_specs(mode: str, code: str, outdir: Path) -> dict:
 
 
 def worker(mode: str, code: str, outdir: Path) -> int:
-    from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
+    from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
 
     specs = run_specs(mode, code, outdir)
     outdir.mkdir(parents=True, exist_ok=True)

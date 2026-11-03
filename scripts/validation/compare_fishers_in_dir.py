@@ -13,8 +13,8 @@ from pathlib import Path
 
 import numpy as np
 
-from cosmicfishpie.analysis import fisher_matrix as fm_mod
-from cosmicfishpie.analysis import fisher_plot_analysis as cfa
+from cosmicjellyfish.analysis import fisher_matrix as fm_mod
+from cosmicjellyfish.analysis import fisher_plot_analysis as cfa
 
 
 def _load_specs(path: Path) -> dict:

@@ -5,7 +5,7 @@
 
 This script builds a single-parameter Fisher matrix from
 `sigma(param)=prior_sigma`, adds it to an input Fisher using
-`cosmicfishpie.analysis.fisher_matrix.fisher_matrix.__add__`, and optionally
+`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix.__add__`, and optionally
 prints a comparison table against a reference Fisher (e.g. Planck covmat
 converted to Gaussian Fisher).
 """
@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from cosmicfishpie.analysis import fisher_matrix as fm_mod
+from cosmicjellyfish.analysis import fisher_matrix as fm_mod
 
 
 def _resolve_fisher(path_arg: str) -> Path:

@@ -20,7 +20,7 @@ the scales relevant to the Euclid galaxy observables and do not cluster like CDM
 baryons. Using P_mm for galaxy clustering mixes the clustered component with the smooth
 neutrino component and makes the galaxy bias artificially scale dependent.
 
-The paper therefore prescribes P_cc, where `c` denotes CDM+baryons. CosmicFishPie calls
+The paper therefore prescribes P_cc, where `c` denotes CDM+baryons. CosmicJellyfish calls
 this spectrum P_cb and selects it with:
 
 ```json

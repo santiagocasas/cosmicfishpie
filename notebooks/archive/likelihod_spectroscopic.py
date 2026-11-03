@@ -8,12 +8,16 @@ import numpy as np
 from matplotlib import pyplot as plt
 from nautilus import Prior, Sampler
 
-import cosmicfishpie.analysis.fishconsumer as fco
-from cosmicfishpie.analysis import fisher_operations as cfop
-from cosmicfishpie.fishermatrix import cosmicfish
-from cosmicfishpie.likelihood.spectro_like import legendre_Pgg, loglike, observable_Pgg
-from cosmicfishpie.LSSsurvey import spectro_cov as spcov
-from cosmicfishpie.LSSsurvey import spectro_obs as spobs
+import cosmicjellyfish.analysis.fishconsumer as fco
+from cosmicjellyfish.analysis import fisher_operations as cfop
+from cosmicjellyfish.fishermatrix import cosmicfish
+from cosmicjellyfish.likelihood.spectro_like import (
+    legendre_Pgg,
+    loglike,
+    observable_Pgg,
+)
+from cosmicjellyfish.LSSsurvey import spectro_cov as spcov
+from cosmicjellyfish.LSSsurvey import spectro_obs as spobs
 
 os.environ["OMP_NUM_THREADS"] = "6"
 
@@ -69,7 +73,7 @@ options = {
     "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
     "survey_name_photo": False,
     # "survey_name_radio_IM": "SKAO-IM-Redbook",
-    #'specs_dir': '../cosmicfishpie/configs/other_survey_specifications/',
+    #'specs_dir': '../cosmicjellyfish/configs/other_survey_specifications/',
     "cosmo_model": "LCDM",
     "bfs8terms": False,
 }
@@ -121,7 +125,7 @@ options = {
     "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
     "survey_name_photo": False,
     # "survey_name_radio_IM": "SKAO-IM-Redbook",
-    #'specs_dir': '../cosmicfishpie/configs/other_survey_specifications/',
+    #'specs_dir': '../cosmicjellyfish/configs/other_survey_specifications/',
     "cosmo_model": "LCDM",
     "bfs8terms": False,
 }

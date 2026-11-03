@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # CosmicFishPie
+# # CosmicJellyfish
 
 import argparse
 import hashlib
@@ -16,9 +16,9 @@ from time import perf_counter
 
 import numpy as np
 
-from cosmicfishpie.analysis import fisher_plot_analysis as fpa
-from cosmicfishpie.fishermatrix import cosmicfish
-from cosmicfishpie.LSSsurvey.photo_obs import (
+from cosmicjellyfish.analysis import fisher_plot_analysis as fpa
+from cosmicjellyfish.fishermatrix import cosmicfish
+from cosmicjellyfish.LSSsurvey.photo_obs import (
     ComputeCls,
     faster_integral_efficiency,
     memo_integral_efficiency,
@@ -63,13 +63,13 @@ def _resolve_repo_root():
 
 
 def _resolve_configs_dir(repo_root: Path):
-    """Return the configs directory (cosmicfishpie/configs)."""
-    candidate = repo_root / "cosmicfishpie" / "configs"
+    """Return the configs directory (cosmicjellyfish/configs)."""
+    candidate = repo_root / "cosmicjellyfish" / "configs"
     if candidate.is_dir():
         return candidate
     # fallback to package install
     try:
-        import cosmicfishpie as _cfp_pkg  # type: ignore
+        import cosmicjellyfish as _cfp_pkg  # type: ignore
 
         pkg_dir = Path(_cfp_pkg.__file__).resolve().parent
         candidate_pkg = pkg_dir / "configs"
@@ -341,7 +341,7 @@ def _compare_matrices(fm_cur, fm_ref):
 
 
 def compare_run_to_ref(fish_photo, strings_obses, results_dir, ref_dir, ref_prefix, timings):
-    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+    from cosmicjellyfish.analysis import fisher_matrix as fm_mod
 
     ref_timings_path = os.path.join(ref_dir, ref_prefix + "timings.json")
     ref_timings = {}
@@ -391,8 +391,8 @@ def compare_run_to_ref(fish_photo, strings_obses, results_dir, ref_dir, ref_pref
 
 
 def compare_ref_replay(ref_specs, results_dir, ref_dir, ref_prefix):
-    from cosmicfishpie.analysis import fisher_matrix as fm_mod
-    from cosmicfishpie.utilities import utils as _u
+    from cosmicjellyfish.analysis import fisher_matrix as fm_mod
+    from cosmicjellyfish.utilities import utils as _u
 
     print(
         f"[compare-ref] Replaying {len(ref_specs)} run(s) from {ref_dir} "
@@ -651,7 +651,7 @@ def main():
     os.environ["COSMICFISH_FAST_P"] = "1" if fast_P else "0"
     os.environ["COSMICFISH_FAST_KERNEL"] = "1" if fast_kernel else "0"
     # Ensure photo_obs picks up env toggles set here.
-    import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+    import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
     importlib.reload(photo_obs)
     global ComputeCls, faster_integral_efficiency, memo_integral_efficiency
@@ -766,11 +766,11 @@ def run_fast_flags_fisher_benchmark(options, args, obs_list):
         os.environ["COSMICFISH_FAST_P"] = "1" if P else "0"
         os.environ["COSMICFISH_FAST_KERNEL"] = "1" if kernel else "0"
         # Reload photo_obs so module-level toggles pick up env
-        import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+        import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
         importlib.reload(photo_obs)
         # Ensure cosmicfish module sees the reloaded module
-        import cosmicfishpie.fishermatrix.cosmicfish as _cf
+        import cosmicjellyfish.fishermatrix.cosmicfish as _cf
 
         importlib.reload(_cf)
 
@@ -934,11 +934,11 @@ def run_fast_only(options, args, obs_list):
         os.environ["COSMICFISH_FAST_P"] = "1" if P else "0"
         os.environ["COSMICFISH_FAST_KERNEL"] = "1" if kernel else "0"
         # Reload photo_obs so module-level toggles pick up env
-        import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+        import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
         importlib.reload(photo_obs)
         # Ensure cosmicfish module sees the reloaded module
-        import cosmicfishpie.fishermatrix.cosmicfish as _cf
+        import cosmicjellyfish.fishermatrix.cosmicfish as _cf
 
         importlib.reload(_cf)
 
@@ -997,16 +997,16 @@ def run_compare_ref(options, args, obs_list):
     import importlib
     import sys
 
-    from cosmicfishpie.analysis import fisher_matrix as fm_mod
+    from cosmicjellyfish.analysis import fisher_matrix as fm_mod
 
     def _set_flags(eff: bool, P: bool, kernel: bool):
         os.environ["COSMICFISH_FAST_EFF"] = "1" if eff else "0"
         os.environ["COSMICFISH_FAST_P"] = "1" if P else "0"
         os.environ["COSMICFISH_FAST_KERNEL"] = "1" if kernel else "0"
-        import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+        import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
 
         importlib.reload(photo_obs)
-        import cosmicfishpie.fishermatrix.cosmicfish as _cf
+        import cosmicjellyfish.fishermatrix.cosmicfish as _cf
 
         importlib.reload(_cf)
 
@@ -1248,8 +1248,8 @@ def run_replay_json(json_path):
 
     import numpy as np
 
-    from cosmicfishpie.analysis import fisher_matrix as fm_mod
-    from cosmicfishpie.utilities import utils as _u
+    from cosmicjellyfish.analysis import fisher_matrix as fm_mod
+    from cosmicjellyfish.utilities import utils as _u
 
     # Resolve to a JSON file if a root was provided
     def _resolve_json(p: str) -> str:

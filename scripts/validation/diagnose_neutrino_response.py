@@ -16,7 +16,7 @@ import numpy as np
 import yaml
 from scipy.interpolate import RectBivariateSpline, UnivariateSpline
 
-from cosmicfishpie.cosmology.cosmology import boltzmann_code
+from cosmicjellyfish.cosmology.cosmology import boltzmann_code
 
 
 def subtraction_spline(runtime):
@@ -45,7 +45,7 @@ def main():
     args.outdir.mkdir(parents=True, exist_ok=False)
     specs = json.loads(args.specs.read_text())
     repo = Path(__file__).resolve().parents[2]
-    profiles = repo / "cosmicfishpie/configs/default_boltzmann_yaml_files"
+    profiles = repo / "cosmicjellyfish/configs/default_boltzmann_yaml_files"
     k = np.geomspace(1e-3, 10, 60)
     z = np.array([0.5, 1.0, 1.5, 2.0])
     masses = np.array([0.054, 0.060, 0.066])
@@ -58,7 +58,7 @@ def main():
         "options": specs["options"],
         "versions": {package: version(package) for package in ("camb", "classy", "numpy", "scipy")},
         "cosmology_source_sha256": hashlib.sha256(
-            (repo / "cosmicfishpie/cosmology/cosmology.py").read_bytes()
+            (repo / "cosmicjellyfish/cosmology/cosmology.py").read_bytes()
         ).hexdigest(),
         "profile_sha256": {
             code: hashlib.sha256(

@@ -18,9 +18,42 @@ jobs:
       - name: Install dependencies
         run: |
           uv sync --extra dev
+      # No coverage here: this job only proves the package imports and tests run
+      # without the ``jaxcosmo`` extra. The authoritative report comes from the
+      # ``test (jaxcosmo)`` job, which runs the same suite plus the JAX tests, so
+      # Codecov receives a single upload instead of two partial ones.
       - name: Run tests
         run: |
-          uv run pytest
+          uv run pytest --no-cov
+
+  # The ``jaxcosmo`` extra is not installed in the job above, so the JAX tests
+  # skip themselves there (``pytest.importorskip``). This job installs the extra,
+  # runs the whole suite so nothing is skipped, and uploads the only coverage
+  # report for the commit.
+  test-jax:
+    name: test (jaxcosmo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Install dependencies (with the jaxcosmo extra)
+        run: |
+          uv sync --extra dev --extra jaxcosmo
+      - name: Check that JAX is available
+        run: |
+          uv run python -c "import jax, jax_cosmo; print('jax', jax.__version__)"
+      - name: Run tests
+        env:
+          CUDA_VISIBLE_DEVICES: ''
+        run: |
+          uv run pytest -rs
       - name: Upload to Codecov
         uses: codecov/codecov-action@v7
         with:

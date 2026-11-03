@@ -306,6 +306,10 @@ def init(
         "symbolic_config_yaml",
         os.path.join(settings["boltzmann_yaml_path"], "symbolic", "default.yaml"),
     )
+    settings.setdefault(
+        "jaxcosmo_config_yaml",
+        os.path.join(settings["boltzmann_yaml_path"], "jaxcosmo", "default.yaml"),
+    )
     settings.setdefault("fishermatrix_file_extension", ".txt")
     settings.setdefault("savgol_window", 101)
     settings.setdefault("savgol_polyorder", 3)
@@ -410,10 +414,18 @@ def init(
         parsed_boltzmann = _load_boltzmann_yaml(settings["symbolic_config_yaml"])
         boltzmann_symbolicpars = parsed_boltzmann
         external = None
+    elif settings["code"] == "jaxcosmo":
+        # Optional differentiable backend: jax / jax-cosmo are imported lazily by the
+        # provider, so selecting it never costs anything for the other backends.
+        input_type = settings["code"]
+        global boltzmann_jaxcosmopars
+        parsed_boltzmann = _load_boltzmann_yaml(settings["jaxcosmo_config_yaml"])
+        boltzmann_jaxcosmopars = parsed_boltzmann
+        external = None
     else:
         print("No external input files used in this calculation.")
         print("No Einstein-Boltzmann-Solver (EBS) specified.")
-        print("No symbolic_pofk specified.")
+        print("No symbolic_pofk or jaxcosmo specified.")
         # settings['code'] = 'camb'
         external = None
         raise ValueError("No cosmology calculator specified")

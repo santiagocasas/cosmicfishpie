@@ -102,7 +102,11 @@ class numerics:
         Returns a value rounded up to a specific number of decimal places.
         """
         if numerics.old_round_decimals_up:
-            number = np.float16(np.format_float_positional(number, precision=precision))
+            # Quantise through float16 (legacy behaviour), then compute in float64.
+            # Under NumPy>=2 (NEP 50) a Python int is a "weak" scalar, so keeping the
+            # float16 dtype here would make ``number * factor`` overflow the precision
+            # of float16 and silently change the result.
+            number = np.float64(np.float16(np.format_float_positional(number, precision=precision)))
             # this function protects from precision issues with floats
             if decimals == 0:
                 return np.ceil(number)

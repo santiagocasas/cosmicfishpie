@@ -43,6 +43,7 @@ pip install -e .
 | Extra | Adds |
 | --- | --- |
 | `emulators` | `euclidemu2`, for the EuclidEmulator2 nonlinear boost with CLASS |
+| `jaxcosmo` | JAX, `jax-cosmo` and compatibility dependencies for the optional differentiable backend |
 | `docs` | Sphinx and the theme needed to build this documentation |
 | `dev` | Linters, type checker, `pytest` and coverage, packaging tools |
 
@@ -51,6 +52,10 @@ pip install "cosmicfishpie[emulators]"   # from PyPI
 uv sync --extra emulators                # from a source checkout
 uv sync --extra docs --extra dev         # several extras
 ```
+
+For the optional differentiable backend, use `uv sync --extra jaxcosmo` from a
+checkout containing that implementation. See {doc}`jaxcosmo` for the supported
+models, derivative providers and notebook setup.
 
 ## Survey data
 

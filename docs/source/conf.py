@@ -77,6 +77,9 @@ intersphinx_mapping = {
 # Keep members in source order, as the authors arranged them.
 autodoc_member_order = "bysource"
 autosummary_generate = True
+# The optional JAX backend is not installed in the docs build; mock it so the API
+# reference can still import and document the jaxcosmo modules.
+autodoc_mock_imports = ["jax", "jax_cosmo"]
 napoleon_numpy_docstring = True
 
 # Include default values when documenting parameter types.

@@ -21,6 +21,7 @@ default_vs_hp_profiles
 likelihood_validation
 neutrino_cb_regression
 syren_ns_response
+jaxcosmo_review
 scripts_reference
 ```
 

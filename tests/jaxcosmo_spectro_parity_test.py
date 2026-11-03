@@ -1,0 +1,157 @@
+"""Legacy-vs-JAX parity of the spectroscopic ``ln P`` for the option branches (jaxcosmo extra).
+
+Each case builds the legacy ``ComputeGalSpectro`` and the JAX observable on the same options and
+compares ``ln P`` at the fiducial point *and* at a perturbed cosmology (the fiducial point alone
+hides errors in the Alcock-Paczynski and h-rescaling branches).  The legacy power spectrum comes
+from a SciPy spline that clamps at the edge of its table, so the JAX observable is run with
+``legacy_pk_clamp`` for the cases where the perturbed grid leaves that table.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+
+import numpy as np
+import pytest
+import yaml
+
+pytest.importorskip("jax")
+pytest.importorskip("jax_cosmo")
+
+ROOT = Path(__file__).resolve().parents[1]
+_SPEC = importlib.util.spec_from_file_location(
+    "compare_jax_spectro_fishers", ROOT / "scripts/validation/compare_jax_spectro_fishers.py"
+)
+compare = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(compare)
+
+# max |ln P_jax - ln P_legacy| (absolute); the observed agreement is ~3e-5.
+ATOL = 2.0e-4
+
+CASES = {
+    "default": {},
+    "ap_off": {"AP_effect": False},
+    "h_bug_after_error": {"kh_rescaling_bug": True},
+    "h_bug_before_error": {"kh_rescaling_bug": True, "kh_rescaling_beforespecerr_bug": True},
+    "linear": {"GCsp_linear": True},
+    "fog_off": {"FoG_switch": False},
+}
+
+
+@pytest.fixture(scope="module")
+def clamp_yaml(tmp_path_factory):
+    import cosmicfishpie
+
+    src = Path(cosmicfishpie.__file__).parent / "configs/default_boltzmann_yaml_files"
+    params = yaml.safe_load((src / "jaxcosmo/default.yaml").read_text())
+    params["NUMERICS"]["legacy_pk_clamp"] = True
+    path = tmp_path_factory.mktemp("yaml") / "jaxcosmo_clamp.yaml"
+    path.write_text(yaml.safe_dump(params))
+    return str(path)
+
+
+@pytest.mark.parametrize("name", list(CASES))
+def test_lnp_matches_legacy_at_fiducial_and_perturbed_cosmology(name, clamp_yaml, tmp_path):
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    extra = dict(CASES[name], jaxcosmo_config_yaml=clamp_yaml)
+    calc = compare._make_calc(tmp_path, name, extra_options=extra)
+    engine = compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    observable = JaxSpectroObservable(calc, fiducial)
+    assert observable.lnp(fiducial)
+    assert observable.legacy_pk_clamp
+
+    perturbed = dict(fiducial)
+    for key, factor in (("Omegam", 1.06), ("h", 1.04), ("ns", 1.02), ("10^9As", 1.05)):
+        perturbed[key] *= factor
+
+    for point in (fiducial, perturbed):
+        legacy = engine.get_obs(point)
+        jax_out = observable.lnp(point)
+        for ibin in range(observable.nbins):
+            assert np.all(np.isfinite(jax_out[ibin]))
+            assert np.max(np.abs(jax_out[ibin] - legacy[ibin])) < ATOL
+
+
+def test_unclamped_default_agrees_where_the_grid_stays_inside_the_table(tmp_path):
+    """Direct evaluation (the default) equals the legacy value away from the table edge."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "direct")
+    engine = compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    observable = JaxSpectroObservable(calc, fiducial)
+    assert not observable.legacy_pk_clamp
+    legacy = engine.get_obs(fiducial)
+    jax_out = observable.lnp(fiducial)
+    for ibin in range(observable.nbins):
+        assert np.max(np.abs(jax_out[ibin] - legacy[ibin])) < ATOL
+
+
+def test_jacobian_matches_finite_differences(tmp_path):
+    """The autodiff derivatives agree with central differences of the same ``ln P``."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "jacobian")
+    compare._legacy_engine(calc)  # builds the legacy observable and its fiducial dictionary
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    observable = JaxSpectroObservable(calc, fiducial)
+    names = ("Omegam", *observable.pshot_keys[:1])
+    jac = observable.jacobian(names)
+    for name in names:
+        value = float(observable.base_values[name])
+        # The de-wiggled power is interpolated on a fixed k grid, so the observed P(k, mu)
+        # has harmless kinks where a sample crosses a grid node; a small step keeps the
+        # central difference inside one cell, where the function is smooth.
+        step = 1.0e-6 * abs(value) if value else 1.0e-6
+        plus = dict(fiducial, **{name: value + step})
+        minus = dict(fiducial, **{name: value - step})
+        lp, lm = observable.lnp(plus), observable.lnp(minus)
+        for ibin in range(observable.nbins):
+            fd = (lp[ibin] - lm[ibin]) / (2.0 * step)
+            scale = max(float(np.max(np.abs(fd))), 1.0)
+            assert np.max(np.abs(jac[name][ibin] - fd)) < 1.0e-6 * scale
+
+
+def test_h_fid_is_taken_from_the_resolved_cosmology(tmp_path):
+    """An ``H0`` fiducial must set the same ``h`` the theory uses for its k grid."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "h_fid")
+    compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    fiducial.pop("h", None)
+    fiducial["H0"] = 73.0
+    observable = JaxSpectroObservable(calc, fiducial)
+    assert observable.h_fid == pytest.approx(0.73)
+    kmin = observable.specs["kmin_GCsp"] * 0.73
+    assert observable.k_1mpc[0] == pytest.approx(kmin)
+
+
+def test_rescale_sigma_pv_parameters_are_rejected(tmp_path):
+    """``sigmap_*``/``sigmav_*`` have no JAX implementation, so they must not look fixed."""
+    from cosmicfishpie.LSSsurvey.jaxcosmo_spectro import JaxSpectroObservable
+
+    calc = compare._make_calc(tmp_path, "nonlinear")
+    compare._legacy_engine(calc)
+    fiducial = dict(calc.pk_obs_fid.fiducial_allpars)
+    fiducial["sigmap_0"] = 1.0
+    observable = JaxSpectroObservable(calc, fiducial)
+    observable.lnp(fiducial)
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.canonical_name("sigmap_0")
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.lnp({"sigmap_0": 1.1})
+    for key in ("sigmap_0", "sigmav_0"):
+        for value in (1.3, np.array([1.3])):
+            with pytest.raises(NotImplementedError, match="non-unit fiducial"):
+                JaxSpectroObservable(calc, dict(fiducial, **{key: value}))
+    fiducial["sigmap_0"] = np.array([1.0])
+    observable = JaxSpectroObservable(calc, fiducial)
+    observable.lnp(fiducial)
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.canonical_name("sigmap_0")
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.lnp({"sigmap_0": np.array([1.1])})

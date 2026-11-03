@@ -173,6 +173,7 @@ class FisherMatrix:
                 "camb": "boltzmann_cambpars",
                 "class": "boltzmann_classpars",
                 "symbolic": "boltzmann_symbolicpars",
+                "jaxcosmo": "boltzmann_jaxcosmopars",
             }.get(self.input_type)
             self.backend_parameters = (
                 deepcopy(getattr(cfg, backend_attribute, {})) if backend_attribute else {}

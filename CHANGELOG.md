@@ -7,8 +7,92 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Reject non-finite `jaxcosmo` densities and dark-energy parameters, detect conflicting
+  `ns`/`n_s` aliases, normalize integral sample counts to integers, and check array-valued
+  `sigmap_*`/`sigmav_*` fiducials for unsupported rescaling.
+- Tighten `jaxcosmo` input validation for conflicting density, expansion-rate, and dark-energy aliases; reject invalid `h` and fractional sample counts. Permit unchanged unit `sigmap_*`/`sigmav_*` fiducials while rejecting unsupported non-unit rescaling.
+- Tighten the `jaxcosmo` guards after review: check every neutrino alias, reject
+  density keys the backend ignores, require a positive finite primordial amplitude, enforce
+  minimum `NUMERICS` grid sizes, validate `distance_steps` before truncation, refuse a
+  conflicting `w0`/`wa` under `cosmo_model="LCDM"`, compare fiducial overrides to
+  near-machine precision, take the spectroscopic fiducial `h` from the resolved cosmology,
+  reject the unimplemented `rescale_sigma_pv` parameters, and require a finite non-zero
+  `--fd-step`. A Halofit bracket with no root now returns `NaN` so the provider rejects it.
 - Upgrade the development Black requirement to `>=26.5.1,<27.0`, apply its formatting
   with an explicit Python 3.10 target, and refresh the development dependency lockfile.
+- Validate `jaxcosmo` inputs further: reject theta-like expansion parameters, conflicting
+  amplitude aliases and non-positive `sigma8`; fail when the Halofit nonlinear scale has no
+  root instead of returning a spurious spectrum; keep the wavenumber axis in the Halofit
+  output; accept only GCph+WL or GCsp per derivative request, and differentiate `Ps_*`
+  shot-noise parameters with the JAX Jacobian rather than the legacy analytic formulas.
+- Harden the `jaxcosmo` backend in response to review: reject the unsupported
+  `clustering` tracer, non-integer `distance_steps` and non-zero neutrino densities;
+  validate only the probes each observable was asked for; keep the WL kernel finite at a
+  zero bin edge; parse `Ps_*` shot-noise bins from their names; honour
+  `settings["nonlinear"]`; and make the photometric comparison report reference spectra
+  that the candidate is missing.
+
+- Test the JAX photometric observable against the legacy `ComputeCls`: the fiducial `C_ell`,
+  a shifted cosmology and shifted bias / intrinsic-alignment amplitudes agree to
+  `max |dC|/max|C| < 1e-3` (observed ~2e-5), and the autodiff derivatives match central
+  differences of the same observable. This takes `jaxcosmo_photo` from 16% to 92% coverage.
+
+- CI and docs for the `jaxcosmo` backend: add a `test (jaxcosmo)` job that installs the
+  `jaxcosmo` extra and runs the JAX tests (they skip themselves in the default job, where
+  JAX is not installed), uploading coverage with the `jaxcosmo` Codecov flag; mock `jax`
+  and `jax_cosmo` in the Sphinx build (`autodoc_mock_imports`) so the strict API docs build
+  succeeds without the extra.
+
+- Document that the roughly 10% difference in the marginalized `10^9As` error between
+  SYREN-NEW and JAXcosmo is a matter-power-model difference, not an implementation or
+  differentiation artefact: unmarginalized errors agree to 2.6%, the gap appears through
+  galaxy-bias marginalization, and putting the SYREN-NEW power spectrum inside the JAX
+  observable reproduces the SYREN result to 0.08% (`scripts/validation/compare_theory_amplitude_response.py`).
+  Also document why two "Eisenstein-Hu" models still differ: SYREN-NEW is the no-wiggle
+  fit times a fitted correction to the true linear spectrum, and feeding Halofit with that
+  linear shape reproduces the sign and most of the size of the gap.
+
+- Document the JAXcosmo backend, AD/FD providers and configuration in the user guide,
+  with a downloadable photometric comparison notebook against SYREN-NEW. Its Fisher
+  comparison keeps `ns` fixed while retaining the spectral-index response diagnostic.
+
+- Add the optional, differentiable `jaxcosmo` backend (`options["code"] = "jaxcosmo"`,
+  install with `pip install 'cosmicfishpie[jaxcosmo]'`): `jax-cosmo` background,
+  Eisenstein-Hu + Halofit total-matter power (flat, massless neutrinos), and a JAX port
+  of the `symbolic_pofk` `10^9As -> sigma8` fit. A backend-neutral differentiable theory
+  interface (`cosmology/jax_theory.py`) lets JAX observables stay independent of the
+  selected backend. JAX-native photometric (`GCph`+`WL`, `LSSsurvey/jaxcosmo_photo.py`)
+  and spectroscopic (`GCsp`, `LSSsurvey/jaxcosmo_spectro.py`) observables reproduce the
+  standard Limber and P(k, mu) calculations, with `fishermatrix.jaxcosmo_derivatives`
+  providers: `JaxAutodiffProvider` gives exact forward-mode derivatives and
+  `JaxFiniteDifferenceProvider` applies the standard finite-difference engine to the same
+  observable, so autodiff and finite differences can be validated against each other and
+  against the legacy pipeline (`scripts/validation/compare_jax_*_fishers.py`).
+  Both are wired through `FisherMatrix(derivative_provider=...)`. CMB, clustering/CB
+  tracers and massive neutrinos are explicitly rejected.
+
+- Use a smooth Halofit root find in the `jaxcosmo` theory layer: `jax-cosmo` locates the
+  nonlinear scale by interpolating `sigma(R) = 1` on a fixed 256-node grid, which makes the
+  derivative of the power spectrum jump between nodes and spoils finite differences even at
+  small steps. The
+  replacement integrates `sigma^2(R)` on a fine grid and solves it with a fixed-count Newton
+  iteration, which converges to machine precision. The values stay within 5e-4 of `jax-cosmo`
+  at the fiducial point and within 0.6% over the validation parameter box (the difference is
+  `jax-cosmo`'s own interpolation error in the nonlinear scale), while being differentiable.
+
+- Review fixes for the `jaxcosmo` branch (see `docs/source/jaxcosmo_review.md`): correct
+  orientation of the Savitzky-Golay operator in the JAX spectroscopic observable (fiducial
+  `ln P` agreement with the legacy code improves from 8e-5 to 2e-6); observable cache of
+  the derivative providers keyed on the full analysis configuration; `kh_rescaling_bug`
+  options and `AP_effect=False` handled like the legacy `observed_Pgg`; new
+  `NUMERICS.legacy_pk_clamp` option reproducing the table-edge clamp of the legacy power
+  spline; tests for the theory layer, option branches and providers.
+
+- Support NumPy 2: replace the `numpy<2` pin with `numpy>=2.1,<2.3` (NumPy 1.x installs must upgrade to 2.1 or newer)
+  (2.2.x is the newest series supporting Python 3.10), relock, and compute the
+  legacy `round_decimals_up` branch in float64 to keep results identical under
+  NEP 50 promotion rules. Full Fisher backend validation against the NumPy 1
+  results is run separately.
 
 - Add `fishconsumer.make_fisher_chain_plot` for paired Fisher/posterior overlays,
   with marginalization to plotted parameters, matched colors for missing-chain

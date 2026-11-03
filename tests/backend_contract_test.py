@@ -223,6 +223,7 @@ def test_cmb_missing_spectra_and_unsupported_backends_fail_explicitly():
 @pytest.mark.parametrize("tracer,expected", [("matter", 0.8 * 0.7), ("clustering", 0.85 * 0.75)])
 def test_fsigma8_uses_consistent_growth_and_variance_tracer(tracer, expected):
     cosmo = object.__new__(cosmo_functions)
+    cosmo.code = "class"
 
     def growth_rate(value):
         def evaluate(z, k, grid):
@@ -254,3 +255,13 @@ def test_growth_gamma_approximation_and_unknown_tracer_fallback():
         assert cosmo.sigma8_of_z(0.5, tracer="unknown") == 0.7
     with pytest.warns(UserWarning, match="reverted to matter"):
         assert cosmo.f_growthrate(0.5, tracer="unknown") == 0.8
+
+
+def test_jaxcosmo_rejects_the_clustering_tracer():
+    cosmo = object.__new__(cosmo_functions)
+    cosmo.code = "jaxcosmo"
+    cosmo.results = SimpleNamespace()
+    with pytest.raises(ValueError, match="clustering"):
+        cosmo.sigma8_of_z(0.5, tracer="clustering")
+    with pytest.raises(ValueError, match="clustering"):
+        cosmo.f_growthrate(0.5, tracer="clustering")

@@ -79,7 +79,7 @@ def main() -> None:
         axis.grid(True, which="both", alpha=0.25)
         axis.legend(frameon=False)
 
-    fig.suptitle("CosmicFishPie fiducial-cosmology construction scaling")
+    fig.suptitle("CosmicJellyfish fiducial-cosmology construction scaling")
     fig.tight_layout()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(args.output, dpi=200, bbox_inches="tight")

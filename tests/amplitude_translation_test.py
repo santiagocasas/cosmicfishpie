@@ -5,9 +5,9 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from cosmicfishpie.cosmology.cosmology import boltzmann_code
-from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.cosmology.cosmology import boltzmann_code
+from cosmicjellyfish.cosmology.symbolic_new import SyrenNewProvider
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 
 def backend_stub():

@@ -10,16 +10,16 @@ Photometric (GCph+WL), CLASS HP vs CAMB HP paper-validated profiles
 
   uv run python scripts/validation/run_fisher_compare_backends.py \
     --mode photo \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
+    --code-a class --yaml-a cosmicjellyfish/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml \
+    --code-b camb  --yaml-b cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare --plot
 
 Spectroscopic (GCsp), CLASS UHP vs CAMB HP paper-validated profiles:
 
   uv run python scripts/validation/run_fisher_compare_backends.py \
     --mode spectro \
-    --code-a class --yaml-a cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml \
-    --code-b camb  --yaml-b cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
+    --code-a class --yaml-a cosmicjellyfish/configs/default_boltzmann_yaml_files/class/nuvalidation_uhp.yaml \
+    --code-b camb  --yaml-b cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml \
     --compare
 
 Notes
@@ -38,7 +38,7 @@ import sys
 import time
 from pathlib import Path
 
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 DEFAULT_FIDUCIAL = {
     "Omegam": 0.32,
@@ -72,7 +72,7 @@ def _infer_yaml_key(code: str) -> str:
 
 
 def _default_paths(repo_root: Path) -> dict[str, str]:
-    cfg = repo_root / "cosmicfishpie" / "configs"
+    cfg = repo_root / "cosmicjellyfish" / "configs"
     return {
         "specs_dir": str(cfg / "default_survey_specifications") + "/",
         "class_yaml_photo": str(cfg / "default_boltzmann_yaml_files" / "class" / "default.yaml"),

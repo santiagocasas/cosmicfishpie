@@ -2,7 +2,7 @@
 
 ## Summary
 
-CosmicFishPie ships two kinds of Boltzmann-solver settings for the `class` and `camb`
+CosmicJellyfish ships two kinds of Boltzmann-solver settings for the `class` and `camb`
 backends: relaxed `default.yaml` profiles, used automatically when no
 `class_config_yaml` / `camb_config_yaml` is given, and the paper-validated
 `nuvalidation_hp.yaml` profiles (Archidiacono et al., arXiv:2405.06047v1). This page
@@ -59,7 +59,7 @@ ran as its own 16-CPU job on JURECA with `OMP_NUM_THREADS=16`.
 
 The driver script lives outside this repository, in the `cjfp-data` job repository, as
 `jobs_punch/compare_backend_profiles.py` (subcommands `run`, `all`, `compare`). The
-discrepancy plots come from `cosmicfishpie.analysis.plot_comparison.ploterrs`.
+discrepancy plots come from `cosmicjellyfish.analysis.plot_comparison.ploterrs`.
 
 ## What differs between the profiles
 

@@ -1,7 +1,7 @@
 name: Docs
 
 # Build the Sphinx documentation and publish it to the `docs/` folder of the
-# `gh-pages` branch (https://www.santicasas.space/cosmicfishpie/docs/).
+# `gh-pages` branch (https://www.santicasas.space/cosmicjellyfish/docs/).
 # Also publish the landing page linking to those docs; leave `dashboard/` untouched.
 # Pull requests are only build-checked by the `docs` job in main.yml.
 

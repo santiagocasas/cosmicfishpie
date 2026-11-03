@@ -25,7 +25,7 @@ import warnings
 import numpy as np
 import pytest
 
-from cosmicfishpie.LSSsurvey.spectro_obs import ComputeGalSpectro
+from cosmicjellyfish.LSSsurvey.spectro_obs import ComputeGalSpectro
 
 
 class TestNumericalStability:

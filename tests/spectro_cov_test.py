@@ -1,7 +1,7 @@
 import numpy as np
 
-import cosmicfishpie.configs.config as cfg
-from cosmicfishpie.LSSsurvey.spectro_cov import SpectroCov, SpectroDerivs
+import cosmicjellyfish.configs.config as cfg
+from cosmicjellyfish.LSSsurvey.spectro_cov import SpectroCov, SpectroDerivs
 
 
 def test_spectro_cov_initialization(spectro_fisher_matrix):

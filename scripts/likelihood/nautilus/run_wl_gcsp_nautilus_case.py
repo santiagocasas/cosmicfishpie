@@ -30,8 +30,8 @@ import numpy as np
 import wl_gcsp_fisher_nautilus_demo as demo
 from nautilus import Sampler
 
-from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
-from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+from cosmicjellyfish.likelihood.photo_like import PhotometricLikelihood
+from cosmicjellyfish.likelihood.spectro_like import SpectroLikelihood
 
 
 def _git_revision() -> str:

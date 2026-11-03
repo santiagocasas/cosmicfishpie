@@ -2,7 +2,7 @@
 
 ## Steps
 
-1. Update the version in `cosmicfishpie/version.py`.
+1. Update the version in `cosmicjellyfish/version.py`.
 
 2. Run the release script:
 

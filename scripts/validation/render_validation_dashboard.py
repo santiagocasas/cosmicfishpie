@@ -238,7 +238,7 @@ def _survey_specs_path(case: CaseDef, repo_root: Path) -> Path | None:
         return None
     return (
         repo_root
-        / "cosmicfishpie"
+        / "cosmicjellyfish"
         / "configs"
         / "default_survey_specifications"
         / f"{survey_name}.yaml"
@@ -561,10 +561,10 @@ def _git_output(repo_root: Path, *args: str) -> subprocess.CompletedProcess[str]
 
 def _relevant_paths(case: CaseDef, repo_root: Path) -> list[str]:
     paths = [
-        ":(glob)cosmicfishpie/**/*.py",
-        "cosmicfishpie/configs/default_survey_specifications",
-        "cosmicfishpie/configs/other_survey_specifications",
-        "cosmicfishpie/configs/external_data",
+        ":(glob)cosmicjellyfish/**/*.py",
+        "cosmicjellyfish/configs/default_survey_specifications",
+        "cosmicjellyfish/configs/other_survey_specifications",
+        "cosmicjellyfish/configs/external_data",
         "pyproject.toml",
         "requirements.txt",
         "uv.lock",
@@ -774,7 +774,7 @@ def render_index(results: list[CaseResult], out_dir: Path) -> None:
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<title>CosmicFishPie Backend Validation Dashboard</title>
+<title>CosmicJellyfish Backend Validation Dashboard</title>
 <style>{CSS}</style>
 </head>
 <body>

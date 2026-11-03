@@ -5,7 +5,7 @@ The three forecasts share everything except the derivative route:
 ``legacy-fd``
     The standard NumPy/SciPy ``GCph``+``WL`` observable with the finite-difference engine.
 ``jax-fd``
-    The JAX-native observable (:mod:`cosmicfishpie.LSSsurvey.jaxcosmo_photo`) with the *same*
+    The JAX-native observable (:mod:`cosmicjellyfish.LSSsurvey.jaxcosmo_photo`) with the *same*
     finite-difference engine.
 ``jax-ad``
     The same JAX-native observable differentiated with ``jax.jacfwd``.
@@ -47,7 +47,7 @@ def _options(outdir: Path, tag: str) -> dict:
         "nonlinear": True,
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
-        "specs_dir": str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+        "specs_dir": str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
         "cosmo_model": "LCDM",
         "code": "jaxcosmo",
         "results_dir": str(results) + "/",
@@ -56,7 +56,7 @@ def _options(outdir: Path, tag: str) -> dict:
 
 
 def _make_calc(outdir: Path, tag: str, provider=None, fiducial=None):
-    from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
+    from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
 
     return FisherMatrix(
         options=_options(outdir, tag),
@@ -76,7 +76,7 @@ def _legacy_observable(calc, photobiaspars=None, iapars=None):
     to compare at a shifted nuisance point (the bias and intrinsic-alignment fiducials come from
     the survey specification, not from ``fiducialpars``).
     """
-    from cosmicfishpie.LSSsurvey import photo_obs
+    from cosmicjellyfish.LSSsurvey import photo_obs
 
     observable = photo_obs.ComputeCls(
         calc.fiducialcosmopars,
@@ -154,7 +154,7 @@ def main() -> int:
         "--fd-step",
         type=_nonzero_finite_float,
         default=0.01,
-        help="relative finite-difference step (default 0.01, the CosmicFishPie default)",
+        help="relative finite-difference step (default 0.01, the CosmicJellyfish default)",
     )
     args = parser.parse_args()
     outdir = args.outdir.resolve()
@@ -162,13 +162,13 @@ def main() -> int:
     if args.fd_step != 0.01:
         FREE.update({name: args.fd_step for name in FREE})
 
-    from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
-    from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import (
+    from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
+    from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import (
         JaxAutodiffProvider,
         JaxFiniteDifferenceProvider,
     )
-    from cosmicfishpie.LSSsurvey import photo_cov
-    from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
+    from cosmicjellyfish.LSSsurvey import photo_cov
+    from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable
 
     summary: dict = {"fiducial": FIDUCIAL, "freeparams": FREE, "variants": {}}
 

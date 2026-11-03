@@ -12,8 +12,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from cosmicfishpie.analysis import fishconsumer as fc
-from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
+from cosmicjellyfish.analysis import fishconsumer as fc
+from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
 
 
 class TestUtilityFunctions:

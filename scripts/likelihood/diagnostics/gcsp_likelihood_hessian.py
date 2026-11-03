@@ -60,8 +60,8 @@ def central_hessian(
 
 def build_problem(outdir: Path):
     """Return a cached -log L callable and the name-aligned raw Fisher matrix."""
-    from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
-    from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+    from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
+    from cosmicjellyfish.likelihood.spectro_like import SpectroLikelihood
 
     outdir.mkdir(parents=True, exist_ok=True)
     options = dict(
@@ -91,7 +91,7 @@ def build_problem(outdir: Path):
     if missing:
         raise ValueError(f"Fisher matrix is missing {missing}; got {names}")
 
-    # CosmicFishPie automatically adds spectroscopic nuisances (lnbg_i, Ps_i).
+    # CosmicJellyfish automatically adds spectroscopic nuisances (lnbg_i, Ps_i).
     # The likelihood below varies only PARAMS and keeps every nuisance at its
     # fiducial value, so the matching Fisher prediction is the CONDITIONAL
     # submatrix of the Fisher matrix itself -- not the marginal submatrix of

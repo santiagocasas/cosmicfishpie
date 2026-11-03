@@ -21,8 +21,8 @@ from pathlib import Path
 
 import numpy as np
 
-from cosmicfishpie.analysis import fishconsumer as fco
-from cosmicfishpie.analysis import fisher_matrix as fm_mod
+from cosmicjellyfish.analysis import fishconsumer as fco
+from cosmicjellyfish.analysis import fisher_matrix as fm_mod
 
 DEFAULT_PLANCK_REL = Path(
     "Planck-Results/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3.00/base/plikHM_TTTEEE_lowl_lowE"

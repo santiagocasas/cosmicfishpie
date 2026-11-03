@@ -1,8 +1,8 @@
 import numpy as np
 
-from cosmicfishpie.analysis import fisher_operations as cfo
-from cosmicfishpie.analysis import fisher_plotting as cfp
-from cosmicfishpie.utilities.utils import printing as cpr
+from cosmicjellyfish.analysis import fisher_operations as cfo
+from cosmicjellyfish.analysis import fisher_plotting as cfp
+from cosmicjellyfish.utilities.utils import printing as cpr
 
 
 def test_fisheroperations(spectro_fisher_matrix):

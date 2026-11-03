@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Measure fiducial-cosmology scaling for CosmicFishPie backends.
+"""Measure fiducial-cosmology scaling for CosmicJellyfish backends.
 
 Each trial starts a fresh Python process. This is necessary because CAMB's
 OpenMP runtime reads ``OMP_NUM_THREADS`` when the process starts. The measured
@@ -66,7 +66,7 @@ def default_backend_yaml(backend: str) -> Path:
         raise ValueError(f"Unsupported backend: {backend}")
     return (
         Path(__file__).resolve().parents[1]
-        / "cosmicfishpie"
+        / "cosmicjellyfish"
         / "configs"
         / "default_boltzmann_yaml_files"
         / backend
@@ -104,7 +104,7 @@ def run_child(result_file: Path, backend: str, backend_yaml: Path) -> None:
     starts. ``config.time`` is locally replaced because it is used exclusively
     for the two timestamps surrounding ``cosmo_functions`` in ``config.init``.
     """
-    from cosmicfishpie.configs import config as cfg
+    from cosmicjellyfish.configs import config as cfg
 
     timestamps: list[float] = []
 

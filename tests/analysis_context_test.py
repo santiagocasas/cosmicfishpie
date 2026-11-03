@@ -5,7 +5,7 @@ from typing import Any, cast
 
 import pytest
 
-from cosmicfishpie.configs import context
+from cosmicjellyfish.configs import context
 
 
 def _legacy_config() -> ModuleType:

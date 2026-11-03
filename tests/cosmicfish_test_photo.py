@@ -1,6 +1,6 @@
 import numpy as np
 
-from cosmicfishpie.utilities.utils import printing as cpr
+from cosmicjellyfish.utilities.utils import printing as cpr
 
 
 def test_FisherMatrix_WL(photo_fisher_matrix):

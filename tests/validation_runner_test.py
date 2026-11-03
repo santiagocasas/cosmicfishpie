@@ -92,7 +92,7 @@ def test_comparison_setup_uses_project_python_not_shell_python(tmp_path):
     script_dir = tmp_path / "scripts/validation"
     script_dir.mkdir(parents=True)
     shutil.copy(root / "scripts/validation/compare_backends_report.sh", script_dir)
-    survey_dir = tmp_path / "cosmicfishpie/configs/default_survey_specifications"
+    survey_dir = tmp_path / "cosmicjellyfish/configs/default_survey_specifications"
     survey_dir.mkdir(parents=True)
     (survey_dir / "Euclid-Photometric-ISTF-Pessimistic.yaml").write_text("name: test\n")
     yaml_file = tmp_path / "backend.yaml"

@@ -1,7 +1,7 @@
 import pytest
 
-from cosmicfishpie.fishermatrix import cosmicfish as cff
-from cosmicfishpie.utilities.utils import printing as upt
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.utilities.utils import printing as upt
 
 upt.debug = True
 code_to_use = "symbolic"
@@ -10,7 +10,7 @@ upt.debug = True
 
 @pytest.fixture(scope="session")
 def photo_fisher_matrix():
-    # These are typical options that you can pass to Cosmicfishpie
+    # These are typical options that you can pass to Cosmicjellyfish
     options = {
         "accuracy": 1,
         "outroot": "test_photo_low_ellsamp",
@@ -19,7 +19,7 @@ def photo_fisher_matrix():
         "ell_sampling": 25,
         "nonlinear": True,
         "feedback": 2,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
@@ -55,7 +55,7 @@ def photo_fisher_matrix():
 @pytest.fixture(scope="session")
 def computecls_fid(photo_fisher_matrix):
     """Module-scoped fiducial ComputeCls instance reused across photo tests to avoid recomputation."""
-    from cosmicfishpie.LSSsurvey.photo_obs import ComputeCls
+    from cosmicjellyfish.LSSsurvey.photo_obs import ComputeCls
 
     cosmoFM = photo_fisher_matrix
     cosmopars = {"Omegam": 0.3, "h": 0.7}
@@ -70,7 +70,7 @@ def photo_cov_cached(computecls_fid):
 
     Derivatives are intentionally not precomputed here (and will be stubbed in the derivative test).
     """
-    from cosmicfishpie.LSSsurvey.photo_cov import PhotoCov
+    from cosmicjellyfish.LSSsurvey.photo_cov import PhotoCov
 
     cosmopars, fid_cls, cosmoFM = computecls_fid
     pc = PhotoCov(
@@ -87,7 +87,7 @@ def photo_cov_cached(computecls_fid):
 
 @pytest.fixture(scope="module")
 def spectro_fisher_matrix():
-    # These are typical options that you can pass to Cosmicfishpie
+    # These are typical options that you can pass to Cosmicjellyfish
     options = {
         "accuracy": 1,
         "outroot": "test_installation_test_EBS",
@@ -95,7 +95,7 @@ def spectro_fisher_matrix():
         "derivatives": "3PT",
         "nonlinear": False,
         "feedback": 2,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "cosmo_model": "LCDM",

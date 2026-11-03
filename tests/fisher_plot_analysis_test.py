@@ -1,4 +1,4 @@
-"""Tests for ``cosmicfishpie.analysis.fisher_plot_analysis``.
+"""Tests for ``cosmicjellyfish.analysis.fisher_plot_analysis``.
 
 Refactored to use real ``fisher_matrix`` objects instead of mocks so that
 ``CosmicFish_FisherAnalysis.add_fisher_matrix`` passes its strict
@@ -13,8 +13,8 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 
-from cosmicfishpie.analysis import fisher_matrix as fm
-from cosmicfishpie.analysis import fisher_plot_analysis as fpa
+from cosmicjellyfish.analysis import fisher_matrix as fm
+from cosmicjellyfish.analysis import fisher_plot_analysis as fpa
 
 
 def make_fisher(

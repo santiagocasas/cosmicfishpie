@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pytest
 
-from cosmicfishpie.utilities import utils
+from cosmicjellyfish.utilities import utils
 
 
 def test_round_decimals_up_old_mode_branches():
@@ -64,7 +64,7 @@ def test_load_fisher_from_json_uses_defaults(monkeypatch, tmp_path):
             captured.update(kwargs)
 
     monkeypatch.setattr(
-        "cosmicfishpie.fishermatrix.cosmicfish.FisherMatrix",
+        "cosmicjellyfish.fishermatrix.cosmicfish.FisherMatrix",
         DummyFM,
         raising=True,
     )

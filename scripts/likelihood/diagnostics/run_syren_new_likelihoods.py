@@ -15,9 +15,9 @@ from pathlib import Path
 
 import numpy as np
 
-from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
-from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
-from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
+from cosmicjellyfish.likelihood.photo_like import PhotometricLikelihood
+from cosmicjellyfish.likelihood.spectro_like import SpectroLikelihood
 
 FIDUCIAL = {
     "10^9As": 2.1,
@@ -73,7 +73,7 @@ def main() -> None:
     parser.add_argument(
         "--symbolic-yaml",
         type=Path,
-        default=root / "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml",
+        default=root / "cosmicjellyfish/configs/default_boltzmann_yaml_files/symbolic/default.yaml",
         help="SYREN-NEW symbolic backend profile.",
     )
     args = parser.parse_args()

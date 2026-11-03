@@ -13,7 +13,7 @@ Supported parameterizations:
 
 It targets the baseline 2018 likelihood tag `plikHM_TTTEEE_lowl_lowE` using
 settings inferred from the provided Planck files as closely as supported by the
-current CosmicFishPie CMB pipeline.
+current CosmicJellyfish CMB pipeline.
 
 Notes
 -----
@@ -39,7 +39,7 @@ from typing import Any
 
 import yaml
 
-from cosmicfishpie.fishermatrix import cosmicfish
+from cosmicjellyfish.fishermatrix import cosmicfish
 
 DEFAULT_PLANCK_REL = Path(
     "Planck-Results/COM_CosmoParams_base-plikHM-TTTEEE-lowl-lowE_R3.00/base/plikHM_TTTEEE_lowl_lowE"
@@ -344,7 +344,7 @@ def main() -> int:
     )
     outdir.mkdir(parents=True, exist_ok=True)
 
-    cfg_dir = repo / "cosmicfishpie" / "configs"
+    cfg_dir = repo / "cosmicjellyfish" / "configs"
     spec_planck_yaml = cfg_dir / "default_survey_specifications" / "Planck.yaml"
     if not spec_planck_yaml.exists():
         raise SystemExit(f"Planck spec YAML not found: {spec_planck_yaml}")
@@ -533,7 +533,7 @@ def main() -> int:
                 if args.parameterization == "h"
                 else "Uses theta-based primary basis: ombh2, omch2, theta, tau, logAs, ns."
             ),
-            "Single CMB ell-range approximation in current CosmicFishPie CMB pipeline.",
+            "Single CMB ell-range approximation in current CosmicJellyfish CMB pipeline.",
             "Does not include full Planck nuisance-parameter likelihood block.",
         ],
     }

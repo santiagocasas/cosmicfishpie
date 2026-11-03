@@ -11,13 +11,13 @@ import numpy as np
 import pytest
 import yaml
 
-from cosmicfishpie.cosmology.cosmology import (
+from cosmicjellyfish.cosmology.cosmology import (
     _class_pk_grid,
     _normalize_camb_import_path,
     boltzmann_code,
 )
-from cosmicfishpie.cosmology.ee2 import class_ee2_boost, class_ee2_parameters
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.cosmology.ee2 import class_ee2_boost, class_ee2_parameters
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 
 def _translator(cosmo_model):
@@ -128,7 +128,7 @@ def test_class_pk_grid_supports_cb_array():
 
 
 def test_class_nonlinear_pk_grid_excludes_class_padding():
-    from cosmicfishpie.cosmology.cosmology import _class_nonlinear_pk_grid
+    from cosmicjellyfish.cosmology.cosmology import _class_nonlinear_pk_grid
 
     class FakeClass:
         pars = {"P_k_max_1/Mpc": 1.0, "z_max_pk": 2.0}
@@ -151,7 +151,7 @@ def test_class_nonlinear_pk_grid_excludes_class_padding():
 
 
 def test_class_nonlinear_pk_grid_rejects_nonfinite_supported_values():
-    from cosmicfishpie.cosmology.cosmology import _class_nonlinear_pk_grid
+    from cosmicjellyfish.cosmology.cosmology import _class_nonlinear_pk_grid
 
     class FakeClass:
         pars = {"P_k_max_1/Mpc": 1.0, "z_max_pk": 2.0}
@@ -164,7 +164,7 @@ def test_class_nonlinear_pk_grid_rejects_nonfinite_supported_values():
 
 
 def test_cosmo_functions_pmm_pcb_nonnegative_clamping():
-    from cosmicfishpie.cosmology.cosmology import cosmo_functions
+    from cosmicjellyfish.cosmology.cosmology import cosmo_functions
 
     cf = object.__new__(cosmo_functions)
     cf.code = "class"
@@ -224,7 +224,7 @@ def test_class_ee2_profile_multiplies_linear_spectra(amplitude):
     pytest.importorskip("classy")
     pytest.importorskip("euclidemu2")
     profile = Path(__file__).resolve().parents[1] / (
-        "cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml"
+        "cosmicjellyfish/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml"
     )
     with profile.open() as config_file:
         parameters = yaml.safe_load(config_file)
@@ -278,7 +278,7 @@ def _spectro_backend_fisher_matrix(code, *, nonlinear):
         "derivatives": "3PT",
         "nonlinear": nonlinear,
         "feedback": 0,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
@@ -340,7 +340,7 @@ def test_symbolic_backend_none_colossus_persistence():
         "derivatives": "3PT",
         "nonlinear": False,
         "feedback": 0,
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_spectro": "Euclid-Spectroscopic-ISTF-Pessimistic",
         "cosmo_model": "LCDM",
@@ -365,12 +365,13 @@ def test_symbolic_backend_none_colossus_persistence():
     assert np.isfinite(fm.fiducialcosmo.results.Pk_nl(0.5, 1e-2))
 
 
-def test_class_changebasis_cosmicfishpie_neutrino_scheme():
+@pytest.mark.parametrize("neutrino_scheme", ["cosmicjellyfish", "cosmicfishpie"])
+def test_class_changebasis_neutrino_scheme(neutrino_scheme):
     translator = _translator("LCDM")
     translator.configuration = SimpleNamespace(
         backend_parameters={
             "PARAMETER_TRANSLATION": {
-                "neutrino_scheme": "cosmicfishpie",
+                "neutrino_scheme": neutrino_scheme,
                 "neutrino_mass_fac": 93.14,
             }
         }
@@ -383,7 +384,7 @@ def test_class_changebasis_cosmicfishpie_neutrino_scheme():
 def test_class_hmcode_pk_cb_nonnegative():
     pytest.importorskip("classy")
     profile = Path(__file__).resolve().parents[1] / (
-        "cosmicfishpie/configs/default_boltzmann_yaml_files/class/syren_new_minimal_matched.yaml"
+        "cosmicjellyfish/configs/default_boltzmann_yaml_files/class/syren_new_minimal_matched.yaml"
     )
     with profile.open() as config_file:
         parameters = yaml.safe_load(config_file)
@@ -420,12 +421,12 @@ def test_class_hmcode_pk_cb_nonnegative():
 
 
 def test_photometric_yaml_profiles_load_and_run():
-    from cosmicfishpie.configs.context import build_analysis_context
-    from cosmicfishpie.cosmology.cosmology import cosmo_functions
+    from cosmicjellyfish.configs.context import build_analysis_context
+    from cosmicjellyfish.cosmology.cosmology import cosmo_functions
 
     fiducial = dict(FULL_FIDUCIAL)
     repo_root = Path(__file__).resolve().parent.parent
-    base_dir = repo_root / "cosmicfishpie/configs/default_boltzmann_yaml_files"
+    base_dir = repo_root / "cosmicjellyfish/configs/default_boltzmann_yaml_files"
 
     profiles = [
         ("symbolic", "symbolic_config_yaml", base_dir / "symbolic/syren_new_photo.yaml"),

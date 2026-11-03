@@ -31,7 +31,7 @@ This is not currently indicated to be a derivative-stencil or Python-layer
 - Photometric observables request nonlinear `P(k)` through HMcode2020, while
   spectroscopic observables use linear `P(k)` by default.
 - CAMB and CLASS use symmetric `mnu`/`Neff` mass-mapping formulas in the
-  CosmicFishPie wrappers.
+  CosmicJellyfish wrappers.
 - Both probes use the same 3PT derivative method and the same relative `mnu`
   step of 0.1, which is 6 meV at the 0.06 eV fiducial.
 - The spectroscopic counterpart (case `08.1.0`) has only a 0.89% `mnu` deviation,

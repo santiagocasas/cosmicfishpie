@@ -3,7 +3,7 @@
 > **Historical validation-tracking note (2026-08-17).** This page is a point-in-time
 > investigation, not current guidance. Use the
 > [backend validation guide](backend_validation.md) for the maintained workflow and
-> dashboard, and the [validation configuration directory](https://github.com/santiagocasas/cosmicfishpie/tree/main/scripts/validation/configs)
+> dashboard, and the [validation configuration directory](https://github.com/santiagocasas/cosmicjellyfish/tree/main/scripts/validation/configs)
 > for current case definitions and results. Commands below are illustrative of the
 > diagnostic approach, not a guaranteed-current CLI.
 
@@ -60,7 +60,7 @@ All six parameters exceeding 10% points to a global accuracy mismatch between th
 
 ## Reproducing and fixing a mismatch like this today
 
-1. Compare the run's CLASS and CAMB config YAMLs under `cosmicfishpie/configs/default_boltzmann_yaml_files/` against Casas et al. Appendix A (CLASS HP, Table A.5; CAMB P3).
+1. Compare the run's CLASS and CAMB config YAMLs under `cosmicjellyfish/configs/default_boltzmann_yaml_files/` against Casas et al. Appendix A (CLASS HP, Table A.5; CAMB P3).
 2. Re-run the comparison with matched high-precision settings using the maintained [backend validation workflow](backend_validation.md) — `bash scripts/validation/run_selected_validations.sh --help` prints the currently configured case IDs, or run `scripts/validation/run_fisher_compare_backends.py` directly (see the [scripts reference](scripts_reference.md) for its current CLI options).
 3. Expect <1% deviation at matched HP/P3 settings; document any larger residual explicitly (different solver versions, different survey cuts, etc.).
 

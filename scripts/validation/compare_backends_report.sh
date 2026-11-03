@@ -124,7 +124,7 @@ else
   exit 2
 fi
 
-SURVEY_SPECS_DIR="${REPO_ROOT}/cosmicfishpie/configs/default_survey_specifications"
+SURVEY_SPECS_DIR="${REPO_ROOT}/cosmicjellyfish/configs/default_survey_specifications"
 SURVEY_SPECS_FILE=""
 if [[ -n "${SURVEY_NAME_PHOTO}" ]]; then
   SURVEY_SPECS_FILE="${SURVEY_SPECS_DIR}/${SURVEY_NAME_PHOTO}.yaml"
@@ -138,7 +138,7 @@ fi
 
 _default_yaml() {
   local code="$1"
-  local defaults_dir="${REPO_ROOT}/cosmicfishpie/configs/default_boltzmann_yaml_files"
+  local defaults_dir="${REPO_ROOT}/cosmicjellyfish/configs/default_boltzmann_yaml_files"
   case "${code}" in
     class)
       echo "${defaults_dir}/class/default.yaml"

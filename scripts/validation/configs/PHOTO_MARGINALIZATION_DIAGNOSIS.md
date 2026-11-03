@@ -163,11 +163,11 @@ the cliff, independently of any change in backend physics.
 ## Reproduction
 
 Both matrices and their `.paramnames` sidecars are already on disk. The numbers
-above come from `cosmicfishpie.analysis.fisher_matrix.fisher_matrix`:
+above come from `cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`:
 
 ```python
 import numpy as np
-from cosmicfishpie.analysis.fisher_matrix import fisher_matrix
+from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
 
 d = "scripts/benchmark_results/compare_photo_camb_vs_class_cfg_ea069c683b/"
 a = fisher_matrix(file_name=d + "CosmicFish_v1.3.0_compare_photo_20260828_123040_A__GCphWL_FM.txt")

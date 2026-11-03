@@ -3,8 +3,8 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-import cosmicfishpie.configs.config as cfg
-from cosmicfishpie.fishermatrix.derivatives import compute_derivatives, derivatives
+import cosmicjellyfish.configs.config as cfg
+from cosmicjellyfish.fishermatrix.derivatives import compute_derivatives, derivatives
 
 
 def test_invalid_derivative_type_raises():

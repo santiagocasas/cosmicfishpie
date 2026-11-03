@@ -90,11 +90,11 @@ uploaded automatically. Keep the checkout unchanged while the campaign runs.
 
 ## 1) Prerequisites
 
-- A working installation of CosmicFishPie and its dependencies (ensure you can run the test suite).
+- A working installation of CosmicJellyfish and its dependencies (ensure you can run the test suite).
 - An activated environment, e.g.
   
   ```bash
-  mamba activate cosmicfishpie
+  mamba activate cosmicjellyfish
   ```
 
 - Optional (faster runs): set thread caps for BLAS/OpenMP as needed, e.g.
@@ -115,7 +115,7 @@ This script focuses on photometric Fisher matrices. It supports these workflows:
 
 ### Key concepts
 
-- “FAST” refers to enabling internal optimization flags in `cosmicfishpie.LSSsurvey.photo_obs`:
+- “FAST” refers to enabling internal optimization flags in `cosmicjellyfish.LSSsurvey.photo_obs`:
   - `COSMICFISH_FAST_EFF` (O(N) lensing‑efficiency integrator)
   - `COSMICFISH_FAST_P` (vectorized Limber power spectrum)
   - `COSMICFISH_FAST_KERNEL` (vectorized WL kernel)
@@ -238,7 +238,7 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
 
 - The JSON outputs include a snapshot of key options and the effective env flags used.
 - For apples‑to‑apples comparisons, keep `--accuracy`, `--code`, `--observables`, and survey specs fixed.
-- If you change backends (`class`/`camb`), ensure those backends are properly installed and configured; see `cosmicfishpie/configs/default_boltzmann_yaml_files/`.
+- If you change backends (`class`/`camb`), ensure those backends are properly installed and configured; see `cosmicjellyfish/configs/default_boltzmann_yaml_files/`.
 - For dense grids (`--accuracy 2` or higher), FAST paths yield larger speedups.
 
 ---
@@ -252,7 +252,7 @@ It prints construction/evaluation timings and agreement metrics (ratios), and us
   ```python
   import os, importlib
   os.environ.update(COSMICFISH_FAST_EFF="1", COSMICFISH_FAST_P="1", COSMICFISH_FAST_KERNEL="1")
-  import cosmicfishpie.LSSsurvey.photo_obs as photo_obs
+  import cosmicjellyfish.LSSsurvey.photo_obs as photo_obs
   importlib.reload(photo_obs)
   ```
 
@@ -440,16 +440,16 @@ Notes:
   `for cfg in scripts/compare_configs/*.env; do bash scripts/validation/compare_backends_report.sh --config "$cfg"; done`
 
 Defaults:
-- class: `cosmicfishpie/configs/default_boltzmann_yaml_files/class/default.yaml`
-- camb: `cosmicfishpie/configs/default_boltzmann_yaml_files/camb/default.yaml`
-- symbolic: `cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml`
+- class: `cosmicjellyfish/configs/default_boltzmann_yaml_files/class/default.yaml`
+- camb: `cosmicjellyfish/configs/default_boltzmann_yaml_files/camb/default.yaml`
+- symbolic: `cosmicjellyfish/configs/default_boltzmann_yaml_files/symbolic/default.yaml`
 - REPORT_SINGLE=true writes `OUTDIR/report_single.html`; override with REPORT_SINGLE_FILE.
 
 ---
 
 ## 12) CMB Fisher smoke + benchmarks
 
-CosmicFishPie includes a basic CMB Fisher path for `CMB_T`, `CMB_E`, `CMB_B`.
+CosmicJellyfish includes a basic CMB Fisher path for `CMB_T`, `CMB_E`, `CMB_B`.
 
 Notes/limitations:
 - The current CMB implementation uses a single `lmin_CMB`/`lmax_CMB` for all spectra.
@@ -457,7 +457,7 @@ Notes/limitations:
 
 ### CMB survey spec YAMLs
 
-These live in `cosmicfishpie/configs/default_survey_specifications/`:
+These live in `cosmicjellyfish/configs/default_survey_specifications/`:
 - `Planck.yaml`
 - `Simons-Observatory-PlanckLowEll.yaml`
 - `CMB-Stage4-PlanckLowEll.yaml`
@@ -471,7 +471,7 @@ The CMB scripts live in `scripts/archive/cmb/`. Run them from the repository roo
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
+  --spec-yaml cosmicjellyfish/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E \
   --lmax 120 \
   --outdir tmp/cmb_planck_smoke \

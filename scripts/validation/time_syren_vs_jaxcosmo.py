@@ -29,12 +29,12 @@ start = perf_counter()
 import jax  # noqa: E402
 import numpy as np  # noqa: E402
 
-from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix  # noqa: E402
-from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import (  # noqa: E402
+from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix  # noqa: E402
+from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import (  # noqa: E402
     JaxAutodiffProvider,
     JaxFiniteDifferenceProvider,
 )
-from cosmicfishpie.LSSsurvey import photo_cov, photo_obs  # noqa: E402
+from cosmicjellyfish.LSSsurvey import photo_cov, photo_obs  # noqa: E402
 
 jax.config.update("jax_enable_x64", True)
 devices = jax.devices()
@@ -74,13 +74,13 @@ for fiducial_label, fiducial in FIDUCIALS:
             "feedback": 0,
             "nonlinear": True,
             "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
-            "specs_dir": str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+            "specs_dir": str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
             "results_dir": str(ROOT / "results/timing_syren_vs_jaxcosmo" / code) + "/",
         }
         if code == "symbolic":
             options["symbolic_config_yaml"] = str(
                 ROOT
-                / "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren_new_photo.yaml"
+                / "cosmicjellyfish/configs/default_boltzmann_yaml_files/symbolic/syren_new_photo.yaml"
             )
         observable_before = provider._observable if code == "jaxcosmo" else None
         calc = FisherMatrix(

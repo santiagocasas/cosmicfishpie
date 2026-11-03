@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Rename the distribution and import package from `cosmicfishpie` to `cosmicjellyfish`.
+  `import cosmicfishpie` keeps working through a deprecated compatibility alias that
+  resolves to the same module objects, so configuration state, class identities and old
+  pickles are preserved. The `neutrino_scheme: cosmicfishpie` setting is still accepted.
 - Reject non-finite `jaxcosmo` densities and dark-energy parameters, detect conflicting
   `ns`/`n_s` aliases, normalize integral sample counts to integers, and check array-valued
   `sigmap_*`/`sigmav_*` fiducials for unsupported rescaling.
@@ -57,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   comparison keeps `ns` fixed while retaining the spectral-index response diagnostic.
 
 - Add the optional, differentiable `jaxcosmo` backend (`options["code"] = "jaxcosmo"`,
-  install with `pip install 'cosmicfishpie[jaxcosmo]'`): `jax-cosmo` background,
+  install with `pip install 'cosmicjellyfish[jaxcosmo]'`): `jax-cosmo` background,
   Eisenstein-Hu + Halofit total-matter power (flat, massless neutrinos), and a JAX port
   of the `symbolic_pofk` `10^9As -> sigma8` fit. A backend-neutral differentiable theory
   interface (`cosmology/jax_theory.py`) lets JAX observables stay independent of the
@@ -144,7 +148,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `overwrite` option to resample an existing run, and export `load_chain_metadata`.
 - Parse MontePython parameter files with `ast.literal_eval` instead of `eval` and
   fix the `FishConsumer` chain-loading docstrings.
-- Point the validation dashboard links to `https://www.santicasas.space/cosmicfishpie/dashboard/`.
+- Point the validation dashboard links to `https://www.santicasas.space/cosmicjellyfish/dashboard/`.
 - Add explicit analysis context runtime isolation and refresh the comprehensive guide.
 - Symbolic backend overhaul to the new syren emulators, pinning the `symbolic-pofk`
   GitHub tarball in CI instead of a local editable path.
@@ -186,9 +190,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         Added new external file for nonlinear power spectra
         New options for spectroscopic error. Removed infamous h-bug
 
-1.0.3 : Added documentation for the cosmicfishpie.fishermatrix submodule
+1.0.3 : Added documentation for the cosmicjellyfish.fishermatrix submodule
 
-1.0.2 : Added documentation for the cosmicfishpie.LSSsurvey submodule
+1.0.2 : Added documentation for the cosmicjellyfish.LSSsurvey submodule
 
 1.0.1 : Bugfix for external file reading for release notebooks.
         Change `is False` statements with a normal `not` to catch False-equivalents.

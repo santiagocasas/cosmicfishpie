@@ -126,7 +126,7 @@ Run it from the repository root:
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
+  --spec-yaml cosmicjellyfish/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E --lmax 120 \
   --outdir tmp/cmb_planck_smoke --write-enabled-yaml
 ```

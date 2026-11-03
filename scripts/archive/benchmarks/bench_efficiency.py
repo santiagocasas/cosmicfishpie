@@ -16,8 +16,8 @@ from time import perf_counter
 
 import numpy as np
 
-from cosmicfishpie.fishermatrix import cosmicfish as cff
-from cosmicfishpie.LSSsurvey.photo_obs import (
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.LSSsurvey.photo_obs import (
     ComputeCls,
     faster_integral_efficiency,
     memo_integral_efficiency,
@@ -34,7 +34,7 @@ def build_computecls():
         "ell_sampling": 25,
         "nonlinear": True,
         "feedback": 0,  # quiet
-        "specs_dir": "cosmicfishpie/configs/default_survey_specifications/",
+        "specs_dir": "cosmicjellyfish/configs/default_survey_specifications/",
         "survey_name": "Euclid",
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
         "cosmo_model": "LCDM",

@@ -17,9 +17,9 @@ options:
   survey_name: "Euclid"
   survey_name_photo: "Euclid-Photometric-ISTF-Pessimistic"
   survey_name_spectro: false
-  specs_dir: "cosmicfishpie/configs/default_survey_specifications/"
+  specs_dir: "cosmicjellyfish/configs/default_survey_specifications/"
   cosmo_model: "LCDM"
-  symbolic_config_yaml: "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/default.yaml"
+  symbolic_config_yaml: "cosmicjellyfish/configs/default_boltzmann_yaml_files/symbolic/default.yaml"
 priors:
   Omegam: [0.24, 0.4]
   Omegab:

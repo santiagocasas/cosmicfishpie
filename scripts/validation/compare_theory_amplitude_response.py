@@ -42,18 +42,18 @@ sys.path.insert(0, str(ROOT))
 import jax  # noqa: E402
 import jax.numpy as jnp  # noqa: E402
 
-from cosmicfishpie.cosmology.jax_theory import get_jax_theory  # noqa: E402
-from cosmicfishpie.cosmology.jaxcosmo_halofit import halofit  # noqa: E402
-from cosmicfishpie.cosmology.jaxcosmo_theory import make_cosmology  # noqa: E402
-from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider  # noqa: E402
-from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix  # noqa: E402
-from cosmicfishpie.fishermatrix.derivatives import compute_derivatives  # noqa: E402
-from cosmicfishpie.fishermatrix.jaxcosmo_derivatives import (  # noqa: E402
+from cosmicjellyfish.cosmology.jax_theory import get_jax_theory  # noqa: E402
+from cosmicjellyfish.cosmology.jaxcosmo_halofit import halofit  # noqa: E402
+from cosmicjellyfish.cosmology.jaxcosmo_theory import make_cosmology  # noqa: E402
+from cosmicjellyfish.cosmology.symbolic_new import SyrenNewProvider  # noqa: E402
+from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix  # noqa: E402
+from cosmicjellyfish.fishermatrix.derivatives import compute_derivatives  # noqa: E402
+from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import (  # noqa: E402
     JaxAutodiffProvider,
     JaxFiniteDifferenceProvider,
 )
-from cosmicfishpie.LSSsurvey import photo_cov, photo_obs  # noqa: E402
-from cosmicfishpie.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable  # noqa: E402
+from cosmicjellyfish.LSSsurvey import photo_cov, photo_obs  # noqa: E402
+from cosmicjellyfish.LSSsurvey.jaxcosmo_photo import JaxPhotoObservable  # noqa: E402
 
 jax.config.update("jax_enable_x64", True)
 
@@ -68,7 +68,7 @@ COSMO = tuple(FREE)
 
 
 def load_yaml(relative: str) -> dict:
-    with open(ROOT / "cosmicfishpie/configs/default_boltzmann_yaml_files" / relative) as handle:
+    with open(ROOT / "cosmicjellyfish/configs/default_boltzmann_yaml_files" / relative) as handle:
         return yaml.safe_load(handle)
 
 
@@ -90,13 +90,13 @@ def make_calc(code: str, fiducial: dict, provider=None, suffix: str = "") -> Fis
         "feedback": 0,
         "nonlinear": True,
         "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
-        "specs_dir": str(ROOT / "cosmicfishpie/configs/default_survey_specifications") + "/",
+        "specs_dir": str(ROOT / "cosmicjellyfish/configs/default_survey_specifications") + "/",
         "results_dir": str(ROOT / "results/theory_amplitude_response" / (code + suffix)) + "/",
     }
     if code == "symbolic":
         options["symbolic_config_yaml"] = str(
             ROOT
-            / "cosmicfishpie/configs/default_boltzmann_yaml_files/symbolic/syren_new_photo.yaml"
+            / "cosmicjellyfish/configs/default_boltzmann_yaml_files/symbolic/syren_new_photo.yaml"
         )
     return FisherMatrix(
         options=options,

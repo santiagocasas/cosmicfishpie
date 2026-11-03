@@ -1,5 +1,5 @@
 """
-Test suite for cosmicfishpie.utilities.utils module.
+Test suite for cosmicjellyfish.utilities.utils module.
 
 This module tests utility classes (misc, printing, numerics, filesystem)
 to improve coverage from ~30% to 48%.
@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, call, patch
 import numpy as np
 
 # Import the utils module
-from cosmicfishpie.utilities import utils
+from cosmicjellyfish.utilities import utils
 
 
 class TestMiscClass:

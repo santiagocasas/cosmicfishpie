@@ -13,9 +13,9 @@ import jax.numpy as jnp  # noqa: E402
 import jax_cosmo as jc  # noqa: E402
 from jax_cosmo import power as jc_power  # noqa: E402
 
-from cosmicfishpie.cosmology import jaxcosmo_halofit as halofit  # noqa: E402
-from cosmicfishpie.cosmology import jaxcosmo_theory as theory  # noqa: E402
-from cosmicfishpie.cosmology.jaxcosmo_amplitude import (  # noqa: E402
+from cosmicjellyfish.cosmology import jaxcosmo_halofit as halofit  # noqa: E402
+from cosmicjellyfish.cosmology import jaxcosmo_theory as theory  # noqa: E402
+from cosmicjellyfish.cosmology.jaxcosmo_amplitude import (  # noqa: E402
     As_to_sigma8,
     sigma8_to_As,
 )
@@ -88,7 +88,7 @@ def test_halofit_autodiff_matches_finite_difference_quadratically():
 
 # ------------------------------------------------------------------ provider parameter maps
 def test_resolve_parameters_rejects_theta_like_expansion_parameters():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
     for key in ("theta", "cosmomc_theta", "thetastar"):
@@ -97,7 +97,7 @@ def test_resolve_parameters_rejects_theta_like_expansion_parameters():
 
 
 def test_resolve_parameters_rejects_conflicting_amplitude_aliases():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
     for aliases in ({"10^9As": 2.1, "As": 2.1e-9}, {"10^9As": 2.1, "sigma8": 0.8}):
@@ -106,14 +106,14 @@ def test_resolve_parameters_rejects_conflicting_amplitude_aliases():
 
 
 def test_resolve_parameters_rejects_non_positive_sigma8():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     with pytest.raises(ValueError, match="sigma8 > 0"):
         provider.resolve_parameters({"sigma8": -0.8, "Omegam": 0.32, "Omegab": 0.05}, "LCDM")
 
 
 def test_resolve_parameters_accepts_a_single_amplitude_alias():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     resolved = provider.resolve_parameters({"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}, "LCDM")
     assert resolved["As"] == pytest.approx(2.1)
@@ -151,7 +151,7 @@ def test_tables_units_shapes_and_normalisation():
 
 # ------------------------------------------------------- provider guards added in review
 def test_resolve_parameters_rejects_every_massive_neutrino_alias():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "ns": 0.96}
     for key in ("mnu", "m_nu", "Omeganu", "omnuh2"):
@@ -163,7 +163,7 @@ def test_resolve_parameters_rejects_every_massive_neutrino_alias():
 
 
 def test_resolve_parameters_rejects_ignored_density_parameterizations():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegab": 0.05}
     for key in ("omega_cdm", "Omega_cdm"):
@@ -180,7 +180,7 @@ def test_resolve_parameters_rejects_ignored_density_parameterizations():
 
 
 def test_resolve_parameters_rejects_conflicting_density_and_expansion_aliases():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67}
     with pytest.raises(ValueError, match="Conflicting values for Omegab, ombh2"):
@@ -199,7 +199,7 @@ def test_resolve_parameters_rejects_conflicting_density_and_expansion_aliases():
 
 
 def test_resolve_parameters_rejects_invalid_h_and_h0():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
     for key, value in (("h", 0.0), ("h", float("nan")), ("H0", float("inf"))):
@@ -208,7 +208,7 @@ def test_resolve_parameters_rejects_invalid_h_and_h0():
 
 
 def test_resolve_parameters_rejects_conflicting_w0wa_aliases():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
     for aliases in ({"w0": -0.8, "w0_fld": -0.9}, {"wa": 0.2, "wa_fld": 0.3}):
@@ -219,7 +219,7 @@ def test_resolve_parameters_rejects_conflicting_w0wa_aliases():
 @pytest.mark.parametrize("key", ["Omegab", "Omegam", "ombh2", "omch2"])
 @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
 def test_resolve_parameters_rejects_non_finite_density(key, value):
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     pars = {"10^9As": 2.1, key: value}
     with pytest.raises(ValueError, match="Omegam > Omegab > 0"):
@@ -227,7 +227,7 @@ def test_resolve_parameters_rejects_non_finite_density(key, value):
 
 
 def test_resolve_parameters_checks_spectral_index_aliases():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1}
     with pytest.raises(ValueError, match="Conflicting values for ns and n_s"):
@@ -239,14 +239,14 @@ def test_resolve_parameters_checks_spectral_index_aliases():
 @pytest.mark.parametrize("key", ["w0", "wa", "w0_fld", "wa_fld"])
 @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
 def test_resolve_parameters_rejects_non_finite_dark_energy(key, value):
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     with pytest.raises(ValueError, match="requires a finite"):
         provider.resolve_parameters({"10^9As": 2.1, key: value}, "w0waCDM")
 
 
 def test_resolve_parameters_rejects_non_finite_amplitude():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"Omegam": 0.32, "Omegab": 0.05}
     for weak in ({"10^9As": float("nan")}, {"10^9As": -1.0}, {"logAs": 1000.0}):
@@ -255,7 +255,7 @@ def test_resolve_parameters_rejects_non_finite_amplitude():
 
 
 def test_resolve_parameters_rejects_conflicting_lcdm_dark_energy():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     base = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05}
     for key, value in (("w0", -0.8), ("wa", 0.3), ("w0_fld", -0.9), ("wa_fld", 0.2)):
@@ -295,7 +295,7 @@ def _backend(numerics: dict) -> dict:
 
 
 def test_numerics_grids_need_enough_nodes_for_cubic_splines():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     cosmopars = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67, "ns": 0.96}
     for key in ("z_samples", "k_samples", "z_samples_background"):
@@ -304,7 +304,7 @@ def test_numerics_grids_need_enough_nodes_for_cubic_splines():
 
 
 def test_numerics_sample_counts_must_be_integers():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     cosmopars = {"10^9As": 2.1, "Omegam": 0.32, "Omegab": 0.05, "h": 0.67, "ns": 0.96}
     for key in ("z_samples", "k_samples", "z_samples_background"):
@@ -313,7 +313,7 @@ def test_numerics_sample_counts_must_be_integers():
 
 
 def test_integral_float_sample_counts_are_normalized_for_numpy():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     keys = ("z_samples", "k_samples", "z_samples_background")
     backend = _backend(dict.fromkeys(keys, 4.0))
@@ -325,7 +325,7 @@ def test_integral_float_sample_counts_are_normalized_for_numpy():
 
 
 def test_provider_rejects_a_cosmology_whose_halofit_root_is_outside_the_bracket():
-    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+    from cosmicjellyfish.cosmology import jaxcosmo_provider as provider
 
     cosmology = theory.make_cosmology(dict(FIDUCIAL, As=1.0e-4))
     residual, inside = halofit.nonlinear_scale_residual(cosmology, 1.0, TRANSFER)

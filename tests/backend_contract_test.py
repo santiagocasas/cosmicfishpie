@@ -7,12 +7,12 @@ import numpy as np
 import pytest
 from astropy.cosmology import FlatLambdaCDM, Flatw0waCDM
 
-from cosmicfishpie.cosmology.cosmology import (
+from cosmicjellyfish.cosmology.cosmology import (
     _class_cb_subtraction_grid,
     cosmo_functions,
 )
-from cosmicfishpie.cosmology.ee2 import class_ee2_boost, class_ee2_parameters
-from cosmicfishpie.cosmology.symbolic_new import SyrenNewProvider
+from cosmicjellyfish.cosmology.ee2 import class_ee2_boost, class_ee2_parameters
+from cosmicjellyfish.cosmology.symbolic_new import SyrenNewProvider
 
 
 @pytest.mark.parametrize("f_nu", [0.0, 0.02])

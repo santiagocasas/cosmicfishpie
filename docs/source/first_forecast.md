@@ -14,7 +14,7 @@ Save the script as `first_fisher.py` and run it with `python first_fisher.py`
 directory will do; the script creates `results/` there.
 
 ```python
-from cosmicfishpie.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
 
 options = {
     "accuracy": 1,

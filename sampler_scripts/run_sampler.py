@@ -2,7 +2,7 @@ import argparse
 
 import yaml
 
-from cosmicfishpie.likelihood import NautilusSampler
+from cosmicjellyfish.likelihood import NautilusSampler
 
 
 def main():

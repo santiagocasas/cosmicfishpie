@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from cosmicfishpie.analysis import fisher_matrix as fm
-from cosmicfishpie.analysis import fisher_operations as fo
+from cosmicjellyfish.analysis import fisher_matrix as fm
+from cosmicjellyfish.analysis import fisher_operations as fo
 
 
 @pytest.fixture()

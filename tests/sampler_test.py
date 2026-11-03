@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pytest
 
-from cosmicfishpie.likelihood import sampler as sampler_mod
+from cosmicjellyfish.likelihood import sampler as sampler_mod
 
 
 class _FakeContext:
@@ -704,7 +704,7 @@ def test_sampler_freepars_defaults():
 
 
 def test_sampler_does_not_mutate_caller_config_and_writes_version(tmp_path, monkeypatch):
-    from cosmicfishpie.version import VERSION
+    from cosmicjellyfish.version import VERSION
 
     monkeypatch.chdir(tmp_path)
     fake_context = _FakeContext(
@@ -775,6 +775,6 @@ def test_overwrite_removes_existing_chain_and_resamples(tmp_path, monkeypatch):
 
 
 def test_load_chain_metadata_is_exported():
-    from cosmicfishpie.likelihood import load_chain_metadata
+    from cosmicjellyfish.likelihood import load_chain_metadata
 
     assert callable(load_chain_metadata)

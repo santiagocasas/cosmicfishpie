@@ -1,4 +1,4 @@
-/* cosmicfishpie palette for pydata-sphinx-theme: grass green and cosmic blue. */
+/* cosmicjellyfish palette for pydata-sphinx-theme: grass green and cosmic blue. */
 
 html[data-theme="light"] {
   --pst-color-primary: #2a7a3a;
@@ -31,8 +31,8 @@ html[data-theme="dark"] {
   background: linear-gradient(135deg, var(--cfp-hero-from), var(--cfp-hero-to));
 }
 
-/* The landing page title is the page-level H1 (section id "cosmicfishpie"). */
-section#cosmicfishpie > h1 {
+/* The landing page title is the page-level H1 (section id "cosmicjellyfish"). */
+section#cosmicjellyfish > h1 {
   margin: 0;
   padding: 2.5rem 1rem 0 1rem;
   border-radius: 0.75rem 0.75rem 0 0;
@@ -118,13 +118,13 @@ html {
   overflow-wrap: anywhere;
 }
 
-section#cosmicfishpie > h1 {
+section#cosmicjellyfish > h1 {
   overflow-wrap: normal;
   font-size: 2.75rem;
 }
 
 @media (max-width: 575px) {
-  section#cosmicfishpie > h1 {
+  section#cosmicjellyfish > h1 {
     font-size: 1.9rem;
   }
 }

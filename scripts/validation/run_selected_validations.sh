@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run selected CosmicFishPie backend validation cases, optionally in parallel.
+# Run selected CosmicJellyfish backend validation cases, optionally in parallel.
 
 set -uo pipefail
 

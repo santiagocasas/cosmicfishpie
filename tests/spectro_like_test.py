@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from cosmicfishpie.likelihood import spectro_like as spectro_like_mod
-from cosmicfishpie.likelihood.spectro_like import (
+from cosmicjellyfish.likelihood import spectro_like as spectro_like_mod
+from cosmicjellyfish.likelihood.spectro_like import (
     SpectroLikelihood,
     _dict_with_updates,
     compute_chi2_legendre,

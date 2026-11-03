@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import cosmicfishpie.configs.config as cfg
+import cosmicjellyfish.configs.config as cfg
 
 
 def test_getcls_cache_hit_returns_same_object(photo_cov_cached):

@@ -9,7 +9,7 @@ PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 DATA_REPO="${CFP_DATA_REPO:-${PROJECT_ROOT}/../cjfp-data}"
 if ! git -C "${DATA_REPO}" rev-parse --show-toplevel >/dev/null 2>&1; then
   echo "Validation data repository not found: ${DATA_REPO}" >&2
-  echo "Clone cjfp-data beside the CosmicFishPie checkout, or set CFP_DATA_REPO." >&2
+  echo "Clone cjfp-data beside the CosmicJellyfish checkout, or set CFP_DATA_REPO." >&2
   exit 2
 fi
 export CFP_VALIDATION_RESULTS_DIR="${CFP_VALIDATION_RESULTS_DIR:-${DATA_REPO}/validation/fisher}"

@@ -634,7 +634,7 @@ wheels = [
 ]
 
 [[package]]
-name = "cosmicfishpie"
+name = "cosmicjellyfish"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },

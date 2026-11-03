@@ -5,7 +5,7 @@ Computes:
   1. A Euclid WL Fisher forecast (symbolic backend).
   2. A Euclid GCsp Fisher forecast (symbolic backend).
   3. Their sum (WL + GCsp), combined via the `+` operator on
-     ``cosmicfishpie.analysis.fisher_matrix.fisher_matrix`` (matches by
+     ``cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`` (matches by
      parameter name, so no double counting of shared cosmological params).
    4. A triangle plot comparing the three Fisher forecasts.
    5. A triangle plot contrasting MARGINAL and CONDITIONAL Fisher contours.
@@ -19,7 +19,7 @@ approximation, and produces:
 
 Marginal vs. conditional
 ------------------------
-CosmicFishPie adds nuisance parameters to the Fisher matrices automatically
+CosmicJellyfish adds nuisance parameters to the Fisher matrices automatically
 (GCsp: ``lnbg_i``/``Ps_i`` per redshift bin; WL: intrinsic alignment). By
 default this script samples only cosmology, holding the nuisances fixed, so
 plot 7 uses the CONDITIONAL Fisher as the like-for-like reference. Pass
@@ -58,11 +58,11 @@ import numpy as np
 import pandas as pd
 from nautilus import Sampler
 
-import cosmicfishpie.analysis.fishconsumer as fico
-import cosmicfishpie.analysis.fisher_operations as cfop
-from cosmicfishpie.fishermatrix.cosmicfish import FisherMatrix
-from cosmicfishpie.likelihood.photo_like import PhotometricLikelihood
-from cosmicfishpie.likelihood.spectro_like import SpectroLikelihood
+import cosmicjellyfish.analysis.fishconsumer as fico
+import cosmicjellyfish.analysis.fisher_operations as cfop
+from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
+from cosmicjellyfish.likelihood.photo_like import PhotometricLikelihood
+from cosmicjellyfish.likelihood.spectro_like import SpectroLikelihood
 
 # ---------------------------------------------------------------------------
 # Fiducial cosmology (symbolic backend only supports flat LCDM)
@@ -111,7 +111,7 @@ def _options(outroot: str, **overrides) -> dict:
 # Marginal vs. conditional Fisher helpers
 # ---------------------------------------------------------------------------
 #
-# CosmicFishPie automatically adds nuisance parameters to the Fisher matrix
+# CosmicJellyfish automatically adds nuisance parameters to the Fisher matrix
 # (GCsp: lnbg_i and Ps_i per redshift bin; WL: intrinsic-alignment parameters).
 # That makes two very different 2D contours available for the same forecast:
 #

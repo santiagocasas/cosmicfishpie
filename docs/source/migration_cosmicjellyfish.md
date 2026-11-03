@@ -16,6 +16,22 @@ the rename.
 Update imports, `pyproject.toml`/`requirements.txt` pins, YAML files that point at
 package paths, and any script paths in job submission templates.
 
+## Uninstall the old package first
+
+If `cosmicfishpie` is already installed in your environment, remove it before installing
+`cosmicjellyfish`:
+
+```bash
+pip uninstall cosmicfishpie
+pip install cosmicjellyfish
+```
+
+Both distributions provide a top-level `cosmicfishpie` module (the deprecated alias is
+shipped inside `cosmicjellyfish`). Leaving the old distribution installed means two
+different copies compete for the same import name, and which one wins depends on the
+installation order. Source checkouts installed in editable mode (`pip install -e .`) should
+be reinstalled the same way after pulling the renamed branch.
+
 ## Backwards compatibility
 
 For one release cycle the old import path keeps working:

@@ -1,0 +1,38 @@
+date: '2026-10-22'
+provenance: ai-executed
+experiment: N73
+campaign: ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022
+branch: deaglan-lhs-opt-coeffs
+commit: ad24febd355ebb36263fc8c238ef649d0e09c8b2
+parent: cb4d2bb5a759d0c682dc1499cf3aad1c496436ac
+old_source_sha256: 3615ab2e2760cdffc5c10c4d9273a374797756b0003fa9e83b37b3be11ce08b7
+new_source_sha256: 05d29f720ca138652fd96c12f5f4d8d5cfa65ea7f51b7f63fa21921c322339d7
+coefficient_checks:
+  g_exact_matches: 33
+  h_exact_matches: 9
+  runtime_locals_verified: true
+  independent_formula_points: 1515
+  independent_formula_max_relative_difference: 0.0
+setup:
+  survey: Euclid-Photometric-ISTF-Pessimistic
+  observables: [GCph, WL]
+  model: LCDM
+  fiducial: {'10^9As': 2.1, Omegam: 0.32, Omegab: 0.05, h: 0.67, ns: 0.96, mnu: 0.06}
+  derivative: 3PT
+  relative_step: 0.01
+  marginalized_nuisances: 13
+  bound_convention: Central 68.27 percent; 1.0000217 times exact sigma
+errors:
+  '10^9As': {ee2: 0.1141399453205578, old: 0.07469987921657376, new: 0.09981898327819062}
+  Omegam: {ee2: 0.0025389190978007212, old: 0.0024429235284732552, new: 0.0023604166673942893}
+  Omegab: {ee2: 0.0028011472239169665, old: 0.0021885215368683424, new: 0.0025111212979552744}
+  h: {ee2: 0.026391431151653252, old: 0.017516449328565584, new: 0.023662001186821477}
+  ns: {ee2: 0.015008503672351597, old: 0.009971224121486485, new: 0.013063024564868048}
+nonlinear_dlnP_dns_z0_k0p5_hmpc:
+  ee2: 1.0737486241702474
+  old: 0.44284761297632336
+  new: 0.7980547364264124
+limitations:
+- Single fiducial and forecast setup; no LHS re-scoring or held-out test evaluation.
+- Both g and h changed; not an isolated ns-derivative intervention.
+- EE2 and SYREN use the original notebook's respective solver profiles.

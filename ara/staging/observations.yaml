@@ -1,4 +1,177 @@
 observations:
+- id: O24
+  timestamp: '2026-10-30T15:40'
+  provenance: ai-suggested
+  content: >-
+    The SYREN-NEW versus JAXcosmo marginalized 10^9As difference is carried by the linear
+    power-spectrum shape, not by the nonlinear prescription: at equal As the two "Eisenstein-Hu"
+    linear models differ by up to a few percent in a k-dependent way (SYREN-NEW is the no-wiggle
+    fit times a fitted correction to the true linear spectrum), and Halofit fed with the SYREN-NEW
+    linear shape moves the JAX amplitude error from 0.0264 to 0.0301 (SYREN 0.0294).
+  context: >-
+    Follow-up to N92 answering the objection that both backends use Eisenstein-Hu.
+  potential_type: claim
+  bound_to: [N93]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O23
+  timestamp: '2026-10-30T14:25'
+  provenance: ai-suggested
+  content: >-
+    The ~10-11% lower marginalized 10^9As error of JAXcosmo (Eisenstein-Hu + Halofit) relative to
+    SYREN-NEW is a matter-power-model difference, not an implementation or differentiation
+    artefact. Unmarginalized amplitude errors agree to 2.6% and dlnP_nl/dlnAs agrees to ~2%;
+    the gap arises through galaxy-bias marginalization, and replacing the power spectrum inside
+    the JAX observable with SYREN-NEW reproduces the SYREN error to 0.08%.
+  context: >-
+    Decomposition experiment N92 at two fiducials with a JAX finite-difference control and a
+    SYREN-power-inside-JAX-observable hybrid.
+  potential_type: claim
+  bound_to: [N92]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O22
+  timestamp: '2026-10-29T15:48'
+  provenance: ai-suggested
+  content: >-
+    In the photometric comparison the autodiff-versus-finite-difference gap collapses with the
+    step (1.8e-05 -> 4.2e-08 Fisher max difference), so the residual jaxcosmo-versus-SYREN
+    Fisher disagreement (4.8e-02) is a theory difference, dominated by the linear ns response
+    and the different nonlinear prescriptions, not a derivative-method artefact.
+  context: Executed notebook 07 comparing four photometric Fisher variants at one LCDM fiducial.
+  potential_type: claim
+  bound_to: [N88]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O21
+  timestamp: '2026-10-29T14:46'
+  provenance: ai-suggested
+  content: >-
+    A parity check that only compares the fiducial point, or a Fisher matrix normalised by its
+    largest entry, can hide real port errors: the transposed Savitzky-Golay operator and the AP-off
+    branch both passed such checks (Fisher parity 1.5e-06) and were exposed only by lnP at
+    a perturbed cosmology, per-option-branch comparison and scale-relative derivative metrics.
+  context: Review of the jaxcosmo branch; fixes and tests in N86.
+  potential_type: heuristic
+  bound_to: [N86]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O20
+  timestamp: '2026-10-29T14:46'
+  provenance: ai-suggested
+  content: >-
+    jax-cosmo Halofit nonlinear scale from the fixed-grid interp(sigma=1) is only piecewise smooth:
+    at a 1% step the autodiff and finite-difference derivatives of P differ by 24% of the
+    derivative scale (k_nl alone 3%), shrinking to 1e-5 at 0.1%; a Newton solve with an implicit
+    final step gives 1.0e-03 at 1%, matches jax-cosmo's own tests (CCL comparisons) and changes
+    values by up to 0.6% over the CFP box.
+  context: Measured on unmodified jax-cosmo master vs the local patch branch.
+  potential_type: claim
+  bound_to: [N86, N87]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O19
+  timestamp: '2026-10-28T13:49'
+  provenance: ai-suggested
+  content: >-
+    Outside its tabulated range the legacy power spline extrapolates while a direct
+    Halofit evaluation uses the model, so the first k row of the spectroscopic grid
+    (k = kmin_GCsp*h = kmin_pk*h) can differ by ~1e-4 in lnP and by ~10% in the Omegam
+    derivative there. The Fisher is unaffected (1e-5), and clipping k instead is worse:
+    a clamp puts a derivative discontinuity exactly at the grid edges.
+  context: Diagnosed while closing the spectroscopic parity; one row of 17425 per bin.
+  correction: >-
+    CORRECTED 2026-10-29T13:43 (review of the jaxcosmo branch): the premise is wrong. The legacy
+    RectBivariateSpline CLAMPS to the edge value outside its table (it does not extrapolate);
+    only the no-wiggle k=1 InterpolatedUnivariateSpline extrapolates linearly. The first-k /
+    mu=1 mismatch is the clamp, and it is reproduced exactly by the new backend option
+    NUMERICS.legacy_pk_clamp (AP-off + clamp parity 2.5e-5 in lnP). Direct evaluation stays the
+    default. The original text is kept above for the record. See docs/source/jaxcosmo_review.md F5.
+  potential_type: constraint
+  bound_to: [N85]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O18
+  timestamp: '2026-10-28T13:49'
+  provenance: ai-suggested
+  content: >-
+    The legacy no-wiggle smoothing window n_savgol = round(1.3585/log(1+dlnk)) depends on
+    the h-scaled grid, and it flips 125 -> 126 between h(1-1%) and h, so the legacy 1%
+    central dlnP/dh carries a quantisation jump: it reads 3.29 at a 1% step and 2.60 once
+    the step drops below 0.3%. The JAX observable freezes the window at the fiducial h.
+    Implication: h derivatives of the legacy spectroscopic pipeline should not be trusted
+    at the default 1% step, and agreement between the two codes must be judged below 0.3%.
+  context: Explains the apparent 17% h-derivative gap in the spectroscopic parity.
+  potential_type: constraint
+  bound_to: [N85]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O17
+  timestamp: '2026-10-23T15:08'
+  provenance: ai-suggested
+  content: >-
+    No global optimum among tested weights: 0.3 minimizes mixed-LHS response
+    RMSE and LCDM error-width mismatch; 0.1 minimizes full w0waCDM width
+    mismatch among refits and candidate-to-EE2 Gaussian KL in every fixing
+    case. Original SYREN still scores better on full w0waCDM widths alone.
+    Suggested retaining 0.1 as the leading full-w0waCDM refit candidate and
+    0.3 as the response/LCDM-width candidate pending researcher assessment
+    and held-out tests. Agreement is reference- and metric-dependent.
+  context: N79 systematic scan; no researcher assessment of these new results yet.
+  potential_type: claim
+  bound_to: [N79, N77]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O16
+  timestamp: '2026-10-23T11:47'
+  provenance: ai-executed
+  content: >-
+    For the matched w0waCDM photometric setup, new coefficients increase absolute
+    marginalized-error gaps versus EE2 for all seven cosmological parameters,
+    unlike the scoped LCDM result O15. Fixing ns changes the pattern: new gaps
+    narrow for Omegab,h,wa and widen for As,Omegam,w0. This is model-dependent
+    forecast geometry evidence, not an attribution to a single power derivative.
+  context: Fresh campaign N76, including nested-model consistency and ns conditioning.
+  potential_type: claim
+  bound_to: [N76]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O15
+  timestamp: '2026-10-22T16:53'
+  provenance: ai-executed
+  content: >-
+    For the recorded LCDM Euclid pessimistic GCph+WL setup, Bartlett's
+    response-optimized coefficients reduce the absolute marginalized-error
+    discrepancy against EE2 for As, Omegab, h and ns, while Omegam worsens.
+    The sampled nonlinear ns response moves toward EE2 but remains suppressed.
+    This does not establish sole ns causality, global accuracy or test-set loss.
+  context: >-
+    Three fresh Fishers and coefficient/runtime proof; researcher has not yet
+    assessed these new results. Raw outputs bound through N73 and its evidence.
+  potential_type: claim
+  bound_to: [N73]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
 - id: O01
   timestamp: 2026-09-15T12:32
   provenance: ai-suggested
@@ -279,6 +452,22 @@ observations:
     worked under the repository venv.
   potential_type: constraint
   bound_to: [N47]
+  promoted: false
+  promoted_to: null
+  crystallized_via: null
+  stale: false
+- id: O14
+  timestamp: '2026-10-12'
+  provenance: ai-executed
+  content: >-
+    Switching CLASS nonlinear cb to its native prescription is the dominant
+    source of the October photometric neutrino regression; restoring matched
+    subtraction and factor 94.07 reproduces historical case 03.2.0 errors.
+    This does not establish physical superiority of subtraction or recovery
+    of every affected case.
+  context: Local controlled spectrum matrix plus one CLASS Fisher confirmation.
+  potential_type: claim
+  bound_to: [N48, N49]
   promoted: false
   promoted_to: null
   crystallized_via: null

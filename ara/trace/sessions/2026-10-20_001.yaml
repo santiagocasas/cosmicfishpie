@@ -1,0 +1,65 @@
+session:
+  id: 2026-10-20_001
+  date: '2026-10-20'
+  started: '2026-10-20'
+  last_turn: '2026-10-20'
+  turn_count: 3
+  summary: Added plotting controls and completed the 1000-point CLASS+EE2/SYREN ns-response hypercube with no failures.
+events_logged:
+- turn: 3
+  type: experiment
+  id: N70
+  routing: direct
+  provenance: ai-executed
+  summary: Both backends succeeded at 1000 points; finite arrays and source hashes checked; four figures generated.
+- turn: 2
+  type: experiment
+  id: N69
+  routing: direct
+  provenance: ai-executed
+  summary: 45 focused tests passed; 34 notebook plots with zero errors; bar values validated.
+- turn: 1
+  type: experiment
+  id: N68
+  routing: direct
+  provenance: ai-executed
+  summary: 41 focused tests passed; 25 notebook plots regenerated with zero errors.
+ai_actions:
+- turn: 3
+  action: Implemented resumable LHS runner, inward boundary stencils and plots; installed missing dependencies in approved environment; monitored full run.
+  provenance: ai-executed
+  files_changed:
+  - scripts/validation/compute_ns_derivative_lhs.py
+  - scripts/validation/plot_ns_derivative_lhs.py
+  - scripts/validation/ns_derivative_lhs.md
+  - cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_ns_lhs.yaml
+  - tests/ns_derivative_lhs_test.py
+  - scripts/README.md
+  - CHANGELOG.md
+  - scripts/validation_results/ns_derivative_lhs/
+- turn: 2
+  action: Added visibility switches and weighted quantile limits; separated views and plotted discrepancies and metadata times.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/analysis/fishconsumer.py
+  - tests/fishconsumer_test.py
+  - CHANGELOG.md
+  - ../cjfp-data/jobs_punch/analyze_case02_v5.ipynb
+- turn: 1
+  action: Added paired overlay API and regression tests; simplified and executed campaign notebook.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/analysis/fishconsumer.py
+  - tests/fishconsumer_test.py
+  - CHANGELOG.md
+  - ../cjfp-data/jobs_punch/analyze_case02_v5.ipynb
+claims_touched: []
+key_context:
+- turn: 3
+  excerpt: User approved cloe-org-env, linear and nonlinear power, relative step 1e-2, ten evenly spaced redshifts, k up to 6.8 h/Mpc, and instructed avoiding new permission-gated folders.
+- turn: 2
+  excerpt: User approved implementation with GO after requesting separated Fishers, chains-only comparisons, discrepancy bars and timing bars.
+- turn: 1
+  excerpt: User asked why the important generic Cell 3 overlay behavior was not in fishconsumer.
+open_threads: []
+ai_suggestions_pending: []

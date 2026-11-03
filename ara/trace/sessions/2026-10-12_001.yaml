@@ -1,0 +1,25 @@
+session:
+  id: 2026-10-12_001
+  date: '2026-10-12'
+  started: '2026-10-12'
+  last_turn: '2026-10-12'
+  turn_count: 1
+  summary: Local neutrino cb controls and one Fisher reproduce historical passing result.
+events_logged:
+  - {turn: 1, type: experiment, id: N48, routing: direct, provenance: ai-executed, summary: Nine solver runs isolate prescription and density effects.}
+  - {turn: 1, type: experiment, id: N49, routing: direct, provenance: ai-executed, summary: CLASS case 03.2.0 recovers 5.526605 percent maximum sigma difference.}
+  - {turn: 1, type: observation, id: O14, routing: staged, provenance: ai-executed, summary: Prescription mismatch dominates the tested regression.}
+ai_actions:
+  - turn: 1
+    action: Restored matched defaults with native cb opt-in; saved spectra, Fisher evidence and report; four translation tests pass.
+    provenance: ai-executed
+    files_changed: [cosmicfishpie/cosmology/cosmology.py, scripts/validation/diagnose_neutrino_response.py, tests/cosmology_test.py, docs/source/neutrino_cb_regression.md, docs/source/backend_validation.md, docs/source/index.md, CHANGELOG.md]
+claims_touched: []
+key_context:
+  - turn: 1
+    excerpt: User approved local isolated runs before full Frey suites and requested minimal lint/testing overhead.
+open_threads:
+  - Review and commit correction, then rerun affected photo cases and fixednu/Pmm controls on Frey.
+  - Archive local numerical evidence in cjfp-data before publishing updated dashboard.
+ai_suggestions_pending:
+  - Broad campaign-wide causal claim awaits the remaining corrected Fisher cases.

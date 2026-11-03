@@ -1,0 +1,81 @@
+session:
+  id: 2026-10-28_001
+  date: '2026-10-28'
+  started: '2026-10-28T13:49'
+  last_turn: '2026-10-28T13:49'
+  turn_count: 1
+  summary: >-
+    Built the differentiable jaxcosmo backend and JAX photometric and spectroscopic
+    observables, reaching Fisher parity with the legacy pipeline, and diagnosed two legacy
+    artefacts that quantise the h derivative.
+events_logged:
+- turn: 1
+  type: experiment
+  id: N82
+  routing: direct
+  provenance: ai-executed
+  summary: jaxcosmo backend, JAX As->sigma8, theory adapter, photometric observable and providers.
+- turn: 1
+  type: dead_end
+  id: N83
+  routing: direct
+  provenance: ai-executed
+  summary: Autodiff through a bisection root find gives the wrong implicit derivative; replaced by Newton.
+- turn: 1
+  type: experiment
+  id: N84
+  routing: direct
+  provenance: ai-executed
+  summary: Photometric three-way parity; Fisher agreement 1.2e-03, autodiff vs JAX FD 1.8e-05.
+- turn: 1
+  type: experiment
+  id: N85
+  routing: direct
+  provenance: ai-executed
+  summary: Spectroscopic GCsp port; Fisher agreement 1.5e-06 (FD) and 1.4e-05 (autodiff).
+- turn: 1
+  type: observation
+  id: O18
+  routing: staged
+  provenance: ai-suggested
+  summary: Legacy Savitzky-Golay window flips within 1% in h, contaminating the default h derivative.
+- turn: 1
+  type: observation
+  id: O19
+  routing: staged
+  provenance: ai-suggested
+  summary: Legacy spline extrapolation at the first k row; 1e-4 in lnP, negligible on the Fisher.
+ai_actions:
+- turn: 1
+  action: >-
+    Registered the jaxcosmo backend, wrote jax_theory/jaxcosmo_theory/jaxcosmo_halofit/
+    jaxcosmo_amplitude/jaxcosmo_provider, jaxcosmo_photo, jaxcosmo_spectro and
+    jaxcosmo_derivatives, and two parity scripts; committed 3e41b12, 4eaf571, 7feefe0,
+    f6ee8a0, 6e511f1 and 51216fb on jaxcosmo-autodiff without pushing.
+  provenance: ai-executed
+  files_changed:
+  - cosmicfishpie/cosmology/jax_theory.py
+  - cosmicfishpie/cosmology/jaxcosmo_theory.py
+  - cosmicfishpie/cosmology/jaxcosmo_halofit.py
+  - cosmicfishpie/cosmology/jaxcosmo_amplitude.py
+  - cosmicfishpie/cosmology/jaxcosmo_provider.py
+  - cosmicfishpie/LSSsurvey/jaxcosmo_photo.py
+  - cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+  - cosmicfishpie/fishermatrix/jaxcosmo_derivatives.py
+  - scripts/validation/compare_jax_photo_fishers.py
+  - scripts/validation/compare_jax_spectro_fishers.py
+  - CHANGELOG.md
+claims_touched: []
+key_context:
+- turn: 1
+  excerpt: >-
+    Researcher asked to port the photometric and spectroscopic observables into a
+    JAX-capable autodiff path, keeping them close to the existing calculations so autodiff
+    and finite-difference Fishers can be compared, with the long-term aim that everything
+    needing differentiation lives in JAX and only the backend changes.
+open_threads:
+- 'Scientific validation of the jaxcosmo backend Fishers is deferred to another workstation.'
+- 'Reviewer pass pending: unit tests, formatters, CI extra job and Nautilus worker-local JIT.'
+ai_suggestions_pending:
+- 'Freeze the no-wiggle window at the fiducial h rather than reproducing the legacy quantisation (O18).'
+- 'Prefer direct Halofit evaluation over spline extrapolation at the grid edges (O19).'

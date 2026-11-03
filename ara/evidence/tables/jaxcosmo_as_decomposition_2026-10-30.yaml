@@ -1,0 +1,113 @@
+# Amplitude-error decomposition, SYREN-NEW versus JAXcosmo (N92)
+# Euclid pessimistic GCph+WL, flat LCDM, mnu=0, ns=0.96 fixed.
+# Four cosmological parameters and 13 nuisance parameters; 68.27% marginalized errors.
+# Producer: cfp-jaxcosmo/scripts/validation/compare_theory_amplitude_response.py
+
+experiment: N92
+date: '2026-10-30'
+commit: 022d02a
+settings:
+  survey: Euclid-Photometric-ISTF-Pessimistic
+  observables: [GCph, WL]
+  accuracy: 1
+  derivatives: 3PT
+  free_cosmology: [10^9As, Omegam, Omegab, h]
+  fixed: {ns: 0.96, mnu: 0.0}
+  relative_step: 0.01
+
+fiducials:
+  fiducial-1:
+    parameters: {10^9As: 2.1, Omegam: 0.32, Omegab: 0.05, h: 0.67, ns: 0.96, mnu: 0.0}
+    marginalized_sigma_As:
+      syren: 0.02943957576957685
+      jax_autodiff: 0.02640811095269748
+      jax_finite_difference: 0.0264065
+    sigma_As_by_nuisance_treatment:
+      cosmology_only: {syren: 0.0223482, jax_ad: 0.0237162, jax_fd: 0.0237172}
+      cosmology_bias: {syren: 0.0294102, jax_ad: 0.0263472, jax_fd: 0.0263453}
+      cosmology_bias_ia: {syren: 0.0294396, jax_ad: 0.0264081, jax_fd: 0.0264065}
+    unmarginalized_sigma_As:
+      syren: 0.00191324
+      jax_autodiff: 0.00186387
+      jax_finite_difference: 0.00186388
+    correlations_As:
+      Omegam: {syren: -0.1709, jax_ad: -0.1974}
+      Omegab: {syren: -0.4618, jax_ad: -0.4254}
+      h: {syren: -0.5857, jax_ad: -0.5222}
+      b1: {syren: -0.1971, jax_ad: -0.2232}
+      b8: {syren: -0.3654, jax_ad: -0.2751}
+      b10: {syren: -0.4290, jax_ad: -0.3433}
+    max_fisher_difference_ad_vs_fd: 1.806001638557951e-05
+  fiducial-2:
+    parameters: {10^9As: 2.15, Omegam: 0.31, Omegab: 0.049, h: 0.68, ns: 0.96, mnu: 0.0}
+    marginalized_sigma_As:
+      syren: 0.0307265
+      jax_autodiff: 0.0272525
+      jax_finite_difference: 0.0272509
+    max_fisher_difference_ad_vs_fd: 1.7987180136757604e-05
+
+theory_response_dlnPnl_dlnAs:
+  # Mean over k = 1e-3 to 1 h/Mpc, central difference in ln As (1%).
+  redshifts:
+    0.0: {jax_mean: 1.1060, syren_mean: 1.0821, ratio_mean: 0.9795, ratio_min: 0.9096, ratio_max: 1.0138}
+    0.5: {jax_mean: 1.0921, syren_mean: 1.0707, ratio_mean: 0.9826, ratio_min: 0.9275, ratio_max: 1.0034}
+    1.0: {jax_mean: 1.0803, syren_mean: 1.0719, ratio_mean: 0.9942, ratio_min: 0.9564, ratio_max: 1.0098}
+    2.0: {jax_mean: 1.0590, syren_mean: 1.0616, ratio_mean: 1.0037, ratio_min: 0.9689, ratio_max: 1.0207}
+  autodiff_vs_finite_difference: 7.29e-06
+
+hybrid_test_fiducial_1:
+  description: SYREN-NEW total-matter power inside the JAX photometric observable.
+  sigma_As_syren: 0.0294396
+  sigma_As_jax: 0.0264081
+  sigma_As_hybrid: 0.0294160
+  hybrid_over_syren: 0.99920
+  fiducial_cl_max_relative_difference: 8.294e-04
+
+timing_seconds:
+  # Cold forecast totals excluding shared imports; warm = repeated compiled Jacobian.
+  fiducial-1: {syren_fd: 6.941, jax_ad_cold: 27.099, jax_fd_cold: 5.640, jax_ad_warm: 0.033}
+  fiducial-2: {syren_fd: 7.583, jax_ad_cold: 23.386, jax_fd_cold: 6.519, jax_ad_warm: 0.035}
+  observable_rebuilt_on_second_fiducial: true
+
+alternative_syren_coefficients_marginalized_sigma_As:
+  # Older response-loss-weight refits of the SYREN-NEW coefficients.
+  installed_pinned: 0.02943958
+  weight_0.1: 0.02997339
+  weight_0.2: 0.03034061
+  weight_0.3: 0.03067914
+
+interpretation:
+  supported: >-
+    The gap is set by the matter power model and amplified by galaxy-bias marginalization;
+    the JAX observable, covariance, Fisher assembly and autodiff reproduce their same-theory
+    counterparts.
+  not_supported: >-
+    That either model is the more accurate description of the true nonlinear matter power, or
+    that the response-optimised SYREN coefficients reduce this difference.
+  promotion: staged as O23; requires researcher assessment.
+
+linear_shape_channel:
+  # Follow-up N93: both backends are "Eisenstein-Hu" but not the same formula.
+  syren_linear_model: >-
+    sign = plin_new_emulated = get_eisensteinhu_nw(k) * D(k,a)^2 * exp(logF_fiducial)
+    * growth_correction_R * S(k); the wiggle and broadband content comes from the fitted
+    logF correction (Bartlett et al. 2023) and the S(k) correction, not from the bare EH fit.
+  jax_linear_model: Eisenstein-Hu 1998 with baryon wiggles (eisenhu_osc), sigma8 normalised.
+  growth_ratio_syren_over_jax: {z0: 1.00000, z0.5: 1.00039, z1: 1.00033, z2: 1.00038}
+  linear_ratio_z0_by_band:
+    0.001-0.005: 1.00320
+    0.005-0.02: 1.01637
+    0.02-0.05: 1.00926
+    0.05-0.1: 0.98717
+    0.1-0.2: 0.99135
+    0.2-0.5: 1.00927
+    0.5-1: 1.01605
+  halofit_on_syren_linear_marginalized_sigma_As:
+    value: 0.0301323
+    versus_syren: 1.0235
+    versus_jax: 1.1410
+  reference_sigma_As: {syren: 0.0294396, jax_ad: 0.0264081}
+  conclusion: >-
+    The linear input carries essentially all of the ~10% gap; the nonlinear prescriptions
+    differ in the opposite direction at the percent level. Commit 1c5b946.
+  promotion: staged as O24; requires researcher assessment.

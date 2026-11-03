@@ -1,4 +1,194 @@
 entries:
+- turn: 2026-11-03_001#5
+  notes:
+  - Recorded authorized round-5 commit 4b44649; CI results and remote publication remain pending, no empirical claims made.
+- turn: 2026-11-03_001#4
+  notes:
+  - Recorded round-5 maintenance fixes without claiming test success; researcher explicitly deferred tests to CI.
+  - Updated open campaign status from user output and removed the unadopted same-backend validation requirement; no scientific result or claim promoted.
+- turn: 2026-11-02_001#11
+  notes:
+  - Recorded PR221 dependency-resolution failure from CI logs; current-main removal of Furo suggests rebase resolves historical conflict, pending actual validation.
+- turn: 2026-11-02_001#10
+  notes:
+  - Recorded authorized PR220 commit bc2061d as maintenance provenance; remote update remains with the maintainer.
+- turn: 2026-11-02_001#9
+  notes:
+  - Recorded completed local PR220 formatting verification as maintenance provenance; no scientific claims promoted. Commit and remote update remain pending.
+- turn: 2026-11-02_001#8
+  notes:
+  - Recorded PR220 CI log diagnosis as a maintenance journey fact; no scientific claims or experiments and no runtime code changes.
+- turn: 2026-11-02_001#7
+  notes:
+  - Recorded OLE inspection and issue creation as journey fact N102; adapter design remains an unconfirmed proposal in issue 233 and session suggestions, not a scientific claim.
+  - No existing scientific observation received a closure signal from this maintenance task; no claims promoted.
+- turn: 2026-10-31_001#2
+  notes:
+  - 'Moved release note into docs as requested; N95 preserves the canonical path mapping rather than rewriting N94.'
+  - 'Recorded EH-wiggle versus corrected EH-no-wiggle formulas and numerical evidence; no dedicated bare-no-wiggle Fisher was measured.'
+  - 'Qualified prior causal overstatement: the linear-input hybrid uses clamped tails and sigma8 renormalization. No new numerical experiment or claim promotion.'
+- turn: 2026-10-31_001#1
+  notes:
+  - 'N94 directly records researcher release priorities and deferred alternatives.'
+  - 'Roughly 10% accepted for now does not endorse the causal interpretations O23/O24; no promotion.'
+  - 'Corrected prior assistant PyPI advice using official Setuptools documentation: direct URLs in published dependency metadata are rejected, including extras.'
+  - 'Development note records rename scope and the experimental hybrid integration-tail limitation; no rename or dependency change performed.'
+- turn: 2026-10-30_001#4
+  notes:
+  - 'N93 answers a conceptual objection, so it is logged as one experiment: linear-shape table plus Halofit-on-SYREN-linear bridge.'
+  - 'Staged O24 rather than promoting it: the mechanism is measured, but naming the linear emulator as the cause remains the researcher''s call.'
+  - 'O23 is not contradicted: O24 refines which part of the matter-power model carries the gap. Neither is promoted.'
+  - 'Checked the SYREN source rather than assuming: get_eisensteinhu_nw is the no-wiggle fit, so "both use Eisenstein-Hu" conflates a backbone with the full model.'
+- turn: 2026-10-30_001#3
+  notes:
+  - 'N92 records two fiducials, a JAX-FD control and the hybrid power-swap test as one decomposition experiment.'
+  - 'Routed the interpretation to staging as O23 rather than a claim: the hybrid result is strong but the researcher has not assessed it.'
+  - 'O22 remains staged: it attributes the SYREN gap to the ns response and nonlinear prescription; this turn measured the amplitude channel, not that mechanism.'
+  - 'Kept the second-fiducial recompilation finding in N92 so future timing work does not assume cross-fiducial cache reuse.'
+- turn: 2026-10-30_001#2
+  notes:
+  - 'N91 captures single-run cold/warm timings and fixed-ns errors; no general speedup or accuracy claim staged.'
+  - 'First AD derivative call includes compilation and execution, not pure compilation. Theory JIT also occurs during setup.'
+  - 'User affirmation concerns docs; no interpretive observation promoted. SYREN and JAXcosmo remain different theories.'
+- turn: 2026-10-30_001#1
+  notes:
+  - 'Recorded user fixed-ns choice N89 and documentation/build evidence N90 separately.'
+  - 'Notebook works affirmation concerns usability; does not establish the causal dominance of ns asserted in staged O22. No claim promoted.'
+  - 'Preserved original ns-free N88 numbers as historical; no fixed-ns scientific results measured this turn.'
+  - 'Online strict docs check has external SciPy inventory timeout; offline strict build passed without suppressing content warnings or modifying Sphinx configuration.'
+- turn: 2026-10-29_001#2
+  notes:
+  - 'Logged the notebook as one experiment node (N88): the build, the execution and the four figures are one artifact.'
+  - 'Staged O22 instead of promoting it: the AD-vs-FD convergence is measured, but attributing the SYREN gap to theory rather than code is the researcher''s call.'
+  - 'Did not record the clarifying question about JaxPhotoObservable as a decision: it was answered from the code and changed no direction.'
+- turn: 2026-10-29_001#1
+  notes:
+  - 'Routed the review and all fixes as ONE experiment node (N86): they are one review arc with a shared evidence
+    file. The user''s upstreaming direction is a separate user decision (N87), left open.'
+  - Did NOT edit the O19 text or the N85 figure. Added a dated correction field and a supersession sentence in N86
+    so the wrong spline claim stays visible. Removed two duplicate top-level YAML keys only after checking the parsed
+    content was identical.
+  - 'Staged O20 (claim) and O21 (heuristic) rather than crystallizing: the user asked for the work but has not assessed
+    the numbers.'
+- turn: 2026-10-28_001#1
+  notes:
+  - Routed the backend, observable and parity work as one experiment node (N82) with three follow-ups, because
+    the commits form a single implementation arc; the bisection attempt is a dead_end (N83) so the lesson survives.
+  - Staged O18/O19 as constraints bound to N85 rather than claims, since they are properties of the legacy code that the
+    researcher has not yet assessed or adopted.
+  - 'Kept the deferred validation and the reviewer pass as open_threads; no causal or production claims promoted.'
+- turn: 2026-10-26_001#1
+  notes:
+  - Recorded user stop decision N81. No additional optimization, diagnostics or production pin changes authorized.
+  - Stop direction does not affirm O15/O16/O17 or resolve N77 causally; no claim promotion. Prior suggestions deferred.
+- turn: 2026-10-23_001#5
+  notes:
+  - N80 records saved-response visualization and independent RMS verification. Representative sample and population median explicitly distinguished.
+  - RMS refers to differences from EE2, not response amplitude. No new solver run or held-out claim; O15/O16/O17 remain staged.
+  - Refreshed bundle manifest and local DVC tracking; no upload or push.
+- turn: 2026-10-23_001#4
+  notes:
+  - Recorded executed scan as N79 with direct quantitative bindings; staged comparative recommendation O17, no claim promotion.
+  - O15/O16 remain scoped and staged. Metric-dependent ranking is not a contradiction or a causal resolution of N77.
+  - All 1000 original power/response points reproduced before aggregate validation; weight 0.3 Fisher matched bit-for-bit.
+  - Separate approved coefficient commits/worktrees preserve provenance without environment reinstall. DVC prepared, no upload or push.
+- turn: 2026-10-23_001#3
+  notes:
+  - Recorded storage direction as user decision N78; original trace paths remain historical with explicit canonical mapping.
+  - Verified byte-identical scientific payload before source removal. Navigation originals archived and checksum manifests refreshed; local DVC status passed.
+  - No data upload, Git stage, commit or push. O15/O16 remain staged; storage relocation is not scientific affirmation and N77 remains open.
+- turn: 2026-10-23_001#2
+  notes:
+  - Recorded researcher concern as open N77. Error inflation computed directly from saved summaries; derivative-causal diagnosis remains unresolved.
+  - Did not promote O15/O16: concern is not affirmation of a mechanistic interpretation or general validity of the refit.
+- turn: 2026-10-23_001#1
+  notes:
+  - Recorded fresh campaign as N76 and model-dependent error-gap interpretation as O16.
+  - O15 is explicitly LCDM-scoped; w0waCDM result is not a contradiction. No causal claim or claim promotion.
+  - All three nested-model tests recover LCDM and coefficient proof was repeated; optimized branch remains installed.
+- turn: 2026-10-22_001#3
+  notes:
+  - Recorded ns-fixed experiment N75 with exact conditional covariance validation and saved evidence.
+  - All 13 remaining nuisances marginalized; no forecast recomputation or causal claim. O15 remains staged pending researcher assessment.
+- turn: 2026-10-22_001#2
+  notes:
+  - Recorded requested visualization as N74; preserved full nuisance marginalization through CosmicFishPie operations and used FishConsumer for the triangle.
+  - Correlations derived from covariance rather than normalized information; no new solver run or generalized scientific claim.
+  - User endorsed the bar-plot presentation, not a broader causal interpretation; O15 remains staged.
+- turn: 2026-10-22_001#1
+  notes:
+  - Recorded user scope as N72 and completed numerical experiment as N73; explicit approval authorized the local symbolic_pofk commit.
+  - Staged O15 without crystallizing; the researcher has not yet assessed the new numerical results, and reduced Fisher gaps do not establish physical accuracy or sole derivative causality.
+  - C03 describes the old coefficients; the new intervention is additional scoped evidence, not a contradiction of its historical diagnosis.
+  - Preserved original user changes, project dependency pins, LHS data and all baseline snapshots; no push or ARA commit performed.
+- turn: 2026-10-21_001#1
+  notes:
+  - Recorded relocation/storage as user decision N71, linked to N70; no new scientific claims or cosmology computations.
+  - Preserved N70 historical paths and original metadata; recorded the new canonical cjfp-data location and verified source snapshots.
+  - Targeted DVC upload completed; Git publication remains with the user, with exact staging/commit/push commands documented.
+- turn: 2026-10-20_001#3
+  notes:
+  - Recorded N70 as an executed numerical campaign with explicit finite-step and domain provenance.
+  - No claims crystallized; the user has not assessed the new response distributions or attributed their physical cause.
+  - Preserved main-worktree source changes and local outputs without staging, committing or pushing.
+- turn: 2026-10-20_001#2
+  notes:
+  - Recorded N69 as implementation and saved-data visualization; no cosmological claims promoted.
+  - Quantile windows reflect user choice; timing bars describe single completed runs rather than controlled performance experiments.
+- turn: 2026-10-20_001#1
+  notes:
+  - Recorded library refactoring and numerical regression checks as N68, not new cosmological evidence.
+  - No claims promoted; campaign inputs were read only and the executed notebook was refreshed.
+- turn: 2026-10-16_001#3
+  notes:
+  - Recorded user scheduling decision as N67; no scientific settings changed or numerical jobs launched.
+  - Used dependent waves because array index ordering cannot guarantee priority; afterany allows remaining cases despite first-wave timeout/failure.
+- turn: 2026-10-16_001#2
+  notes:
+  - Recorded N66 as implementation and synthetic validation, not new cosmological evidence; resolved N65 following explicit user approval of Pmm variants.
+  - Kept EE2 prescription/domain and bounded-prior limitations explicit; no staged scientific claim promoted.
+  - Only cjfp-data scripts/docs/tests were committed; no push or costly solver/sampler execution.
+- turn: 2026-10-16_001#1
+  notes:
+  - Recorded unresolved scientific configuration decision N65; did not silently replace case-02 clustering power with total power or equate EE2 with HMcode2020.
+  - Implementation paused for user confirmation; no costly numerical work performed.
+- turn: 2026-10-15_001#5
+  notes:
+  - Recorded N64 as completed-result post-processing: compared two same-revision symbolic Nautilus posterior chains against their matching conditional Fisher references.
+  - Used fishconsumer and CosmicFishPie loaders/plotters; no chain sampling or Fisher computation rerun.
+  - Kept the new plots outside cjfp-data DVC; the user has not requested data transfer in this turn.
+- turn: 2026-10-15_001#4
+  notes:
+  - Recorded N63 as a read-only runtime diagnosis; active workers and a recently updated HDF5 checkpoint show the process is not idle.
+  - Distinguished active resource use from sampler progress: f_live remains 1.0 and N_eff is only 2 against the 3000 target.
+  - Did not interrupt, alter, or resume the user's chain; leave the run/precision decision to the researcher.
+- turn: 2026-10-15_001#1
+  notes:
+  - Recorded N60 as a post-processing experiment: ns was fixed by eliminating its Fisher row/column, while remaining nuisance and unplotted parameters were marginalized through CosmicFish utilities.
+  - Used saved matrices only; no Boltzmann solver or Fisher calculations were rerun.
+  - Kept conclusions descriptive and conditional; reduced forecast differences do not establish which backend is physically accurate.
+  - No claim was crystallized because the user has not yet commented on these conditional results.
+- turn: 2026-10-15_001#2
+  notes:
+  - Regenerated full-free and ns-fixed plots with CosmicFishPie operations for the Fisher transformations and the earlier plotting style for presentation.
+  - Expanded ellipse bounds from the 95% two-dimensional contour radius plus margin; combined GCsp/GCph+WL ratios with backend colors and probe hatching.
+  - Visually inspected representative ellipse and ratio outputs; DVC workspace is modified and no upload was made.
+- turn: 2026-10-15_001#3
+  notes:
+  - User explicitly authorized DVC upload and Git commit; DVC pushed 65 files and remote status confirmed in sync.
+  - Reviewed status/history before staging; staged and committed only validation/fisher.dvc as e1ce738.
+  - Preserved unrelated pre-existing untracked .python-version, pyproject.toml, src/, and uv.lock; did not push Git.
+- turn: 2026-10-15_001#1
+  notes:
+  - Recorded the requested Fisher contour visualization as experiment N60, bound to the completed six-run campaign N59.
+  - Used inverse full Fisher matrices and parameter sub-blocks to retain nuisance and non-plotted cosmological marginalization.
+  - Did not infer backend physical accuracy from ellipse differences; uploaded/DVC state remains unchanged.
+- turn: 2026-10-14_001#3
+  notes:
+  - Recorded the completed six-run Frey Fisher campaign as N59; logs and manifest show all runs exited successfully.
+  - Stored comparison plots and summaries alongside the data without modifying original matrices or uploading/committing results.
+  - Kept interpretation descriptive; Fisher differences do not establish physical accuracy or a causal mechanism.
+  - Preserved the distinct open thread for the five-parameter LCDM Nautilus posterior campaign.
 - turn: 2026-09-15_001#1
   notes:
   - Routed verification as a resolved experiment because it produced direct command evidence.
@@ -287,3 +477,97 @@ entries:
   - Routed N47 as a direct experiment; its by-product environment constraint (broken default python3 kernelspec) is staged as O13 rather than a claim, since only one host was observed.
   - Corrected 02's Schur-complement wording after reading eliminate_columns_rows: it is a conditional sub-block, and the fix is already inside N46's file changes, so no separate node.
   - No closure signals on O12/O13; neither promoted. Claims untouched.
+- turn: 2026-10-12_001#1
+  notes:
+  - Recorded controlled numerical outcomes directly as N48/N49; staged the broader causal interpretation O14 pending remaining cases and researcher review.
+  - Preserved native CLASS cb as an explicit different prescription; did not claim it is physically wrong.
+  - Local correction retains supported-grid hardening, so its removal is not required for the measured recovery.
+  - No Frey run, Git commit/push or DVC upload performed. Generated evidence remains local and ignored.
+- turn: 2026-10-13_001#1
+  notes:
+  - Recorded notebook execution as N50, not a new solver or Fisher experiment.
+  - The fixed-sigma8 and reconstruction-reference labels prevent treating residuals as physical truth or fixed-As derivatives.
+  - Kept campaign-wide interpretation staged; no new full-suite evidence or direct endorsement of a precise broader claim.
+  - Plots inspected and numerical summaries checked; no lint suite, Git commit/push or DVC transfer.
+- turn: 2026-10-13_001#2
+  notes:
+  - Recorded independent solver execution as N51; user's simplification request is not endorsement of a broader scientific claim.
+  - Explicit fixed-As and fixed physical CDM/baryon densities distinguish the new derivatives from N48's fixed-sigma8 parameterization.
+  - No staged causal claim promoted; remaining Frey campaign still pending.
+- turn: 2026-10-13_001#3
+  notes:
+  - Recorded scheduling implementation as user-directed decision N52; mocked scheduling tests are not scientific validation evidence.
+  - Transcript establishes zero skips and immediate execution failures, not their cause; leave remote log diagnosis open.
+  - Normal reuse compares relevant numerical code and inputs; failed-first forces a fresh full selected campaign.
+- turn: 2026-10-13_001#4
+  notes:
+  - User log plus source inspection resolves startup diagnosis; N53 records operational fix, not new scientific evidence.
+  - Tested real helper setup under a poisoned shell Python and mocked expensive backend/report commands only.
+- turn: 2026-10-13_001#5
+  notes:
+  - N54 records externally executed corrected Fishers, inspected directly on Frey; not new AI-run calculations.
+  - UTC/local timestamp distinction resolves apparent selector inconsistency. Local DVC archive is older than live results.
+  - Kept O14 staged pending researcher response; restored numerical agreement does not establish physical superiority of reconstruction.
+- turn: 2026-10-13_001#6
+  notes:
+  - N55 records live GitHub readiness, distinguishing successful numerical recovery from remaining merge gates.
+  - User phrased archival as own next action; no commit or upload authorization inferred.
+- turn: 2026-10-13_001#7
+  notes:
+  - N56 captures executed local CI diagnostics; Python version difference explicitly retained.
+   - No interpretive scientific claims staged or promoted; remaining failures are formatting, Sphinx navigation, and relative project coverage.
+- turn: 2026-10-14_001#1
+  notes:
+  - N57 records local executed checks and numeric coverage, not a GitHub green status or physical validation claim.
+  - Analytic reconstruction oracle checks weighting and interpolation independently; EE2 uses a controlled emulator double without the optional dependency.
+  - No staged scientific observation closed by this implementation request; O14 remains staged.
+- turn: 2026-10-14_001#2
+  notes:
+  - N58 records the requested launcher and verified input plumbing, not a six-Fisher execution result.
+  - MP settings retain seven cosmological free parameters and fixed neutrino mass; explicit SYREN-NEW selection prevents legacy fallback.
+  - Merge confirmed through GitHub; new launcher is uncommitted on local main, with immediate user-copy launch instructions.
+- turn: '2026-11-02_001#12'
+  notes:
+      - "Logged the merge as an experiment node (N103), not a decision: the outcome is a verified integration state, the choice of merge-over-rebase was the user's."
+      - "Recorded the lockfile as regenerated, not merged, because hand-resolving a uv.lock is not auditable; the verification commands are the evidence."
+      - "Did NOT promote anything to logic/: the merge is infrastructure, and the pre-existing edge-case failures are explicitly scoped out rather than treated as a claim."
+- turn: '2026-11-02_001#13'
+  notes:
+      - "Logged round 3 as an experiment (N104) because it produced verified behaviour changes, not just edits."
+      - "Did NOT promote the rootless-Halofit behaviour to a claim: it is a code contract, and the earlier mistaken belief that the finiteness check covered it is the interesting part, so that is narrative in the node."
+      - "Kept every fix as a direct routing event: each is backed by a passing regression test, so no staging was needed."
+- turn: '2026-11-02_001#14'
+  notes:
+    - "Routed the thread replies as an observation, not an experiment: no code changed, only review state."
+    - "Replied per finding with the commit and the covering test name so the thread is self-verifying after the push."
+    - "Cleared the now-satisfied ai_suggestion about replying to the CodeRabbit summary comment."
+- turn: '2026-11-02_001#15'
+  notes:
+    - "Routed the Codecov fix as an observation: it changes CI wiring, not the scientific pipeline."
+    - "Recorded the rejected after_n_builds design explicitly, because the lesson is that the fix must not depend on a second job completing."
+    - "Promoted nothing to logic/: coverage plumbing carries no falsifiable scientific content."
+- turn: '2026-11-03_001#1'
+  notes:
+    - 'Recorded the five CodeRabbit corrections as N105; full-suite/style checks passed and the source changes were committed locally as 9a9dc31.'
+    - 'No scientific claim was staged or promoted: this turn hardens parameter validation and preserves the explicit unsupported sigma-pv boundary.'
+    - 'Review replies are deferred until the researcher pushes 9a9dc31 so the PR head matches the fixes.'
+- turn: '2026-11-03_001#2'
+  notes:
+    - 'Recorded the five review replies and verified thread resolution as observation PR231-R4-REPLY; no code changed this turn.'
+    - 'Updated the release checklist only after confirming PR head 9a9dc31 and zero unresolved review threads.'
+    - 'No scientific claim was staged or promoted; this is review-process closure.'
+- turn: '2026-11-03_001#3'
+  notes:
+    - 'Recorded the readiness audit and launcher checks as N106; Git/DVC sync is local-to-remote, not verification of a workstation checkout.'
+    - 'Kept NumPy 2 scientific equivalence open; CAMB/CLASS agreement alone cannot establish old/new same-backend equivalence or isolate NumPy causality.'
+    - 'No scientific claim promoted. Pre-merge validation is an AI recommendation, not a researcher-confirmed experimental outcome.'
+- turn: '2026-11-03_001#6'
+  notes:
+    - "Routed the rename as an experiment (N107), not a claim: it is a build/validation result, and the scientific gate (unchanged numbers) comes from the same test suite, not from new physics."
+    - "Kept the compatibility decisions (metadata key, repo name, historical docs, neutrino token) as evidence inside N107 rather than separate observations; they were explicit instructions from the release plan."
+    - "Left the branch uncommitted and staged the commit split in open_threads, because commits require explicit researcher authorization."
+- turn: '2026-11-03_001#7'
+  notes:
+    - "Logged the commit as a second event on the same node N107 rather than a new node: committing does not change the experimental result, only its durability."
+    - "Refused to let 'commit' imply 'push'; publication stays with the researcher per the standing rule."
+    - "Kept the decision about the legacy-import window open; the shim exists but its removal date is uncontracted."

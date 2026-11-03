@@ -1,0 +1,39 @@
+session:
+  id: 2026-10-31_001
+  date: '2026-10-31'
+  started: '2026-10-31T09:55'
+  last_turn: '2026-10-31T09:55'
+  turn_count: 2
+  summary: Prioritize CosmicJellyfish release and rename; defer JAX-SYREN distribution work.
+events_logged:
+- turn: 2
+  type: decision
+  id: N95
+  routing: direct
+  provenance: user
+  summary: Move release direction to docs and expand the EH/SYREN comparison record.
+- turn: 1
+  type: decision
+  id: N94
+  routing: direct
+  provenance: user
+  summary: Accept current approximate cross-model agreement and prioritize release over additional emulator work.
+ai_actions:
+- turn: 2
+  action: Moved the note to docs and added formulas, power/growth ratios, Fisher controls and hybrid limitations.
+  provenance: ai-executed
+  files_changed:
+  - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+- turn: 1
+  action: Wrote development decision note with deferred options, PyPI correction and rename planning scope.
+  provenance: ai-executed
+  files_changed:
+  - cfp-dev/COSMICJELLYFISH_RELEASE_NOTES.md
+claims_touched: []
+key_context:
+- turn: 1
+  excerpt: Researcher wants to prioritize the CosmicJellyfish release; J could stand for JAX capability.
+open_threads:
+- Scope package/import rename and compatibility policy in a subsequent task.
+- Resolve existing direct-URL dependency metadata before PyPI publication.
+ai_suggestions_pending: []

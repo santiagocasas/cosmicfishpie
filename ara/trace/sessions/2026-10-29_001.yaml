@@ -1,0 +1,80 @@
+session:
+  id: 2026-10-29_001
+  date: '2026-10-29'
+  started: '2026-10-29T14:46'
+  last_turn: '2026-10-29T15:48'
+  turn_count: 2
+  summary: >-
+    Reviewed the jaxcosmo branch, fixed nine findings with tests and commits, corrected a wrong spline
+    claim, prepared (not pushed) a jax-cosmo Halofit patch, and added an executed notebook comparing
+    autodiff, JAX finite differences and the standard photometric backends.
+events_logged:
+- turn: 2
+  type: experiment
+  id: N88
+  routing: direct
+  provenance: ai-executed
+  summary: Notebook 07 executed; AD-vs-FD Fisher gap 1.8e-05 -> 4.2e-08 with step, SYREN gap 4.8e-02.
+- turn: 2
+  type: observation
+  id: O22
+  routing: staged
+  provenance: ai-suggested
+  summary: Residual jaxcosmo-vs-SYREN gap attributed to theory (ns response), not derivatives.
+- turn: 1
+  type: decision
+  id: N87
+  routing: direct
+  provenance: user
+  summary: Prepare a smooth-Halofit patch for jax-cosmo upstream; PR left to researcher.
+- turn: 1
+  type: experiment
+  id: N86
+  routing: direct
+  provenance: ai-executed
+  summary: Review F1-F9 fixed, 31 tests added, legacy_pk_clamp explains first-k gap, Halofit jacobian 2.8x cheaper.
+- turn: 1
+  type: observation
+  id: O20
+  routing: staged
+  provenance: ai-suggested
+  summary: Master Halofit AD-vs-FD 24% at 1% step; patch 0.1%.
+- turn: 1
+  type: observation
+  id: O21
+  routing: staged
+  provenance: ai-suggested
+  summary: Fiducial-only and max-normalised parity hides port errors; use perturbed points and option branches.
+ai_actions:
+- turn: 2
+  action: Built and executed notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb with four embedded figures; results under results/jaxcosmo_ad_vs_fd/.
+  provenance: ai-executed
+  files_changed:
+  - cfp-jaxcosmo/notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb
+- turn: 1
+  action: Fixed F1-F9 on jaxcosmo-autodiff with tests; wrote docs/source/jaxcosmo_review.md; prepared jax-cosmo branch.
+  provenance: ai-executed
+  files_changed:
+  - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+  - cfp-jaxcosmo/cosmicfishpie/fishermatrix/jaxcosmo_derivatives.py
+  - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_halofit.py
+  - cfp-jaxcosmo/docs/source/jaxcosmo_review.md
+  - differentiablestuff/jax_cosmo/jax_cosmo/power.py
+claims_touched: []
+key_context:
+- turn: 2
+  excerpt: >-
+    User: yeah, go ahead, create the notebook! One thing ... JAX photometry is the cosmicfishpie Jax
+    implementation of the cosmicfishpie photo class, right?
+- turn: 1
+  excerpt: >-
+    User: it would be worth to pull request this into jax-cosmo itself, no? And yes, let's go now into Build mode,
+    write some review in md files to keep track of all this and fix the found issues, one by one, committing
+    when possible in between.
+open_threads:
+- Notebook 07 is uncommitted on jaxcosmo-autodiff.
+- Researcher to decide whether to open the jax-cosmo pull request (N87).
+- Photometric observable, Nautilus worker-local JIT and CI extra job still untested (review F7).
+- Large cross-backend Fisher campaign deferred to the other workstation.
+ai_suggestions_pending:
+- Prefer custom_jvp to stop-gradient plus one Newton step if jax-cosmo maintainers ask (not adopted).

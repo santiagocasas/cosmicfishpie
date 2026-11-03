@@ -1,0 +1,124 @@
+session:
+  id: 2026-11-03_001
+  date: '2026-11-03'
+  started: '2026-11-03T00:00'
+  last_turn: '2026-11-03T07:10'
+  turn_count: 7
+  summary: Closed PR231 review threads, audited NumPy 2 validation readiness, launched the workstation campaign, and built the cosmicfishpie-to-cosmicjellyfish rename branch with a shared-object legacy alias.
+events_logged:
+  - turn: 1
+    type: experiment
+    id: N105
+    routing: direct
+    provenance: ai-executed
+    summary: Fixed five CodeRabbit findings in density aliases, Hubble/DE aliases, grid counts and spectroscopic sigma-pv fiducials; 513 tests passed, 1 skipped; committed as 9a9dc31.
+  - turn: 2
+    type: observation
+    id: PR231-R4-REPLY
+    routing: direct
+    provenance: ai-executed
+    summary: User pushed 9a9dc31; replied to all five round-4 CodeRabbit comments and verified all five threads resolved (PR #231 has 39 total threads and none unresolved).
+  - turn: 3
+    type: experiment
+    id: N106
+    routing: direct
+    provenance: ai-executed
+    summary: Verified Git/DVC sync and 25 case inputs; prepared isolated NumPy 2 launcher and runbook; real preflight and mocked launch pass, scientific campaign not run.
+  - turn: 4
+    type: observation
+    id: PR231-R5-FIX
+    routing: direct
+    provenance: ai-executed
+    summary: Fixed five valid findings in four new CodeRabbit threads; added CI regressions for non-finite densities/DE, ns aliases, integer counts and array sigma-pv fiducials. Tests deliberately not run locally at researcher request; changes uncommitted.
+  - turn: 5
+    type: observation
+    id: PR231-R5-COMMIT
+    routing: direct
+    provenance: ai-executed
+    summary: Authorized round-5 changes committed as 4b44649; clean worktree, local tests deferred to CI and publication left to researcher.
+  - turn: 6
+    type: experiment
+    id: N107
+    routing: direct
+    provenance: ai-executed
+    summary: Renamed the package to cosmicjellyfish on a new branch/worktree from 4b44649 and added a module-aliasing cosmicfishpie shim; 546 tests pass with the JAX extra, strict docs build and wheel/sdist installs pass, 293 files changed, nothing committed.
+  - turn: 7
+    type: experiment
+    id: N107
+    routing: direct
+    provenance: ai-executed
+    summary: Split the validated rename into two commits on rename/cosmicjellyfish, a70abc5 for the mechanical rename and 2273382 for the deprecated alias, tests and migration guide; worktree clean, not pushed.
+ai_actions:
+  - turn: 5
+    action: Committed the five round-5 implementation, regression-test and CHANGELOG files as 4b44649 after explicit authorization; worktree clean, no tests run and no push.
+    provenance: ai-executed
+    files_changed: []
+  - turn: 4
+    action: Edited provider, spectro observable, two regression-test files and CHANGELOG; applied Black and checked diff whitespace only. CI execution pending user push.
+    provenance: ai-executed
+    files_changed:
+      - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_provider.py
+      - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+      - cfp-jaxcosmo/tests/jaxcosmo_theory_test.py
+      - cfp-jaxcosmo/tests/jaxcosmo_spectro_parity_test.py
+      - cfp-jaxcosmo/CHANGELOG.md
+  - turn: 1
+    action: Implemented five review fixes, regression tests and an Unreleased changelog entry; ran the full suite and style checks, then committed as 9a9dc31.
+    provenance: ai-executed
+    files_changed:
+      - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_provider.py
+      - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+      - cfp-jaxcosmo/tests/jaxcosmo_theory_test.py
+      - cfp-jaxcosmo/tests/jaxcosmo_spectro_parity_test.py
+      - cfp-jaxcosmo/CHANGELOG.md
+      - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+      - cfp-dev/ara/trace/exploration_tree.yaml
+  - turn: 2
+    action: Replied to all five round-4 CodeRabbit comments and verified their review threads are resolved at PR head 9a9dc31.
+    provenance: ai-executed
+    files_changed: []
+  - turn: 3
+    action: Audited data/source sync, archived provenance and runner coverage; added and checked a data-side launcher/runbook without changing PR231 source.
+    provenance: ai-executed
+    files_changed:
+      - cjfp-data/scripts/run-fisher-validation.sh
+      - cjfp-data/validation/NUMPY2_VALIDATION.md
+      - cjfp-data/README.md
+      - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  - turn: 6
+    action: Ran the scripted rename over 187 tracked files with explicit exclusions, added the deprecated import shim and eight alias tests, and validated with the full suite, style checks, strict docs, and wheel/sdist installs.
+    provenance: ai-executed
+    files_changed:
+      - cfp-rename (branch rename/cosmicjellyfish, 293 files)
+      - cfp-rename/cosmicfishpie/__init__.py
+      - cfp-rename/tests/legacy_import_test.py
+      - cfp-rename/docs/source/migration_cosmicjellyfish.md
+      - cfp-rename/CHANGELOG.md
+      - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  - turn: 7
+    action: Committed the rename as a70abc5 (292 files) and the legacy alias, legacy_import_test.py and migration guide as 2273382 after explicit authorization; re-ran the eight alias tests, worktree clean, no push.
+    provenance: ai-executed
+    files_changed:
+      - cfp-rename/cosmicfishpie/__init__.py
+      - cfp-rename/tests/legacy_import_test.py
+      - cfp-rename/docs/source/migration_cosmicjellyfish.md
+      - cfp-rename/docs/source/index.md
+key_context:
+  - turn: 7
+    excerpt: Researcher asked what the neutrino_scheme token was and, once explained, authorized committing the rename branch.
+  - turn: 6
+    excerpt: Researcher asked what the name change involves and requested a new worktree where the rename could be run and fully tested while CI and the 25-case scientific campaign keep running.
+  - turn: 4
+    excerpt: Researcher requested quick review fixes and explicitly prohibited local tests; CI will run after their push. Reported workstation CAMB-versus-CLASS campaign launched at 9a9dc31, with 25 cases and four workers; results pending.
+  - turn: 1
+    excerpt: The researcher approved all five fixes and explicitly requested checking both members of the density alias pairs.
+  - turn: 2
+    excerpt: The researcher pushed commit 9a9dc31 and authorized replies to CodeRabbit; all five round-4 threads are resolved.
+  - turn: 3
+    excerpt: Researcher asked whether cjfp-data scripts were current and synced for workstation launch, prioritizing assurance that NumPy 2 did not break scientific results.
+open_threads:
+  - Await workstation 25-case CAMB-versus-CLASS campaign results at 9a9dc31; researcher selected this comparison as the scientific validation criterion.
+  - Rename branch rename/cosmicjellyfish is committed (a70abc5, 2273382) but unpushed; the researcher pushes, then decides on the PR and the repository rename timing.
+  - Decide the legacy-import support window and whether to publish under the cosmicjellyfish name before the GitHub repository rename.
+ai_suggestions_pending:
+  - Recommended validating jaxcosmo-autodiff before merging, with a short post-merge smoke run.

@@ -1,0 +1,37 @@
+session:
+  id: 2026-10-14_001
+  date: '2026-10-14'
+  started: '2026-10-14T09:34'
+  last_turn: '2026-10-14T12:00'
+  turn_count: 3
+  summary: Fixed CI coverage, added the MP Fisher launcher, and analyzed its completed six-run campaign.
+events_logged:
+  - {turn: 1, type: experiment, id: N57, routing: direct, provenance: ai-executed, summary: Full suite 370 passed; formatting and strict docs pass; coverage 69.04%.}
+  - {turn: 2, type: experiment, id: N58, routing: direct, provenance: ai-executed, summary: Confirmed PR228 merge; six-run MP launcher passes eight lightweight tests.}
+  - {turn: 3, type: experiment, id: N59, routing: direct, provenance: ai-executed, summary: All six Fisher runs succeeded; generated marginalized-error, ratio and correlation plots on Frey.}
+ai_actions:
+  - turn: 1
+    action: Repaired toctree and formatting; added analytic and interface contract tests; ran full tests and CI style/docs checks.
+    provenance: ai-executed
+    files_changed: [docs/source/index.md, cosmicfishpie/cosmology/cosmology.py, scripts/validation/diagnose_neutrino_response.py, tests/cosmology_test.py, tests/validation_runner_test.py, tests/backend_contract_test.py]
+  - turn: 2
+    action: Created main-worktree launchers and documentation; verified inputs and worker configuration without expensive numerical runs.
+    provenance: ai-executed
+    files_changed: [scripts/validation/run_euclid_mp_fishers.py, scripts/validation/run_euclid_mp_fishers.sh, scripts/README.md, tests/euclid_mp_runner_test.py]
+  - turn: 3
+    action: Inspected six campaign logs and matrices; generated comparison plots and CSV/JSON summaries without editing the inputs or original Fisher outputs.
+    provenance: ai-executed
+    files_changed: [/scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/]
+claims_touched: []
+key_context:
+  - turn: 1
+    excerpt: "User: let's do these fixes and add more coverage."
+  - turn: 2
+    excerpt: User requested an MP Fisher launcher for three backends and reported the symbolic overhaul merged into main.
+  - turn: 3
+    excerpt: User requested inspection and comparison plots for the completed Fisher campaign; this is distinct from the five-parameter LCDM Nautilus posterior campaign.
+open_threads:
+  - Five-parameter LCDM Nautilus posterior runs remain a separate campaign; do not confuse them with the completed Fisher campaign.
+  - Archive Fisher comparison artifacts with DVC if desired.
+  - Scientific ns discrepancy deferred to collaborator work.
+ai_suggestions_pending: []

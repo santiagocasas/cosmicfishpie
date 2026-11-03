@@ -1,0 +1,37 @@
+session:
+  id: 2026-10-16_001
+  date: '2026-10-16'
+  started: '2026-10-16'
+  last_turn: '2026-10-16'
+  turn_count: 3
+  summary: Prepared matched Pmm campaigns and plotting, then added four-node Photo-first YAML submission waves.
+events_logged:
+  - {turn: 3, type: decision, id: N67, routing: direct, provenance: user-revised, summary: Four-node Photo-first YAML waves; five mocked submission tests pass; no jobs launched.}
+  - {turn: 2, type: experiment, id: N66, routing: direct, provenance: ai-executed, summary: Committed 14-task Pmm campaign and CosmicFish-based plotting; six cheap tests pass; no numerical runs or Git push.}
+  - {turn: 1, type: decision, id: N65, routing: direct, provenance: user-revised, summary: Await common matter prescription before creating seven-parameter and ns-fixed launchers.}
+ai_actions:
+  - turn: 3
+    action: Added YAML plan, Bash/Python submitter and mocked sbatch tests; no commit or submission.
+    provenance: ai-executed
+    files_changed: [../cjfp-data/jobs_punch/case02_plan.yaml, ../cjfp-data/jobs_punch/submit_case02_plan.sh, ../cjfp-data/jobs_punch/submit_case02_plan.py, ../cjfp-data/jobs_punch/test_case02_submission.py, ../cjfp-data/jobs_punch/CASE02_CAMPAIGN.md]
+  - turn: 2
+    action: Implemented and committed cjfp-data 9efb384 and 61d2878; verified configuration, synthetic Fisher/posterior plotting and archived dashboard lookup.
+    provenance: ai-executed
+    files_changed: [../cjfp-data/jobs_punch/run_case02_campaign.py, ../cjfp-data/jobs_punch/sbatch_files/case02_pmm_campaign.sbatch, ../cjfp-data/jobs_punch/compare_case02_campaign.py, ../cjfp-data/jobs_punch/CASE02_CAMPAIGN.md]
+  - turn: 1
+    action: Read case profiles, common specs, latest JURECA findings and upstream SYREN-NEW implementation; no sampling or scientific source edits.
+    provenance: ai-executed
+    files_changed: []
+claims_touched: []
+key_context:
+  - turn: 3
+    excerpt: User prioritizes Photo CLASS and SYREN-NEW with ns free/fixed, requests at least four concurrent nodes and editable YAML-driven sbatch launch.
+  - turn: 2
+    excerpt: User accepted explicit Pmm variants, requested EE2 controls and authorized committing runnable scripts before preparing plotting tools.
+  - turn: 1
+    excerpt: User requests unified JURECA seven-parameter campaigns and an ns-fixed follow-up; suggests case 02 to compare HMcode2020 and SYREN-NEW.
+open_threads:
+  - User to push scripts, sync JURECA siblings, install optional emulator and submit campaign.
+  - Check actual EE2 domain coverage and posterior prior-edge weight before scientific interpretation.
+ai_suggestions_pending:
+  - Review narrow common priors if posterior truncation is substantial; do not equate EE2 and HMcode2020.

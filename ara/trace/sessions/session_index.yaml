@@ -1,4 +1,93 @@
 sessions:
+- id: 2026-11-03_001
+  date: '2026-11-03'
+  summary: Closed PR231 review threads, audited and launched NumPy 2 validation, and committed the tested cosmicjellyfish rename branch with a shared-object legacy alias (a70abc5, 2273382).
+  turn_count: 7
+  events_count: 7
+  claims_touched: []
+  open_threads: 3
+- id: 2026-11-02_001
+  date: '2026-11-02'
+  summary: >-
+    Prepared the jaxcosmo branch for release, added the JAX CI job and photometric parity
+    tests, fixed both CodeRabbit rounds, replied to and resolved every review thread, and
+    merged the advanced main into the branch (3458eaf) after regenerating the lockfile,
+    then fixed the third CodeRabbit round, made a rootless Halofit bracket return NaN, and
+    collapsed the CI coverage upload to a single job to stop transient Codecov failures.
+  turn_count: 15
+  events_count: 15
+  claims_touched: []
+  open_threads: 4
+- id: 2026-10-31_001
+  date: '2026-10-31'
+  summary: Prioritize CosmicJellyfish release and rename; defer JAX-SYREN distribution work.
+  turn_count: 2
+  events_count: 2
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-30_001
+  date: '2026-10-30'
+  summary: Documented JAXcosmo, timed it at two fiducials, and traced the amplitude gap to the SYREN-NEW linear emulator.
+  turn_count: 4
+  events_count: 6
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-29_001
+  date: '2026-10-29'
+  summary: Reviewed the jaxcosmo branch, fixed F1-F9 with tests, prepared a local jax-cosmo Halofit patch, added the autodiff-vs-FD notebook.
+  turn_count: 2
+  events_count: 6
+  claims_touched: []
+  open_threads: 4
+- id: 2026-10-26_001
+  date: '2026-10-26'
+  summary: Researcher stopped optimization at the completed three-weight comparison; additional work deferred.
+  turn_count: 1
+  events_count: 1
+  claims_touched: []
+  open_threads: 0
+- id: 2026-10-23_001
+  date: '2026-10-23'
+  summary: Completed three-weight 1000-point LHS and four-case Fisher comparison with commit/runtime proofs and local DVC tracking.
+  turn_count: 5
+  events_count: 7
+  claims_touched: []
+  open_threads: 1
+- id: 2026-10-22_001
+  date: '2026-10-22'
+  summary: Installed Bartlett's exact optimized coefficients on an isolated branch and compared fresh EE2/old/new LCDM photometric Fishers with archived proof.
+  turn_count: 3
+  events_count: 5
+  claims_touched: []
+  open_threads: 1
+- id: 2026-10-21_001
+  date: '2026-10-21'
+  summary: Shared the completed ns-response LHS campaign through an independent cjfp-data DVC target, with byte-identical arrays and preserved original sources.
+  turn_count: 1
+  events_count: 1
+  claims_touched: []
+  open_threads: 0
+- id: 2026-10-20_001
+  date: '2026-10-20'
+  summary: Extended plotting controls; completed and visualized the 1000-point ns-response hypercube without backend failures.
+  turn_count: 3
+  events_count: 3
+  claims_touched: []
+  open_threads: 0
+- id: 2026-10-16_001
+  date: '2026-10-16'
+  summary: Prepared Pmm campaigns and comparison tools, then added Photo-first four-node YAML submission waves.
+  turn_count: 3
+  events_count: 3
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-15_001
+  date: '2026-10-15'
+  summary: Compared fixed-ns Fisher results, archived unified plots, diagnosed a slow Nautilus run, and plotted completed WL/GCsp chains.
+  turn_count: 5
+  events_count: 5
+  claims_touched: []
+  open_threads: 5
 - id: 2026-09-15_001
   date: '2026-09-15'
   summary: Completed and analyzed the symbolic 32x1 smoke chain after validating job templates.
@@ -17,8 +106,8 @@ sessions:
 - id: 2026-09-17_001
   date: '2026-09-17'
   summary: Completed, analyzed, and plotted the independent WL+GCsp symbolic spawn chain; corrected future Slurm stdout buffering.
-  turn_count: 5
-  events_count: 5
+  turn_count: 7
+  events_count: 7
   claims_touched: []
   open_threads: 2
 - id: 2026-09-17_002
@@ -95,3 +184,33 @@ sessions:
   - C02
   - C03
   open_threads: 4
+- id: 2026-10-12_001
+  date: '2026-10-12'
+  summary: Isolated cb and density conventions; one corrected CLASS Fisher recovers historical passing result.
+  turn_count: 1
+  events_count: 3
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-13_001
+  date: '2026-10-13'
+  summary: Executed comparison notebooks and implemented failed-first fresh campaign scheduling.
+  turn_count: 5
+  events_count: 5
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-14_001
+  date: '2026-10-14'
+  summary: Fixed CI coverage, added the MP Fisher launcher, and analyzed six completed Fisher runs.
+  turn_count: 3
+  events_count: 3
+  claims_touched: []
+  open_threads: 2
+- id: 2026-10-28_001
+  date: '2026-10-28'
+  summary: >-
+    Differentiable jaxcosmo backend plus JAX photometric and spectroscopic observables reach
+    Fisher parity with the legacy pipeline; two legacy h-derivative artefacts diagnosed.
+  turn_count: 1
+  events_count: 6
+  claims_touched: []
+  open_threads: 2

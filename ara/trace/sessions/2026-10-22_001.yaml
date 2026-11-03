@@ -1,0 +1,63 @@
+session:
+  id: 2026-10-22_001
+  date: '2026-10-22'
+  started: '2026-10-22T16:53'
+  last_turn: '2026-10-22T16:53'
+  turn_count: 3
+  summary: Verified Bartlett's email coefficients exactly, installed local branch, and ran matched EE2/old/new LCDM photometric Fishers.
+events_logged:
+- turn: 3
+  type: experiment
+  id: N75
+  routing: direct
+  provenance: ai-executed
+  summary: Conditional ns-fixed comparison using CFP elimination/marginalization, validated covariance identity and plotted saved results.
+- turn: 2
+  type: experiment
+  id: N74
+  routing: direct
+  provenance: ai-executed
+  summary: FishConsumer triangle overlay and covariance-derived correlation heatmaps from the saved full nuisance-marginalized Fishers.
+- turn: 1
+  type: decision
+  id: N72
+  routing: direct
+  provenance: user
+  summary: Use an upstream-code branch, compare LCDM GCph+WL only, skip LHS re-scoring.
+- turn: 1
+  type: experiment
+  id: N73
+  routing: direct
+  provenance: ai-executed
+  summary: Exact 42-coefficient/runtime proof, 1515-point formula check and three completed 18-parameter Fishers.
+- turn: 1
+  type: observation
+  id: O15
+  routing: staged
+  provenance: ai-executed
+  summary: Four of five cosmological error gaps narrow; Omegam gap widens; no global-accuracy conclusion.
+ai_actions:
+- turn: 3
+  action: Created ns_fixed subfolder with derived Fishers, report, comparisons, triangle, correlation heatmaps and reproducible script.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/ns_fixed/
+- turn: 2
+  action: Generated and inspected PNG/PDF plots, exported correlation CSVs, archived plotting helper and updated report/hash manifest.
+  provenance: ai-executed
+  files_changed:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/
+- turn: 1
+  action: Created and committed coefficient branch ad24feb, installed it after baseline completion, archived numerical results, proof, scripts, provenance and comparison plots.
+  provenance: ai-executed
+  files_changed:
+  - /home/santiago/CosmoProjects/symbolic_pofk/symbolic_pofk/syren_new.py
+  - /home/santiago/CosmoProjects/symbolic_pofk/.gitignore
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/
+claims_touched: []
+key_context:
+- turn: 1
+  excerpt: User approved the plan with 'Agree! GO!' and requested all access permissions up front before leaving.
+open_threads:
+- Researcher assessment of the new Fisher results and whether to request a different response-loss weight from Bartlett.
+ai_suggestions_pending: []

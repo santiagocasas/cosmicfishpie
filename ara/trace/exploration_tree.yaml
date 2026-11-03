@@ -1,4 +1,596 @@
 tree:
+- id: N95
+  type: decision
+  title: Keep release direction and EH comparison in development docs
+  provenance: user
+  timestamp: '2026-10-31'
+  also_depends_on: [N94, N93]
+  choice: >-
+    Move the release note into docs in the dev branch and document measured
+    SYREN/JAXcosmo agreement and disagreement, including EH wiggle versus
+    no-wiggle distinctions. Canonical path is now
+    cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md; this supersedes the root-level
+    path recorded in N94. The expanded note distinguishes measured comparisons
+    from the unvalidated tails/normalization of the linear-input hybrid and
+    qualifies earlier claims of a precise causal partition.
+  evidence:
+  - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  status: resolved
+- id: N94
+  type: decision
+  title: Prioritize CosmicJellyfish release and defer differentiable SYREN distribution
+  provenance: user
+  timestamp: '2026-10-31T09:55'
+  also_depends_on: [N92, N93]
+  choice: >-
+    Researcher accepts roughly 10% cross-model agreement for now and prioritizes
+    releasing CosmicJellyfish rather than developing a JAX SYREN fork or upstream
+    integration in parallel. Plans a full CosmicFishPie-to-CosmicJellyfish migration;
+    J may represent JAX capability. Record the direction now and revisit details later.
+    This is acceptance for current scope, not endorsement of a universal precision
+    threshold or of the causal interpretations in O23/O24.
+  evidence:
+  - cfp-dev/COSMICJELLYFISH_RELEASE_NOTES.md
+  status: resolved
+- id: N93
+  type: experiment
+  title: Show the SYREN-NEW linear emulator, not the nonlinear prescription, carries the As gap
+  provenance: ai-executed
+  timestamp: '2026-10-30T15:40'
+  also_depends_on: [N92]
+  result: >-
+    Checked the objection that both backends are Eisenstein-Hu and should agree. They are not
+    the same formula: jax_cosmo evaluates the EH 1998 fit with baryon wiggles, while SYREN-NEW
+    (symbolic_pofk/linear_new.py) uses the no-wiggle EH fit times exp(logF), a Bartlett et al.
+    2023 fitted correction of the true linear spectrum, a growth correction R and an 18-coefficient
+    S(k) correction. At equal As the linear spectra differ by +2.2% (k~0.016), -3.9% (k~0.1)
+    and +1.6% (k~0.5 h/Mpc) with a k-dependent sign; growth agrees to 4e-4 and sigma8(z=0)
+    to 0.03%, so this is shape, not amplitude. Fed Halofit with the SYREN-NEW linear shape inside
+    the JAX photometric observable (same kernels, covariance, Fisher assembly, FD derivatives):
+    marginalized 10^9As = 0.0301323, i.e. +2.35% with respect to SYREN 0.0294396 and +14.1%
+    with respect to plain EH+Halofit 0.0264081. The linear input therefore carries essentially all
+    of the 10% gap and the nonlinear prescriptions work in the opposite direction at the percent
+    level. Extended scripts/validation/compare_theory_amplitude_response.py with linear_shape_table
+    and the HalofitOnSyrenLinear bridge; both reproduce this run. Documented in
+    docs/source/jaxcosmo.md and CHANGELOG; committed as 1c5b946; no push.
+  evidence:
+  - cfp-jaxcosmo/scripts/validation/compare_theory_amplitude_response.py
+  - cfp-jaxcosmo/docs/source/jaxcosmo.md
+  - cfp-jaxcosmo/CHANGELOG.md
+  - cfp-dev/ara/evidence/tables/jaxcosmo_as_decomposition_2026-10-30.yaml
+  status: resolved
+- id: N92
+  type: experiment
+  title: Decompose the ~10% SYREN-NEW versus JAXcosmo 10^9As Fisher difference
+  provenance: ai-executed
+  timestamp: '2026-10-30T14:25'
+  result: >-
+    Extended the timing script to two fiducials and a JAX-FD control, and added
+    scripts/validation/compare_theory_amplitude_response.py. Fiducials 2.1/0.32/0.05/0.67 and
+    2.15/0.31/0.049/0.68, ns=0.96 and mnu=0 fixed, four cosmological plus 13 nuisance
+    parameters. The provider cache keys on the fiducial, so the second fiducial re-pays trace
+    and compile: AD cold 27.1 s then 23.4 s, warm 0.033/0.035 s; JAX-FD 5.6/6.5 s; SYREN-FD
+    6.9/7.6 s. Marginalized 10^9As: SYREN 0.0294396/0.0307265, JAX-AD 0.0264081/0.0272525
+    (-10.3%, -11.3%). Theory response dlnP_nl/dlnAs ratios SYREN/JAX 0.9795, 0.9826, 0.9942,
+    1.0037 at z=0,0.5,1,2, with JAX autodiff reproducing the finite-difference response to
+    7.3e-06. Unmarginalized 10^9As 0.00191324 vs 0.00186387 (-2.6%); cosmology-only +6.1%
+    (JAX worse); adding the ten galaxy biases gives -10.4%. r(As,b8) -0.365 vs -0.275.
+    JAX AD versus JAX FD Fisher max difference 1.8e-05 at both fiducials. Decisive hybrid:
+    SYREN-NEW power spectrum inside the JAX observable gives 0.0294160, 0.9992 of the SYREN
+    result, with fiducial Cl agreement max|dC|/max|C| 8.3e-04. Conclusion: a genuine
+    matter-power-model difference amplified by galaxy-bias marginalization, not the
+    observable, covariance, Fisher assembly or autodiff. Response-optimised SYREN
+    coefficient sets raise this amplitude error (0.0299-0.0307) and do not close it.
+    Documented in docs/source/jaxcosmo.md; committed as 022d02a; no push.
+  evidence:
+  - cfp-jaxcosmo/scripts/validation/compare_theory_amplitude_response.py
+  - cfp-jaxcosmo/scripts/validation/time_syren_vs_jaxcosmo.py
+  - cfp-jaxcosmo/docs/source/jaxcosmo.md
+  - cfp-jaxcosmo/CHANGELOG.md
+  - cfp-dev/ara/evidence/tables/jaxcosmo_as_decomposition_2026-10-30.yaml
+  status: resolved
+  also_depends_on: [N88, N91]
+- id: N91
+  type: experiment
+  title: Straight-line terminal timing of SYREN FD and JAXcosmo AD with ns fixed
+  provenance: ai-executed
+  timestamp: '2026-10-30T13:41'
+  result: >-
+    Added and ran scripts/validation/time_syren_vs_jaxcosmo.py without helper functions.
+    Euclid pessimistic GCph+WL, flat LCDM, mnu=0, ns=0.96 fixed, 4 cosmological + 13 nuisance
+    parameters. CPU first forecast totals excluding shared imports: SYREN FD 5.747 s,
+    JAXcosmo AD 21.749 s. Derivatives: SYREN FD 4.524 s; first AD 17.197 s (tracing/compile
+    plus execution); repeated compiled AD 0.034 s. Warm Jacobian numerically equals first.
+    Setup includes separate theory JIT costs (0.512/3.964 s), spectra 0.176/0.077 s,
+    covariance 0.482/0.456 s, assembly 0.052/0.056 s. Marginalized sigma (As,Om,Ob,h):
+    SYREN 0.0294396/0.00238168/0.00194999/0.0105965; AD
+    0.0264081/0.00248852/0.00203227/0.0106844. Max|dF|/max|F_SYREN|=0.04888.
+    Timings are a single run of different theory models, not a general AD speed claim or
+    accuracy ranking. Device arrays converted to NumPy before timing completes. Linked script
+    from guide. No commit/push or wider validation campaign.
+  evidence:
+  - cfp-jaxcosmo/scripts/validation/time_syren_vs_jaxcosmo.py
+  - cfp-jaxcosmo/docs/source/jaxcosmo.md
+  status: resolved
+  also_depends_on: [N88, N89, N90]
+- id: N90
+  type: experiment
+  title: User-facing JAXcosmo guide and fixed-ns notebook documentation
+  provenance: ai-executed
+  timestamp: '2026-10-30T11:38'
+  result: >-
+    Added docs/source/jaxcosmo.md covering installation, forecast example, AD/JAX-FD/legacy-FD
+    routes, supported theory/probes, configuration, smooth Halofit, parity commands and a
+    downloadable notebook. Linked from user guide, tutorials, derivatives, installation and
+    landing page. Preserved researcher notebook code/outputs; changed two stale captions to
+    four free cosmological parameters and fixed ns=0.96. Fixed one API docstring heading.
+    Strict full HTML build with external intersphinx lookups disabled passed (exit 0);
+    normal strict build blocked only by SciPy inventory connection timeout. Verified rendered
+    guide and byte-identical downloadable notebook. No Fisher rerun, commit or push.
+  evidence:
+  - cfp-jaxcosmo/docs/source/jaxcosmo.md
+  - cfp-jaxcosmo/notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb
+  - cfp-jaxcosmo/docs/build/html/jaxcosmo.html
+  status: resolved
+  also_depends_on: [N88, N89]
+- id: N89
+  type: decision
+  title: Keep ns fixed in the JAXcosmo versus SYREN notebook Fisher comparison
+  provenance: user
+  timestamp: '2026-10-30T11:38'
+  choice: >-
+    Researcher reports notebook works and modified FREE to exclude ns because of the SYREN
+    response problem; ns remains 0.96 in FIDUCIAL. Requested normal project documentation
+    before pushing the PR. Response diagnostic continues varying ns outside the Fisher list.
+  evidence:
+  - cfp-jaxcosmo/notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb
+  status: resolved
+  also_depends_on: [N88]
+- id: N88
+  type: experiment
+  title: Notebook comparing jaxcosmo autodiff, JAX finite differences and the standard backends
+  provenance: ai-executed
+  timestamp: '2026-10-29T15:48'
+  result: >-
+    Added and executed notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb (flat LCDM,
+    mnu=0, Euclid-Photometric-ISTF-Pessimistic, GCph+WL, 5 cosmological + 13 nuisance
+    parameters). jaxcosmo AD vs JAX-observable FD: Fisher max|dF|/max|F| 1.81e-05 at 1% step,
+    1.81e-07 at 0.1%, 4.21e-08 at 0.01% (max sigma difference 9.3e-04 -> 1.8e-05 -> 9.2e-06).
+    JAX-observable FD vs legacy NumPy-observable FD: 1.17e-03, with fiducial C_ell agreement
+    2.07e-05 of max|C|. SYREN-NEW FD vs jaxcosmo legacy FD: 4.77e-02. Sigmas (1e9As, Omegam,
+    Omegab, h, ns): AD 0.0416886/0.00252023/0.00214174/0.0130663/0.00615891; SYREN
+    0.0681360/0.00241286/0.00213322/0.0166225/0.00930513. Theory at z=0: max |P_jax/P_syren-1|
+    4.1e-02 linear, 9.3e-02 nonlinear. Runtimes AD 18.0 s, JAX-FD 4.6 s, legacy-FD 4.2 s,
+    SYREN 6.4 s. Notebook executed top-to-bottom with zero errors and four embedded figures.
+  evidence:
+  - cfp-jaxcosmo/notebooks/07-JAXcosmo-autodiff-vs-finite-differences.ipynb
+  - cfp-jaxcosmo/results/jaxcosmo_ad_vs_fd/summary.json
+  - cfp-jaxcosmo/results/jaxcosmo_ad_vs_fd/triangle_ad_fd_legacy_syren.png
+  status: resolved
+  also_depends_on: [N82, N86]
+- id: N87
+  type: decision
+  title: Propose the smooth Halofit nonlinear-scale solve to jax-cosmo upstream
+  provenance: user
+  timestamp: '2026-10-29T14:46'
+  choice: >-
+    Researcher asked whether the Newton-based replacement of the jax-cosmo Halofit root find
+    should be proposed to jax-cosmo itself ("it would be worth to pull request this into
+    jax-cosmo itself, no?"). Direction adopted: prepare a patch with a regression test on a
+    local branch first; opening the pull request is left to the researcher.
+  alternatives: [keep the vendored copy only]
+  evidence: [N86]
+  status: open
+  also_depends_on: [N83]
+- id: N86
+  type: experiment
+  title: Review of the jaxcosmo branch, fixes F1-F9 and a prepared jax-cosmo Halofit patch
+  provenance: ai-executed
+  timestamp: '2026-10-29T14:46'
+  result: >-
+    Review found and fixed: Savitzky-Golay operator orientation (fiducial lnP agreement with
+    legacy 7.9e-05 -> 2.2e-06, Fisher parity unchanged at 1.5e-06); stale observable cache
+    (now keyed on a content fingerprint of fiducial, settings, specs, probes and backend
+    parameters); AP_effect=False rank error and k_par in the redshift-error damping;
+    kh_rescaling_bug options; the claim that the legacy power spline extrapolates was WRONG
+    (RectBivariateSpline clamps), so the first-k mu=1 Omegam derivative gap is the clamp, and
+    the new NUMERICS.legacy_pk_clamp option removes it (JAX-FD vs legacy 1.1e-01 -> 5.9e-05;
+    AD-vs-FD then shows the kink, as expected). Halofit Newton solve verified over 24
+    box cosmologies x 4 redshifts (worst residual 4.4e-16, differs from jax-cosmo by up to
+    0.59% because of jax-cosmo's own interpolation error) and rewritten as fori_loop plus one
+    implicit-function step (same values to 1.6e-15, Jacobian cost 24.5 s -> 8.8 s, photometric
+    AD Fisher 37.6 s -> 18.3 s). Added 31 tests (suite 443 -> 474 passed). ARA duplicate top-level
+    YAML keys repaired and O19 corrected without erasing its history. Prepared, not pushed,
+    jax-cosmo branch smooth-halofit-nonlinear-scale (d193ebf): their 25 tests pass including the
+    CCL comparisons; the new derivative test fails on master and passes with the patch (1% step
+    AD-vs-FD error 2.4e-01 -> 1.0e-03). Supersedes the 7.9e-05 lnP figure quoted in N85.
+  evidence:
+  - ../../../cfp-jaxcosmo/docs/source/jaxcosmo_review.md
+  - ../evidence/tables/jaxcosmo_review_2026-10-29.md
+  status: resolved
+  also_depends_on: [N85, N84, N83]
+- id: N85
+  type: experiment
+  title: Port the spectroscopic GCsp observable to JAX and measure three-way Fisher parity
+  provenance: ai-executed
+  timestamp: '2026-10-28T13:49'
+  result: >-
+    Added LSSsurvey/jaxcosmo_spectro.py, a jax.numpy port of ComputeGalSpectro's default
+    GCsp path (AP rescaling, Kaiser RSD with per-bin bias, Lorentzian FoG from the fiducial
+    velocity dispersion, spectroscopic redshift-error damping, Savitzky-Golay de-wiggled
+    linear power, additive Ps shot noise), plus growth_rate on the backend-neutral theory
+    interface and dispatch in jaxcosmo_derivatives to the photometric or spectroscopic
+    observable, keeping the analytic Ps derivatives from the request's
+    special_deriv_function. Commits 6e511f1 and 51216fb on jaxcosmo-autodiff (draft PR 231).
+    Three-way parity (Euclid-Spectroscopic-ISTF-Pessimistic, LCDM, five cosmological
+    parameters plus lnbg_1..4): fiducial lnP max |dlnP|/max|lnP| = 7.9e-05 (mean 6.9e-07);
+    at a 0.3% step the Fisher matrices agree to max |dF|/max|F| = 1.5e-06 (JAX finite
+    differences vs legacy pipeline) and 1.4e-05 (autodiff vs legacy), every sigma within
+    0.2%; autodiff vs the JAX finite differences 1.4e-05. Runtimes 1.5 s legacy, 5.6 s JAX
+    FD, 17.6 s JAX AD. Two legacy artefacts are deliberately not reproduced (see O18, O19).
+  evidence:
+  - ../../../cfp-jaxcosmo/scripts/validation/compare_jax_spectro_fishers.py
+  - ../evidence/tables/jaxcosmo_spectro_parity_2026-10-28.md
+  - ../evidence/tables/jaxcosmo_spectro_parity_2026-10-28.json
+  status: resolved
+  also_depends_on: [N84, N83, N82]
+- id: N84
+  type: experiment
+  title: Reproduce the legacy photometric Fisher from a JAX observable and from autodiff
+  provenance: ai-executed
+  timestamp: '2026-10-27T18:20'
+  result: >-
+    Added the backend-neutral theory interface (cosmology/jax_theory.py: TheoryTables plus
+    the JaxTheory protocol and get_jax_theory), made JaxPhotoObservable use it, split the
+    providers into JaxAutodiffProvider and JaxFiniteDifferenceProvider (commit 4eaf571),
+    evaluated Halofit at the Limber wavenumbers instead of interpolating a grid (7feefe0)
+    and replaced the jax-cosmo Halofit root find (f6ee8a0, see N83). Three-way parity for
+    GCph+WL: fiducial C_ell max 2.1e-05 of max|C| (mean 9.2e-08); Fishers at a 1% step
+    max |dF|/max|F| = 1.2e-03 (JAX FD vs legacy) and 1.2e-03 (AD vs legacy); AD vs JAX FD
+    1.8e-05. The residual to the legacy pipeline is the observable port itself, not the
+    derivative method: at a 0.1% step the AD-vs-FD difference collapses by a factor 100.
+  evidence:
+  - ../../../cfp-jaxcosmo/scripts/validation/compare_jax_photo_fishers.py
+  status: resolved
+  also_depends_on: [N83, N82]
+- id: N83
+  type: dead_end
+  title: Differentiating through a bisection root find gives the wrong implicit derivative
+  provenance: ai-executed
+  timestamp: '2026-10-27T16:05'
+  hypothesis: >-
+    A bracketed bisection on sigma^2(R) = 1/growth^2 can replace jax-cosmo's fixed-grid
+    interpolation of the nonlinear scale while staying differentiable.
+  failure_mode: >-
+    Autodiff through 100 bisection steps returned a derivative that disagreed with finite
+    differences by 54% at every step size (1e-2, 1e-3, 1e-4), while the values stayed
+    correct to 4.7e-4 of jax-cosmo. The parameter dependence of a bisection lives in its
+    branch conditions, which autodiff discards, so the traversal converges to a value but
+    not to the implicit derivative.
+  lesson: >-
+    Use a fixed-count Newton iteration on the smooth residual instead: a converged
+    differentiable fixed point differentiates to the implicit derivative. That version
+    reproduces jax-cosmo's Halofit values to median 2.0e-05 and is smooth in the parameters
+    (AD vs FD 1.6e-05 at a 1% step, scaling as the step squared).
+  evidence:
+  - ../../../cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_halofit.py
+  status: resolved
+  also_depends_on: [N82]
+- id: N82
+  type: experiment
+  title: Add a differentiable jaxcosmo backend with JAX photometric and spectroscopic observables
+  provenance: ai-executed
+  timestamp: '2026-10-27T12:10'
+  result: >-
+    Registered options code 'jaxcosmo' (config/context/cosmicfish/cosmology dispatch plus
+    configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml), ported the symbolic_pofk
+    10^9As -> sigma8 fit to jax.numpy, wrapped jax-cosmo background, Eisenstein-Hu and
+    Halofit (flat, massless neutrinos, total matter only) in a provider that also serves
+    the legacy NumPy cosmo_functions interface for finite differences, and added a JAX
+    Limber GCph+WL observable with autodiff and finite-difference providers wired through
+    FisherMatrix(derivative_provider=...). NumPy 2 support was committed first (3e41b12) so
+    the JAX stack can build on it. End-to-end finite-difference Fisher through the new
+    backend produces a full 18x18 matrix in 8 s.
+  evidence:
+  - ../../../cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_theory.py
+  - ../../../cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_photo.py
+  status: resolved
+  also_depends_on: [N81]
+- id: N81
+  type: decision
+  title: Stop coefficient optimization after the three-weight comparison
+  provenance: user
+  timestamp: '2026-10-26T17:16'
+  also_depends_on: [N79, N80]
+  choice: >-
+    Researcher said all good for now and chose to stop optimization here.
+    Retain completed coefficient branches, measurements and collaborator bundle.
+    No production coefficient choice or endorsement of the pending causal
+    interpretations was stated. Further refits and proposed diagnostics are deferred.
+  evidence:
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/REPORT.md
+  status: resolved
+- id: N80
+  type: experiment
+  title: Visualize nonlinear ns responses and population RMS across coefficient weights
+  provenance: ai-executed
+  timestamp: '2026-10-23T15:17'
+  also_depends_on: [N79]
+  result: >-
+    Plotted stored fixed-As nonlinear dlnP/dns for EE2, original SYREN and
+    weights 0.1/0.2/0.3 at z=0,1,2,3. Representative sample 31 minimizes
+    box-normalized distance to fiducial; it is not the exact fiducial.
+    Also plotted pointwise population medians and global/by-z/by-k RMS
+    differences from EE2. RMS calculated before aggregation across individual
+    residuals; matches existing metrics to rtol 1e-13. Global values remain
+    0.207713/0.180651/0.170790/0.161741. Mixed fit/held-out LHS, no new solver runs.
+    Verified 255-file bundle plus two baseline checksums; refreshed local DVC.
+  evidence:
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/ns_response_curves_representative.png
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/ns_response_curves_lhs_median.png
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/ns_response_rms_summary.png
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/ns_response_plot_metadata.json
+  status: resolved
+- id: N79
+  type: experiment
+  title: Scan three response-loss weights on 1000 LHS points and four Fisher fixing cases
+  provenance: ai-executed
+  timestamp: '2026-10-23T15:08'
+  also_depends_on: [N70, N73, N76, N77, N78]
+  result: >-
+    Researcher approved 0.1/0.2/0.3 branch names, full LHS rescoring and starting
+    from w0waCDM then fixing ns, w0/wa, and both. Commit-pinned worktrees:
+    a95762e, 631b275, ad24feb. No package reinstall; PYTHONPATH selected each
+    source. Exact 42-value email/source/runtime checks per weight and 1515-point
+    independent formula proofs passed. Original 1000-point power max relative
+    reproduction error 2.90e-14 and dlnP/dns max absolute error 6.92e-12.
+    Three new full 20-parameter Fishers; EE2/original reused, weight 0.3 Fisher
+    bit-identical to saved result. All four fixing cases retain 13 marginalized
+    nuisances and pass Gaussian conditional-covariance and export checks.
+    LHS nonlinear power RMSE original/0.1/0.2/0.3:
+    0.0123313/0.0122478/0.0132253/0.0147498; response RMSE:
+    0.207713/0.180651/0.170790/0.161741. LHS train/validation/test mixed.
+    Full Fisher width RMS log-ratio 0.110227/0.130572/0.175152/0.200570;
+    with w0/wa fixed 0.339810/0.197941/0.157504/0.115262.
+    Gaussian KL(candidate||EE2) favors weight 0.1 in all four cases.
+    Saved 247-file checksum-verified collaborator bundle, local DVC target,
+    FishConsumer triangles and correlation/gap heatmaps. No upload or push.
+  evidence:
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/REPORT.md
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/coefficient_checks.csv
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/commits.json
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/ranking.csv
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023/lhs_ranking.csv
+  - ../cjfp-data/validation/syren_deaglan_loss_weight_scan_20261023.dvc
+  status: resolved
+- id: N78
+  type: decision
+  title: Store both SYREN comparison campaigns in cjfp-data validation
+  provenance: user
+  timestamp: '2026-10-23T14:44'
+  also_depends_on: [N73, N74, N75, N76, N77]
+  choice: >-
+    User requested relocation for collaborator sharing and removal from the CFP
+    source checkout. Canonical roots are now ../cjfp-data/validation/
+    syren_deaglan_lhs_opt_20261022 and syren_deaglan_lhs_opt_w0waCDM_20261023,
+    including both ns_fixed analyses. Old roots ../cosmicfishpie/results/ with
+    the same basenames no longer exist. Historical N73-N77 paths resolve via
+    this mapping; prior trace entries remain unchanged.
+    Verified 98 and 104 original files before removal. Scientific payload is
+    byte-identical; navigation metadata updated with originals retained in ZIP.
+    New portable artifact indexes, collaborator guide and stdlib checksum inspector
+    added. Local DVC targets registered and status up to date; publication remains
+    with researcher. No new Fisher runs or changes to scientific conclusions.
+  evidence:
+  - ../cjfp-data/validation/SYREN_COMPARISONS.md
+  - ../cjfp-data/validation/syren_deaglan_lhs_opt_20261022/relocation.json
+  - ../cjfp-data/validation/syren_deaglan_lhs_opt_w0waCDM_20261023/relocation.json
+  - ../cjfp-data/validation/syren_deaglan_lhs_opt_20261022.dvc
+  - ../cjfp-data/validation/syren_deaglan_lhs_opt_w0waCDM_20261023.dvc
+  status: resolved
+- id: N77
+  type: question
+  title: Why does freeing dark energy mask old SYREN error-width discrepancies?
+  provenance: user
+  timestamp: '2026-10-23'
+  also_depends_on: [N73, N76]
+  description: >-
+    Researcher concerned that coefficients improve LCDM ns behavior but old
+    w0waCDM discrepancies appear smaller. Numerical comparison shows freeing
+    w0,wa increases As/ns errors by EE2 0.01/2.63 percent, old SYREN
+    69.73/36.47 percent, new SYREN 68.60/39.85 percent. Interpretation of
+    derivative-level causes remains open; marginal error agreement alone is
+    insufficient to establish response accuracy.
+  evidence:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_w0waCDM_20261023/REPORT.md
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/REPORT.md
+  status: open
+- id: N76
+  type: experiment
+  title: Full w0waCDM optimized-coefficient Fisher campaign with ns-fixed follow-up
+  provenance: ai-executed
+  timestamp: '2026-10-23T11:47'
+  also_depends_on: [N73, N74, N75]
+  result: >-
+    User requested a separate parent campaign extending all LCDM analyses to w0waCDM.
+    Fresh EE2/old/new 20-parameter GCph+WL Fishers, w0=-1, wa=0, mnu fixed 0.06.
+    Seven cosmological parameters and 13 nuisances; wa absolute step 0.01.
+    Installed pinned old source for baselines, restored optimized branch for new.
+    Coefficient proof repeated. Full and ns-fixed triangles, correlations and bars
+    archived with numerical exports. Nested conditioning on w0,wa recovers original
+    LCDM Fishers rtol 1e-9 and errors rtol 1e-7 for all three backends.
+    Full w0 error gaps old/new +9.33/+13.08 percent; wa +11.81/+20.26 percent.
+    ns-fixed w0 gaps +5.28/+6.03 percent; wa -2.78/+1.06 percent.
+    FoM inverse sqrt determinant marginalized w0,wa covariance: EE2 456.796,
+    old 363.854, new 356.440. All matrix and hash validations passed.
+  evidence:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_w0waCDM_20261023/REPORT.md
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_w0waCDM_20261023/validation.json
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_w0waCDM_20261023/ns_fixed/REPORT.md
+  status: resolved
+- id: N75
+  type: experiment
+  title: Compare saved EE2 and old/new SYREN Fishers conditional on ns
+  provenance: ai-executed
+  timestamp: '2026-10-22'
+  also_depends_on: [N73, N74]
+  result: >-
+    User requested ns-fixed subfolder. CFP eliminate_parameters(full, [ns]) then
+    marginalise to As, Omegam, Omegab, h retains all 13 nuisance marginalizations.
+    Verified conditional covariance identity against original full inverse,
+    positive definiteness, non-increasing variances and exported matrix round-trip.
+    Old/new error differences versus conditional EE2: As -4.84/-0.75 percent,
+    Omegam -1.52/-3.82, Omegab -8.22/-7.49, h -7.37/-5.29.
+    Saved 17-parameter and 4-parameter Fishers, covariance/correlation CSVs,
+    FishConsumer triangle, heatmaps, bars, report and reproducible helper.
+  evidence:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/ns_fixed/REPORT.md
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/ns_fixed/plot_deaglan_ns_fixed.py
+  status: resolved
+- id: N74
+  type: experiment
+  title: Visualize EE2 and old/new SYREN cosmological correlations with fishconsumer
+  provenance: ai-executed
+  timestamp: '2026-10-22'
+  also_depends_on: [N73]
+  result: >-
+    Used saved 18-parameter Fishers only. CosmicFishPie marginalise retained five
+    cosmological parameters; verified reduced covariance equals the matching block
+    of the full inverse. FishConsumer.make_triangle_plot overlays CLASS+EE2,
+    SYREN-main (old), SYREN-new (new coeff.). Saved PNG/PDF triangle, three
+    covariance-normalized correlation heatmaps and CSV matrices. ns correlations
+    with As/h: EE2 0.96025/-0.90187, old 0.91391/-0.79779, new 0.94849/-0.88981.
+    Visually inspected both plot types. No Fisher rerun or library modification.
+  evidence:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/fisher_triangle_ee2_old_new.png
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/correlation_matrices_ee2_old_new.png
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/evidence/plot_deaglan_correlations.py
+  status: resolved
+- id: N72
+  type: decision
+  title: Test Bartlett's optimized coefficients on an isolated symbolic_pofk branch
+  provenance: user
+  timestamp: '2026-10-22T16:53'
+  also_depends_on: [N70, N71, N44]
+  choice: >-
+    Use a branch of the existing symbolic_pofk clone based on CFP's pinned
+    cb4d2bb commit. Install into CFP's uv venv and compare fresh LCDM Euclid
+    pessimistic GCph+WL Fishers for EE2, old SYREN and new SYREN. Prove all
+    coefficients match the email. Skip re-scoring the 1000-point LHS.
+  alternatives: [Vendor coefficients in CFP, Run additional probes or w0waCDM, Re-score LHS]
+  evidence:
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/evidence/deaglan_coeffs.txt
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/evidence/branch_commit.txt
+  status: resolved
+- id: N73
+  type: experiment
+  title: Fresh old/new SYREN versus EE2 photometric Fisher comparison
+  provenance: ai-executed
+  timestamp: '2026-10-22T16:53'
+  also_depends_on: [N72, N44]
+  result: >-
+    Implemented all 33 g and 9 h email literals in branch deaglan-lhs-opt-coeffs,
+    commit ad24febd355ebb36263fc8c238ef649d0e09c8b2, parent cb4d2bb.
+    Exact AST comparisons, installed-source byte equality and runtime-local
+    tracing passed. Independent nonlinear formula matches at 1515 points with
+    zero maximum relative difference. Ran three 18x18 Fishers with five LCDM
+    parameters and 13 nuisances, mnu fixed 0.06 eV, 3PT relative steps 0.01.
+    Finite/symmetric/Cholesky and independent covariance-inversion checks passed.
+    Old/new deviations of marginalized errors versus EE2 (%): As -34.55/-12.55,
+    Omegam -3.78/-7.03, Omegab -21.87/-10.35, h -33.63/-10.34,
+    ns -33.56/-12.96. Nonlinear dlnP/dns at z0,k0.5 h/Mpc:
+    EE2 1.073748624, old 0.442847613, new 0.798054736. New source remains installed.
+    No LHS accuracy evaluation, push or CFP source edits performed.
+  evidence:
+  - evidence/tables/syren_deaglan_fisher_2026-10-22.yaml
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/REPORT.md
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/installed_coefficient_proof.txt
+  - ../cosmicfishpie/results/syren_deaglan_lhs_opt_20261022/sha256.json
+  status: resolved
+- id: N71
+  type: decision
+  title: Share the ns-response campaign through a dedicated cjfp-data DVC target
+  provenance: user
+  timestamp: '2026-10-21'
+  also_depends_on: [N70]
+  choice: >-
+    Move the new ns-LHS workflow, profiles, tests and completed outputs from
+    CosmicFishPie main into cjfp-data. Track small code/docs with Git and the
+    232345302-byte results bundle with its own DVC manifest, enabling targeted
+    downloads without chains. All ten NumPy files verified byte-identical;
+    nine exact original source snapshots preserve the unchanged run metadata.
+    Relocated scripts passed six tests and regenerated all four plots. Uploaded
+    only this DVC target to DAGsHub; remote reports in sync. No Git staging,
+    commit or push performed. N70 evidence paths now live under ../cjfp-data/.
+  evidence:
+  - ../cjfp-data/scripts/NS_RESPONSE_SHARING.md
+  - ../cjfp-data/scripts/validation/ns_derivative_lhs.md
+  - ../cjfp-data/scripts/validation_results/ns_derivative_lhs.dvc
+  - ../cjfp-data/scripts/validation_results/ns_derivative_lhs/provenance/manifest.json
+  status: resolved
+- id: N70
+  type: experiment
+  title: Map ns power responses over the EE2 eight-parameter domain
+  provenance: ai-executed
+  timestamp: '2026-10-20'
+  result: >-
+    User-authorized scrambled Latin hypercube of 1000 cosmologies, seed 241014623,
+    covering the paper box with CLASS+EE2 and SYREN-NEW in cloe-org-env. Computed
+    linear and nonlinear P, dP/dns and dlnP/dns at fixed As, 10 redshifts 0..3,
+    and 240 logarithmic k samples 0.009..6.8 h/Mpc through CFP derivative methods.
+    Centered 3PT for 761 points; inward signed 4PT_FWD for 116 lower and 123
+    upper ns-edge points. CLASS native cutoff 7h /Mpc avoids EE2 padding errors.
+    Both backends succeeded at all 1000 points in 43.5 minutes with eight workers;
+    no mass fallback occurred. Arrays finite, power positive, source hashes
+    unchanged. Six synthetic/stratification/failure-containment tests passed.
+    Four saved-array figures show LHS percentile bands and paired differences.
+    At z=0 and k=0.50173 h/Mpc the median nonlinear SYREN-minus-CLASS+EE2 log-power
+    response difference is -0.54228, with 16th/84th percentiles -0.84871/-0.26315.
+    These summarize this finite-step campaign; they do not establish backend accuracy.
+  evidence:
+  - scripts/validation/compute_ns_derivative_lhs.py
+  - scripts/validation/plot_ns_derivative_lhs.py
+  - scripts/validation/ns_derivative_lhs.md
+  - scripts/validation_results/ns_derivative_lhs/metadata.json
+  - scripts/validation_results/ns_derivative_lhs/summary.json
+  - tests/ns_derivative_lhs_test.py
+  status: resolved
+- id: N69
+  type: experiment
+  title: Add visibility controls and quantile limits; visualize discrepancies and timings
+  provenance: ai-executed
+  timestamp: '2026-10-20'
+  also_depends_on: [N68]
+  result: >-
+    Implemented user-approved independent Fisher/chain switches and weighted
+    Gaussian-equivalent quantile extents, default 3 sigma. Reorganized case02
+    notebook with separate Fisher and chain views, full/fixed-ns symbolic/CLASS
+    discrepancy panels and recorded wall-time bars for 11 completed chains.
+    Focused tests passed (45); notebook executed with 34 plots and zero errors.
+    Bar heights matched tables and metadata; representative figures inspected.
+    This is saved-result postprocessing, not new sampling or solver evidence.
+  evidence:
+  - cosmicfishpie/analysis/fishconsumer.py:make_fisher_chain_plot
+  - tests/fishconsumer_test.py:TestFisherChainPlot
+  - ../cjfp-data/jobs_punch/analyze_case02_v5.ipynb
+  status: resolved
+- id: N68
+  type: experiment
+  title: Promote paired Fisher-chain overlays into fishconsumer
+  provenance: ai-executed
+  timestamp: '2026-10-20'
+  result: >-
+    Implemented make_fisher_chain_plot following the user's request to move
+    reusable notebook overlay logic into the package. Explicit marginalization,
+    paired colors/labels with missing chains, and Gaussian-plus-posterior limits
+    are library behavior. Campaign case selection and ratio tables remain in the
+    notebook. Focused tests passed (41); notebook reexecution saved 25 inline
+    plots with zero errors. No solver or sampler execution.
+  evidence:
+  - cosmicfishpie/analysis/fishconsumer.py:make_fisher_chain_plot
+  - tests/fishconsumer_test.py:TestFisherChainPlot
+  - ../cjfp-data/jobs_punch/analyze_case02_v5.ipynb
+  status: resolved
 - id: N01
   type: experiment
   title: Validate migrated JURECA sampling jobs
@@ -953,3 +1545,679 @@ tree:
   - /tmp/opencode/build_nbs_05_06.py
   status: resolved
   also_depends_on: [N46]
+- id: N48
+  type: experiment
+  title: Local nonlinear cb prescription and neutrino-density isolation
+  provenance: ai-executed
+  timestamp: '2026-10-12'
+  result: >-
+    User authorized local isolation before a Frey campaign. Nine solver runs
+    sampled mnu=0.054,0.060,0.066 at fixed sigma8, z=0.5,1,1.5,2 and
+    physical k=0.001..10. Against CAMB subtraction, CLASS native cb with
+    density factor 94.07 gives median response discrepancies 18.83% at
+    k=0.1..1 and 55.23% at k=1..10. CLASS subtraction with 94.07 recovers
+    historical median 1.82190% and max 4.82212% overall. With 93.14,
+    subtraction gives median 2.78695% and max 5.52321%.
+  evidence:
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_isolation_20261012b/spectra.npz
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_isolation_20261012b/provenance.json
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_isolation_20261012b/summary.json
+  status: resolved
+- id: N49
+  type: experiment
+  title: Corrected CLASS photo case 03.2.0 confirmation
+  provenance: ai-executed
+  timestamp: '2026-10-12'
+  result: >-
+    One CLASS Fisher rerun with saved October inputs and relocated machine
+    paths took 738.4 seconds with four OMP threads. Default cb subtraction
+    and factor 94.07, retaining nonlinear supported-grid checks, reduce
+    max marginalized sigma deviation from 21.38% to 5.526605% versus
+    archived CAMB. Largest remaining deviation is mnu; sigma8 is 2.271996%.
+    Historical passing CLASS errors reproduced to dashboard precision.
+    Four focused translation tests pass; other Fisher cases not rerun.
+  evidence:
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_fixed_03.2.0b/confirmation.json
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_fixed_03.2.0b/run.log
+  - ../cfp-symbolic_overhaul/docs/source/neutrino_cb_regression.md
+  status: resolved
+  also_depends_on: [N48]
+- id: N50
+  type: experiment
+  title: Collaborator notebook reproduces saved cb diagnostic and figures
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    User requested clearer report and native CLASS cb versus CAMB/CLASS
+    reconstruction notebook. Executed all 17 cells using saved spectra,
+    without new solvers or Fishers. Four figure sets show powers/residuals,
+    direct and logarithmic mass derivatives, derivative residuals, and
+    density-factor controls. Recomputed summaries match saved metrics.
+    Notebook includes outputs; exported HTML and PNG/PDFs saved locally.
+    Added explicit fresh-cache regeneration from committed common specs and
+    diagnostic provenance versions/profile/source hashes for future runs.
+  evidence:
+  - ../cfp-symbolic_overhaul/notebooks/Neutrino-investigation_native-cb-vs-reconstruction.ipynb
+  - ../cfp-symbolic_overhaul/docs/source/neutrino_cb_regression.md
+  - ../cfp-symbolic_overhaul/scripts/benchmark_results/neutrino_isolation_20261012b/neutrino_cb_comparison.html
+  status: resolved
+  also_depends_on: [N48, N49]
+- id: N51
+  type: experiment
+  title: Standalone direct CAMB and CLASS cb notebook
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    User requested a simpler external-collaborator notebook with no CosmicFishPie.
+    Executed six direct solver runs at Mnu=0.054,0.060,0.066 eV using CAMB 2.0.3
+    and CLASS v3.3.4, HMcode 2020, three degenerate masses, z=0.5,1,2,
+    k=0.001-10 1/Mpc. Fixed As, h, ns, omega_b and omega_c; unlike N48 this
+    derivative allows total Omegam and sigma8 to vary. Two embedded figure sets
+    show CAMB reconstruction, CLASS reconstruction and native CLASS cb powers,
+    residuals, dP/dMnu, dlnP/dMnu and absolute logarithmic-response differences.
+    All cells executed from /tmp/opencode without project data or imports;
+    spectra finite and positive, figures inspected. No convergence claim.
+  evidence:
+  - ../cfp-symbolic_overhaul/notebooks/Neutrino-cb_standalone.ipynb
+  status: resolved
+  also_depends_on: [N50]
+- id: N52
+  type: decision
+  title: Prioritize saved FAIL cases in a fresh two-phase campaign
+  provenance: user-revised
+  timestamp: '2026-10-13'
+  choice: >-
+    Added --failed-first to validation entry points. Classify saved numerical FAIL
+    gates before running; rerun all selected cases with force, finishing the FAIL
+    phase before launching the remainder. Record starting HEAD and stop launching
+    if it changes. Two mocked scheduling tests passed, including no saved FAILs
+    and continuing after a failing worker; no new Fishers run. Saved local archive
+    classifier returned eight FAIL cases including intentional Pmm control.
+    User's remote transcript skipped zero cases and attempted all 25, each exiting
+    in roughly one second. Startup failure cause not established without case log.
+  evidence:
+  - ../cfp-symbolic_overhaul/scripts/validation/run_selected_validations.sh
+  - ../cfp-symbolic_overhaul/scripts/validation/render_validation_dashboard.py
+  - ../cfp-symbolic_overhaul/tests/validation_runner_test.py
+  status: resolved
+  also_depends_on: [N49]
+- id: N53
+  type: experiment
+  title: Validation startup fails in shell Python without PyYAML
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    User supplied case log ModuleNotFoundError yaml in stdin line 5. Inspection
+    found YAML fingerprint helper uses bare shell python while scientific entry
+    points use uv. Changed all seven Python invocations in compare_backends_report.sh
+    to uv run --project REPO_ROOT python. Regression test poisons bare Python,
+    executes real setup/hashing with project interpreter and mocks only scientific
+    entry points; all three runner tests passed. No new Fishers or remote edits.
+  evidence:
+  - ../cfp-symbolic_overhaul/scripts/validation/compare_backends_report.sh
+  - ../cfp-symbolic_overhaul/tests/validation_runner_test.py
+  status: resolved
+  also_depends_on: [N52]
+- id: N54
+  type: experiment
+  title: Frey corrected neutrino cases pass while DagsHub archive remains older
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    Compared local DVC archive at 00bc6e3 (eight FAIL gates) with live Frey
+    completed outputs at 5a091dd. Maximum sigma deviations now: 03.2.0 5.526605%,
+    03.2.1 2.602676%, 04.2.0 5.487198%, 04.2.1 1.980012%, 06.2.0 4.240575%,
+    07.2.0 6.335128%, 08.2.0 5.102370% (all PASS); intentional Pmm variant
+    07.2.0.1 14.698310% remains FAIL. No snapshot mismatches. Batch 12:28 UTC
+    selected only Pmm; representative new 03.2.0 comparison completed 11:46 UTC,
+    before selection. Folder timestamps are local UTC+2, batch timestamps UTC.
+    Thus archived eight-FAIL dashboard is older than live selector results, not
+    evidence of missed FAILs. Read-only inspection; no new runs or DVC transfers.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/compare_photo_camb_vs_class_cfg_13fddbddf6_20261013_125719
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/selected_validation_20261013_122814_1135429/failed_first_cases.txt
+  status: resolved
+  also_depends_on: [N49, N52, N53]
+- id: N55
+  type: experiment
+  title: PR readiness check after corrected validation results
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    GitHub PR228 head 5a091dd is OPEN, MERGEABLE without conflicts, BLOCKED with
+    REVIEW_REQUIRED. Tests, lint, build, changelog and codecov patch pass;
+    style, docs and codecov project fail. User intends to archive latest
+    validations and considers symbolic_overhaul near completion. No data
+    upload or Git staging/commit/push performed this turn.
+  evidence:
+  - https://github.com/santiagocasas/cosmicfishpie/pull/228
+  status: resolved
+  also_depends_on: [N54]
+- id: N56
+  type: experiment
+  title: Local CI checks isolate remaining style and docs failures
+  provenance: ai-executed
+  timestamp: '2026-10-13'
+  result: >-
+    At symbolic_overhaul 5a091dd, local Python 3.12.9 (CI uses 3.10):
+    pytest 336 passed, 3 skipped, 2 numerical warnings, 41.66 seconds;
+    Ruff passes; sdist and wheel build succeeds. isort flags cosmology_test.py
+    import ordering; Black flags cosmology.py, diagnose_neutrino_response.py,
+    validation_runner_test.py. Strict Sphinx fails with four warnings due to
+    indented backend_validation and neutrino_cb_regression toctree entries
+    (index.md lines 13-14). Local coverage 68.25%; GitHub codecov project
+    68.26% versus main 68.97%, patch passes at 83.26%. No source changes;
+    symbolic worktree remains clean. Test skips include two optional EE2 cases.
+  evidence:
+  - ../cfp-symbolic_overhaul/coverage.xml
+  - ../cfp-symbolic_overhaul/docs/source/index.md
+  - https://github.com/santiagocasas/cosmicfishpie/pull/228
+  status: resolved
+  also_depends_on: [N55]
+- id: N57
+  type: experiment
+  title: Repair CI navigation and formatting; cover backend numerical contracts
+  provenance: ai-executed
+  timestamp: '2026-10-14T09:34'
+  result: >-
+    User requested CI fixes and more coverage. Corrected two indented toctree
+    entries, import ordering and Black formatting. Added 34 fast test cases for
+    analytic cb reconstruction on mismatched grids, zero-neutrino limit,
+    SYREN amplitude/density aliases and errors, EE2 optional import/grid errors
+    and 100-redshift batching, CAMB Dl-to-Cl conversion, missing CMB outputs,
+    and consistent matter/cb growth tracing. Local Python 3.12.9 full suite:
+    370 passed, 3 skipped, 2 pre-existing numerical warnings in 52.30 seconds.
+    Ruff, isort, Black and strict Sphinx pass. Covered 4821/6983 statements,
+    69.04%, up from 68.25% and above reported main 68.97%; symbolic_new.py
+    and ee2.py reach 100% line coverage. GitHub checks not yet rerun;
+    no commit or push. Unit tests do not establish emulator physical accuracy.
+  evidence:
+  - ../cfp-symbolic_overhaul/tests/backend_contract_test.py
+  - ../cfp-symbolic_overhaul/coverage.xml
+  - ../cfp-symbolic_overhaul/docs/source/index.md
+  status: resolved
+  also_depends_on: [N56]
+- id: N58
+  type: experiment
+  title: Six-backend/probe MP Pessimistic launcher after main merge
+  provenance: ai-executed
+  timestamp: '2026-10-14T11:00'
+  result: >-
+    User requests immediate Freyja GCsp and photometric 3x2pt runs for CLASS,
+    CAMB and SYREN-NEW using 36 CPUs. GitHub confirms PR228 merged at
+    59bc233. Added launcher in main worktree with six subprocesses, six OMP
+    threads each, BLAS caps of one and independent logs/output directories.
+    Uses MP w0waCDM common specs, Paper-Pessimistic surveys, CLASS HP and
+    CAMB P3 profiles, explicit SYREN-NEW profile. GCph+WL covariance includes
+    cross-correlations. Defaults to sibling cjfp-data/validation/fisher with
+    commit/exit-status manifest; dry-run is side-effect-free. Eight configuration,
+    mocked worker and resource-limit tests pass; formatter/lint/shell checks
+    pass. No real Fishers, remote transfer, commit or push this turn.
+  evidence:
+  - ../cosmicfishpie/scripts/validation/run_euclid_mp_fishers.py
+  - ../cosmicfishpie/scripts/validation/run_euclid_mp_fishers.sh
+  - ../cosmicfishpie/tests/euclid_mp_runner_test.py
+  - https://github.com/santiagocasas/cosmicfishpie/pull/228
+  status: resolved
+  also_depends_on: [N57]
+- id: N59
+  type: experiment
+  title: Compare completed MP Pessimistic Fisher matrices on Frey
+  provenance: ai-executed
+  timestamp: '2026-10-14T12:00'
+  result: >-
+    Read the six-run campaign logs and manifest; all GCsp and GCph+WL calculations
+    for CAMB, CLASS, and SYREN-NEW exited successfully. Generated marginalized-error,
+    sigma-ratio, and cosmological-correlation plots plus CSV/JSON summaries alongside
+    the untouched matrices. CAMB and CLASS marginalized cosmological errors differ by
+    less than 0.8% in both probes; SYREN-NEW shows larger descriptive differences,
+    especially h, ns, sigma8 in GCsp and ns in GCph+WL. Matrices are positive definite
+    but the GCsp matrix is ill-conditioned (~3.4e10). This does not identify which
+    backend is physically more accurate or establish a causal mechanism.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/campaign.json
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/marginalized_errors.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/sigma_ratio_vs_class.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/cosmo_correlation_differences.png
+  status: resolved
+  also_depends_on: [N58]
+- id: N65
+  type: decision
+  title: Select a common matter prescription before JURECA posterior campaigns
+  provenance: user-revised
+  timestamp: '2026-10-16'
+  choice: >-
+    User requests seven cosmological parameters for CAMB/CLASS/SYREN-NEW, followed
+    by an ns-fixed CLASS/SYREN-NEW campaign, using unified 128x2 SMT Slurm settings.
+    Audited case 02: nuvalidation_hp profiles select HMcode2020, but common specs
+    request clustering matter, unsupported by total-matter-only SYREN-NEW. Upstream
+    syren_new.pnl_bias explicitly references EuclidEmulator2, not HMcode2020.
+    Proposed explicitly named total-matter case-02 variants; await agreement before
+    writing launchers or changing scientific settings. No numerical runs executed.
+  evidence:
+  - ../cosmicfishpie/scripts/validation/configs/common_specs_paper_w0wa_fixed_mnu_Neff.json
+  - ../cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/class/nuvalidation_hp.yaml
+  - ../cosmicfishpie/cosmicfishpie/configs/default_boltzmann_yaml_files/camb/nuvalidation_hp.yaml
+  - ../cosmicfishpie/cosmicfishpie/cosmology/cosmology.py
+  - ../cjfp-data/jobs_punch/nautilus_jureca_findings_latest.md
+  - https://raw.githubusercontent.com/DeaglanBartlett/symbolic_pofk/master/symbolic_pofk/syren_new.py
+  status: resolved
+  resolution: User accepted explicitly named Pmm variants; implementation and limitations recorded in N66.
+- id: N67
+  type: decision
+  title: Prioritize four concurrent Photo posterior tasks with YAML Slurm waves
+  provenance: user-revised
+  timestamp: '2026-10-16'
+  choice: >-
+    User requests concurrent nodes with Photo CLASS and SYREN-NEW, ns free/fixed,
+    ahead of other cases. Implemented editable case02_plan.yaml with a first
+    four-task array (5,7,11,13)%4 and a second ten-task array capped at four, linked
+    by afterany dependency. Bash/Python submission wrapper defaults to side-effect-free
+    preview, records actual job IDs when --submit is explicit, validates selections
+    and duplicate checkpoints, and preserves receipts on partial submission failure.
+    Five mocked-submission tests and shell syntax passed; no Slurm or numerical jobs
+    launched. Array element order is not guaranteed; waves enforce priority tiers.
+    New files remain uncommitted; previous campaign scientific inputs unchanged.
+  evidence:
+  - ../cjfp-data/jobs_punch/case02_plan.yaml
+  - ../cjfp-data/jobs_punch/submit_case02_plan.sh
+  - ../cjfp-data/jobs_punch/submit_case02_plan.py
+  - ../cjfp-data/jobs_punch/test_case02_submission.py
+  status: resolved
+  also_depends_on: [N66]
+- id: N66
+  type: experiment
+  title: Commit matched case-02 Pmm JURECA campaigns and analysis tools
+  provenance: ai-executed
+  timestamp: '2026-10-16'
+  result: >-
+    Following user approval, implemented 14 Slurm array tasks: seven-parameter
+    CAMB/CLASS/CLASS+EE2/SYREN-NEW for spectro and photo, then six-parameter ns-fixed
+    CLASS/CLASS+EE2/SYREN-NEW controls. Fixed nuisances, common Pmm fiducial and flat
+    priors; 128 workers x 2 OpenMP, BLAS 1, affinity variables unset. Checkpoint
+    resumption pins source/profile/configuration provenance. Separate postprocessor
+    uses CosmicFish matrix operations and fishconsumer for backend, archived case-02,
+    and weighted posterior overlays, separately and combined without summing probes.
+    Six cheap configuration/synthetic tests passed, real archive lookup found both
+    02.1.0 and 02.2.0, and shell syntax passed. No numerical forecasts/sampling run.
+    Committed cjfp-data 9efb384 and 61d2878; no Git push. Narrow prior truncation,
+    EE2 neutrino translation differences and unverified emulator-domain coverage
+    remain explicit limitations; these checks do not establish scientific agreement.
+  evidence:
+  - ../cjfp-data/jobs_punch/run_case02_campaign.py
+  - ../cjfp-data/jobs_punch/sbatch_files/case02_pmm_campaign.sbatch
+  - ../cjfp-data/jobs_punch/compare_case02_campaign.py
+  - ../cjfp-data/jobs_punch/test_case02_campaign.py
+  - ../cjfp-data/jobs_punch/test_case02_comparison.py
+  - ../cjfp-data/jobs_punch/CASE02_CAMPAIGN.md
+  status: resolved
+  also_depends_on: [N65]
+- id: N64
+  type: experiment
+  title: Overlay symbolic WL and GCsp posterior runs
+  provenance: ai-executed
+  timestamp: '2026-10-15'
+  result: >-
+    On Frey, loaded completed 3-parameter WL and GCsp symbolic Nautilus chains and
+    matching conditional 3x3 Fisher references. Both runs use the same code revision,
+    fiducial, priors, and fixed nuisance treatment; posterior ESS is about 4,824 and
+    4,864. Used fishconsumer triangle/summary plotting and CosmicFish fisher_matrix
+    loading to create weighted posterior overlays with dashed Fisher references and
+    a separate chain-summary plot. No posterior or Fisher recomputation. Artifacts
+    are under the package checkout results directory and not yet included in cjfp-data DVC.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cosmicfishpie/results/wl-gcsp-symb/comparison/plot_wl_gcsp_posteriors.py
+  - /scratch/work/casas/cosmicjellyfishpie_release/cosmicfishpie/results/wl-gcsp-symb/comparison/plot_metadata.json
+  - /scratch/work/casas/cosmicjellyfishpie_release/cosmicfishpie/results/wl-gcsp-symb/comparison/wl_gcsp_posterior_fisher_triangle.png
+  status: resolved
+  also_depends_on: [N63]
+- id: N60
+  type: experiment
+  title: Replot backend Fisher forecasts with ns fixed
+  provenance: ai-executed
+  timestamp: '2026-10-15'
+  result: >-
+    Reused the saved six Fisher matrices and CosmicFishPie analysis/plotting tools.
+    Eliminated ns from each Fisher matrix (conditional fixed-ns forecast), then
+    marginalized remaining nuisance and unplotted parameters for GetDist 68/95%
+    contour overlays and marginalized-sigma ratios relative to CLASS. CAMB remains
+    close to CLASS (<1% for listed errors). SYREN-NEW discrepancies shrink for
+    several parameters, notably h, but remain sizeable for GCsp sigma8 (-25.95%),
+    photo sigma8 (-14.57%) and photo wa (-18.47%). No solver/Fisher rerun; figures,
+    CSV, and reusable script are stored beside original remote outputs. These
+    conditional forecasts are descriptive and do not resolve physical accuracy.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/plot_fisher_fixed_ns.py
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/marginalized_sigmas_ns_fixed.csv
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/fisher_ellipses_gcsp_ns_fixed.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/fisher_ellipses_photo_ns_fixed.png
+  status: resolved
+  also_depends_on: [N59]
+- id: N63
+  type: experiment
+  title: Inspect live Nautilus run after prolonged runtime
+  provenance: ai-executed
+  timestamp: '2026-10-15T11:34'
+  result: >-
+    Read-only inspection on Frey of run euclid_mp_lcdm_20261014_173610_1250700.
+    The first CLASS GCsp run is alive, checkpoint HDF5 updated at 11:31 CEST,
+    and the worker pool is actively consuming its allocated CPUs; this is not an
+    idle/deadlocked process. Nautilus log reports 8,244 likelihood calls, f_live=1.0000,
+    N_eff=2 against requested n_eff=3000, so it remains in initial exploration and
+    is far from completion. Current settings: n_live=1000, n_networks=8, pool=18,
+    OMP=2, n_batch=36; 5D conditional posterior with expensive nonlinear 3PT GCsp.
+    No process was stopped or changed. Completion ETA is not reliably inferable.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/chains/euclid_mp_lcdm_20261014_173610_1250700/spectro_class/run.log
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/chains/euclid_mp_lcdm_20261014_173610_1250700/spectro_class/chains_mp_lcdm_spectro_class/cosmicjellyfish_class_Euclid-Spectroscopic-Paper-Pessimistic_mp_lcdm_spectro_class.hdf5
+  status: resolved
+  also_depends_on: [N58]
+- id: N61
+  type: experiment
+  title: Unify Fisher plot styling and combine probe sigma comparisons
+  provenance: ai-executed
+  timestamp: '2026-10-15'
+  result: >-
+    Reprocessed existing matrices with CosmicFishPie Fisher objects and
+    marginalization/fixing operations, then rendered in the earlier Matplotlib
+    visual style. Regenerated full-free and ns-fixed GCsp and GCph+WL ellipse
+    matrices with 68%/95% contours and expanded limits that keep 95% boundaries
+    visible. Replaced separate probe ratio figures with combined GCsp/GCph+WL
+    grouped-bar figures for both full-free and ns-fixed cases. Figures and CSV
+    inspected. No Fisher/solver calculations rerun. DVC workspace reports the
+    results directory changed; no DVC push was performed.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/plot_fisher_unified.py
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/sigma_ratio_vs_class.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/sigma_ratio_vs_class_ns_fixed.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/marginalized_sigmas_unified.csv
+  status: resolved
+  also_depends_on: [N60]
+- id: N62
+  type: decision
+  title: Upload and commit the unified Fisher comparison artifacts
+  provenance: user
+  timestamp: '2026-10-15'
+  choice: >-
+    User requested the revised comparison results be committed to DagsHub storage
+    and Git. Updated DVC manifest for validation/fisher and uploaded 65 files;
+    remote cache verification passed. Committed only validation/fisher.dvc as
+    e1ce738 (Update Fisher comparison plots). Existing unrelated untracked Frey
+    project files were left untouched. Git commit is local to Frey; no Git push
+    was performed by the assistant.
+  evidence:
+  - https://dagshub.com/santiagacasas/cjfp-data
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher.dvc
+  status: resolved
+  also_depends_on: [N61]
+- id: N60
+  type: experiment
+  title: Overlay marginalized Fisher ellipses for three backends
+  provenance: ai-executed
+  timestamp: '2026-10-15T10:04'
+  result: >-
+    Generated one 7-parameter corner-style figure each for GCsp and GCph+WL,
+    overlaying CLASS, CAMB, and SYREN-NEW marginalized constraints. For each
+    2D pair, extracted the covariance submatrix from the inverse full Fisher
+    matrix (thereby marginalizing remaining parameters); plotted 68% and 95%
+    2D Gaussian contours around the shared fiducial. Diagonal panels show
+    marginalized 1D Gaussian widths. PNGs and PDFs plus the reproducible plotting
+    script were saved alongside the comparison summary. Image dimensions verified.
+  evidence:
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/fisher_ellipses_gcsp.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/fisher_ellipses_photo.png
+  - /scratch/work/casas/cosmicjellyfishpie_release/cjfp-data/validation/fisher/euclid_mp_20261014_172204_1248247/fisher_comparison/plot_fisher_ellipses.py
+  status: resolved
+  also_depends_on: [N59]
+- id: N96
+  type: decision
+  title: Merge the jaxcosmo branch into main before the first release
+  provenance: user
+  timestamp: '2026-11-02'
+  choice: >-
+    Treat jaxcosmo-autodiff as the release candidate: merge it into main through
+    a pull request, cut the first release from main, and keep the coding-standard
+    homogenization as a final separate branch. The rename to CosmicJellyfish is
+    planned around that release rather than before it.
+  evidence:
+  - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  status: resolved
+- id: N97
+  type: experiment
+  title: Audit PR #231 readiness for the release
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    The branch is fast-forwardable onto origin/main (18 commits ahead, 0 behind)
+    and the draft PR already exists. Three CI blockers explained: the style job
+    failed on a deleted module, the strict docs build failed because the docs
+    extra lacks jax, and codecov failed only because all four JAX test files skip
+    when the extra is absent, so the new modules were reported as uncovered.
+  evidence:
+  - https://github.com/santiagocasas/cosmicfishpie/pull/231
+  status: resolved
+  also_depends_on: [N96]
+- id: N98
+  type: experiment
+  title: Run the JAX tests in CI and lift photometric coverage
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    Added a `test (jaxcosmo)` job that syncs the jaxcosmo extra and runs the five
+    JAX test files, and mocked jax in the docs build so the strict API build
+    passes without it. Photometric parity tests compare the JAX C_ell against the
+    legacy ComputeCls at the fiducial and shifted cosmologies and raise
+    `jaxcosmo_photo.py` coverage from 16% to 92%, clearing the codecov gate.
+  evidence:
+  - cfp-jaxcosmo/.github/workflows/ci.yml
+  - cfp-jaxcosmo/tests/jaxcosmo_photo_parity_test.py
+  status: resolved
+  also_depends_on: [N97]
+- id: N99
+  type: experiment
+  title: Address the first CodeRabbit review round
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    Fixed 15 of 17 findings in f8bc762: clustering-tracer rejection, neutrino and
+    requested-probe validation, WL kernel finiteness, ordered spectroscopic bins,
+    name-based shot-noise bins, nonlinear settings plumbing, cache-key source,
+    missing-spectrum reporting, and the derivative-provider tests. Two items were
+    left alone; the dz_norm spacing is mirrored from the legacy window and the
+    photo CI assertion was already covered.
+  evidence:
+  - cfp-jaxcosmo/CHANGELOG.md
+  status: resolved
+  also_depends_on: [N98]
+- id: N100
+  type: experiment
+  title: Address the second CodeRabbit review round
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    Fixed all 11 findings in 0dcdd4b: theta-like expansion parameters, conflicting
+    amplitude aliases and non-positive sigma8 are rejected; a rootless Halofit
+    bracket is clipped and reported through a Pnl finiteness check; the Halofit
+    wavenumber axis is preserved; mixed or unsupported probe requests fail; and
+    Ps_ parameters use the JAX Jacobian instead of the legacy analytic derivative.
+    The new spectroscopic Jacobian test exposed a 0.46% finite-difference gap that
+    disappeared at a 1e-6 step, i.e. interpolation kinks rather than a derivative
+    bug.
+  evidence:
+  - cfp-jaxcosmo/tests/jaxcosmo_spectro_parity_test.py
+  - cfp-jaxcosmo/cosmicfishpie/fishermatrix/jaxcosmo_derivatives.py
+  status: resolved
+  also_depends_on: [N99]
+- id: N102
+  type: experiment
+  title: Inspect OLE and preserve the jellyole integration task in issue 233
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    Cloned ark93-cosmo/OLE at 8adc84ac15e5d6a588c230d38113bbb62855513a into
+    CosmoProjects/OLE-ark93, preserving the pre-existing modified OLE/OLE checkout.
+    Inspected state, Theory/Likelihood adapters, emulator training and quality-check APIs.
+    jellyole tip b10cbef contains old outputs; no explicit OLE imports found in the package
+    or the two inspected likelihood notebooks. Its d839b9a supplied-prediction hook is
+    supported by the current likelihood API. Created issue 233 with historical SHAs,
+    a proposed observable-level adapter, exact fallback and validation criteria.
+    No runtime installation, benchmark, integration implementation or branch deletion.
+  evidence:
+  - https://github.com/santiagocasas/cosmicfishpie/issues/233
+  - https://github.com/ark93-cosmo/OLE/tree/8adc84ac15e5d6a588c230d38113bbb62855513a
+  - https://github.com/santiagocasas/cosmicfishpie/commit/b10cbef67145b965e5a435174b55e3489f9ce4db
+  status: resolved
+- id: N101
+  type: decision
+  title: Keep the legacy dz_norm spacing in the JAX photometric window
+  provenance: ai-suggested
+  timestamp: '2026-11-02'
+  choice: >-
+    Do not change `dz_norm = z_max / 1000` in the JAX observable while the legacy
+    `photo_window.py` keeps the same expression on a 1000-point grid. Fixing only
+    one side would shift the normalization by ~0.1% and break the JAX/legacy
+    parity that the new tests assert. A coordinated fix that changes existing
+    scientific results is deferred to a separate change.
+  evidence:
+  - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_photo.py
+  - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/photo_window.py
+  status: resolved
+  also_depends_on: [N99]
+- id: N103
+  type: experiment
+  title: Merge the advanced main into the jaxcosmo branch
+  provenance: ai-executed
+  timestamp: '2026-11-02'
+  result: >-
+    PR231 became CONFLICTING after main advanced 22 commits past merge base 4b2bcca
+    (#221 Sphinx 8.1.3, #220 Black 26, #217 CAMB 2.0.4). Merged origin/main 40eb918 into
+    jaxcosmo-autodiff as merge commit 3458eaf. Only CHANGELOG.md and uv.lock conflicted;
+    pyproject.toml and ci.yml auto-merged. Kept both Unreleased changelog blocks, and
+    regenerated uv.lock from main's lockfile with uv lock --python 3.10 instead of
+    hand-merging it, which brought CAMB 2.0.4, NumPy 2.2.6 and the jax extras together.
+    Bumped the test (jaxcosmo) Codecov action from v6 to v7 to match main.
+    Verified on Python 3.10 with dev+jaxcosmo+docs: uv lock --check, isort, ruff and
+    git diff --check pass; Black 26.10.1 leaves 146 files unchanged; full pytest 495
+    passed and 3 skipped in 243 s; strict sphinx -W build succeeded. Two skips come from
+    the emulators extra missing in the scratch environment and one is pre-existing; the
+    5 failures in tests/reference_spectro_obs_edge_cases.py are never collected by pytest
+    (filename matches neither test_*.py nor *_test.py) and the file equals main modulo
+    Black whitespace. Local only, 29 commits ahead; the user pushes.
+  evidence:
+  - cfp-jaxcosmo/uv.lock
+  - cfp-jaxcosmo/CHANGELOG.md
+  - cfp-jaxcosmo/.github/workflows/ci.yml
+  - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  status: resolved
+  also_depends_on: [N96, N101]
+- id: N104
+  type: experiment
+  title: Third CodeRabbit round on PR #231 and the rootless-Halofit NaN contract
+  provenance: ai-executed
+  timestamp: '2026-11-02T16:20'
+  result: >-
+    12 threads opened against head 3458eaf. Fixed all of them: provider checks every
+    neutrino alias, rejects ignored density parameterizations, requires a positive finite
+    amplitude and at least four NUMERICS nodes; theory validates distance_steps before
+    truncation and raises on a conflicting w0/wa under LCDM in both resolve_parameters and
+    direct tables/power calls; observables compare overrides at rtol=1e-12, derive the
+    spectroscopic h_fid from the resolved cosmology, and raise NotImplementedError for the
+    unimplemented rescale_sigma_pv parameters; the validation script rejects a zero or
+    non-finite --fd-step; and _solve_logr now returns NaN when the Newton bracket holds no
+    root. A rootless cosmology was located at 10^9As = 1e-4: nonlinear_scale_residual
+    reports inside=False and NaN, and JaxCosmoProvider.build raises on the non-finite Pnl,
+    which the previous clip-and-check could never do. Each fix has a regression test; the
+    full suite is 509 passed and 1 skipped at 73% coverage, with isort, black, ruff and
+    git diff --check clean. Recorded lesson: the earlier claim that the finiteness check
+    covered a rootless bracket was wrong, because clipping kept Pnl finite.
+  evidence:
+  - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_provider.py
+  - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_theory.py
+  - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_halofit.py
+  - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+  - cfp-jaxcosmo/tests/jaxcosmo_theory_test.py
+  status: resolved
+  also_depends_on: [N101, N103]
+- id: N105
+  type: experiment
+  title: Fourth CodeRabbit round on PR #231 input aliases and sigma-pv fiducials
+  provenance: ai-executed
+  timestamp: '2026-11-03'
+  result: >-
+    Reviewed five new CodeRabbit findings and implemented regression-covered fixes locally.
+    The provider now rejects unread density aliases even alongside supported keys, detects
+    inconsistent Omegab/ombh2 and Omegam/omch2 pairs, validates finite positive h and
+    consistent h/H0, detects conflicting w0/w0_fld and wa/wa_fld aliases, and rejects
+    fractional or undersized NUMERICS sample counts. The spectroscopic observable permits
+    unchanged unit sigmap_*/sigmav_* values in full fiducial maps while rejecting changes
+    and unsupported non-unit fiducials. CHANGELOG updated. Focused tests: 38 passed; full
+    suite: 513 passed, 1 skipped at 73% coverage; Black, isort, Ruff and git diff --check
+    pass. Committed locally as 9a9dc31; review-thread replies await the pushed PR head.
+  evidence:
+  - cfp-jaxcosmo/cosmicfishpie/cosmology/jaxcosmo_provider.py
+  - cfp-jaxcosmo/cosmicfishpie/LSSsurvey/jaxcosmo_spectro.py
+  - cfp-jaxcosmo/tests/jaxcosmo_theory_test.py
+  - cfp-jaxcosmo/tests/jaxcosmo_spectro_parity_test.py
+  - cfp-jaxcosmo/CHANGELOG.md
+  - cfp-dev/docs/COSMICJELLYFISH_RELEASE_NOTES.md
+  status: resolved
+  also_depends_on: [N104]
+- id: N106
+  type: experiment
+  title: Audit workstation scientific validation readiness for NumPy 2
+  provenance: ai-executed
+  timestamp: '2026-11-03'
+  result: >-
+    Fetched source and data remotes. Source 9a9dc31 and cjfp-data d6ded71 match
+    their remote heads; Fisher DVC local/cache/remote status is unchanged/in sync.
+    All 25 maintained CAMB/CLASS case inputs resolve; runners/configs are identical
+    to origin/main. Three runner tests pass. Archive has 33 complete backend-pair
+    runs, five incomplete attempts, commits 00bc6e3/5a091dd and CAMB 2.0.3/CLASS
+    3.3.4.0; exact historical NumPy/SciPy versions are absent. Saved dashboard
+    failure is 07.2.0.1. Added uncommitted data-side preflight/isolated launcher,
+    runbook and README link. Real preflight passes with NumPy 2.2.6, SciPy 1.17.0,
+    CAMB 2.0.4 and CLASS 3.3.4.0. Shell syntax and mocked launch/archive-preservation
+    probe pass; existing comparator processes an archived pair successfully.
+    No workstation SSH check or full scientific campaign was performed. NumPy 2
+    scientific equivalence is not established by this readiness audit.
+  evidence:
+  - cjfp-data/scripts/run-fisher-validation.sh
+  - cjfp-data/validation/NUMPY2_VALIDATION.md
+  - cjfp-data/validation/fisher.dvc
+  - cfp-jaxcosmo/tests/validation_runner_test.py
+  - /tmp/opencode/audit_numpy2_validation.py
+  - /tmp/opencode/test_fisher_launch_audit.py
+  - /tmp/opencode/fisher-comparator-audit.json
+  status: resolved
+  also_depends_on: [N105]
+- id: N107
+  type: experiment
+  title: Rename the package to cosmicjellyfish on a branch with a legacy import alias
+  provenance: ai-executed
+  timestamp: '2026-11-03'
+  result: >-
+    Created worktree cfp-rename on branch rename/cosmicjellyfish from jaxcosmo-autodiff
+    HEAD 4b44649 rather than waiting for PR231, because the mechanical script keeps the
+    rebase surface small. Renamed the package directory, rewrote 187 tracked files with a
+    per-category script (notebooks only in code cells, byte-identical JSON round trip),
+    and changed 293 files in total. Added a cosmicfishpie shim that aliases
+    cosmicjellyfish through a sys.meta_path finder inserted before PathFinder, because
+    the aliased parent __path__ would otherwise make PathFinder load a second copy of
+    every submodule; module names, globals, locks and class identity are shared. Kept
+    the cosmicfishpie_version metadata key, cosmicfishpie-validation repo name,
+    historical CHANGELOG/docs and the neutrino_scheme value cosmicfishpie (now accepted
+    alongside the new default cosmicjellyfish). Validation with the JAX extra gave 546
+    passed and 3 skipped at 73% coverage; 95 JAX tests pass; strict sphinx -W build,
+    isort, black, ruff, uv lock --check and git diff --check pass; wheel and sdist
+    install and import correctly outside the checkout with package data present; a
+    spawn multiprocessing check and a legacy-module-path pickle load pass. 27 notebooks
+    changed with zero edits outside code cell sources. Nothing committed yet.
+  evidence:
+  - cfp-rename/cosmicfishpie/__init__.py
+  - cfp-rename/tests/legacy_import_test.py
+  - cfp-rename/docs/source/migration_cosmicjellyfish.md
+  - cfp-rename/CHANGELOG.md
+  - /tmp/opencode/apply_rename.py
+  - /tmp/opencode/dist_rename
+  status: resolved
+  also_depends_on: [N105, N106]

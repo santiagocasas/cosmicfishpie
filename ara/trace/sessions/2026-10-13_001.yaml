@@ -1,0 +1,36 @@
+session:
+  id: 2026-10-13_001
+  date: '2026-10-13'
+  started: '2026-10-13'
+  last_turn: '2026-10-13'
+  turn_count: 7
+  summary: Executed comparison notebooks and implemented failed-first fresh campaign scheduling.
+events_logged:
+  - {turn: 1, type: experiment, id: N50, routing: direct, provenance: ai-executed, summary: Notebook reproduces cached spectrum metrics and exports four figure sets.}
+  - {turn: 2, type: experiment, id: N51, routing: direct, provenance: ai-executed, summary: Six direct solver runs in standalone fixed-As cb comparison notebook.}
+  - {turn: 3, type: decision, id: N52, routing: direct, provenance: user-revised, summary: Failed-first forced campaign with phase barrier verified by two mock tests.}
+  - {turn: 4, type: experiment, id: N53, routing: direct, provenance: ai-executed, summary: Fixed helper interpreter mismatch causing missing YAML; regression test passes.}
+  - {turn: 5, type: experiment, id: N54, routing: direct, provenance: ai-executed, summary: Live Frey results show seven corrected Pcb cases PASS; DagsHub archive predates these results.}
+  - {turn: 6, type: experiment, id: N55, routing: direct, provenance: ai-executed, summary: PR228 tests pass; style/docs/project coverage and required review remain blockers.}
+  - {turn: 7, type: experiment, id: N56, routing: direct, provenance: ai-executed, summary: Local full CI tests pass; identified exact style/docs defects and Codecov drop.}
+ai_actions:
+  - turn: 1
+    action: Clarified model definitions and limitations; generated and executed notebook; exported HTML; added future-run provenance fields.
+    provenance: ai-executed
+    files_changed: [docs/source/neutrino_cb_regression.md, notebooks/Neutrino-investigation_native-cb-vs-reconstruction.ipynb, scripts/validation/diagnose_neutrino_response.py]
+  - turn: 2
+    action: Created standalone notebook; executed six CAMB/CLASS runs outside repository cwd and inspected two figure sets.
+    provenance: ai-executed
+    files_changed: [notebooks/Neutrino-cb_standalone.ipynb]
+claims_touched: []
+key_context:
+  - turn: 1
+    excerpt: User welcomed the result and requested collaborator-facing report and notebook showing spectra, residuals and mass derivatives.
+  - turn: 2
+    excerpt: User requested direct CAMB and classy imports, inline subtraction, native nonlinear cb comparison, residuals and Mnu derivatives only.
+  - turn: 3
+    excerpt: User prioritizes implementing FAIL cases first then remaining cases on same commit; pasted remote campaign startup failures.
+open_threads:
+  - Finish current single-commit campaign and archive updated Frey results via DVC; local archive still 00bc6e3.
+  - Researcher review of corrected seven-case results and remaining intentional Pmm failure.
+ai_suggestions_pending: []

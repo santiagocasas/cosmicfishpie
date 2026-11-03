@@ -1,0 +1,30 @@
+session:
+  id: 2026-10-21_001
+  date: '2026-10-21'
+  started: '2026-10-21'
+  last_turn: '2026-10-21'
+  turn_count: 1
+  summary: Relocated the ns-response campaign to cjfp-data and uploaded an independent DVC target for selective collaborator downloads.
+events_logged:
+- turn: 1
+  type: decision
+  id: N71
+  routing: direct
+  provenance: user
+  summary: User chose cjfp-data/DAGsHub storage and targeted retrieval rather than committing heavy outputs to CosmicFishPie.
+ai_actions:
+- turn: 1
+  action: Moved campaign code and arrays, preserved source snapshots, adapted profile paths, documented sharing commands, verified six tests and plots, and uploaded only the campaign DVC target.
+  provenance: ai-executed
+  files_changed:
+  - ../cjfp-data/README.md
+  - ../cjfp-data/scripts/NS_RESPONSE_SHARING.md
+  - ../cjfp-data/scripts/validation/
+  - ../cjfp-data/scripts/validation_results/ns_derivative_lhs.dvc
+  - ../cjfp-data/tests/ns_derivative_lhs_test.py
+claims_touched: []
+key_context:
+- turn: 1
+  excerpt: User requested moving validation code/results to DAGsHub, commit reminders, and a git-pull plus targeted dvc-pull explanation that excludes chains.
+open_threads: []
+ai_suggestions_pending: []

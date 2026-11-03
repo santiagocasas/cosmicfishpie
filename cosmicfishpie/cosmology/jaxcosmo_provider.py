@@ -105,6 +105,9 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
         omega_m = _as_scalar(pars["omch2"]) / h**2 + omega_b
     else:
         omega_m = 0.32
+    if "ns" in pars and "n_s" in pars:
+        if not np.isclose(_as_scalar(pars["ns"]), _as_scalar(pars["n_s"])):
+            raise ValueError("Conflicting values for ns and n_s.")
     ns = _as_scalar(pars.get("ns", pars.get("n_s", 0.96)))
     if cosmo_model == "LCDM":
         for key, expected in (("w0", -1.0), ("w0_fld", -1.0), ("wa", 0.0), ("wa_fld", 0.0)):
@@ -124,8 +127,11 @@ def resolve_parameters(cosmopars: Mapping, cosmo_model: str) -> dict[str, float]
                 raise ValueError(f"Conflicting values for {canonical} and {alias}.")
         w0 = _as_scalar(pars.get("w0", pars.get("w0_fld", -1.0)))
         wa = _as_scalar(pars.get("wa", pars.get("wa_fld", 0.0)))
+        for name, value in (("w0", w0), ("wa", wa)):
+            if not np.isfinite(value):
+                raise ValueError(f"The jaxcosmo backend requires a finite {name} (got {value}).")
 
-    if omega_b <= 0 or omega_m <= omega_b:
+    if not (np.isfinite(omega_b) and np.isfinite(omega_m)) or omega_b <= 0 or omega_m <= omega_b:
         raise ValueError("The jaxcosmo backend requires Omegam > Omegab > 0.")
 
     given = [key for key in (*_AMPLITUDE_KEYS, "sigma8") if key in pars]
@@ -199,6 +205,7 @@ class JaxCosmoProvider:
                     raise ValueError(
                         f"NUMERICS['{key}'] must be an integer >= 4 for cubic splines."
                     )
+                self.numerics[key] = integer_count
         self.config = theory.TheoryConfig.from_backend_parameters(backend_parameters)
         self.cosmo_model = cosmo_model
         self.settings = settings

@@ -216,6 +216,35 @@ def test_resolve_parameters_rejects_conflicting_w0wa_aliases():
             provider.resolve_parameters(dict(base, **aliases), "w0waCDM")
 
 
+@pytest.mark.parametrize("key", ["Omegab", "Omegam", "ombh2", "omch2"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+def test_resolve_parameters_rejects_non_finite_density(key, value):
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    pars = {"10^9As": 2.1, key: value}
+    with pytest.raises(ValueError, match="Omegam > Omegab > 0"):
+        provider.resolve_parameters(pars, "LCDM")
+
+
+def test_resolve_parameters_checks_spectral_index_aliases():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    base = {"10^9As": 2.1}
+    with pytest.raises(ValueError, match="Conflicting values for ns and n_s"):
+        provider.resolve_parameters(dict(base, ns=0.96, n_s=0.98), "LCDM")
+    for aliases in ({"ns": 0.97}, {"n_s": 0.97}, {"ns": 0.97, "n_s": 0.97}):
+        assert provider.resolve_parameters(dict(base, **aliases), "LCDM")["ns"] == 0.97
+
+
+@pytest.mark.parametrize("key", ["w0", "wa", "w0_fld", "wa_fld"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf")])
+def test_resolve_parameters_rejects_non_finite_dark_energy(key, value):
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    with pytest.raises(ValueError, match="requires a finite"):
+        provider.resolve_parameters({"10^9As": 2.1, key: value}, "w0waCDM")
+
+
 def test_resolve_parameters_rejects_non_finite_amplitude():
     from cosmicfishpie.cosmology import jaxcosmo_provider as provider
 
@@ -281,6 +310,18 @@ def test_numerics_sample_counts_must_be_integers():
     for key in ("z_samples", "k_samples", "z_samples_background"):
         with pytest.raises(ValueError, match="integer >= 4"):
             provider.JaxCosmoProvider(cosmopars, _backend({key: 12.5}), "LCDM")
+
+
+def test_integral_float_sample_counts_are_normalized_for_numpy():
+    from cosmicfishpie.cosmology import jaxcosmo_provider as provider
+
+    keys = ("z_samples", "k_samples", "z_samples_background")
+    backend = _backend(dict.fromkeys(keys, 4.0))
+    cosmology = provider.JaxCosmoProvider({"10^9As": 2.1}, backend, "LCDM")
+    for key in keys:
+        assert isinstance(cosmology.numerics[key], int)
+        assert np.linspace(0.0, 1.0, cosmology.numerics[key]).shape == (4,)
+    assert backend["NUMERICS"]["z_samples"] == 4.0
 
 
 def test_provider_rejects_a_cosmology_whose_halofit_root_is_outside_the_bracket():

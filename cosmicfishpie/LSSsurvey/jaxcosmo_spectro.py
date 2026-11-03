@@ -180,10 +180,8 @@ class JaxSpectroObservable:
             )
         numeric = {k: float(v) for k, v in fid.items() if k not in _COSMO_KEYS and np.ndim(v) == 0}
         self.cosmo_names = tuple(self.theory.cosmo_names)
-        self.nonlinear_names = tuple(
-            key for key in numeric if key.startswith(("sigmap_", "sigmav_"))
-        )
-        non_unit = [key for key in self.nonlinear_names if not _same_value(numeric[key], 1.0)]
+        self.nonlinear_names = tuple(key for key in fid if key.startswith(("sigmap_", "sigmav_")))
+        non_unit = [key for key in self.nonlinear_names if not _same_value(fid[key], 1.0)]
         if non_unit:
             raise NotImplementedError(
                 "The jaxcosmo spectroscopic observable does not implement the "

@@ -144,6 +144,14 @@ def test_rescale_sigma_pv_parameters_are_rejected(tmp_path):
         observable.canonical_name("sigmap_0")
     with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
         observable.lnp({"sigmap_0": 1.1})
-    fiducial["sigmap_0"] = 1.3
-    with pytest.raises(NotImplementedError, match="non-unit fiducial"):
-        JaxSpectroObservable(calc, fiducial)
+    for key in ("sigmap_0", "sigmav_0"):
+        for value in (1.3, np.array([1.3])):
+            with pytest.raises(NotImplementedError, match="non-unit fiducial"):
+                JaxSpectroObservable(calc, dict(fiducial, **{key: value}))
+    fiducial["sigmap_0"] = np.array([1.0])
+    observable = JaxSpectroObservable(calc, fiducial)
+    observable.lnp(fiducial)
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.canonical_name("sigmap_0")
+    with pytest.raises(NotImplementedError, match="rescale_sigma_pv"):
+        observable.lnp({"sigmap_0": np.array([1.1])})

@@ -1,6 +1,0 @@
-parse\_log\_param
-=================
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: parse_log_param

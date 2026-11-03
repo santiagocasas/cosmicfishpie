@@ -1,0 +1,8 @@
+filesystem
+==========
+
+.. currentmodule:: cosmicjellyfish.utilities.utils
+
+.. autoclass:: filesystem
+   :members:
+   :show-inheritance:

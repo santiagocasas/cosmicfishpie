@@ -1,6 +1,0 @@
-choose\_fish\_toplot
-====================
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: choose_fish_toplot

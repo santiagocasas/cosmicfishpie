@@ -1,8 +1,0 @@
-TheoryTables
-============
-
-.. currentmodule:: cosmicfishpie.cosmology.jax_theory
-
-.. autoclass:: TheoryTables
-   :members:
-   :show-inheritance:

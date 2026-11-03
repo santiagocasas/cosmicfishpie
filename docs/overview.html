@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overview &#8212; cosmicfishpie v1.3.1</title>
+    <title>Overview &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -52,7 +52,7 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="User guide" href="user_guide.html" />
+    <link rel="next" title="Migrating from cosmicfishpie" href="migration_cosmicjellyfish.html" />
     <link rel="prev" title="A verified first forecast" href="first_forecast.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -146,6 +154,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -435,7 +481,7 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie</span></code> computes Fisher-matrix forecasts for upcoming surveys such as Euclid,
+<p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish</span></code> computes Fisher-matrix forecasts for upcoming surveys such as Euclid,
 DESI, SKAO and CMB experiments. It evaluates observables (galaxy clustering, weak
 lensing, CMB spectra, intensity mapping), differentiates them numerically with respect
 to the parameters you choose, and returns a Fisher matrix you can marginalise, combine
@@ -455,7 +501,7 @@ that you pass to <code class="docutils literal notranslate"><span class="pre">Fi
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">options</span></code></p></td>
-<td><p>A dictionary of settings: backend (<code class="docutils literal notranslate"><span class="pre">code</span></code>), survey names, derivative scheme, accuracy, output location. The full list is in <a class="reference internal" href="api/generated/cosmicfishpie.configs.config.html#module-cosmicfishpie.configs.config" title="cosmicfishpie.configs.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.configs.config</span></code></a>.</p></td>
+<td><p>A dictionary of settings: backend (<code class="docutils literal notranslate"><span class="pre">code</span></code>), survey names, derivative scheme, accuracy, output location. The full list is in <a class="reference internal" href="api/generated/cosmicjellyfish.configs.config.html#module-cosmicjellyfish.configs.config" title="cosmicjellyfish.configs.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicjellyfish.configs.config</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">observables</span></code></p></td>
 <td><p>Which observables to forecast, for example <code class="docutils literal notranslate"><span class="pre">[&quot;WL&quot;,</span> <span class="pre">&quot;GCph&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">[&quot;GCsp&quot;]</span></code>.</p></td>
@@ -470,14 +516,14 @@ that you pass to <code class="docutils literal notranslate"><span class="pre">Fi
 </table>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">FisherMatrix(...).compute()</span></code> runs the numerical derivatives and returns a
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_matrix</span></code> object, which holds the matrix, the parameter
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_matrix</span></code> object, which holds the matrix, the parameter
 names and a record of the settings. See <a class="reference internal" href="comprehensive_guide.html#observables"><span class="std std-ref">Supported observables and survey settings</span></a> for the available observables and survey files.</p>
 </section>
 <section id="plot-a-result">
 <h2>Plot a result<a class="headerlink" href="#plot-a-result" title="Link to this heading">#</a></h2>
 <p>Pass the Fisher matrix from <a class="reference internal" href="first_forecast.html"><span class="doc">A verified first forecast</span></a> (the <code class="docutils literal notranslate"><span class="pre">fisher</span></code> variable) to
 <code class="docutils literal notranslate"><span class="pre">fisher_plotting</span></code> to draw a triangle plot of the free parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_plotting</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cfp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cosmicjellyfish.analysis.fisher_plotting</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cfp</span>
 
 <span class="n">plot_options</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;fishers_list&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">fisher</span><span class="p">],</span>
@@ -498,7 +544,7 @@ names and a record of the settings. See <a class="reference internal" href="comp
 <p>This writes <code class="docutils literal notranslate"><span class="pre">plots/first_forecast_plot_contours.pdf</span></code>. To compare several surveys or
 settings, add more Fisher matrices to <code class="docutils literal notranslate"><span class="pre">fishers_list</span></code> and matching entries to
 <code class="docutils literal notranslate"><span class="pre">fish_labels</span></code> and <code class="docutils literal notranslate"><span class="pre">colors</span></code>; the other options are in the
-<a class="reference internal" href="api/generated/cosmicfishpie.analysis.fisher_plotting.html#module-cosmicfishpie.analysis.fisher_plotting" title="cosmicfishpie.analysis.fisher_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plotting</span></code></a> API reference.</p>
+<a class="reference internal" href="api/generated/cosmicjellyfish.analysis.fisher_plotting.html#module-cosmicjellyfish.analysis.fisher_plotting" title="cosmicjellyfish.analysis.fisher_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_plotting</span></code></a> API reference.</p>
 </section>
 <section id="where-to-go-next">
 <h2>Where to go next<a class="headerlink" href="#where-to-go-next" title="Link to this heading">#</a></h2>
@@ -531,11 +577,11 @@ Fisher object (marginalise, combine, reshuffle).</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="user_guide.html"
+       href="migration_cosmicjellyfish.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">User guide</p>
+        <p class="prev-next-title">Migrating from cosmicfishpie</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

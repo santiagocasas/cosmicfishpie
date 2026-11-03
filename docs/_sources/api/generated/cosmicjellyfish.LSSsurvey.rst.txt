@@ -1,0 +1,37 @@
+﻿cosmicjellyfish.LSSsurvey
+=========================
+
+.. automodule:: cosmicjellyfish.LSSsurvey
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   jaxcosmo_photo
+   jaxcosmo_spectro
+   photo_cov
+   photo_obs
+   photo_window
+   spectro_cov
+   spectro_obs
+

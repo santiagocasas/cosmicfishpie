@@ -1,6 +1,0 @@
-mkdirp
-======
-
-.. currentmodule:: cosmicfishpie.analysis.utilities
-
-.. autofunction:: mkdirp

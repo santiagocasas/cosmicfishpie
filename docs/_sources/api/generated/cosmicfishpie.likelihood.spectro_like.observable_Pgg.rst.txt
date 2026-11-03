@@ -1,6 +1,0 @@
-observable\_Pgg
-===============
-
-.. currentmodule:: cosmicfishpie.likelihood.spectro_like
-
-.. autofunction:: observable_Pgg

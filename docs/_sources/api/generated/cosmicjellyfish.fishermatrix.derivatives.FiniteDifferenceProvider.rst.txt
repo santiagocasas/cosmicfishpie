@@ -1,0 +1,8 @@
+FiniteDifferenceProvider
+========================
+
+.. currentmodule:: cosmicjellyfish.fishermatrix.derivatives
+
+.. autoclass:: FiniteDifferenceProvider
+   :members:
+   :show-inheritance:

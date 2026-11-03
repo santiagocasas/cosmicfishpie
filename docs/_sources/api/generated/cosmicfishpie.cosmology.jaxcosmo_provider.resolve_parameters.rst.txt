@@ -1,6 +1,0 @@
-resolve\_parameters
-===================
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_provider
-
-.. autofunction:: resolve_parameters

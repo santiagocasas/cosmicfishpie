@@ -1,6 +1,0 @@
-matrix\_plot
-============
-
-.. currentmodule:: cosmicfishpie.analysis.plot_comparison
-
-.. autofunction:: matrix_plot

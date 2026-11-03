@@ -1,0 +1,40 @@
+cosmicjellyfish.cosmology.jax\_theory
+=====================================
+
+.. automodule:: cosmicjellyfish.cosmology.jax_theory
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      get_jax_theory
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      JaxTheory
+      TheoryTables
+   
+   
+
+   
+   
+   
+
+
+

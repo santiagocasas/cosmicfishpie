@@ -1,8 +1,0 @@
-ComputeGalSpectro
-=================
-
-.. currentmodule:: cosmicfishpie.LSSsurvey.spectro_obs
-
-.. autoclass:: ComputeGalSpectro
-   :members:
-   :show-inheritance:

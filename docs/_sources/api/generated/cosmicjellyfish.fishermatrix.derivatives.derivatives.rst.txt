@@ -1,0 +1,8 @@
+derivatives
+===========
+
+.. currentmodule:: cosmicjellyfish.fishermatrix.derivatives
+
+.. autoclass:: derivatives
+   :members:
+   :show-inheritance:

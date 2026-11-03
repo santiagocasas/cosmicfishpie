@@ -28,7 +28,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = ROOT / "docs/source/_static/ns_response"
-PROFILE_ROOT = ROOT / "cosmicfishpie/configs/default_boltzmann_yaml_files"
+PROFILE_ROOT = ROOT / "cosmicjellyfish/configs/default_boltzmann_yaml_files"
 CASES = (
     ("CLASS + EE2", "class", "class_config_yaml", "class/ee2_boost_photo.yaml"),
     ("CLASS + HMcode2020", "class", "class_config_yaml", "class/hmcode2020_photo.yaml"),
@@ -90,12 +90,12 @@ def sample_power(cosmology, k: np.ndarray, redshifts: np.ndarray, label: str) ->
 
 def compute(args: argparse.Namespace) -> tuple[dict, dict]:
     # Lazy imports ensure --plot-only needs just NumPy and Matplotlib.
-    import cosmicfishpie
-    from cosmicfishpie.configs.context import build_analysis_context
-    from cosmicfishpie.cosmology.cosmology import cosmo_functions
+    import cosmicjellyfish
+    from cosmicjellyfish.configs.context import build_analysis_context
+    from cosmicjellyfish.cosmology.cosmology import cosmo_functions
 
-    if Path(cosmicfishpie.__file__).resolve().parents[1] != ROOT:
-        raise RuntimeError("The interpreter imports a different CosmicFishPie checkout.")
+    if Path(cosmicjellyfish.__file__).resolve().parents[1] != ROOT:
+        raise RuntimeError("The interpreter imports a different CosmicJellyfish checkout.")
     k = np.geomspace(args.k_min, args.k_max, args.k_samples)
     anchors = np.array([0.2, 0.5, 1.0])
     k = np.unique(np.r_[k, anchors[(anchors >= args.k_min) & (anchors <= args.k_max)]])
@@ -114,7 +114,7 @@ def compute(args: argparse.Namespace) -> tuple[dict, dict]:
                 "cosmo_model": args.cosmo_model,
                 "nonlinear": True,
                 "feedback": 0,
-                "specs_dir": str(ROOT / "cosmicfishpie/configs/default_survey_specifications")
+                "specs_dir": str(ROOT / "cosmicjellyfish/configs/default_survey_specifications")
                 + "/",
             },
             observables=["GCph", "WL"],
@@ -154,7 +154,7 @@ def compute(args: argparse.Namespace) -> tuple[dict, dict]:
         "cosmo_model": np.array(args.cosmo_model),
     }
     packages = {}
-    for name in ("cosmicfishpie", "classy", "euclidemu2", "symbolic_pofk", "numpy", "scipy"):
+    for name in ("cosmicjellyfish", "classy", "euclidemu2", "symbolic_pofk", "numpy", "scipy"):
         module = importlib.import_module(name)
         try:
             version = importlib.metadata.version(name)
@@ -164,9 +164,9 @@ def compute(args: argparse.Namespace) -> tuple[dict, dict]:
     sources = {
         name: file_record(Path(importlib.import_module(name).__file__))
         for name in (
-            "cosmicfishpie.cosmology.cosmology",
-            "cosmicfishpie.cosmology.symbolic_new",
-            "cosmicfishpie.cosmology.ee2",
+            "cosmicjellyfish.cosmology.cosmology",
+            "cosmicjellyfish.cosmology.symbolic_new",
+            "cosmicjellyfish.cosmology.ee2",
             "symbolic_pofk.syren_new",
             "symbolic_pofk.linear_new",
         )

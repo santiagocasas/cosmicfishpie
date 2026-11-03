@@ -1,0 +1,6 @@
+legendre\_Pgg
+=============
+
+.. currentmodule:: cosmicjellyfish.likelihood.spectro_like
+
+.. autofunction:: legendre_Pgg

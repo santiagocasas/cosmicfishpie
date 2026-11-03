@@ -1,0 +1,6 @@
+observable\_Pgg
+===============
+
+.. currentmodule:: cosmicjellyfish.likelihood.spectro_like
+
+.. autofunction:: observable_Pgg

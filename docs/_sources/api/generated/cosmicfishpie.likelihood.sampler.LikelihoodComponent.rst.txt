@@ -1,8 +1,0 @@
-LikelihoodComponent
-===================
-
-.. currentmodule:: cosmicfishpie.likelihood.sampler
-
-.. autoclass:: LikelihoodComponent
-   :members:
-   :show-inheritance:

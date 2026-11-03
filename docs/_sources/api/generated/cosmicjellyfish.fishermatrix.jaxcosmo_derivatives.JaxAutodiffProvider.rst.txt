@@ -1,0 +1,8 @@
+JaxAutodiffProvider
+===================
+
+.. currentmodule:: cosmicjellyfish.fishermatrix.jaxcosmo_derivatives
+
+.. autoclass:: JaxAutodiffProvider
+   :members:
+   :show-inheritance:

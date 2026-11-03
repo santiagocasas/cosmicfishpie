@@ -1,0 +1,6 @@
+reshuffle
+=========
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_operations
+
+.. autofunction:: reshuffle

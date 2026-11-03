@@ -1,0 +1,6 @@
+customize\_barh
+===============
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: customize_barh

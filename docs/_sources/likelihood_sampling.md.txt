@@ -27,13 +27,13 @@ Run from the repository root so that `specs_dir` resolves. `n_live` and `n_eff`
 are far too small for a real posterior.
 
 ```python
-from cosmicfishpie.fishermatrix import cosmicfish as cff
-from cosmicfishpie.likelihood import PhotometricLikelihood
+from cosmicjellyfish.fishermatrix import cosmicfish as cff
+from cosmicjellyfish.likelihood import PhotometricLikelihood
 
 options = {
     "accuracy": 1, "feedback": 1, "code": "symbolic", "cosmo_model": "LCDM",
     "ell_sampling": 25, "nonlinear": True, "outroot": "likelihood_demo", "results_dir": "results",
-    "specs_dir": "cosmicfishpie/configs/default_survey_specifications",
+    "specs_dir": "cosmicjellyfish/configs/default_survey_specifications",
     "survey_name": "Euclid",
     "survey_name_photo": "Euclid-Photometric-ISTF-Pessimistic",
     "survey_name_spectro": False,
@@ -62,20 +62,21 @@ print(points.shape, sampler.log_z)
 `loglike` returns $\ln\mathcal{L} = -\chi^2/2$; parameters missing from
 `param_dict` stay at their fiducial value. Nautilus needs at least two sampled
 parameters, and `run_nautilus` is serial. For galaxy clustering use
-{py:class}`~cosmicfishpie.likelihood.spectro_like.SpectroLikelihood` with
+{py:class}`~cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood` with
 `observables=["GCsp"]`; it takes `cosmoFM_data=` and `cosmoFM_theory=` instead of
 `cosmo_data=` and `cosmo_theory=`.
 
 ## Config-driven runs
 
 For production, describe the run in one dictionary (or a YAML file; see
-`sampler_scripts/fresh_lcdm_symbolic_small.yaml` and `sampler_scripts/run_sampler.py`).
-{py:class}`~cosmicfishpie.likelihood.sampler.NautilusSampler` builds the
+`scripts/likelihood/sampler/fresh_lcdm_symbolic_small.yaml` and
+`scripts/likelihood/sampler/run_sampler.py`).
+{py:class}`~cosmicjellyfish.likelihood.sampler.NautilusSampler` builds the
 likelihood and priors, runs Nautilus (with a worker pool if `pool > 1`) and
 writes the chain. This configuration also takes about five minutes on one core.
 
 ```python
-from cosmicfishpie.likelihood import NautilusSampler
+from cosmicjellyfish.likelihood import NautilusSampler
 
 config = {
     "name": "wl_demo",
@@ -114,14 +115,14 @@ Mistakes to avoid:
 ## Post-processing
 
 The chain header lists the parameter names, then `weights loglike` (linear
-weights). {py:func}`~cosmicfishpie.likelihood.sampler.load_chain_metadata` returns
+weights). {py:func}`~cosmicjellyfish.likelihood.sampler.load_chain_metadata` returns
 the chain path, the sampled fiducial values, the metadata (log-evidence, run time)
 and LaTeX labels; the folder must hold exactly one `*_metadata.json`, otherwise
 pass `metadata_filename`.
 
 ```python
-from cosmicfishpie.analysis.fishconsumer import load_Nautilus_chains_from_txt, make_triangle_plot
-from cosmicfishpie.likelihood.sampler import load_chain_metadata
+from cosmicjellyfish.analysis.fishconsumer import load_Nautilus_chains_from_txt, make_triangle_plot
+from cosmicjellyfish.likelihood.sampler import load_chain_metadata
 
 chain_file, sampled_fiducial, metadata, labels = load_chain_metadata("chains/chains_wl_demo")
 print(metadata["evidence_log_z"], metadata["elapsed_time"])
@@ -141,13 +142,38 @@ with the *conditional* Fisher, not the marginal one. From the shell,
 `scripts/likelihood/postprocess/plot_finished_chain.py <run>_metadata.json` plots
 finished chains.
 
+### Example metadata
+
+This is real metadata from the completed symbolic two-parameter LCDM run
+`chains_symbolic_32x1_15623397` in [cjfp-data](https://dagshub.com/santiagocasas/cjfp-data),
+with only the output paths shortened. It describes that historical run, not a
+new result. No posterior samples or HDF5 checkpoint are included here.
+
+```{literalinclude} examples/chain_metadata_example.json
+:language: json
+```
+
+| Fields | Meaning |
+| --- | --- |
+| `cosmicfishpie_version` | Historical software-version key, retained for compatibility with existing chains. |
+| `name`, `outroot path`, `chain_file` | Run identifier, output prefix and posterior text filename. |
+| `start_time`, `finish_time`, `elapsed_time` | Timing recorded by the sampler. |
+| `cosmo_fiducial_params`, `sampled_fiducial_params` | Full fiducial cosmology and the subset sampled. |
+| `priors`, `sampler_settings` | Prior descriptions and Nautilus settings. |
+| `observables`, `cosmo_model`, `survey_name`, `code` | Probe, model, survey and theory backend. |
+| `evidence_log_z` | Estimated log Bayesian evidence for this run. |
+
+`load_chain_metadata` reads the JSON and resolves the chain path; it does not
+download or check the existence of the chain. See {doc}`validation_data` for
+retrieving published chains and running the validation workflows.
+
 ## Combining probes
 
 Mixing photometric and spectroscopic probes needs an explicit `likelihoods` list,
 because summing their log-likelihoods declares them statistically independent.
 Each entry is a component name, or a mapping whose extra keys go to that
 component; several entries are wrapped in a
-{py:class}`~cosmicfishpie.likelihood.base.CompositeLikelihood`:
+{py:class}`~cosmicjellyfish.likelihood.base.CompositeLikelihood`:
 
 ```python
 config["observables"] = ["WL", "GCsp"]
@@ -159,10 +185,10 @@ A hand-built `CompositeLikelihood` has no `run_nautilus`; use `NautilusSampler`.
 ## Custom components
 
 A custom component is a class with `build(config, settings, data=None, context=None)`
-(returns a {py:class}`~cosmicfishpie.likelihood.base.Likelihood`) and
+(returns a {py:class}`~cosmicjellyfish.likelihood.base.Likelihood`) and
 `data_payload(likelihood)` (returns the serialisable fiducial data that workers get
 back as `data`). Register it with
-{py:func}`~cosmicfishpie.likelihood.sampler.register_likelihood_component` at
+{py:func}`~cosmicjellyfish.likelihood.sampler.register_likelihood_component` at
 import time, not under `if __name__ == "__main__"`, so spawned workers see it, then
 select it with `config["likelihoods"] = [{"type": "<name>", ...}]`.
 
@@ -170,4 +196,4 @@ select it with `config["likelihoods"] = [{"type": "<name>", ...}]`.
 
 - {doc}`likelihood_validation`: Fisher versus Nautilus for WL, GCsp and WL+GCsp, with run times.
 - {doc}`scripts_reference`: the demo, Slurm case runner and post-processing scripts.
-- {doc}`api/index`: API reference for `cosmicfishpie.likelihood`.
+- {doc}`api/index`: API reference for `cosmicjellyfish.likelihood`.

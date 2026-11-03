@@ -1,0 +1,6 @@
+compute\_tables
+===============
+
+.. currentmodule:: cosmicjellyfish.cosmology.jaxcosmo_theory
+
+.. autofunction:: compute_tables

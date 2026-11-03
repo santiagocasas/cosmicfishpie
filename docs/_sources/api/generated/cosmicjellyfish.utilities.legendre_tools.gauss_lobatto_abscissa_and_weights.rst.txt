@@ -1,0 +1,6 @@
+gauss\_lobatto\_abscissa\_and\_weights
+======================================
+
+.. currentmodule:: cosmicjellyfish.utilities.legendre_tools
+
+.. autofunction:: gauss_lobatto_abscissa_and_weights

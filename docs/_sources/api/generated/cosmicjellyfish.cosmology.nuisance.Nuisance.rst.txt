@@ -1,0 +1,8 @@
+Nuisance
+========
+
+.. currentmodule:: cosmicjellyfish.cosmology.nuisance
+
+.. autoclass:: Nuisance
+   :members:
+   :show-inheritance:

@@ -1,0 +1,6 @@
+make\_triangle\_plot
+====================
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: make_triangle_plot

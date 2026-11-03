@@ -1,0 +1,8 @@
+PhotoCov
+========
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.photo_cov
+
+.. autoclass:: PhotoCov
+   :members:
+   :show-inheritance:

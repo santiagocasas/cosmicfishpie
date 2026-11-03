@@ -1,0 +1,31 @@
+cosmicjellyfish.CMBsurvey.CMB\_cov
+==================================
+
+.. automodule:: cosmicjellyfish.CMBsurvey.CMB_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      CMBCov
+   
+   
+
+   
+   
+   
+
+
+

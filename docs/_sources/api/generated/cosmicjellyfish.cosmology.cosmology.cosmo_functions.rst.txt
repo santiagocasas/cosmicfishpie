@@ -1,0 +1,8 @@
+cosmo\_functions
+================
+
+.. currentmodule:: cosmicjellyfish.cosmology.cosmology
+
+.. autoclass:: cosmo_functions
+   :members:
+   :show-inheritance:

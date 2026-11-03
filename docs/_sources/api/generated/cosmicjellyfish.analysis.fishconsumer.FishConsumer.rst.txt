@@ -1,0 +1,8 @@
+FishConsumer
+============
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autoclass:: FishConsumer
+   :members:
+   :show-inheritance:

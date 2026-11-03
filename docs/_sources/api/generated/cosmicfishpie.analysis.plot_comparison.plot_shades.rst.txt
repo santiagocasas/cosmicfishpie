@@ -1,6 +1,0 @@
-plot\_shades
-============
-
-.. currentmodule:: cosmicfishpie.analysis.plot_comparison
-
-.. autofunction:: plot_shades

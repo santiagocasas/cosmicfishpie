@@ -1,6 +1,0 @@
-init
-====
-
-.. currentmodule:: cosmicfishpie.configs.config
-
-.. autofunction:: init

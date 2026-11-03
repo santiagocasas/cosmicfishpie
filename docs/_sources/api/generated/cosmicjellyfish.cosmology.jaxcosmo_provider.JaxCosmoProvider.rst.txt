@@ -1,0 +1,8 @@
+JaxCosmoProvider
+================
+
+.. currentmodule:: cosmicjellyfish.cosmology.jaxcosmo_provider
+
+.. autoclass:: JaxCosmoProvider
+   :members:
+   :show-inheritance:

@@ -1,0 +1,31 @@
+cosmicjellyfish.fishermatrix.cosmicfish
+=======================================
+
+.. automodule:: cosmicjellyfish.fishermatrix.cosmicfish
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      FisherMatrix
+   
+   
+
+   
+   
+   
+
+
+

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Default vs high-precision Boltzmann profiles &#8212; cosmicfishpie v1.3.1</title>
+    <title>Default vs high-precision Boltzmann profiles &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -146,6 +154,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -392,9 +438,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">GitHub repository</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicfishpie/dashboard/">Validation dashboard</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicjellyfish/dashboard/">Validation dashboard</a></li>
 </ul>
 </div>
 </nav></div>
@@ -459,7 +505,7 @@
 <h1>Default vs high-precision Boltzmann profiles<a class="headerlink" href="#default-vs-high-precision-boltzmann-profiles" title="Link to this heading">#</a></h1>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
-<p>CosmicFishPie ships two kinds of Boltzmann-solver settings for the <code class="docutils literal notranslate"><span class="pre">class</span></code> and <code class="docutils literal notranslate"><span class="pre">camb</span></code>
+<p>CosmicJellyfish ships two kinds of Boltzmann-solver settings for the <code class="docutils literal notranslate"><span class="pre">class</span></code> and <code class="docutils literal notranslate"><span class="pre">camb</span></code>
 backends: relaxed <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> profiles, used automatically when no
 <code class="docutils literal notranslate"><span class="pre">class_config_yaml</span></code> / <code class="docutils literal notranslate"><span class="pre">camb_config_yaml</span></code> is given, and the paper-validated
 <code class="docutils literal notranslate"><span class="pre">nuvalidation_hp.yaml</span></code> profiles (Archidiacono et al., arXiv:2405.06047v1). This page
@@ -525,9 +571,10 @@ bias <code class="docutils literal notranslate"><span class="pre">b1</span></cod
 calls) and then one serial <code class="docutils literal notranslate"><span class="pre">FisherMatrix.compute()</span></code>. Parallel derivative evaluation was
 not used, so timings are single-process wall times, not the best achievable. Each case
 ran as its own 16-CPU job on JURECA with <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=16</span></code>.</p>
-<p>The driver script lives outside this repository, in the <code class="docutils literal notranslate"><span class="pre">cjfp-data</span></code> job repository, as
+<p>The driver script lives outside this repository, in the <code class="docutils literal notranslate"><span class="pre">cjfp-data</span></code> job repository
+(see <a class="reference internal" href="validation_data.html"><span class="doc">Validation data and examples (cjfp-data)</span></a>), as
 <code class="docutils literal notranslate"><span class="pre">jobs_punch/compare_backend_profiles.py</span></code> (subcommands <code class="docutils literal notranslate"><span class="pre">run</span></code>, <code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">compare</span></code>). The
-discrepancy plots come from <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.plot_comparison.ploterrs</span></code>.</p>
+discrepancy plots come from <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.plot_comparison.ploterrs</span></code>.</p>
 </section>
 <section id="what-differs-between-the-profiles">
 <h2>What differs between the profiles<a class="headerlink" href="#what-differs-between-the-profiles" title="Link to this heading">#</a></h2>

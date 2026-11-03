@@ -1,0 +1,8 @@
+JaxFiniteDifferenceProvider
+===========================
+
+.. currentmodule:: cosmicjellyfish.fishermatrix.jaxcosmo_derivatives
+
+.. autoclass:: JaxFiniteDifferenceProvider
+   :members:
+   :show-inheritance:

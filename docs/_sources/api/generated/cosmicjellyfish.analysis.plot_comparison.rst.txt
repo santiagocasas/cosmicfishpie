@@ -1,0 +1,37 @@
+cosmicjellyfish.analysis.plot\_comparison
+=========================================
+
+.. automodule:: cosmicjellyfish.analysis.plot_comparison
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      add_colorbar
+      calc_y_range
+      matrix_plot
+      og_plot_shades
+      plot_shades
+      ploterrs
+      process_fish_errs
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

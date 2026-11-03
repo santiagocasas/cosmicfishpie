@@ -1,8 +1,0 @@
-JaxTheory
-=========
-
-.. currentmodule:: cosmicfishpie.cosmology.jax_theory
-
-.. autoclass:: JaxTheory
-   :members:
-   :show-inheritance:

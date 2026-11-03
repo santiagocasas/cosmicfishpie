@@ -1,0 +1,8 @@
+NautilusSampler
+===============
+
+.. currentmodule:: cosmicjellyfish.likelihood.sampler
+
+.. autoclass:: NautilusSampler
+   :members:
+   :show-inheritance:

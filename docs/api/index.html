@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; cosmicfishpie v1.3.1</title>
+    <title>API reference &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -54,7 +54,7 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="cosmicfishpie.analysis" href="generated/cosmicfishpie.analysis.html" />
+    <link rel="next" title="cosmicjellyfish.analysis" href="generated/cosmicjellyfish.analysis.html" />
     <link rel="prev" title="Tutorials" href="../tutorials.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -125,8 +125,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="../_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="../_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -148,6 +156,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../user_guide.html">
     User guide
   </a>
@@ -160,20 +182,30 @@
   </a>
 </li>
 
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -212,7 +244,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -224,7 +256,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -278,6 +310,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -338,7 +384,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -350,7 +396,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -372,274 +418,274 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.html">cosmicfishpie.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.colors.html">cosmicfishpie.analysis.colors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.colors.nice_colors.html">nice_colors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.colors.bash_colors.html">bash_colors</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.html">cosmicjellyfish.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.colors.html">cosmicjellyfish.analysis.colors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.colors.nice_colors.html">nice_colors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.colors.bash_colors.html">bash_colors</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.html">cosmicfishpie.analysis.fishconsumer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.add_mathrm.html">add_mathrm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.arrays_gaussian.html">arrays_gaussian</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.choose_fish_toplot.html">choose_fish_toplot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.clamp.html">clamp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.customize_barh.html">customize_barh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.display_colors.html">display_colors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.fishtable_to_pandas.html">fishtable_to_pandas</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.gaussian.html">gaussian</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.hex2rgb.html">hex2rgb</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.load_Nautilus_chains_from_txt.html">load_Nautilus_chains_from_txt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.load_montepython_chains.html">load_montepython_chains</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.log_fidu_to_fidu.html">log_fidu_to_fidu</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.make_fisher_chain_plot.html">make_fisher_chain_plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.make_triangle_plot.html">make_triangle_plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.n_sigmas.html">n_sigmas</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.parse_log_param.html">parse_log_param</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.perc_to_abs.html">perc_to_abs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.plot_chain_summary.html">plot_chain_summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.prepare_fishers.html">prepare_fishers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.prepare_settings_plot.html">prepare_settings_plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.replace_latex_name.html">replace_latex_name</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.replace_latex_style.html">replace_latex_style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.rgb2hex.html">rgb2hex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.sigma_fidu.html">sigma_fidu</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fishconsumer.FishConsumer.html">FishConsumer</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.html">cosmicjellyfish.analysis.fishconsumer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.add_mathrm.html">add_mathrm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.arrays_gaussian.html">arrays_gaussian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.choose_fish_toplot.html">choose_fish_toplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.clamp.html">clamp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.customize_barh.html">customize_barh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.display_colors.html">display_colors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.fishtable_to_pandas.html">fishtable_to_pandas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.gaussian.html">gaussian</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.hex2rgb.html">hex2rgb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.load_Nautilus_chains_from_txt.html">load_Nautilus_chains_from_txt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.load_montepython_chains.html">load_montepython_chains</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.log_fidu_to_fidu.html">log_fidu_to_fidu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.make_fisher_chain_plot.html">make_fisher_chain_plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.make_triangle_plot.html">make_triangle_plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.n_sigmas.html">n_sigmas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.parse_log_param.html">parse_log_param</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.perc_to_abs.html">perc_to_abs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.plot_chain_summary.html">plot_chain_summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.prepare_fishers.html">prepare_fishers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.prepare_settings_plot.html">prepare_settings_plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.replace_latex_name.html">replace_latex_name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.replace_latex_style.html">replace_latex_style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.rgb2hex.html">rgb2hex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.sigma_fidu.html">sigma_fidu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fishconsumer.FishConsumer.html">FishConsumer</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_derived.html">cosmicfishpie.analysis.fisher_derived</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_derived.fisher_derived.html">fisher_derived</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_derived.html">cosmicjellyfish.analysis.fisher_derived</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_derived.fisher_derived.html">fisher_derived</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_matrix.html">cosmicfishpie.analysis.fisher_matrix</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_matrix.fisher_matrix.html">fisher_matrix</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_matrix.html">cosmicjellyfish.analysis.fisher_matrix</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_matrix.fisher_matrix.html">fisher_matrix</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.html">cosmicfishpie.analysis.fisher_operations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.eliminate_columns_rows.html">eliminate_columns_rows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.eliminate_parameters.html">eliminate_parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.information_gain.html">information_gain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.marginalise.html">marginalise</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.marginalise_over.html">marginalise_over</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_operations.reshuffle.html">reshuffle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.html">cosmicjellyfish.analysis.fisher_operations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.eliminate_columns_rows.html">eliminate_columns_rows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.eliminate_parameters.html">eliminate_parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.information_gain.html">information_gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.marginalise.html">marginalise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.marginalise_over.html">marginalise_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_operations.reshuffle.html">reshuffle</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_plot_analysis.html">cosmicfishpie.analysis.fisher_plot_analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_plot_analysis.CosmicFish_FisherAnalysis.html">CosmicFish_FisherAnalysis</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_plot_analysis.html">cosmicjellyfish.analysis.fisher_plot_analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_plot_analysis.CosmicFish_FisherAnalysis.html">CosmicFish_FisherAnalysis</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_plotting.html">cosmicfishpie.analysis.fisher_plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_plotting.fisher_plotting.html">fisher_plotting</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_plotting.html">cosmicjellyfish.analysis.fisher_plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_plotting.fisher_plotting.html">fisher_plotting</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.html">cosmicfishpie.analysis.plot_comparison</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.add_colorbar.html">add_colorbar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.calc_y_range.html">calc_y_range</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.matrix_plot.html">matrix_plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.og_plot_shades.html">og_plot_shades</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.plot_shades.html">plot_shades</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.ploterrs.html">ploterrs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.plot_comparison.process_fish_errs.html">process_fish_errs</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.html">cosmicjellyfish.analysis.plot_comparison</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.add_colorbar.html">add_colorbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.calc_y_range.html">calc_y_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.matrix_plot.html">matrix_plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.og_plot_shades.html">og_plot_shades</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.plot_shades.html">plot_shades</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.ploterrs.html">ploterrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.plot_comparison.process_fish_errs.html">process_fish_errs</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.html">cosmicfishpie.analysis.utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.CosmicFish_write_header.html">CosmicFish_write_header</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.confidence_coefficient.html">confidence_coefficient</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.find_nearest.html">find_nearest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.grouper.html">grouper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.make_list.html">make_list</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.mant_exp_to_num.html">mant_exp_to_num</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.mkdirp.html">mkdirp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.nice_number.html">nice_number</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.num_to_mant_exp.html">num_to_mant_exp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.print_table.html">print_table</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.rel_error_to_index.html">rel_error_to_index</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.rel_median_error.html">rel_median_error</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.analysis.utilities.significant_digits.html">significant_digits</a></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.html">cosmicfishpie.CMBsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.CMB_cov.html">cosmicfishpie.CMBsurvey.CMB_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.CMB_cov.CMBCov.html">CMBCov</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.CMB_obs.html">cosmicfishpie.CMBsurvey.CMB_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.CMB_obs.ComputeCls.html">ComputeCls</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.html">cosmicjellyfish.analysis.utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.CosmicFish_write_header.html">CosmicFish_write_header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.confidence_coefficient.html">confidence_coefficient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.find_nearest.html">find_nearest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.grouper.html">grouper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.make_list.html">make_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.mant_exp_to_num.html">mant_exp_to_num</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.mkdirp.html">mkdirp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.nice_number.html">nice_number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.num_to_mant_exp.html">num_to_mant_exp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.print_table.html">print_table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.rel_error_to_index.html">rel_error_to_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.rel_median_error.html">rel_median_error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.analysis.utilities.significant_digits.html">significant_digits</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.configs.html">cosmicfishpie.configs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.configs.config.html">cosmicfishpie.configs.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.configs.config.init.html">init</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.html">cosmicjellyfish.CMBsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.CMB_cov.html">cosmicjellyfish.CMBsurvey.CMB_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.CMB_cov.CMBCov.html">CMBCov</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.configs.context.html">cosmicfishpie.configs.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.configs.context.build_analysis_context.html">build_analysis_context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.configs.context.AnalysisContext.html">AnalysisContext</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.configs.install_external_data.html">cosmicfishpie.configs.install_external_data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.configs.install_external_data.install_ext_data.html">install_ext_data</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.CMB_obs.html">cosmicjellyfish.CMBsurvey.CMB_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.CMB_obs.ComputeCls.html">ComputeCls</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.html">cosmicfishpie.cosmology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.cosmology.html">cosmicfishpie.cosmology.cosmology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.cosmology.boltzmann_code.html">boltzmann_code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.cosmology.cosmo_functions.html">cosmo_functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.cosmology.external_input.html">external_input</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.configs.html">cosmicjellyfish.configs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.configs.config.html">cosmicjellyfish.configs.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.configs.config.init.html">init</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.ee2.html">cosmicfishpie.cosmology.ee2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.ee2.class_ee2_boost.html">class_ee2_boost</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.ee2.class_ee2_parameters.html">class_ee2_parameters</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.configs.context.html">cosmicjellyfish.configs.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.configs.context.build_analysis_context.html">build_analysis_context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.configs.context.AnalysisContext.html">AnalysisContext</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jax_theory.html">cosmicfishpie.cosmology.jax_theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jax_theory.get_jax_theory.html">get_jax_theory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jax_theory.JaxTheory.html">JaxTheory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jax_theory.TheoryTables.html">TheoryTables</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_amplitude.html">cosmicfishpie.cosmology.jaxcosmo_amplitude</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_amplitude.As_to_sigma8.html">As_to_sigma8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_amplitude.sigma8_to_As.html">sigma8_to_As</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_halofit.html">cosmicfishpie.cosmology.jaxcosmo_halofit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_halofit.halofit.html">halofit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_halofit.nonlinear_scale.html">nonlinear_scale</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_halofit.nonlinear_scale_residual.html">nonlinear_scale_residual</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_provider.html">cosmicfishpie.cosmology.jaxcosmo_provider</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_provider.resolve_parameters.html">resolve_parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_provider.JaxCosmoProvider.html">JaxCosmoProvider</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.html">cosmicfishpie.cosmology.jaxcosmo_theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.compute_tables.html">compute_tables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.enable_x64.html">enable_x64</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.make_cosmology.html">make_cosmology</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.params_from_vector.html">params_from_vector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.JaxCosmoTheory.html">JaxCosmoTheory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.jaxcosmo_theory.TheoryConfig.html">TheoryConfig</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.nuisance.html">cosmicfishpie.cosmology.nuisance</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.nuisance.Nuisance.html">Nuisance</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.cosmology.symbolic_new.html">cosmicfishpie.cosmology.symbolic_new</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.cosmology.symbolic_new.SyrenNewProvider.html">SyrenNewProvider</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.configs.install_external_data.html">cosmicjellyfish.configs.install_external_data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.configs.install_external_data.install_ext_data.html">install_ext_data</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.html">cosmicfishpie.fishermatrix</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.cosmicfish.html">cosmicfishpie.fishermatrix.cosmicfish</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.cosmicfish.FisherMatrix.html">FisherMatrix</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.html">cosmicjellyfish.cosmology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.cosmology.html">cosmicjellyfish.cosmology.cosmology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.cosmology.boltzmann_code.html">boltzmann_code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.cosmology.cosmo_functions.html">cosmo_functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.cosmology.external_input.html">external_input</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.html">cosmicfishpie.fishermatrix.derivatives</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.compute_derivatives.html">compute_derivatives</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.DerivativeProvider.html">DerivativeProvider</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.DerivativeRequest.html">DerivativeRequest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.FiniteDifferenceProvider.html">FiniteDifferenceProvider</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.derivatives.derivatives.html">derivatives</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.ee2.html">cosmicjellyfish.cosmology.ee2</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.ee2.class_ee2_boost.html">class_ee2_boost</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.ee2.class_ee2_parameters.html">class_ee2_parameters</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.jaxcosmo_derivatives.html">cosmicfishpie.fishermatrix.jaxcosmo_derivatives</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.jaxcosmo_derivatives.JaxAutodiffProvider.html">JaxAutodiffProvider</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.jaxcosmo_derivatives.JaxFiniteDifferenceProvider.html">JaxFiniteDifferenceProvider</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jax_theory.html">cosmicjellyfish.cosmology.jax_theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jax_theory.get_jax_theory.html">get_jax_theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jax_theory.JaxTheory.html">JaxTheory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jax_theory.TheoryTables.html">TheoryTables</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_amplitude.html">cosmicjellyfish.cosmology.jaxcosmo_amplitude</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_amplitude.As_to_sigma8.html">As_to_sigma8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_amplitude.sigma8_to_As.html">sigma8_to_As</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.likelihood.html">cosmicfishpie.likelihood</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.likelihood.base.html">cosmicfishpie.likelihood.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.base.is_indexable_iterable.html">is_indexable_iterable</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.base.CompositeLikelihood.html">CompositeLikelihood</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.base.Likelihood.html">Likelihood</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.base.NautilusMixin.html">NautilusMixin</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_halofit.html">cosmicjellyfish.cosmology.jaxcosmo_halofit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_halofit.halofit.html">halofit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_halofit.nonlinear_scale.html">nonlinear_scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_halofit.nonlinear_scale_residual.html">nonlinear_scale_residual</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.likelihood.photo_like.html">cosmicfishpie.likelihood.photo_like</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.photo_like.PhotometricLikelihood.html">PhotometricLikelihood</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_provider.html">cosmicjellyfish.cosmology.jaxcosmo_provider</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_provider.resolve_parameters.html">resolve_parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_provider.JaxCosmoProvider.html">JaxCosmoProvider</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.likelihood.sampler.html">cosmicfishpie.likelihood.sampler</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.sampler.load_chain_metadata.html">load_chain_metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.sampler.register_likelihood_component.html">register_likelihood_component</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.sampler.LikelihoodComponent.html">LikelihoodComponent</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.sampler.NautilusSampler.html">NautilusSampler</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.html">cosmicjellyfish.cosmology.jaxcosmo_theory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.compute_tables.html">compute_tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.enable_x64.html">enable_x64</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.make_cosmology.html">make_cosmology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.params_from_vector.html">params_from_vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.JaxCosmoTheory.html">JaxCosmoTheory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.jaxcosmo_theory.TheoryConfig.html">TheoryConfig</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.html">cosmicfishpie.likelihood.spectro_like</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.compute_chi2_legendre.html">compute_chi2_legendre</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.compute_covariance_legendre.html">compute_covariance_legendre</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.compute_theory_spectro.html">compute_theory_spectro</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.compute_wedge_chi2.html">compute_wedge_chi2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.legendre_Pgg.html">legendre_Pgg</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.loglike.html">loglike</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.observable_Pgg.html">observable_Pgg</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.likelihood.spectro_like.SpectroLikelihood.html">SpectroLikelihood</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.nuisance.html">cosmicjellyfish.cosmology.nuisance</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.nuisance.Nuisance.html">Nuisance</a></li>
 </ul>
 </details></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.html">cosmicfishpie.LSSsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.html">cosmicfishpie.LSSsurvey.jaxcosmo_photo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.is_bias_key.html">is_bias_key</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html">JaxPhotoObservable</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.jaxcosmo_spectro.html">cosmicfishpie.LSSsurvey.jaxcosmo_spectro</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.jaxcosmo_spectro.JaxSpectroObservable.html">JaxSpectroObservable</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_cov.html">cosmicfishpie.LSSsurvey.photo_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_cov.PhotoCov.html">PhotoCov</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_obs.html">cosmicfishpie.LSSsurvey.photo_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_obs.faster_integral_efficiency.html">faster_integral_efficiency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_obs.memo_integral_efficiency.html">memo_integral_efficiency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_obs.much_faster_integral_efficiency.html">much_faster_integral_efficiency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_obs.ComputeCls.html">ComputeCls</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_window.html">cosmicfishpie.LSSsurvey.photo_window</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.photo_window.GalaxyPhotoDist.html">GalaxyPhotoDist</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.spectro_cov.html">cosmicfishpie.LSSsurvey.spectro_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.spectro_cov.SpectroCov.html">SpectroCov</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.spectro_cov.SpectroDerivs.html">SpectroDerivs</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.spectro_obs.html">cosmicfishpie.LSSsurvey.spectro_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.spectro_obs.ComputeGalSpectro.html">ComputeGalSpectro</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.symbolic_new.html">cosmicjellyfish.cosmology.symbolic_new</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.cosmology.symbolic_new.SyrenNewProvider.html">SyrenNewProvider</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicfishpie.utilities.html">cosmicfishpie.utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.utilities.legendre_tools.html">cosmicfishpie.utilities.legendre_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.legendre_tools.gauss_lobatto_abscissa_and_weights.html">gauss_lobatto_abscissa_and_weights</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.html">cosmicjellyfish.fishermatrix</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.cosmicfish.html">cosmicjellyfish.fishermatrix.cosmicfish</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.cosmicfish.FisherMatrix.html">FisherMatrix</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.html">cosmicfishpie.utilities.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.load_fisher_from_json.html">load_fisher_from_json</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.filesystem.html">filesystem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.inputiniparser.html">inputiniparser</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.misc.html">misc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.numerics.html">numerics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.physmath.html">physmath</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/cosmicfishpie.utilities.utils.printing.html">printing</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.html">cosmicjellyfish.fishermatrix.derivatives</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.compute_derivatives.html">compute_derivatives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.DerivativeProvider.html">DerivativeProvider</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.DerivativeRequest.html">DerivativeRequest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.FiniteDifferenceProvider.html">FiniteDifferenceProvider</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.derivatives.derivatives.html">derivatives</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.jaxcosmo_derivatives.html">cosmicjellyfish.fishermatrix.jaxcosmo_derivatives</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.jaxcosmo_derivatives.JaxAutodiffProvider.html">JaxAutodiffProvider</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.jaxcosmo_derivatives.JaxFiniteDifferenceProvider.html">JaxFiniteDifferenceProvider</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.html">cosmicjellyfish.likelihood</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.base.html">cosmicjellyfish.likelihood.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.base.is_indexable_iterable.html">is_indexable_iterable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.base.CompositeLikelihood.html">CompositeLikelihood</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.base.Likelihood.html">Likelihood</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.base.NautilusMixin.html">NautilusMixin</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.photo_like.html">cosmicjellyfish.likelihood.photo_like</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.photo_like.PhotometricLikelihood.html">PhotometricLikelihood</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.sampler.html">cosmicjellyfish.likelihood.sampler</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.sampler.load_chain_metadata.html">load_chain_metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.sampler.register_likelihood_component.html">register_likelihood_component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.sampler.LikelihoodComponent.html">LikelihoodComponent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.sampler.NautilusSampler.html">NautilusSampler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.html">cosmicjellyfish.likelihood.spectro_like</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.compute_chi2_legendre.html">compute_chi2_legendre</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.compute_covariance_legendre.html">compute_covariance_legendre</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.compute_theory_spectro.html">compute_theory_spectro</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.compute_wedge_chi2.html">compute_wedge_chi2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.legendre_Pgg.html">legendre_Pgg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.loglike.html">loglike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.observable_Pgg.html">observable_Pgg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood.html">SpectroLikelihood</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.html">cosmicjellyfish.LSSsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html">cosmicjellyfish.LSSsurvey.jaxcosmo_photo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.jaxcosmo_photo.is_bias_key.html">is_bias_key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html">JaxPhotoObservable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.jaxcosmo_spectro.html">cosmicjellyfish.LSSsurvey.jaxcosmo_spectro</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.jaxcosmo_spectro.JaxSpectroObservable.html">JaxSpectroObservable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_cov.html">cosmicjellyfish.LSSsurvey.photo_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_cov.PhotoCov.html">PhotoCov</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_obs.html">cosmicjellyfish.LSSsurvey.photo_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_obs.faster_integral_efficiency.html">faster_integral_efficiency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_obs.memo_integral_efficiency.html">memo_integral_efficiency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_obs.much_faster_integral_efficiency.html">much_faster_integral_efficiency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_obs.ComputeCls.html">ComputeCls</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_window.html">cosmicjellyfish.LSSsurvey.photo_window</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.photo_window.GalaxyPhotoDist.html">GalaxyPhotoDist</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.spectro_cov.html">cosmicjellyfish.LSSsurvey.spectro_cov</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.spectro_cov.SpectroCov.html">SpectroCov</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.spectro_cov.SpectroDerivs.html">SpectroDerivs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.spectro_obs.html">cosmicjellyfish.LSSsurvey.spectro_obs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.spectro_obs.ComputeGalSpectro.html">ComputeGalSpectro</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="generated/cosmicjellyfish.utilities.html">cosmicjellyfish.utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.utilities.legendre_tools.html">cosmicjellyfish.utilities.legendre_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.legendre_tools.gauss_lobatto_abscissa_and_weights.html">gauss_lobatto_abscissa_and_weights</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.html">cosmicjellyfish.utilities.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.load_fisher_from_json.html">load_fisher_from_json</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.filesystem.html">filesystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.inputiniparser.html">inputiniparser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.misc.html">misc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.numerics.html">numerics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.physmath.html">physmath</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/cosmicjellyfish.utilities.utils.printing.html">printing</a></li>
 </ul>
 </details></li>
 </ul>
@@ -703,41 +749,41 @@
                   
   <section id="api-reference">
 <h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
-<p>Reference documentation generated from the docstrings of the <code class="docutils literal notranslate"><span class="pre">cosmicfishpie</span></code>
+<p>Reference documentation generated from the docstrings of the <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish</span></code>
 package. For a guided introduction, see <a class="reference internal" href="../getting_started.html"><span class="doc">Getting started</span></a> and
 <a class="reference internal" href="../user_guide.html"><span class="doc">User guide</span></a>.</p>
 <p>Most users only need three modules:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.cosmicfish.html#module-cosmicfishpie.fishermatrix.cosmicfish" title="cosmicfishpie.fishermatrix.cosmicfish"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.cosmicfish</span></code></a>: <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code>, which runs a
+<li><p><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.cosmicfish.html#module-cosmicjellyfish.fishermatrix.cosmicfish" title="cosmicjellyfish.fishermatrix.cosmicfish"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicjellyfish.fishermatrix.cosmicfish</span></code></a>: <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code>, which runs a
 forecast.</p></li>
-<li><p><a class="reference internal" href="generated/cosmicfishpie.configs.config.html#module-cosmicfishpie.configs.config" title="cosmicfishpie.configs.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.configs.config</span></code></a>: the options that control a forecast.</p></li>
-<li><p><a class="reference internal" href="generated/cosmicfishpie.analysis.fisher_plotting.html#module-cosmicfishpie.analysis.fisher_plotting" title="cosmicfishpie.analysis.fisher_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plotting</span></code></a>: triangle plots of Fisher matrices.</p></li>
+<li><p><a class="reference internal" href="generated/cosmicjellyfish.configs.config.html#module-cosmicjellyfish.configs.config" title="cosmicjellyfish.configs.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicjellyfish.configs.config</span></code></a>: the options that control a forecast.</p></li>
+<li><p><a class="reference internal" href="generated/cosmicjellyfish.analysis.fisher_plotting.html#module-cosmicjellyfish.analysis.fisher_plotting" title="cosmicjellyfish.analysis.fisher_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_plotting</span></code></a>: triangle plots of Fisher matrices.</p></li>
 </ul>
 <p>The full package tree follows. Also see the <a class="reference internal" href="../py-modindex.html"><span class="std std-ref">Module Index</span></a>.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicfishpie.analysis.html#module-cosmicfishpie.analysis" title="cosmicfishpie.analysis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.analysis</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicjellyfish.analysis.html#module-cosmicjellyfish.analysis" title="cosmicjellyfish.analysis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicfishpie.CMBsurvey.html#module-cosmicfishpie.CMBsurvey" title="cosmicfishpie.CMBsurvey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.CMBsurvey</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicjellyfish.CMBsurvey.html#module-cosmicjellyfish.CMBsurvey" title="cosmicjellyfish.CMBsurvey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.CMBsurvey</span></code></a></p></td>
 <td><p>CMB Module</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicfishpie.configs.html#module-cosmicfishpie.configs" title="cosmicfishpie.configs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.configs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicjellyfish.configs.html#module-cosmicjellyfish.configs" title="cosmicjellyfish.configs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.configs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicfishpie.cosmology.html#module-cosmicfishpie.cosmology" title="cosmicfishpie.cosmology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.cosmology</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicjellyfish.cosmology.html#module-cosmicjellyfish.cosmology" title="cosmicjellyfish.cosmology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.cosmology</span></code></a></p></td>
 <td><p>Cosmology Module</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicfishpie.fishermatrix.html#module-cosmicfishpie.fishermatrix" title="cosmicfishpie.fishermatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicjellyfish.fishermatrix.html#module-cosmicjellyfish.fishermatrix" title="cosmicjellyfish.fishermatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.fishermatrix</span></code></a></p></td>
 <td><p>LSS Module</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicfishpie.likelihood.html#module-cosmicfishpie.likelihood" title="cosmicfishpie.likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.likelihood</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicjellyfish.likelihood.html#module-cosmicjellyfish.likelihood" title="cosmicjellyfish.likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.likelihood</span></code></a></p></td>
 <td><p>Likelihood subpackage: tools to compute data/theory spectra and chi2.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicfishpie.LSSsurvey.html#module-cosmicfishpie.LSSsurvey" title="cosmicfishpie.LSSsurvey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.LSSsurvey</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/cosmicjellyfish.LSSsurvey.html#module-cosmicjellyfish.LSSsurvey" title="cosmicjellyfish.LSSsurvey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.LSSsurvey</span></code></a></p></td>
 <td><p>LSS Module</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicfishpie.utilities.html#module-cosmicfishpie.utilities" title="cosmicfishpie.utilities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicfishpie.utilities</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/cosmicjellyfish.utilities.html#module-cosmicjellyfish.utilities" title="cosmicjellyfish.utilities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosmicjellyfish.utilities</span></code></a></p></td>
 <td><p>PACKAGE</p></td>
 </tr>
 </tbody>
@@ -765,11 +811,11 @@ forecast.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="generated/cosmicfishpie.analysis.html"
+       href="generated/cosmicjellyfish.analysis.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">cosmicfishpie.analysis</p>
+        <p class="prev-next-title">cosmicjellyfish.analysis</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

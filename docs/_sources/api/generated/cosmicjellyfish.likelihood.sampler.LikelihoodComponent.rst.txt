@@ -1,0 +1,8 @@
+LikelihoodComponent
+===================
+
+.. currentmodule:: cosmicjellyfish.likelihood.sampler
+
+.. autoclass:: LikelihoodComponent
+   :members:
+   :show-inheritance:

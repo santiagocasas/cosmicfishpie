@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Comprehensive guide &#8212; cosmicfishpie v1.3.1</title>
+    <title>Comprehensive guide &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -145,6 +153,20 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -437,7 +483,7 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="comprehensive-guide">
 <h1>Comprehensive guide<a class="headerlink" href="#comprehensive-guide" title="Link to this heading">#</a></h1>
-<p>This guide covers the options you can choose when building a Cosmicfishpie
+<p>This guide covers the options you can choose when building a Cosmicjellyfish
 Fisher forecast, and what you can do with the result. For a runnable end-to-end
 example, start with <a class="reference internal" href="first_forecast.html#first-forecast"><span class="std std-ref">A verified first forecast</span></a>. For
 installation, see the <a class="reference internal" href="installation.html"><span class="std std-doc">installation guide</span></a>.</p>
@@ -477,11 +523,11 @@ installation, see the <a class="reference internal" href="installation.html"><sp
 </tbody>
 </table>
 </div>
-<p>CAMB and CLASS are installed together with Cosmicfishpie (as the <code class="docutils literal notranslate"><span class="pre">camb</span></code> and
+<p>CAMB and CLASS are installed together with Cosmicjellyfish (as the <code class="docutils literal notranslate"><span class="pre">camb</span></code> and
 <code class="docutils literal notranslate"><span class="pre">classy</span></code> packages), so <code class="docutils literal notranslate"><span class="pre">camb</span></code> and <code class="docutils literal notranslate"><span class="pre">class</span></code> work without extra setup. They run a
 Boltzmann solver for every derivative step and are therefore slower than
 <code class="docutils literal notranslate"><span class="pre">symbolic</span></code>. Omit the YAML path to use the default configurations in
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_boltzmann_yaml_files/</span></code>.</p>
 <p>If the fiducial cosmology has no <code class="docutils literal notranslate"><span class="pre">Neff</span></code>, both solvers use the standard value
 3.044. It is a fixed input: it is only varied if you put it in <code class="docutils literal notranslate"><span class="pre">freepars</span></code>.</p>
 <p>The examples in this guide use <code class="docutils literal notranslate"><span class="pre">symbolic</span></code> so that they run quickly. To use
@@ -529,9 +575,9 @@ Stage-IV specs, the single-ell-range limitation, and smoke-test scripts.</p>
 <section id="shipped-survey-files">
 <span id="survey-files"></span><h3>Shipped survey files<a class="headerlink" href="#shipped-survey-files" title="Link to this heading">#</a></h3>
 <p>Pass a file name (without <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>) as <code class="docutils literal notranslate"><span class="pre">survey_name_photo</span></code>, <code class="docutils literal notranslate"><span class="pre">survey_name_spectro</span></code>
-or <code class="docutils literal notranslate"><span class="pre">survey_name_radio_IM</span></code>. Cosmicfishpie looks in <code class="docutils literal notranslate"><span class="pre">specs_dir</span></code> first (by default
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_survey_specifications</span></code>) and then in
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/other_survey_specifications</span></code>, so every shipped file below
+or <code class="docutils literal notranslate"><span class="pre">survey_name_radio_IM</span></code>. Cosmicjellyfish looks in <code class="docutils literal notranslate"><span class="pre">specs_dir</span></code> first (by default
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_survey_specifications</span></code>) and then in
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/other_survey_specifications</span></code>, so every shipped file below
 can be selected by name alone.</p>
 <p><code class="docutils literal notranslate"><span class="pre">default_survey_specifications/</span></code></p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -632,7 +678,7 @@ before using anything other than <code class="docutils literal notranslate"><spa
 <p>Nuisance parameters are survey- and model-specific. For example, the default
 Euclid spectroscopic specification uses <code class="docutils literal notranslate"><span class="pre">lnbg_1</span></code> to <code class="docutils literal notranslate"><span class="pre">lnbg_4</span></code> for its logarithmic
 galaxy bias. Check the survey YAML before adding nuisance parameters to
-<code class="docutils literal notranslate"><span class="pre">freepars</span></code>. The <code class="docutils literal notranslate"><span class="pre">Nuisance</span></code> class (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.cosmology.nuisance</span></code>) builds the
+<code class="docutils literal notranslate"><span class="pre">freepars</span></code>. The <code class="docutils literal notranslate"><span class="pre">Nuisance</span></code> class (<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.cosmology.nuisance</span></code>) builds the
 bias, shot-noise and intrinsic-alignment functions from these settings; you
 rarely need to call it directly.</p>
 </section>
@@ -679,11 +725,11 @@ compatible Fisher objects with <code class="docutils literal notranslate"><span 
 <span class="nb">print</span><span class="p">(</span><span class="n">combined</span><span class="o">.</span><span class="n">get_param_names</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>The module <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_operations</span></code> provides <code class="docutils literal notranslate"><span class="pre">marginalise</span></code>,
+<p>The module <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_operations</span></code> provides <code class="docutils literal notranslate"><span class="pre">marginalise</span></code>,
 <code class="docutils literal notranslate"><span class="pre">marginalise_over</span></code>, <code class="docutils literal notranslate"><span class="pre">reshuffle</span></code> and <code class="docutils literal notranslate"><span class="pre">information_gain</span></code> (the Fisher approximation
 of the Kullback-Leibler divergence between two experiments, given a prior).
 To keep <code class="docutils literal notranslate"><span class="pre">Omegam</span></code> and <code class="docutils literal notranslate"><span class="pre">h</span></code> and marginalise over everything else:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">marginalise</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.analysis.fisher_operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">marginalise</span>
 
 <span class="n">reduced</span> <span class="o">=</span> <span class="n">marginalise</span><span class="p">(</span><span class="n">fisher</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Omegam&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">])</span>
 </pre></div>
@@ -692,7 +738,7 @@ To keep <code class="docutils literal notranslate"><span class="pre">Omegam</spa
 columns without marginalising), use <code class="docutils literal notranslate"><span class="pre">eliminate_parameters(fisher,</span> <span class="pre">names)</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">eliminate_columns_rows(fisher,</span> <span class="pre">indexes)</span></code> with zero-based positions.</p>
 <p>A forecast with a non-empty <code class="docutils literal notranslate"><span class="pre">outroot</span></code> also writes a <code class="docutils literal notranslate"><span class="pre">*_specs.json</span></code> snapshot next
-to the Fisher matrix. <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.utilities.utils.load_fisher_from_json(path)</span></code>
+to the Fisher matrix. <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.utilities.utils.load_fisher_from_json(path)</span></code>
 rebuilds the <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code> from it and returns <code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">snapshot)</span></code>; call
 <code class="docutils literal notranslate"><span class="pre">forecast.compute()</span></code> to rerun it.</p>
 <p>For debugging, every forecast keeps its raw derivatives in <code class="docutils literal notranslate"><span class="pre">forecast.derivs_dict</span></code>
@@ -704,17 +750,17 @@ do not exist.</p>
 <section id="plot-and-compare-fisher-matrices">
 <h2>Plot and compare Fisher matrices<a class="headerlink" href="#plot-and-compare-fisher-matrices" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">CosmicFish_FisherAnalysis</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plot_analysis</span></code>)
+<li><p><code class="docutils literal notranslate"><span class="pre">CosmicFish_FisherAnalysis</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_plot_analysis</span></code>)
 holds a list of Fisher matrices, or loads them from files, and applies
 <code class="docutils literal notranslate"><span class="pre">marginalise</span></code> / <code class="docutils literal notranslate"><span class="pre">reshuffle</span></code> to all of them at once.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fisher_plotting</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fisher_plotting</span></code>) draws comparison
+<li><p><code class="docutils literal notranslate"><span class="pre">fisher_plotting</span></code> (<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_plotting</span></code>) draws comparison
 contour plots for such a group.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie.analysis.fishconsumer</span></code> provides <code class="docutils literal notranslate"><span class="pre">make_triangle_plot</span></code> (Fisher
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fishconsumer</span></code> provides <code class="docutils literal notranslate"><span class="pre">make_triangle_plot</span></code> (Fisher
 matrices and MCMC chains), <code class="docutils literal notranslate"><span class="pre">fishtable_to_pandas</span></code> for error tables, and chain
 loaders; see <a class="reference internal" href="likelihood_sampling.html"><span class="doc">Likelihood sampling with Nautilus</span></a>.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fisher_plot_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">CosmicFish_FisherAnalysis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fishconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_triangle_plot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.analysis.fisher_plot_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">CosmicFish_FisherAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.analysis.fishconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_triangle_plot</span>
 
 <span class="n">fisher</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;WL+GCph&quot;</span>
 <span class="n">analysis</span> <span class="o">=</span> <span class="n">CosmicFish_FisherAnalysis</span><span class="p">(</span><span class="n">fisher_list</span><span class="o">=</span><span class="p">[</span><span class="n">fisher</span><span class="p">])</span>
@@ -728,7 +774,7 @@ loaders; see <a class="reference internal" href="likelihood_sampling.html"><span
 <h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
 <section id="precomputed-cosmologies-code-external">
 <span id="external-backend"></span><h3>Precomputed cosmologies (<code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>)<a class="headerlink" href="#precomputed-cosmologies-code-external" title="Link to this heading">#</a></h3>
-<p>With <code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>, Cosmicfishpie reads background, growth and power-spectrum
+<p>With <code class="docutils literal notranslate"><span class="pre">code=&quot;external&quot;</span></code>, Cosmicjellyfish reads background, growth and power-spectrum
 tables from text files instead of running a solver. Pass <code class="docutils literal notranslate"><span class="pre">extfiles</span></code> to
 <code class="docutils literal notranslate"><span class="pre">FisherMatrix</span></code>, with a <code class="docutils literal notranslate"><span class="pre">directory</span></code> holding one folder for the fiducial cosmology
 and one for each finite-difference step:</p>
@@ -764,8 +810,8 @@ additionally needs the <code class="docutils literal notranslate"><span class="p
 <p><code class="docutils literal notranslate"><span class="pre">cosmo_functions</span></code> gives direct access to distances, growth and power spectra
 without running a Fisher calculation. It reads the global configuration, so call
 <code class="docutils literal notranslate"><span class="pre">config.init</span></code> first:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.configs</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">cfg</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.cosmology.cosmology</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosmo_functions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.configs</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">cfg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.cosmology.cosmology</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosmo_functions</span>
 
 <span class="n">cfg</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
     <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
@@ -781,7 +827,7 @@ without running a Fisher calculation. It reads the global configuration, so call
 <span class="n">cosmo</span><span class="o">.</span><span class="n">sigma8_of_z</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>                  <span class="c1"># sigma_8(z)</span>
 </pre></div>
 </div>
-<p>To avoid global state, <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.configs.context.build_analysis_context</span></code>
+<p>To avoid global state, <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.configs.context.build_analysis_context</span></code>
 takes the same arguments as <code class="docutils literal notranslate"><span class="pre">config.init</span></code> and returns an immutable
 <code class="docutils literal notranslate"><span class="pre">AnalysisContext</span></code>. Pass it as
 <code class="docutils literal notranslate"><span class="pre">cosmo_functions(dict(ctx.fiducialparams),</span> <span class="pre">configuration=ctx)</span></code>.</p>
@@ -795,11 +841,11 @@ set one to <code class="docutils literal notranslate"><span class="pre">0</span>
 </section>
 <section id="project-status-and-citation">
 <h2>Project status and citation<a class="headerlink" href="#project-status-and-citation" title="Link to this heading">#</a></h2>
-<p>Cosmicfishpie has a backend-neutral derivative-provider interface, so a future
+<p>Cosmicjellyfish has a backend-neutral derivative-provider interface, so a future
 differentiable solver or emulator can supply derivatives. JAX is not currently
 an implemented backend.</p>
 <p>To cite the project, use the repository’s
-<a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie/blob/main/CITATION.cff">CITATION.cff</a>.</p>
+<a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish/blob/main/CITATION.cff">CITATION.cff</a>.</p>
 </section>
 <section id="next-steps">
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>

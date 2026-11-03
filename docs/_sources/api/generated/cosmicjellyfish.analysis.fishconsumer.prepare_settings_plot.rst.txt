@@ -1,0 +1,6 @@
+prepare\_settings\_plot
+=======================
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: prepare_settings_plot

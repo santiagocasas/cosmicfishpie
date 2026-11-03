@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Backend validation &#8212; cosmicfishpie v1.3.1</title>
+    <title>Backend validation &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -146,6 +154,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -392,9 +438,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">GitHub repository</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicfishpie/dashboard/">Validation dashboard</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicjellyfish/dashboard/">Validation dashboard</a></li>
 </ul>
 </div>
 </nav></div>
@@ -483,7 +529,7 @@ bash<span class="w"> </span>scripts/validation/run_selected_validations.sh<span 
 <li><p><a class="reference internal" href="neutrino_cb_regression.html"><span class="std std-doc">Photometric neutrino-response regression</span></a> records the local prescription/density controls and one-Fisher confirmation of the October regression.</p></li>
 <li><p><a class="reference internal" href="syren_ns_response.html"><span class="std std-doc">SYREN-NEW spectral-tilt response</span></a> compares linear and nonlinear ns responses for CLASS+EE2, CLASS+HMcode2020 and SYREN-NEW, with reproducible figures and an analysis of the photometric Fisher differences.</p></li>
 <li><p><a class="reference internal" href="validation_comparison.html"><span class="std std-doc">Historical comparison with Casas et al. (2023)</span></a> preserves an earlier investigation snapshot and its reported deviations; it is not the current case runner or a substitute for reviewing the case configuration and generated results.</p></li>
-<li><p>The maintained paper-validation case rationale and inputs are documented in the <a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie/tree/main/scripts/validation/configs">validation configuration directory on GitHub</a>.</p></li>
+<li><p>The maintained paper-validation case rationale and inputs are documented in the <a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish/tree/main/scripts/validation/configs">validation configuration directory on GitHub</a>.</p></li>
 <li><p>The <a class="reference internal" href="scripts_reference.html"><span class="std std-doc">scripts reference</span></a> describes the validation commands and their usage.</p></li>
 </ul>
 </section>

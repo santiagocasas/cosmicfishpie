@@ -1,0 +1,6 @@
+get\_jax\_theory
+================
+
+.. currentmodule:: cosmicjellyfish.cosmology.jax_theory
+
+.. autofunction:: get_jax_theory

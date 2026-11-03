@@ -1,6 +1,0 @@
-make\_cosmology
-===============
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_theory
-
-.. autofunction:: make_cosmology

@@ -1,0 +1,8 @@
+numerics
+========
+
+.. currentmodule:: cosmicjellyfish.utilities.utils
+
+.. autoclass:: numerics
+   :members:
+   :show-inheritance:

@@ -1,6 +1,0 @@
-reshuffle
-=========
-
-.. currentmodule:: cosmicfishpie.analysis.fisher_operations
-
-.. autofunction:: reshuffle

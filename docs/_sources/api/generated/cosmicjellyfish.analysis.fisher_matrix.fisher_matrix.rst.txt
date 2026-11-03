@@ -1,0 +1,8 @@
+fisher\_matrix
+==============
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_matrix
+
+.. autoclass:: fisher_matrix
+   :members:
+   :show-inheritance:

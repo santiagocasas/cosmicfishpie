@@ -1,11 +1,11 @@
 # Installation
 
-`cosmicfishpie` supports Python `>=3.10,<3.13`.
+`cosmicjellyfish` supports Python `>=3.10,<3.13`.
 
 ## Install from PyPI
 
 ```bash
-pip install cosmicfishpie
+pip install cosmicjellyfish
 ```
 
 `camb` and `classy` (the CLASS Python wrapper) are required dependencies, so this already gives
@@ -15,12 +15,12 @@ The {doc}`first_forecast` uses it.
 
 ## Install from source
 
-Clone [the repository](https://github.com/santiagocasas/cosmicfishpie) and install it
+Clone [the repository](https://github.com/santiagocasas/cosmicjellyfish) and install it
 with `uv` (recommended; CI uses it) or `pip`:
 
 ```bash
-git clone https://github.com/santiagocasas/cosmicfishpie.git
-cd cosmicfishpie
+git clone https://github.com/santiagocasas/cosmicjellyfish.git
+cd cosmicjellyfish
 uv sync --extra dev        # or: pip install -e ".[dev]"
 ```
 
@@ -31,10 +31,10 @@ If you prefer conda-style environments, create one with `mamba` (or `conda`) and
 in editable mode:
 
 ```bash
-mamba create -n cosmicfishpie -c conda-forge python=3.11 pip
-mamba activate cosmicfishpie
-git clone https://github.com/santiagocasas/cosmicfishpie.git
-cd cosmicfishpie
+mamba create -n cosmicjellyfish -c conda-forge python=3.11 pip
+mamba activate cosmicjellyfish
+git clone https://github.com/santiagocasas/cosmicjellyfish.git
+cd cosmicjellyfish
 pip install -e .
 ```
 
@@ -48,7 +48,7 @@ pip install -e .
 | `dev` | Linters, type checker, `pytest` and coverage, packaging tools |
 
 ```bash
-pip install "cosmicfishpie[emulators]"   # from PyPI
+pip install "cosmicjellyfish[emulators]"   # from PyPI
 uv sync --extra emulators                # from a source checkout
 uv sync --extra docs --extra dev         # several extras
 ```
@@ -65,7 +65,7 @@ alignment) ship with the package, so no extra download is needed for the Euclid 
 ## Check the installation
 
 ```bash
-python -c "import cosmicfishpie; print('cosmicfishpie import OK')"
+python -c "import cosmicjellyfish; print('cosmicjellyfish import OK')"
 ```
 
 Then run the {doc}`first_forecast`. From a source checkout with the `dev` extra, `uv run pytest`

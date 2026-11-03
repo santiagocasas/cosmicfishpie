@@ -1,0 +1,6 @@
+loglike
+=======
+
+.. currentmodule:: cosmicjellyfish.likelihood.spectro_like
+
+.. autofunction:: loglike

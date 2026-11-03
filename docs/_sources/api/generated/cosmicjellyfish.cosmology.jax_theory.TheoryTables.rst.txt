@@ -1,0 +1,8 @@
+TheoryTables
+============
+
+.. currentmodule:: cosmicjellyfish.cosmology.jax_theory
+
+.. autoclass:: TheoryTables
+   :members:
+   :show-inheritance:

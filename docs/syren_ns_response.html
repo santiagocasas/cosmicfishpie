@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SYREN-NEW spectral-tilt response and photometric Fisher discrepancies &#8212; cosmicfishpie v1.3.1</title>
+    <title>SYREN-NEW spectral-tilt response and photometric Fisher discrepancies &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -125,8 +125,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -148,6 +156,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -160,20 +182,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -212,7 +244,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -224,7 +256,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -278,6 +310,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -338,7 +384,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -350,7 +396,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -394,9 +440,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">GitHub repository</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicfishpie/dashboard/">Validation dashboard</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicjellyfish/dashboard/">Validation dashboard</a></li>
 </ul>
 </div>
 </nav></div>
@@ -499,7 +545,7 @@ Despite its historical filename, the inspected run uses the following <strong>ph
 </tbody>
 </table>
 </div>
-<p>They reside in <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/</span></code>. The comparison
+<p>They reside in <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_boltzmann_yaml_files/</span></code>. The comparison
 is for <strong>total-matter</strong> power, not a separate cold+baryon prediction.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -727,7 +773,7 @@ terms exhibit a strong cancellation.</p>
 the logarithmic tilt response (although it rescales the absolute derivative).</p>
 <p>For source provenance, consult the run metadata’s <code class="docutils literal notranslate"><span class="pre">symbolic_pofk.syren_new</span></code> entry.
 The integration layer is
-<a class="reference download internal" download="" href="_downloads/76ee06141e7de88ce36962cd9aab29ab/symbolic_new.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/symbolic_new.py</span></code></span></a>.
+<a class="reference download internal" download="" href="_downloads/8c466dc8dfdaee75f756b5d6f5f86bca/symbolic_new.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/symbolic_new.py</span></code></span></a>.
 The maintained plotting script calls that implementation; it does not duplicate
 or modify the symbolic fit.</p>
 </section>

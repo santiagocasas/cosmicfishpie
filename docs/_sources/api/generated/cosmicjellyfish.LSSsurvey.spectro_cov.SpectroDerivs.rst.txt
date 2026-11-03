@@ -1,0 +1,8 @@
+SpectroDerivs
+=============
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.spectro_cov
+
+.. autoclass:: SpectroDerivs
+   :members:
+   :show-inheritance:

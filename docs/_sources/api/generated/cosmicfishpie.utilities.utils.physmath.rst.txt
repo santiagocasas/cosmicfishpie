@@ -1,8 +1,0 @@
-physmath
-========
-
-.. currentmodule:: cosmicfishpie.utilities.utils
-
-.. autoclass:: physmath
-   :members:
-   :show-inheritance:

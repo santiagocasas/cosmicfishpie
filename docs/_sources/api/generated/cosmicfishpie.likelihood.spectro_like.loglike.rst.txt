@@ -1,6 +1,0 @@
-loglike
-=======
-
-.. currentmodule:: cosmicfishpie.likelihood.spectro_like
-
-.. autofunction:: loglike

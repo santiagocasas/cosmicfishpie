@@ -1,0 +1,6 @@
+n\_sigmas
+=========
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: n_sigmas

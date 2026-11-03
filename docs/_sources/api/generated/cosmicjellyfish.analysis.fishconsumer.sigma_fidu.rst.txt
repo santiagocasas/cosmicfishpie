@@ -1,0 +1,6 @@
+sigma\_fidu
+===========
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: sigma_fidu

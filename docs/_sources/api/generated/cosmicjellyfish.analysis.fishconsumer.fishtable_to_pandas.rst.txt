@@ -1,0 +1,6 @@
+fishtable\_to\_pandas
+=====================
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: fishtable_to_pandas

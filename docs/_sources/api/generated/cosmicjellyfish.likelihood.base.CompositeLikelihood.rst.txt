@@ -1,0 +1,8 @@
+CompositeLikelihood
+===================
+
+.. currentmodule:: cosmicjellyfish.likelihood.base
+
+.. autoclass:: CompositeLikelihood
+   :members:
+   :show-inheritance:

@@ -30,7 +30,7 @@ Despite its historical filename, the inspected run uses the following **photo** 
 | CLASS + HMcode2020 | `class/hmcode2020_photo.yaml` |
 | SYREN-NEW | `symbolic/syren_new_photo.yaml` |
 
-They reside in `cosmicfishpie/configs/default_boltzmann_yaml_files/`. The comparison
+They reside in `cosmicjellyfish/configs/default_boltzmann_yaml_files/`. The comparison
 is for **total-matter** power, not a separate cold+baryon prediction.
 
 | Parameter | Fiducial |
@@ -199,7 +199,7 @@ the logarithmic tilt response (although it rescales the absolute derivative).
 
 For source provenance, consult the run metadata's `symbolic_pofk.syren_new` entry.
 The integration layer is
-[`cosmicfishpie/cosmology/symbolic_new.py`](../../cosmicfishpie/cosmology/symbolic_new.py).
+[`cosmicjellyfish/cosmology/symbolic_new.py`](../../cosmicjellyfish/cosmology/symbolic_new.py).
 The maintained plotting script calls that implementation; it does not duplicate
 or modify the symbolic fit.
 

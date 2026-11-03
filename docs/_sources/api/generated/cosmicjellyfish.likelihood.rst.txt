@@ -1,0 +1,34 @@
+﻿cosmicjellyfish.likelihood
+==========================
+
+.. automodule:: cosmicjellyfish.likelihood
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   base
+   photo_like
+   sampler
+   spectro_like
+

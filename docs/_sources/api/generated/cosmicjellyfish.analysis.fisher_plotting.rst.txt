@@ -1,0 +1,31 @@
+cosmicjellyfish.analysis.fisher\_plotting
+=========================================
+
+.. automodule:: cosmicjellyfish.analysis.fisher_plotting
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fisher_plotting
+   
+   
+
+   
+   
+   
+
+
+

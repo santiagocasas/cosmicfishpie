@@ -1,8 +1,0 @@
-Likelihood
-==========
-
-.. currentmodule:: cosmicfishpie.likelihood.base
-
-.. autoclass:: Likelihood
-   :members:
-   :show-inheritance:

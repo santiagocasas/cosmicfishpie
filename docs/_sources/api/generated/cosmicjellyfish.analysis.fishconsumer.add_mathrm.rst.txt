@@ -1,0 +1,6 @@
+add\_mathrm
+===========
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: add_mathrm

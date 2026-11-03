@@ -1,0 +1,39 @@
+﻿cosmicjellyfish.cosmology
+=========================
+
+.. automodule:: cosmicjellyfish.cosmology
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cosmology
+   ee2
+   jax_theory
+   jaxcosmo_amplitude
+   jaxcosmo_halofit
+   jaxcosmo_provider
+   jaxcosmo_theory
+   nuisance
+   symbolic_new
+

@@ -1,0 +1,8 @@
+inputiniparser
+==============
+
+.. currentmodule:: cosmicjellyfish.utilities.utils
+
+.. autoclass:: inputiniparser
+   :members:
+   :show-inheritance:

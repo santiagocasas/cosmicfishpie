@@ -1,6 +1,0 @@
-compute\_tables
-===============
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_theory
-
-.. autofunction:: compute_tables

@@ -1,8 +1,0 @@
-TheoryConfig
-============
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_theory
-
-.. autoclass:: TheoryConfig
-   :members:
-   :show-inheritance:

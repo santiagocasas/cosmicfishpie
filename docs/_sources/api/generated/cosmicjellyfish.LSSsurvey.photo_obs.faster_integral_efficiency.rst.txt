@@ -1,0 +1,6 @@
+faster\_integral\_efficiency
+============================
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.photo_obs
+
+.. autofunction:: faster_integral_efficiency

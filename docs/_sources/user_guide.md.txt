@@ -1,6 +1,6 @@
 # User guide
 
-Reference-style guides for using `cosmicfishpie` beyond the first forecast.
+Reference-style guides for using `cosmicjellyfish` beyond the first forecast.
 
 - {doc}`comprehensive_guide`: backends, observables, survey files and working with Fisher
   matrices.

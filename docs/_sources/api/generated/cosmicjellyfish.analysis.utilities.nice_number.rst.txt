@@ -1,0 +1,6 @@
+nice\_number
+============
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: nice_number

@@ -1,0 +1,6 @@
+display\_colors
+===============
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: display_colors

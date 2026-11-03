@@ -1,0 +1,8 @@
+misc
+====
+
+.. currentmodule:: cosmicjellyfish.utilities.utils
+
+.. autoclass:: misc
+   :members:
+   :show-inheritance:

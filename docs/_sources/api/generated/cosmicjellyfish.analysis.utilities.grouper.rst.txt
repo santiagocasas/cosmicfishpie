@@ -1,0 +1,6 @@
+grouper
+=======
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: grouper

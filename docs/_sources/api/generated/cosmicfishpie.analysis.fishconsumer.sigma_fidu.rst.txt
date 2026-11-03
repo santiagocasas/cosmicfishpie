@@ -1,6 +1,0 @@
-sigma\_fidu
-===========
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: sigma_fidu

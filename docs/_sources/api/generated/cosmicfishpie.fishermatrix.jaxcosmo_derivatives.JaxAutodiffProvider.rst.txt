@@ -1,8 +1,0 @@
-JaxAutodiffProvider
-===================
-
-.. currentmodule:: cosmicfishpie.fishermatrix.jaxcosmo_derivatives
-
-.. autoclass:: JaxAutodiffProvider
-   :members:
-   :show-inheritance:

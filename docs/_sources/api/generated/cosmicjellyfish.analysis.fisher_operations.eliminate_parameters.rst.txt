@@ -1,0 +1,6 @@
+eliminate\_parameters
+=====================
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_operations
+
+.. autofunction:: eliminate_parameters

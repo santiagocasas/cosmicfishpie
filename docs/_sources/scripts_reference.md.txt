@@ -82,7 +82,8 @@ which submits the two WL/GCsp `.sbatch` templates for you.
 | `scripts/hpc/slurm/check_wl_gcsp_status.sh` | `scripts/hpc/slurm/check_wl_gcsp_status.sh [--watch [SECONDS]] <RUN_DIR> <WL_JOBID> <GCSP_JOBID> <JOINT_JOBID> <POST_JOBID>` reports job status and results; it never submits or cancels jobs. |
 | `scripts/hpc/slurm/wl_gcsp_nautilus_case.sbatch` | Template for one case: `sbatch --export=ALL,... <file>`. |
 | `scripts/hpc/slurm/wl_gcsp_nautilus_postprocess.sbatch` | Template for the dependent postprocessing job. |
-| `scripts/hpc/slurm/nautilus_sampler.sbatch` | Generic launcher for the YAML-driven `sampler_scripts/run_sampler.py`: `REPO_ROOT=<repo> CONFIG_FILE=<yaml> OUTPUT_DIR=<dir> sbatch scripts/hpc/slurm/nautilus_sampler.sbatch`. |
+| `scripts/hpc/slurm/nautilus_sampler.sbatch` | Generic launcher for the YAML-driven `scripts/likelihood/sampler/run_sampler.py`: `REPO_ROOT=<repo> CONFIG_FILE=<yaml> OUTPUT_DIR=<dir> sbatch scripts/hpc/slurm/nautilus_sampler.sbatch`. |
+| `scripts/likelihood/sampler/` | Small YAML examples and generic runner: `uv run python scripts/likelihood/sampler/run_sampler.py scripts/likelihood/sampler/fresh_lcdm_symbolic_small.yaml` from the repository root. See {doc}`validation_data` for operational configurations and published outputs. |
 
 ## Benchmarks and profiling
 
@@ -126,7 +127,7 @@ Run it from the repository root:
 ```bash
 uv run python scripts/archive/cmb/run_cmb_fisher_smoke.py \
   --code camb \
-  --spec-yaml cosmicfishpie/configs/default_survey_specifications/Planck.yaml \
+  --spec-yaml cosmicjellyfish/configs/default_survey_specifications/Planck.yaml \
   --observables CMB_T,CMB_E --lmax 120 \
   --outdir tmp/cmb_planck_smoke --write-enabled-yaml
 ```

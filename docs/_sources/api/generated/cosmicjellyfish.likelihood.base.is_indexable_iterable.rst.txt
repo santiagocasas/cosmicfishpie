@@ -1,0 +1,6 @@
+is\_indexable\_iterable
+=======================
+
+.. currentmodule:: cosmicjellyfish.likelihood.base
+
+.. autofunction:: is_indexable_iterable

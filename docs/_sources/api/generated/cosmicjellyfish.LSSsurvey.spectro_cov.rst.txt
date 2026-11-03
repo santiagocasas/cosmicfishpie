@@ -1,0 +1,32 @@
+cosmicjellyfish.LSSsurvey.spectro\_cov
+======================================
+
+.. automodule:: cosmicjellyfish.LSSsurvey.spectro_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      SpectroCov
+      SpectroDerivs
+   
+   
+
+   
+   
+   
+
+
+

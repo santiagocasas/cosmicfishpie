@@ -1,0 +1,6 @@
+init
+====
+
+.. currentmodule:: cosmicjellyfish.configs.config
+
+.. autofunction:: init

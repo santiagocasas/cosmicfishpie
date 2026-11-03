@@ -1,0 +1,6 @@
+compute\_derivatives
+====================
+
+.. currentmodule:: cosmicjellyfish.fishermatrix.derivatives
+
+.. autofunction:: compute_derivatives

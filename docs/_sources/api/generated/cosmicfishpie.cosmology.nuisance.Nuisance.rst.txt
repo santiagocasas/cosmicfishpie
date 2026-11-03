@@ -1,8 +1,0 @@
-Nuisance
-========
-
-.. currentmodule:: cosmicfishpie.cosmology.nuisance
-
-.. autoclass:: Nuisance
-   :members:
-   :show-inheritance:

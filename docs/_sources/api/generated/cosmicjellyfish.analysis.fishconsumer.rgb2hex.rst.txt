@@ -1,0 +1,6 @@
+rgb2hex
+=======
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: rgb2hex

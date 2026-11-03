@@ -1,0 +1,8 @@
+NautilusMixin
+=============
+
+.. currentmodule:: cosmicjellyfish.likelihood.base
+
+.. autoclass:: NautilusMixin
+   :members:
+   :show-inheritance:

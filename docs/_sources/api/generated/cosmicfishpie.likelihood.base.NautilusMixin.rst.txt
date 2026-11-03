@@ -1,8 +1,0 @@
-NautilusMixin
-=============
-
-.. currentmodule:: cosmicfishpie.likelihood.base
-
-.. autoclass:: NautilusMixin
-   :members:
-   :show-inheritance:

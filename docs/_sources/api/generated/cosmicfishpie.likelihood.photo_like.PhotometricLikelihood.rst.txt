@@ -1,8 +1,0 @@
-PhotometricLikelihood
-=====================
-
-.. currentmodule:: cosmicfishpie.likelihood.photo_like
-
-.. autoclass:: PhotometricLikelihood
-   :members:
-   :show-inheritance:

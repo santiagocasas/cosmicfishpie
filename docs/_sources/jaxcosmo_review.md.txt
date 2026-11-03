@@ -216,4 +216,4 @@ Open points for whoever proposes it: the project may prefer `custom_jvp` to the
 stop-gradient-plus-one-step form; the Newton bracket `ln R in [-20, 10]` is wider than the old
 `[ln 1e-4, ln 10]`; and a short note on behaviour change (values move by up to 0.6% over the
 CFP validation box, which is jax-cosmo's own interpolation error) belongs in the PR text.
-CosmicFishPie keeps its vendored `jaxcosmo_halofit.py` until a jax-cosmo release contains the fix.
+CosmicJellyfish keeps its vendored `jaxcosmo_halofit.py` until a jax-cosmo release contains the fix.

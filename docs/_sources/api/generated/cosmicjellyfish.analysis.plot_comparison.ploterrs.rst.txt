@@ -1,0 +1,6 @@
+ploterrs
+========
+
+.. currentmodule:: cosmicjellyfish.analysis.plot_comparison
+
+.. autofunction:: ploterrs

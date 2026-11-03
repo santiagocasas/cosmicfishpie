@@ -1,0 +1,6 @@
+gaussian
+========
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: gaussian

@@ -1,0 +1,36 @@
+cosmicjellyfish.analysis.fisher\_operations
+===========================================
+
+.. automodule:: cosmicjellyfish.analysis.fisher_operations
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      eliminate_columns_rows
+      eliminate_parameters
+      information_gain
+      marginalise
+      marginalise_over
+      reshuffle
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

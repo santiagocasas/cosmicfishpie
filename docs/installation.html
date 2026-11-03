@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; cosmicfishpie v1.3.1</title>
+    <title>Installation &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -146,6 +154,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -435,10 +481,10 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie</span></code> supports Python <code class="docutils literal notranslate"><span class="pre">&gt;=3.10,&lt;3.13</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish</span></code> supports Python <code class="docutils literal notranslate"><span class="pre">&gt;=3.10,&lt;3.13</span></code>.</p>
 <section id="install-from-pypi">
 <h2>Install from PyPI<a class="headerlink" href="#install-from-pypi" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cosmicfishpie
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cosmicjellyfish
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">camb</span></code> and <code class="docutils literal notranslate"><span class="pre">classy</span></code> (the CLASS Python wrapper) are required dependencies, so this already gives
@@ -448,10 +494,10 @@ The <a class="reference internal" href="first_forecast.html"><span class="doc">A
 </section>
 <section id="install-from-source">
 <h2>Install from source<a class="headerlink" href="#install-from-source" title="Link to this heading">#</a></h2>
-<p>Clone <a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">the repository</a> and install it
+<p>Clone <a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish">the repository</a> and install it
 with <code class="docutils literal notranslate"><span class="pre">uv</span></code> (recommended; CI uses it) or <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/santiagocasas/cosmicfishpie.git
-<span class="nb">cd</span><span class="w"> </span>cosmicfishpie
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/santiagocasas/cosmicjellyfish.git
+<span class="nb">cd</span><span class="w"> </span>cosmicjellyfish
 uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w">        </span><span class="c1"># or: pip install -e &quot;.[dev]&quot;</span>
 </pre></div>
 </div>
@@ -459,10 +505,10 @@ uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </
 linting tools.</p>
 <p>If you prefer conda-style environments, create one with <code class="docutils literal notranslate"><span class="pre">mamba</span></code> (or <code class="docutils literal notranslate"><span class="pre">conda</span></code>) and install
 in editable mode:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>cosmicfishpie<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11<span class="w"> </span>pip
-mamba<span class="w"> </span>activate<span class="w"> </span>cosmicfishpie
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/santiagocasas/cosmicfishpie.git
-<span class="nb">cd</span><span class="w"> </span>cosmicfishpie
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>cosmicjellyfish<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11<span class="w"> </span>pip
+mamba<span class="w"> </span>activate<span class="w"> </span>cosmicjellyfish
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/santiagocasas/cosmicjellyfish.git
+<span class="nb">cd</span><span class="w"> </span>cosmicjellyfish
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
@@ -491,7 +537,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </tbody>
 </table>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;cosmicfishpie[emulators]&quot;</span><span class="w">   </span><span class="c1"># from PyPI</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;cosmicjellyfish[emulators]&quot;</span><span class="w">   </span><span class="c1"># from PyPI</span>
 uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>emulators<span class="w">                </span><span class="c1"># from a source checkout</span>
 uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>docs<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w">         </span><span class="c1"># several extras</span>
 </pre></div>
@@ -507,7 +553,7 @@ alignment) ship with the package, so no extra download is needed for the Euclid 
 </section>
 <section id="check-the-installation">
 <h2>Check the installation<a class="headerlink" href="#check-the-installation" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import cosmicfishpie; print(&#39;cosmicfishpie import OK&#39;)&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import cosmicjellyfish; print(&#39;cosmicjellyfish import OK&#39;)&quot;</span>
 </pre></div>
 </div>
 <p>Then run the <a class="reference internal" href="first_forecast.html"><span class="doc">A verified first forecast</span></a>. From a source checkout with the <code class="docutils literal notranslate"><span class="pre">dev</span></code> extra, <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">pytest</span></code>

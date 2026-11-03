@@ -1,0 +1,6 @@
+confidence\_coefficient
+=======================
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: confidence_coefficient

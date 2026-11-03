@@ -1,6 +1,0 @@
-ploterrs
-========
-
-.. currentmodule:: cosmicfishpie.analysis.plot_comparison
-
-.. autofunction:: ploterrs

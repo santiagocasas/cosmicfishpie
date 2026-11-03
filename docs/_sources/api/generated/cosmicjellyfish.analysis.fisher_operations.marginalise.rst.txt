@@ -1,0 +1,6 @@
+marginalise
+===========
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_operations
+
+.. autofunction:: marginalise

@@ -1,0 +1,31 @@
+cosmicjellyfish.configs.install\_external\_data
+===============================================
+
+.. automodule:: cosmicjellyfish.configs.install_external_data
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      install_ext_data
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

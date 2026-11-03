@@ -1,0 +1,39 @@
+cosmicjellyfish.cosmology.jaxcosmo\_provider
+============================================
+
+.. automodule:: cosmicjellyfish.cosmology.jaxcosmo_provider
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      resolve_parameters
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      JaxCosmoProvider
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+make\_list
+==========
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: make_list

@@ -1,8 +1,0 @@
-CompositeLikelihood
-===================
-
-.. currentmodule:: cosmicfishpie.likelihood.base
-
-.. autoclass:: CompositeLikelihood
-   :members:
-   :show-inheritance:

@@ -1,6 +1,0 @@
-As\_to\_sigma8
-==============
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_amplitude
-
-.. autofunction:: As_to_sigma8

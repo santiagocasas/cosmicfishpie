@@ -1,6 +1,0 @@
-nice\_colors
-============
-
-.. currentmodule:: cosmicfishpie.analysis.colors
-
-.. autofunction:: nice_colors

@@ -1,0 +1,31 @@
+cosmicjellyfish.likelihood.photo\_like
+======================================
+
+.. automodule:: cosmicjellyfish.likelihood.photo_like
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      PhotometricLikelihood
+   
+   
+
+   
+   
+   
+
+
+

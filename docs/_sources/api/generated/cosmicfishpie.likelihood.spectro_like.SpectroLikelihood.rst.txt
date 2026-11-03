@@ -1,8 +1,0 @@
-SpectroLikelihood
-=================
-
-.. currentmodule:: cosmicfishpie.likelihood.spectro_like
-
-.. autoclass:: SpectroLikelihood
-   :members:
-   :show-inheritance:

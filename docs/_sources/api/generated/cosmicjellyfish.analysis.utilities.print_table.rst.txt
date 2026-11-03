@@ -1,0 +1,6 @@
+print\_table
+============
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: print_table

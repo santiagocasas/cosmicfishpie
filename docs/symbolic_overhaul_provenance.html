@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Symbolic overhaul: implementation provenance &#8212; cosmicfishpie v1.3.1</title>
+    <title>Symbolic overhaul: implementation provenance &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -146,6 +154,20 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
   </a>
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -392,9 +438,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicfishpie/main/LICENSE">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicfishpie">GitHub repository</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicfishpie/dashboard/">Validation dashboard</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://raw.githubusercontent.com/santiagocasas/cosmicjellyfish/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/santiagocasas/cosmicjellyfish">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.santicasas.space/cosmicjellyfish/dashboard/">Validation dashboard</a></li>
 </ul>
 </div>
 </nav></div>
@@ -465,7 +511,7 @@ complete.</p>
 </div></blockquote>
 <section id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">#</a></h2>
-<p>Integrate SYREN-NEW as the default symbolic backend in CosmicFishPie, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).</p>
+<p>Integrate SYREN-NEW as the default symbolic backend in CosmicJellyfish, add CLASS+EuclidEmu2 (EE2) as a composable nonlinear boost, and validate both through CLASS-comparison forecasts (GCsp and WL+GCph Fisher matrices).</p>
 </section>
 <section id="design-decisions">
 <h2>Design decisions<a class="headerlink" href="#design-decisions" title="Link to this heading">#</a></h2>
@@ -484,26 +530,26 @@ complete.</p>
 <h2>Status at implementation time<a class="headerlink" href="#status-at-implementation-time" title="Link to this heading">#</a></h2>
 <p><strong>Completed</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">SyrenNewProvider</span></code> implemented in <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/symbolic_new.py</span></code>; wired into <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code> via <code class="docutils literal notranslate"><span class="pre">input_type='symbolic'</span></code> dispatch; uses Astropy backgrounds, physical-unit <code class="docutils literal notranslate"><span class="pre">Pmm</span></code>, total-matter only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SyrenNewProvider</span></code> implemented in <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/symbolic_new.py</span></code>; wired into <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code> via <code class="docutils literal notranslate"><span class="pre">input_type='symbolic'</span></code> dispatch; uses Astropy backgrounds, physical-unit <code class="docutils literal notranslate"><span class="pre">Pmm</span></code>, total-matter only.</p></li>
 <li><p>SYREN-NEW GCsp and WL Fisher matrices produced and matched CLASS/symbolic YAML profiles, the <code class="docutils literal notranslate"><span class="pre">three_degenerate</span></code> CLASS neutrino scheme, and aggregate derivative plotting put in place.</p></li>
 <li><p>3-point GCsp derivatives run through the <code class="docutils literal notranslate"><span class="pre">derivatives.py</span></code> engine for all 4 matched configs (CLASS LCDM/w0wa, SYREN LCDM/w0wa); all derivatives finite.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scripts/likelihood/diagnostics/run_syren_new_likelihoods.py</span></code> created; fiducial <code class="docutils literal notranslate"><span class="pre">loglike(param_dict={})</span></code> verified (GCsp and WL+GCph both finite); parameter responsiveness confirmed.</p></li>
-<li><p>CLASS+EE2 implemented in <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/ee2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code>, with a new <code class="docutils literal notranslate"><span class="pre">class/ee2_boost.yaml</span></code> profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.</p></li>
+<li><p>CLASS+EE2 implemented in <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/ee2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">cosmology.py</span></code>, with a new <code class="docutils literal notranslate"><span class="pre">class/ee2_boost.yaml</span></code> profile. CLASS linear spectra are multiplied by the emulator boost when nonlinear is enabled; native CLASS remains the default.</p></li>
 <li><p>Focused adapter and CLASS+EE2 integration tests passed for both <code class="docutils literal notranslate"><span class="pre">A_s</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma8</span></code> normalization.</p></li>
 </ul>
 <p><strong>Active / next</strong></p>
 <ol class="arabic simple">
 <li><p>Review the CLASS+EE2 integration in representative spectra/derivatives/forecasts as the broader comparison work proceeds.</p></li>
-<li><p>Select <code class="docutils literal notranslate"><span class="pre">class_config_yaml=cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code> with <code class="docutils literal notranslate"><span class="pre">code=class</span></code> and <code class="docutils literal notranslate"><span class="pre">nonlinear=True</span></code> for a CLASS+EE2 comparison.</p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">class_config_yaml=cosmicjellyfish/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code> with <code class="docutils literal notranslate"><span class="pre">code=class</span></code> and <code class="docutils literal notranslate"><span class="pre">nonlinear=True</span></code> for a CLASS+EE2 comparison.</p></li>
 <li><p>Compare spectra, derivatives and forecasts against the matched CLASS HMcode and SYREN-NEW configurations.</p></li>
 </ol>
 </section>
 <section id="relevant-files">
 <h2>Relevant files<a class="headerlink" href="#relevant-files" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/ee2.py</span></code>: CLASS to EE2 parameter mapping and boost grid adapter.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/cosmology.py</span></code>: <code class="docutils literal notranslate"><span class="pre">class_setparams()</span></code> selector and <code class="docutils literal notranslate"><span class="pre">class_results()</span></code> multiplication.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code>: opt-in CLASS+EE2 profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/ee2.py</span></code>: CLASS to EE2 parameter mapping and boost grid adapter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/cosmology.py</span></code>: <code class="docutils literal notranslate"><span class="pre">class_setparams()</span></code> selector and <code class="docutils literal notranslate"><span class="pre">class_results()</span></code> multiplication.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_boltzmann_yaml_files/class/ee2_boost.yaml</span></code>: opt-in CLASS+EE2 profile.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tests/cosmology_test.py</span></code>: unit and integration checks.</p></li>
 </ul>
 <p>The plan was to make SYREN-NEW the default symbolic backend, separate nonlinear modelling from the underlying cosmology calculation, and validate the result against CLASS-based references through representative forecasts, per the design decisions above. The sections below describe the wider roadmap that followed from that plan.</p>
@@ -526,7 +572,7 @@ Nonlinear prescription
 Optional baryonic correction
         │
         ▼
-Existing CosmicFishPie observables and forecasts
+Existing CosmicJellyfish observables and forecasts
 </pre></div>
 </div>
 <p>This accommodates the requested combinations:</p>
@@ -570,7 +616,7 @@ Existing CosmicFishPie observables and forecasts
 </section>
 <section id="replace-the-symbolic-calculation-completely">
 <h2>2. Replace the symbolic calculation completely<a class="headerlink" href="#replace-the-symbolic-calculation-completely" title="Link to this heading">#</a></h2>
-<p>The main integration point is <code class="docutils literal notranslate"><span class="pre">cosmicfishpie/cosmology/cosmology.py</span></code>, especially <code class="docutils literal notranslate"><span class="pre">changebasis_symb</span></code>, <code class="docutils literal notranslate"><span class="pre">symbolic_setparams</span></code>, and <code class="docutils literal notranslate"><span class="pre">symbolic_results</span></code>.</p>
+<p>The main integration point is <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/cosmology/cosmology.py</span></code>, especially <code class="docutils literal notranslate"><span class="pre">changebasis_symb</span></code>, <code class="docutils literal notranslate"><span class="pre">symbolic_setparams</span></code>, and <code class="docutils literal notranslate"><span class="pre">symbolic_results</span></code>.</p>
 <section id="parameter-handling">
 <h3>Parameter handling<a class="headerlink" href="#parameter-handling" title="Link to this heading">#</a></h3>
 <p>Resolve a consistent parameter set:</p>
@@ -590,7 +636,7 @@ Existing CosmicFishPie observables and forecasts
 <section id="spectra-and-units">
 <h3>Spectra and units<a class="headerlink" href="#spectra-and-units" title="Link to this heading">#</a></h3>
 <p>Evaluate the new linear spectrum <strong>at each redshift</strong>, rather than scaling a (z=0) spectrum with the old scale-independent Colossus growth.</p>
-<p>Preserve CosmicFishPie’s physical-unit interface:</p>
+<p>Preserve CosmicJellyfish’s physical-unit interface:</p>
 <p>[
 k_{\rm symbolic}=k_{\rm CFP}/h,\qquad
 P_{\rm CFP}=P_{\rm symbolic}/h^3.
@@ -631,7 +677,7 @@ P_{\rm nl}(k,z)=B_{\rm EE2}(k,z),P_{\rm lin}(k,z).
 ]</p>
 <p>For CLASS+EE2:</p>
 <ul class="simple">
-<li><p>Use CosmicFishPie’s existing CLASS linear calculation.</p></li>
+<li><p>Use CosmicJellyfish’s existing CLASS linear calculation.</p></li>
 <li><p>Avoid computing native CLASS nonlinear power unnecessarily.</p></li>
 <li><p>Keep CLASS backgrounds and linear growth.</p></li>
 <li><p>Obtain (A_s), densities, and neutrino parameters from the same resolved cosmology.</p></li>
@@ -666,7 +712,7 @@ P_{\rm nl}(k,z)=B_{\rm EE2}(k,z),P_{\rm lin}(k,z).
 <section id="stage-a-reproduce-the-notebook-reference">
 <h3>Stage A — Reproduce the notebook reference<a class="headerlink" href="#stage-a-reproduce-the-notebook-reference" title="Link to this heading">#</a></h3>
 <p>Start with a fiducial and a small deterministic set of cosmologies, then extend coverage.</p>
-<p>The CLASS settings need a dedicated profile: the notebook uses three degenerate massive neutrinos and a density convention that differs from CosmicFishPie’s current CLASS mapping. Match those conventions deliberately before attributing residuals to the emulator.</p>
+<p>The CLASS settings need a dedicated profile: the notebook uses three degenerate massive neutrinos and a density convention that differs from CosmicJellyfish’s current CLASS mapping. Match those conventions deliberately before attributing residuals to the emulator.</p>
 </section>
 <section id="stage-b-validate-cosmology-outputs">
 <h3>Stage B — Validate cosmology outputs<a class="headerlink" href="#stage-b-validate-cosmology-outputs" title="Link to this heading">#</a></h3>
@@ -717,7 +763,7 @@ P_{\rm nl}(k,z)=B_{\rm EE2}(k,z),P_{\rm lin}(k,z).
 </ul>
 <p>Relevant files include:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/config.py</span></code> and <code class="docutils literal notranslate"><span class="pre">configs/context.py</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/config.py</span></code> and <code class="docutils literal notranslate"><span class="pre">configs/context.py</span></code>;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">configs/default_boltzmann_yaml_files/symbolic/</span></code>;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scripts/validation/run_fisher_compare_backends.py</span></code>;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scripts/validation/render_validation_dashboard.py</span></code>;</p></li>

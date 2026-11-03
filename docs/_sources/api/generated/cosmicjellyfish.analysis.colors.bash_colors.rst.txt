@@ -1,0 +1,8 @@
+bash\_colors
+============
+
+.. currentmodule:: cosmicjellyfish.analysis.colors
+
+.. autoclass:: bash_colors
+   :members:
+   :show-inheritance:

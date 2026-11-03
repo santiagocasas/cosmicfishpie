@@ -1,0 +1,8 @@
+JaxPhotoObservable
+==================
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.jaxcosmo_photo
+
+.. autoclass:: JaxPhotoObservable
+   :members:
+   :show-inheritance:

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Likelihood sampling with Nautilus &#8212; cosmicfishpie v1.3.1</title>
+    <title>Likelihood sampling with Nautilus &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -125,8 +125,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -147,6 +155,20 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
@@ -160,20 +182,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -212,7 +244,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -224,7 +256,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -278,6 +310,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -338,7 +384,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -350,7 +396,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -460,13 +506,13 @@ Fisher forecast (<a class="reference internal" href="first_forecast.html"><span 
 <h2>Minimal example<a class="headerlink" href="#minimal-example" title="Link to this heading">#</a></h2>
 <p>Run from the repository root so that <code class="docutils literal notranslate"><span class="pre">specs_dir</span></code> resolves. <code class="docutils literal notranslate"><span class="pre">n_live</span></code> and <code class="docutils literal notranslate"><span class="pre">n_eff</span></code>
 are far too small for a real posterior.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.fishermatrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosmicfish</span> <span class="k">as</span> <span class="n">cff</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.likelihood</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhotometricLikelihood</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.fishermatrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosmicfish</span> <span class="k">as</span> <span class="n">cff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.likelihood</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhotometricLikelihood</span>
 
 <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;symbolic&quot;</span><span class="p">,</span> <span class="s2">&quot;cosmo_model&quot;</span><span class="p">:</span> <span class="s2">&quot;LCDM&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ell_sampling&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;nonlinear&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;outroot&quot;</span><span class="p">:</span> <span class="s2">&quot;likelihood_demo&quot;</span><span class="p">,</span> <span class="s2">&quot;results_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;results&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;specs_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;cosmicfishpie/configs/default_survey_specifications&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;specs_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;cosmicjellyfish/configs/default_survey_specifications&quot;</span><span class="p">,</span>
     <span class="s2">&quot;survey_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Euclid&quot;</span><span class="p">,</span>
     <span class="s2">&quot;survey_name_photo&quot;</span><span class="p">:</span> <span class="s2">&quot;Euclid-Photometric-ISTF-Pessimistic&quot;</span><span class="p">,</span>
     <span class="s2">&quot;survey_name_spectro&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -495,18 +541,19 @@ are far too small for a real posterior.</p>
 <p><code class="docutils literal notranslate"><span class="pre">loglike</span></code> returns <span class="math notranslate nohighlight">\(\ln\mathcal{L} = -\chi^2/2\)</span>; parameters missing from
 <code class="docutils literal notranslate"><span class="pre">param_dict</span></code> stay at their fiducial value. Nautilus needs at least two sampled
 parameters, and <code class="docutils literal notranslate"><span class="pre">run_nautilus</span></code> is serial. For galaxy clustering use
-<a class="reference internal" href="api/generated/cosmicfishpie.likelihood.spectro_like.SpectroLikelihood.html#cosmicfishpie.likelihood.spectro_like.SpectroLikelihood" title="cosmicfishpie.likelihood.spectro_like.SpectroLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectroLikelihood</span></code></a> with
+<a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood.html#cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood" title="cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectroLikelihood</span></code></a> with
 <code class="docutils literal notranslate"><span class="pre">observables=[&quot;GCsp&quot;]</span></code>; it takes <code class="docutils literal notranslate"><span class="pre">cosmoFM_data=</span></code> and <code class="docutils literal notranslate"><span class="pre">cosmoFM_theory=</span></code> instead of
 <code class="docutils literal notranslate"><span class="pre">cosmo_data=</span></code> and <code class="docutils literal notranslate"><span class="pre">cosmo_theory=</span></code>.</p>
 </section>
 <section id="config-driven-runs">
 <h2>Config-driven runs<a class="headerlink" href="#config-driven-runs" title="Link to this heading">#</a></h2>
 <p>For production, describe the run in one dictionary (or a YAML file; see
-<code class="docutils literal notranslate"><span class="pre">sampler_scripts/fresh_lcdm_symbolic_small.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">sampler_scripts/run_sampler.py</span></code>).
-<a class="reference internal" href="api/generated/cosmicfishpie.likelihood.sampler.NautilusSampler.html#cosmicfishpie.likelihood.sampler.NautilusSampler" title="cosmicfishpie.likelihood.sampler.NautilusSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NautilusSampler</span></code></a> builds the
+<code class="docutils literal notranslate"><span class="pre">scripts/likelihood/sampler/fresh_lcdm_symbolic_small.yaml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">scripts/likelihood/sampler/run_sampler.py</span></code>).
+<a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.sampler.NautilusSampler.html#cosmicjellyfish.likelihood.sampler.NautilusSampler" title="cosmicjellyfish.likelihood.sampler.NautilusSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NautilusSampler</span></code></a> builds the
 likelihood and priors, runs Nautilus (with a worker pool if <code class="docutils literal notranslate"><span class="pre">pool</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>) and
 writes the chain. This configuration also takes about five minutes on one core.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.likelihood</span><span class="w"> </span><span class="kn">import</span> <span class="n">NautilusSampler</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.likelihood</span><span class="w"> </span><span class="kn">import</span> <span class="n">NautilusSampler</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;wl_demo&quot;</span><span class="p">,</span>
@@ -545,12 +592,12 @@ checkpoint; re-running resumes.</p></li>
 <section id="post-processing">
 <h2>Post-processing<a class="headerlink" href="#post-processing" title="Link to this heading">#</a></h2>
 <p>The chain header lists the parameter names, then <code class="docutils literal notranslate"><span class="pre">weights</span> <span class="pre">loglike</span></code> (linear
-weights). <a class="reference internal" href="api/generated/cosmicfishpie.likelihood.sampler.load_chain_metadata.html#cosmicfishpie.likelihood.sampler.load_chain_metadata" title="cosmicfishpie.likelihood.sampler.load_chain_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_chain_metadata()</span></code></a> returns
+weights). <a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.sampler.load_chain_metadata.html#cosmicjellyfish.likelihood.sampler.load_chain_metadata" title="cosmicjellyfish.likelihood.sampler.load_chain_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_chain_metadata()</span></code></a> returns
 the chain path, the sampled fiducial values, the metadata (log-evidence, run time)
 and LaTeX labels; the folder must hold exactly one <code class="docutils literal notranslate"><span class="pre">*_metadata.json</span></code>, otherwise
 pass <code class="docutils literal notranslate"><span class="pre">metadata_filename</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.analysis.fishconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_Nautilus_chains_from_txt</span><span class="p">,</span> <span class="n">make_triangle_plot</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.likelihood.sampler</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_chain_metadata</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.analysis.fishconsumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_Nautilus_chains_from_txt</span><span class="p">,</span> <span class="n">make_triangle_plot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.likelihood.sampler</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_chain_metadata</span>
 
 <span class="n">chain_file</span><span class="p">,</span> <span class="n">sampled_fiducial</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">load_chain_metadata</span><span class="p">(</span><span class="s2">&quot;chains/chains_wl_demo&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;evidence_log_z&quot;</span><span class="p">],</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;elapsed_time&quot;</span><span class="p">])</span>
@@ -569,6 +616,80 @@ a chain that samples only cosmology fixes the nuisance parameters, so compare it
 with the <em>conditional</em> Fisher, not the marginal one. From the shell,
 <code class="docutils literal notranslate"><span class="pre">scripts/likelihood/postprocess/plot_finished_chain.py</span> <span class="pre">&lt;run&gt;_metadata.json</span></code> plots
 finished chains.</p>
+<section id="example-metadata">
+<h3>Example metadata<a class="headerlink" href="#example-metadata" title="Link to this heading">#</a></h3>
+<p>This is real metadata from the completed symbolic two-parameter LCDM run
+<code class="docutils literal notranslate"><span class="pre">chains_symbolic_32x1_15623397</span></code> in <a class="reference external" href="https://dagshub.com/santiagocasas/cjfp-data">cjfp-data</a>,
+with only the output paths shortened. It describes that historical run, not a
+new result. No posterior samples or HDF5 checkpoint are included here.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;cosmicfishpie_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;symbolic_32x1_15623397&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;start_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-09-15 12:36:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outroot path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;symbolic_2param&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;cosmo_fiducial_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Omegam&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3191</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Omegab&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.049795</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6674</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.96605</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sigma8&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.81</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;w0&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;wa&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mnu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Neff&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.044</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;sampled_fiducial_params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;Omegam&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3191</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Omegab&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.049795</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;priors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Omegam&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[0.24, 0.4]&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Omegab&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{&#39;type&#39;: &#39;gaussian&#39;, &#39;loc&#39;: 0.049795, &#39;scale&#39;: 0.00055}&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;sampler_settings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;n_live&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;n_networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;n_batch&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pool&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;observables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GCph&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;WL&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;cosmo_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LCDM&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;survey_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Euclid-Photometric-ISTF-Pessimistic&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;symbolic&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;finish_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-09-15 12:43:04&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;elapsed_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:07:03&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;evidence_log_z&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-5.643129673483542</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;chain_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;symbolic_2param.txt&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Fields</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cosmicfishpie_version</span></code></p></td>
+<td><p>Historical software-version key, retained for compatibility with existing chains.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">outroot</span> <span class="pre">path</span></code>, <code class="docutils literal notranslate"><span class="pre">chain_file</span></code></p></td>
+<td><p>Run identifier, output prefix and posterior text filename.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code>, <code class="docutils literal notranslate"><span class="pre">finish_time</span></code>, <code class="docutils literal notranslate"><span class="pre">elapsed_time</span></code></p></td>
+<td><p>Timing recorded by the sampler.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cosmo_fiducial_params</span></code>, <code class="docutils literal notranslate"><span class="pre">sampled_fiducial_params</span></code></p></td>
+<td><p>Full fiducial cosmology and the subset sampled.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">priors</span></code>, <code class="docutils literal notranslate"><span class="pre">sampler_settings</span></code></p></td>
+<td><p>Prior descriptions and Nautilus settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">observables</span></code>, <code class="docutils literal notranslate"><span class="pre">cosmo_model</span></code>, <code class="docutils literal notranslate"><span class="pre">survey_name</span></code>, <code class="docutils literal notranslate"><span class="pre">code</span></code></p></td>
+<td><p>Probe, model, survey and theory backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">evidence_log_z</span></code></p></td>
+<td><p>Estimated log Bayesian evidence for this run.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">load_chain_metadata</span></code> reads the JSON and resolves the chain path; it does not
+download or check the existence of the chain. See <a class="reference internal" href="validation_data.html"><span class="doc">Validation data and examples (cjfp-data)</span></a> for
+retrieving published chains and running the validation workflows.</p>
+</section>
 </section>
 <section id="combining-probes">
 <h2>Combining probes<a class="headerlink" href="#combining-probes" title="Link to this heading">#</a></h2>
@@ -576,7 +697,7 @@ finished chains.</p>
 because summing their log-likelihoods declares them statistically independent.
 Each entry is a component name, or a mapping whose extra keys go to that
 component; several entries are wrapped in a
-<a class="reference internal" href="api/generated/cosmicfishpie.likelihood.base.CompositeLikelihood.html#cosmicfishpie.likelihood.base.CompositeLikelihood" title="cosmicfishpie.likelihood.base.CompositeLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeLikelihood</span></code></a>:</p>
+<a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.base.CompositeLikelihood.html#cosmicjellyfish.likelihood.base.CompositeLikelihood" title="cosmicjellyfish.likelihood.base.CompositeLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeLikelihood</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;observables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WL&quot;</span><span class="p">,</span> <span class="s2">&quot;GCsp&quot;</span><span class="p">]</span>
 <span class="n">config</span><span class="p">[</span><span class="s2">&quot;likelihoods&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;photometric&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;spectroscopic&quot;</span><span class="p">,</span> <span class="s2">&quot;leg_flag&quot;</span><span class="p">:</span> <span class="s2">&quot;wedges&quot;</span><span class="p">}]</span>
 </pre></div>
@@ -586,10 +707,10 @@ component; several entries are wrapped in a
 <section id="custom-components">
 <h2>Custom components<a class="headerlink" href="#custom-components" title="Link to this heading">#</a></h2>
 <p>A custom component is a class with <code class="docutils literal notranslate"><span class="pre">build(config,</span> <span class="pre">settings,</span> <span class="pre">data=None,</span> <span class="pre">context=None)</span></code>
-(returns a <a class="reference internal" href="api/generated/cosmicfishpie.likelihood.base.Likelihood.html#cosmicfishpie.likelihood.base.Likelihood" title="cosmicfishpie.likelihood.base.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a>) and
+(returns a <a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.base.Likelihood.html#cosmicjellyfish.likelihood.base.Likelihood" title="cosmicjellyfish.likelihood.base.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a>) and
 <code class="docutils literal notranslate"><span class="pre">data_payload(likelihood)</span></code> (returns the serialisable fiducial data that workers get
 back as <code class="docutils literal notranslate"><span class="pre">data</span></code>). Register it with
-<a class="reference internal" href="api/generated/cosmicfishpie.likelihood.sampler.register_likelihood_component.html#cosmicfishpie.likelihood.sampler.register_likelihood_component" title="cosmicfishpie.likelihood.sampler.register_likelihood_component"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_likelihood_component()</span></code></a> at
+<a class="reference internal" href="api/generated/cosmicjellyfish.likelihood.sampler.register_likelihood_component.html#cosmicjellyfish.likelihood.sampler.register_likelihood_component" title="cosmicjellyfish.likelihood.sampler.register_likelihood_component"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_likelihood_component()</span></code></a> at
 import time, not under <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;</span></code>, so spawned workers see it, then
 select it with <code class="docutils literal notranslate"><span class="pre">config[&quot;likelihoods&quot;]</span> <span class="pre">=</span> <span class="pre">[{&quot;type&quot;:</span> <span class="pre">&quot;&lt;name&gt;&quot;,</span> <span class="pre">...}]</span></code>.</p>
 </section>
@@ -598,7 +719,7 @@ select it with <code class="docutils literal notranslate"><span class="pre">conf
 <ul class="simple">
 <li><p><a class="reference internal" href="likelihood_validation.html"><span class="doc">Likelihood validation</span></a>: Fisher versus Nautilus for WL, GCsp and WL+GCsp, with run times.</p></li>
 <li><p><a class="reference internal" href="scripts_reference.html"><span class="doc">Scripts reference</span></a>: the demo, Slurm case runner and post-processing scripts.</p></li>
-<li><p><a class="reference internal" href="api/index.html"><span class="doc">API reference</span></a>: API reference for <code class="docutils literal notranslate"><span class="pre">cosmicfishpie.likelihood</span></code>.</p></li>
+<li><p><a class="reference internal" href="api/index.html"><span class="doc">API reference</span></a>: API reference for <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.likelihood</span></code>.</p></li>
 </ul>
 </section>
 </section>
@@ -652,7 +773,10 @@ select it with <code class="docutils literal notranslate"><span class="pre">conf
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-example">Minimal example</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-driven-runs">Config-driven runs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing">Post-processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing">Post-processing</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-metadata">Example metadata</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-probes">Combining probes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-components">Custom components</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-to-go-next">Where to go next</a></li>

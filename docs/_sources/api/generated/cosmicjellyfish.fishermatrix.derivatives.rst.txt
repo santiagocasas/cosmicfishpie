@@ -1,0 +1,42 @@
+cosmicjellyfish.fishermatrix.derivatives
+========================================
+
+.. automodule:: cosmicjellyfish.fishermatrix.derivatives
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      compute_derivatives
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      DerivativeProvider
+      DerivativeRequest
+      FiniteDifferenceProvider
+      derivatives
+   
+   
+
+   
+   
+   
+
+
+

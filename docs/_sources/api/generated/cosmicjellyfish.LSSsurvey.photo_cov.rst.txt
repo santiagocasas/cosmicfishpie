@@ -1,0 +1,31 @@
+cosmicjellyfish.LSSsurvey.photo\_cov
+====================================
+
+.. automodule:: cosmicjellyfish.LSSsurvey.photo_cov
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      PhotoCov
+   
+   
+
+   
+   
+   
+
+
+

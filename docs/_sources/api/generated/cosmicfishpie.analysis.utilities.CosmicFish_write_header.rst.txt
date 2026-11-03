@@ -1,6 +1,0 @@
-CosmicFish\_write\_header
-=========================
-
-.. currentmodule:: cosmicfishpie.analysis.utilities
-
-.. autofunction:: CosmicFish_write_header

@@ -1,6 +1,0 @@
-clamp
-=====
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: clamp

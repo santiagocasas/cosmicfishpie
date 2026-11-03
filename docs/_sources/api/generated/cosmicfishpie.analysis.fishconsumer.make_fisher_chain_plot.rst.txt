@@ -1,6 +1,0 @@
-make\_fisher\_chain\_plot
-=========================
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: make_fisher_chain_plot

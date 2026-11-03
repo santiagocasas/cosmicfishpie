@@ -1,0 +1,6 @@
+nice\_colors
+============
+
+.. currentmodule:: cosmicjellyfish.analysis.colors
+
+.. autofunction:: nice_colors

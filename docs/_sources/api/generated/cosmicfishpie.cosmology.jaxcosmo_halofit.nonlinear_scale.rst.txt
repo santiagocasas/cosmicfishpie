@@ -1,6 +1,0 @@
-nonlinear\_scale
-================
-
-.. currentmodule:: cosmicfishpie.cosmology.jaxcosmo_halofit
-
-.. autofunction:: nonlinear_scale

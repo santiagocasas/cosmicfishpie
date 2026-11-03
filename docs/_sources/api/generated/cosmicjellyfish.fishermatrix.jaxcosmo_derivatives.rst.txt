@@ -1,0 +1,32 @@
+cosmicjellyfish.fishermatrix.jaxcosmo\_derivatives
+==================================================
+
+.. automodule:: cosmicjellyfish.fishermatrix.jaxcosmo_derivatives
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      JaxAutodiffProvider
+      JaxFiniteDifferenceProvider
+   
+   
+
+   
+   
+   
+
+
+

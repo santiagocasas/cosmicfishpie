@@ -1,0 +1,6 @@
+sigma8\_to\_As
+==============
+
+.. currentmodule:: cosmicjellyfish.cosmology.jaxcosmo_amplitude
+
+.. autofunction:: sigma8_to_As

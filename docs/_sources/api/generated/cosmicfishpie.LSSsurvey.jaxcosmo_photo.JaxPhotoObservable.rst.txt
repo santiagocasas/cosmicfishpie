@@ -1,8 +1,0 @@
-JaxPhotoObservable
-==================
-
-.. currentmodule:: cosmicfishpie.LSSsurvey.jaxcosmo_photo
-
-.. autoclass:: JaxPhotoObservable
-   :members:
-   :show-inheritance:

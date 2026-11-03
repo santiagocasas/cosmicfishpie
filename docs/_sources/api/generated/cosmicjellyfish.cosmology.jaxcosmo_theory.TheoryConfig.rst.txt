@@ -1,0 +1,8 @@
+TheoryConfig
+============
+
+.. currentmodule:: cosmicjellyfish.cosmology.jaxcosmo_theory
+
+.. autoclass:: TheoryConfig
+   :members:
+   :show-inheritance:

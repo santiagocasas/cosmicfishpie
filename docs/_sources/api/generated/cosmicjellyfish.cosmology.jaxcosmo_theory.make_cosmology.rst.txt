@@ -1,0 +1,6 @@
+make\_cosmology
+===============
+
+.. currentmodule:: cosmicjellyfish.cosmology.jaxcosmo_theory
+
+.. autofunction:: make_cosmology

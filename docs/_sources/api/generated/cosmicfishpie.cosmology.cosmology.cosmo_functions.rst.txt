@@ -1,8 +1,0 @@
-cosmo\_functions
-================
-
-.. currentmodule:: cosmicfishpie.cosmology.cosmology
-
-.. autoclass:: cosmo_functions
-   :members:
-   :show-inheritance:

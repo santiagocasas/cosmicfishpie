@@ -1,0 +1,8 @@
+JaxSpectroObservable
+====================
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.jaxcosmo_spectro
+
+.. autoclass:: JaxSpectroObservable
+   :members:
+   :show-inheritance:

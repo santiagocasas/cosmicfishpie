@@ -1,0 +1,6 @@
+mkdirp
+======
+
+.. currentmodule:: cosmicjellyfish.analysis.utilities
+
+.. autofunction:: mkdirp

@@ -1,6 +1,0 @@
-grouper
-=======
-
-.. currentmodule:: cosmicfishpie.analysis.utilities
-
-.. autofunction:: grouper

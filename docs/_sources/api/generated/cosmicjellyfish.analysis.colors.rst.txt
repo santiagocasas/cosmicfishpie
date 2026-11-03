@@ -1,0 +1,39 @@
+cosmicjellyfish.analysis.colors
+===============================
+
+.. automodule:: cosmicjellyfish.analysis.colors
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      nice_colors
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      bash_colors
+   
+   
+
+   
+   
+   
+
+
+

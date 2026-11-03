@@ -1,0 +1,31 @@
+cosmicjellyfish.cosmology.symbolic\_new
+=======================================
+
+.. automodule:: cosmicjellyfish.cosmology.symbolic_new
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      SyrenNewProvider
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,6 +1,0 @@
-display\_colors
-===============
-
-.. currentmodule:: cosmicfishpie.analysis.fishconsumer
-
-.. autofunction:: display_colors

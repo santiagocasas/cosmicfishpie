@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>JAXcosmo and automatic differentiation &#8212; cosmicfishpie v1.3.1</title>
+    <title>JAXcosmo and automatic differentiation &#8212; cosmicjellyfish v1.3.1</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=5b17a67c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=33f10437" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
@@ -123,8 +123,16 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/icon-light.svg" class="logo__image only-light" alt=""/>
+    <img src="_static/icon-dark.svg" class="logo__image only-dark pst-js-only" alt=""/>
   
-    <p class="title logo__title">cosmicfishpie v1.3.1</p>
+  
+    <p class="title logo__title">cosmicjellyfish</p>
   
 </a></div>
     
@@ -145,6 +153,20 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User guide
@@ -158,20 +180,30 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
     API reference
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="development.html">
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="development.html">
     Development
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -210,7 +242,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -222,7 +254,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -276,6 +308,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_cosmicjellyfish.html">
+    Migrating from cosmicfishpie
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="validation_data.html">
+    Validation data and examples (cjfp-data)
   </a>
 </li>
 
@@ -336,7 +382,7 @@
           
           
           
-          <a href="https://github.com/santiagocasas/cosmicfishpie" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/santiagocasas/cosmicjellyfish" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -348,7 +394,7 @@
           
           
           
-          <a href="https://pypi.org/project/cosmicfishpie/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+          <a href="https://pypi.org/project/cosmicjellyfish/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
             <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
@@ -460,9 +506,9 @@ with the same shapes reuse compiled functions.</p>
 <h2>A photometric forecast<a class="headerlink" href="#a-photometric-forecast" title="Link to this heading">#</a></h2>
 <p>This example keeps both the neutrino mass and the spectral index fixed. Parameters
 omitted from <code class="docutils literal notranslate"><span class="pre">freepars</span></code> retain their fiducial values; the usual survey nuisance
-parameters are added by CosmicFishPie.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.fishermatrix.cosmicfish</span><span class="w"> </span><span class="kn">import</span> <span class="n">FisherMatrix</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicfishpie.fishermatrix.jaxcosmo_derivatives</span><span class="w"> </span><span class="kn">import</span> <span class="n">JaxAutodiffProvider</span>
+parameters are added by CosmicJellyfish.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.fishermatrix.cosmicfish</span><span class="w"> </span><span class="kn">import</span> <span class="n">FisherMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cosmicjellyfish.fishermatrix.jaxcosmo_derivatives</span><span class="w"> </span><span class="kn">import</span> <span class="n">JaxAutodiffProvider</span>
 
 <span class="n">fiducial</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;10^9As&quot;</span><span class="p">:</span> <span class="mf">2.1</span><span class="p">,</span>
@@ -512,7 +558,7 @@ value is zero), as described in <a class="reference internal" href="derivatives.
 <tbody>
 <tr class="row-even"><td><p>JAX AD</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">JaxAutodiffProvider()</span></code></p></td>
-<td><p>JAX-native CosmicFishPie observable</p></td>
+<td><p>JAX-native CosmicJellyfish observable</p></td>
 </tr>
 <tr class="row-odd"><td><p>JAX FD</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">JaxFiniteDifferenceProvider()</span></code></p></td>
@@ -526,12 +572,12 @@ value is zero), as described in <a class="reference internal" href="derivatives.
 </table>
 </div>
 <p>Import both providers from
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie.fishermatrix.jaxcosmo_derivatives</span></code>. All three routes can use
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.fishermatrix.jaxcosmo_derivatives</span></code>. All three routes can use
 <code class="docutils literal notranslate"><span class="pre">options[&quot;code&quot;]</span> <span class="pre">=</span> <span class="pre">&quot;jaxcosmo&quot;</span></code>.</p>
 <p><strong>AD versus JAX FD isolates the derivative method.</strong> Decrease the FD step to check
 convergence. <strong>JAX FD versus standard FD checks the observable port</strong>, including its
 interpolation, integration and boundary choices. The JAX observables reproduce
-CosmicFishPie’s photometric Limber and spectroscopic galaxy-power calculations;
+CosmicJellyfish’s photometric Limber and spectroscopic galaxy-power calculations;
 they do not call <code class="docutils literal notranslate"><span class="pre">jax_cosmo.angular_cl</span></code>. The existing covariance and Fisher
 assembly are retained; selecting AD does not add covariance-derivative terms.</p>
 <p>The normal backend adapter returns NumPy/SciPy tables for the existing pipeline.
@@ -546,7 +592,7 @@ the repository checkout (or open it directly in <code class="docutils literal no
 checkout’s Python environment, for example <code class="docutils literal notranslate"><span class="pre">.venv/bin/python</span></code>, as the Jupyter
 kernel. Install <code class="docutils literal notranslate"><span class="pre">jupyterlab</span></code> and <code class="docutils literal notranslate"><span class="pre">ipykernel</span></code> into that environment if needed.</p>
 <p>The notebook compares the three JAXcosmo routes above with the standard
-CosmicFishPie SYREN-NEW forecast. It includes:</p>
+CosmicJellyfish SYREN-NEW forecast. It includes:</p>
 <ul class="simple">
 <li><p>linear and nonlinear matter power, and the response to the spectral index;</p></li>
 <li><p>angular spectra from the JAX and standard observable implementations;</p></li>
@@ -770,11 +816,11 @@ supported bias model (<code class="docutils literal notranslate"><span class="pr
 supports the implemented photo-z distributions, galaxy-bias models and eNLA
 intrinsic alignments. Unsupported modelling choices raise explicit errors.</p>
 <p>Backend configuration lives in
-<code class="docutils literal notranslate"><span class="pre">cosmicfishpie/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml</span></code>.
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml</span></code>.
 To customise it, copy the profile and set
 <code class="docutils literal notranslate"><span class="pre">options[&quot;jaxcosmo_config_yaml&quot;]</span></code> to the copy’s path. Key controls are
 <code class="docutils literal notranslate"><span class="pre">ACCURACY.transfer</span></code>, <code class="docutils literal notranslate"><span class="pre">ACCURACY.halofit</span></code>, <code class="docutils literal notranslate"><span class="pre">ACCURACY.distance_steps</span></code>, and the
-<code class="docutils literal notranslate"><span class="pre">NUMERICS</span></code> power/background grids and <code class="docutils literal notranslate"><span class="pre">x64</span></code> flag. Public CosmicFishPie power uses
+<code class="docutils literal notranslate"><span class="pre">NUMERICS</span></code> power/background grids and <code class="docutils literal notranslate"><span class="pre">x64</span></code> flag. Public CosmicJellyfish power uses
 <code class="docutils literal notranslate"><span class="pre">k</span></code> in inverse Mpc and <code class="docutils literal notranslate"><span class="pre">P(k)</span></code> in cubic Mpc; the theory adapter converts the
 internal <code class="docutils literal notranslate"><span class="pre">jax-cosmo</span></code> h-scaled units.</p>
 <section id="smooth-halofit-and-table-boundaries">

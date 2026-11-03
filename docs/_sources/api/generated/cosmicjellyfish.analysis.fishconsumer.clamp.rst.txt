@@ -1,0 +1,6 @@
+clamp
+=====
+
+.. currentmodule:: cosmicjellyfish.analysis.fishconsumer
+
+.. autofunction:: clamp

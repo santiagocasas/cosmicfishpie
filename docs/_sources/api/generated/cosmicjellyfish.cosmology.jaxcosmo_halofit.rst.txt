@@ -1,0 +1,33 @@
+cosmicjellyfish.cosmology.jaxcosmo\_halofit
+===========================================
+
+.. automodule:: cosmicjellyfish.cosmology.jaxcosmo_halofit
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      halofit
+      nonlinear_scale
+      nonlinear_scale_residual
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,32 @@
+cosmicjellyfish.cosmology.ee2
+=============================
+
+.. automodule:: cosmicjellyfish.cosmology.ee2
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      class_ee2_boost
+      class_ee2_parameters
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,8 +1,0 @@
-filesystem
-==========
-
-.. currentmodule:: cosmicfishpie.utilities.utils
-
-.. autoclass:: filesystem
-   :members:
-   :show-inheritance:

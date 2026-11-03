@@ -1,6 +1,0 @@
-legendre\_Pgg
-=============
-
-.. currentmodule:: cosmicfishpie.likelihood.spectro_like
-
-.. autofunction:: legendre_Pgg

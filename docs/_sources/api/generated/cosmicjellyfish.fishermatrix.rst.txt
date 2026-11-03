@@ -1,0 +1,33 @@
+﻿cosmicjellyfish.fishermatrix
+============================
+
+.. automodule:: cosmicjellyfish.fishermatrix
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Submodules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   cosmicfish
+   derivatives
+   jaxcosmo_derivatives
+

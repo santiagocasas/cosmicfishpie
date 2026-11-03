@@ -104,7 +104,8 @@ exclude = [
     "tests.*",
     "tests",
     "docs*",
-    "scripts*"
+    "scripts*",
+    "chains*"
 ]
 
 [tool.setuptools]

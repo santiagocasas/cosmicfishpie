@@ -69,7 +69,8 @@ parameters, and `run_nautilus` is serial. For galaxy clustering use
 ## Config-driven runs
 
 For production, describe the run in one dictionary (or a YAML file; see
-`sampler_scripts/fresh_lcdm_symbolic_small.yaml` and `sampler_scripts/run_sampler.py`).
+`scripts/likelihood/sampler/fresh_lcdm_symbolic_small.yaml` and
+`scripts/likelihood/sampler/run_sampler.py`).
 {py:class}`~cosmicjellyfish.likelihood.sampler.NautilusSampler` builds the
 likelihood and priors, runs Nautilus (with a worker pool if `pool > 1`) and
 writes the chain. This configuration also takes about five minutes on one core.
@@ -140,6 +141,31 @@ a chain that samples only cosmology fixes the nuisance parameters, so compare it
 with the *conditional* Fisher, not the marginal one. From the shell,
 `scripts/likelihood/postprocess/plot_finished_chain.py <run>_metadata.json` plots
 finished chains.
+
+### Example metadata
+
+This is real metadata from the completed symbolic two-parameter LCDM run
+`chains_symbolic_32x1_15623397` in [cjfp-data](https://dagshub.com/santiagocasas/cjfp-data),
+with only the output paths shortened. It describes that historical run, not a
+new result. No posterior samples or HDF5 checkpoint are included here.
+
+```{literalinclude} examples/chain_metadata_example.json
+:language: json
+```
+
+| Fields | Meaning |
+| --- | --- |
+| `cosmicfishpie_version` | Historical software-version key, retained for compatibility with existing chains. |
+| `name`, `outroot path`, `chain_file` | Run identifier, output prefix and posterior text filename. |
+| `start_time`, `finish_time`, `elapsed_time` | Timing recorded by the sampler. |
+| `cosmo_fiducial_params`, `sampled_fiducial_params` | Full fiducial cosmology and the subset sampled. |
+| `priors`, `sampler_settings` | Prior descriptions and Nautilus settings. |
+| `observables`, `cosmo_model`, `survey_name`, `code` | Probe, model, survey and theory backend. |
+| `evidence_log_z` | Estimated log Bayesian evidence for this run. |
+
+`load_chain_metadata` reads the JSON and resolves the chain path; it does not
+download or check the existence of the chain. See {doc}`validation_data` for
+retrieving published chains and running the validation workflows.
 
 ## Combining probes
 

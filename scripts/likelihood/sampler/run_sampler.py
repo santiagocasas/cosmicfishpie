@@ -7,7 +7,7 @@ from cosmicjellyfish.likelihood import NautilusSampler
 
 def main():
     # Parse command line args
-    parser = argparse.ArgumentParser(description="CosmicFish Pie Likelihood Module")
+    parser = argparse.ArgumentParser(description="CosmicJellyfish Likelihood Module")
     parser.add_argument("config_file", help="Path to YAML config file")
     parser.add_argument(
         "--pool",

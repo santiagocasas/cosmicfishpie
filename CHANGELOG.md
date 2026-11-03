@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Move the YAML sampler examples to `scripts/likelihood/sampler/`, remove the
+  bundled chain samples, and document cjfp-data downloads and validation workflows
+  with a real chain-metadata example. The default sampler output remains `./chains/`.
+
 - Rename the distribution and import package from `cosmicfishpie` to `cosmicjellyfish`.
   `import cosmicfishpie` keeps working through a deprecated compatibility alias that
   resolves to the same module objects, so configuration state, class identities and old

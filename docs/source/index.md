@@ -8,6 +8,7 @@ html_theme.sidebar_primary.remove: true
 
 getting_started
 migration_cosmicjellyfish
+validation_data
 user_guide
 tutorials
 api/index

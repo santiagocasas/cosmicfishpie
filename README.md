@@ -17,6 +17,13 @@
   <img src="https://github.com/santiagocasas/cosmicjellyfish/assets/6987716/1816b3b7-0920-4a2c-aafd-9c4ba1dc3e2b" width="280">
 </div>
 
+## Validation data
+
+Published validation results, posterior chains and HPC workflows live in the
+public [cjfp-data repository on DagsHub](https://dagshub.com/santiagocasas/cjfp-data).
+See the [download and workflow guide](https://www.santicasas.space/cosmicjellyfish/docs/validation_data.html)
+for targeted DVC downloads and instructions to run the comparisons.
+
 ## Features
 
 - **Observables.** Photometric (`GCph`, `WL`) and spectroscopic (`GCsp`) galaxy clustering and weak lensing, CMB (`CMB_T`, `CMB_E`, `CMB_B`) and HI intensity mapping (`IM`).

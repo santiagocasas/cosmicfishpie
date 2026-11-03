@@ -57,7 +57,8 @@ calls) and then one serial `FisherMatrix.compute()`. Parallel derivative evaluat
 not used, so timings are single-process wall times, not the best achievable. Each case
 ran as its own 16-CPU job on JURECA with `OMP_NUM_THREADS=16`.
 
-The driver script lives outside this repository, in the `cjfp-data` job repository, as
+The driver script lives outside this repository, in the `cjfp-data` job repository
+(see {doc}`validation_data`), as
 `jobs_punch/compare_backend_profiles.py` (subcommands `run`, `all`, `compare`). The
 discrepancy plots come from `cosmicjellyfish.analysis.plot_comparison.ploterrs`.
 

@@ -12,6 +12,13 @@ relative to the current directory.
 
 Below you’ll find setup instructions, usage examples, and details on outputs.
 
+The generic YAML sampler and small source examples live in
+[`likelihood/sampler/`](likelihood/sampler/README.md); run them from the repository
+root. Published validation artifacts and operational HPC configurations live in
+[cjfp-data on DagsHub](https://dagshub.com/santiagocasas/cjfp-data).
+See the [data and workflow guide](../docs/source/validation_data.md) for downloads,
+CAMB-versus-CLASS comparisons and production sampling.
+
 ### Sequential five-parameter LCDM Nautilus campaign (36 CPUs)
 
 ```bash
@@ -27,7 +34,7 @@ noiseless fiducial data. These are conditional five-parameter posteriors.
 No Fisher matrices or Fisher-derived priors are computed.
 
 Resource defaults follow the JURECA notes in
-[`cjfp-data/jobs_punch/nautilus_jureca_findings.md`](../../cjfp-data/jobs_punch/nautilus_jureca_findings.md):
+[`cjfp-data/jobs_punch/nautilus_jureca_findings.md`](https://dagshub.com/santiagocasas/cjfp-data/src/main/jobs_punch/nautilus_jureca_findings.md):
 
 | Backend | Likelihood workers | OMP threads per worker | Batch size |
 |---|---:|---:|---:|

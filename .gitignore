@@ -7,12 +7,8 @@
 # ...except small, versioned documentation figures.
 !docs/source/_static/likelihood_validation/*.png
 !docs/source/_static/ns_response/*.png
-# Generated chains belong on scratch; only the tiny reference fixture is versioned.
-chains/*
-!chains/README.md
-!chains/example_symbolic_2param/
-!chains/example_symbolic_2param/*.txt
-!chains/example_symbolic_2param/*_metadata.json
+# Generated chains are local outputs; published suites live in cjfp-data.
+/chains/
 # build artifacts
 
 .eggs/

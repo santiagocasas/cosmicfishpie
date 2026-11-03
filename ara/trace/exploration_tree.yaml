@@ -1088,7 +1088,7 @@ tree:
   also_depends_on:
   - N11
   - N12
-- # CONFLICT: N21's initial attribution was corrected by N22 after tracing the provider selector.
+# CONFLICT: N21's initial attribution was corrected by N22 after tracing the provider selector.
 - id: N21
   type: experiment
   title: Diagnose initial symbolic Fisher provider attribution

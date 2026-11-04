@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Add a two-stage GCsp forecast in intermediate parameters, following Euclid
+  preparation VII, section 4.2.1 (`cosmicjellyfish.LSSsurvey.gcsp_intermediate`).
+  Shape parameters `(omegab, h, omegam, ns)` and per-bin `ln D_A`, `ln H`, `ln fsigma8`,
+  `ln bsigma8` and `P_s` are differentiated with JAX autodiff or paper-style finite
+  differences, nuisances are marginalised, and the result is projected onto the final
+  cosmological parameters with `F = J^T F J`. Matches the direct Fisher forecast to
+  about 1e-12. `TheoryTables` now exposes an optional `sigma8(z)`.
+- Add `reparametrise` and `jacobian_from_function` to
+  `cosmicjellyfish.analysis.fisher_operations` for general Fisher-space Jacobian
+  reparametrisations (in contrast to the covariance pull-back of `fisher_derived`).
+- Add the `gcsp_intermediate` documentation page with figures and the notebook
+  `08-GCsp-intermediate-parameters.ipynb`. Fix a doctest directive in
+  `jaxcosmo_derivatives` that newer Python versions reject.
+
 - Add the CosmicJellyfish logo, theme-aware README and documentation banners,
   navbar icons, landing-page wordmark and updated favicons.
 

@@ -248,6 +248,11 @@ supported bias model (`linear`, `linear_log` or `linear_Qbias`). Photometry
 supports the implemented photo-z distributions, galaxy-bias models and eNLA
 intrinsic alignments. Unsupported modelling choices raise explicit errors.
 
+For the two-stage GCsp forecast in shape, background, growth and bias
+parameters, see {doc}`gcsp_intermediate`. It reuses the GCsp JAX observable and
+adds paper-style finite differences, autodiff comparisons and a Fisher-space
+Jacobian projection.
+
 Backend configuration lives in
 `cosmicjellyfish/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml`.
 To customise it, copy the profile and set

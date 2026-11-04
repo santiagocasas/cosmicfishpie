@@ -330,6 +330,7 @@ class JaxCosmoTheory:
             pk_nonlinear=raw["Pnl"],
             h0_over_c=h0_over_c,
             omega_m0=params["Omegam"],
+            sigma8=raw["sigma8_z"],
         )
 
     def power(

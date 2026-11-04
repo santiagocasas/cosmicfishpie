@@ -52,6 +52,8 @@ class TheoryTables:
         Present-day ``H0 / c`` in ``1/Mpc``.
     omega_m0 : scalar
         Present-day matter fraction.
+    sigma8 : array, shape (nz,), optional
+        Present-day ``sigma8`` times the linear growth factor, i.e. ``sigma8(z)``.
     """
 
     z: Any
@@ -65,6 +67,7 @@ class TheoryTables:
     pk_nonlinear: Any
     h0_over_c: Any
     omega_m0: Any
+    sigma8: Any = None
 
 
 @runtime_checkable

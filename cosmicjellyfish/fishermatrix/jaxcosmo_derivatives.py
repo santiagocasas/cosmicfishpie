@@ -13,8 +13,7 @@ NumPy observable isolates the observable implementation.
 
 Usage
 -----
->>> from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider
->>> # FisherMatrix(..., derivative_provider=JaxAutodiffProvider())  # doctest: +SKIP
+>>> from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider  # doctest: +SKIP
 
 The providers are stateful on purpose: the JAX observable and its compiled Jacobians are cached
 between calls (and are *not* picklable), so a fresh provider must be created in every worker

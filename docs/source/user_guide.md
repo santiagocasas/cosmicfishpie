@@ -6,6 +6,8 @@ Reference-style guides for using `cosmicjellyfish` beyond the first forecast.
   matrices.
 - {doc}`derivatives`: the finite-difference schemes and how to choose one.
 - {doc}`jaxcosmo`: the optional JAXcosmo backend, autodiff providers and comparison notebook.
+- {doc}`gcsp_intermediate`: the GCsp intermediate-parameter forecast and its Jacobian
+  projection, with validation results.
 - {doc}`likelihood_sampling`: posterior sampling with Nautilus, to check or replace the
   Fisher approximation.
 - {doc}`cmb_benchmarks`: CMB observables, shipped experiment specifications and the
@@ -18,6 +20,7 @@ Reference-style guides for using `cosmicjellyfish` beyond the first forecast.
 comprehensive_guide
 derivatives
 jaxcosmo
+gcsp_intermediate
 likelihood_sampling
 cmb_benchmarks
 ```

@@ -79,6 +79,30 @@ _DEFAULT_FIDUCIAL = {
     "h": 0.67,
     "ns": 0.96,
 }
+_NUMERIC_COSMOLOGY_KEYS = set(_DEFAULT_FIDUCIAL) | {
+    "10^9As",
+    "As",
+    "logAs",
+    "ln_A_s_1e10",
+    "sigma8",
+    "mnu",
+    "m_nu",
+    "Omeganu",
+    "omnuh2",
+    "Omegak",
+    "omk",
+    "Omega_k",
+    "Neff",
+    "N_eff",
+    "tau",
+    "Tcmb",
+    "Omch2",
+    "ombh2",
+    "H0",
+    "n_s",
+    "w0_fld",
+    "wa_fld",
+}
 
 
 def _resolve_fiducial(fiducialpars: Mapping | None) -> dict[str, float]:
@@ -86,6 +110,23 @@ def _resolve_fiducial(fiducialpars: Mapping | None) -> dict[str, float]:
     fiducial = dict(_DEFAULT_FIDUCIAL)
     if fiducialpars is not None:
         fiducial.update(dict(fiducialpars))
+    numeric_fiducial = {}
+    for key, value in fiducial.items():
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError as err:
+                if key in _NUMERIC_COSMOLOGY_KEYS:
+                    raise ValueError(
+                        f"Fiducial cosmology parameter '{key}' must be numeric; got {value!r}."
+                    ) from err
+                continue
+        try:
+            numeric_fiducial[key] = float(value)
+        except (TypeError, ValueError):
+            if key in _NUMERIC_COSMOLOGY_KEYS:
+                raise ValueError(f"Fiducial cosmology parameter '{key}' must be numeric.")
+    fiducial = numeric_fiducial
     for key in ("mnu", "m_nu", "Omeganu", "omnuh2"):
         if key in fiducial and abs(float(fiducial[key])) > 1.0e-12:
             raise ValueError(
@@ -687,6 +728,19 @@ class GCspIntermediateForecast:
     def final_fiducial_vector(self, final_names: Sequence[str] | None = None) -> np.ndarray:
         """Fiducial values of the final parameters in CosmicJellyfish spelling."""
         names = self.final_names if final_names is None else tuple(final_names)
+        canonical = [_FINAL_CANONICAL.get(name) for name in names]
+        duplicates = sorted(
+            {key for key in canonical if key is not None and canonical.count(key) > 1}
+        )
+        if duplicates:
+            aliases = {
+                key: [name for name in names if _FINAL_CANONICAL.get(name) == key]
+                for key in duplicates
+            }
+            raise ValueError(
+                "Final parameter names cannot contain aliases of the same parameter; "
+                f"use only one of each alias group: {aliases}."
+            )
         values = []
         for name in names:
             if name not in _FINAL_CANONICAL:
@@ -804,11 +858,24 @@ class GCspIntermediateForecast:
         -------
         dict
             Keys ``"H"`` (km/s/Mpc), ``"DA"`` (Mpc) and ``"fs8"``; each holds ``z``,
-            ``fiducial`` and ``sigma`` arrays over the redshift bins.
+            ``fiducial`` and ``sigma`` arrays over the redshift bins. An unconstrained
+            parameter (a zero-information Fisher row, as for ``lnDA_i`` when AP effects
+            are disabled) is reported with an infinite uncertainty.
         """
         speed_of_light = 299792.458
-        covariance = np.linalg.pinv(np.asarray(reduced))
-        sigma = dict(zip(kept_names, np.sqrt(np.diag(covariance))))
+        reduced = np.asarray(reduced, dtype=float)
+        diagonal = np.diag(reduced)
+        scale = max(float(np.max(np.abs(diagonal))), 1.0)
+        informative = np.flatnonzero(diagonal > np.finfo(float).eps * scale)
+        covariance = np.zeros_like(reduced)
+        if informative.size:
+            covariance[np.ix_(informative, informative)] = np.linalg.pinv(
+                reduced[np.ix_(informative, informative)]
+            )
+        sigma = dict(zip(kept_names, np.sqrt(np.maximum(np.diag(covariance), 0.0))))
+        for index, name in enumerate(kept_names):
+            if index not in informative:
+                sigma[name] = np.inf
         fiducial = {
             "H": np.exp(self.intermediate.lnH_fid) * speed_of_light,
             "DA": np.exp(self.intermediate.lnDA_fid),
@@ -870,6 +937,11 @@ class GCspIntermediateForecast:
         )
 
         names = self.final_names if final_names is None else tuple(final_names)
+        if "As" in names:
+            raise ValueError(
+                "Direct jaxcosmo Fisher comparisons support '10^9As', not 'As'; "
+                "use '10^9As' in final_names."
+            )
         provider: JaxAutodiffProvider | JaxFiniteDifferenceProvider
         if method == "ad":
             provider = JaxAutodiffProvider()
@@ -908,6 +980,12 @@ class GCspIntermediateForecast:
         direct_method: str = "ad",
     ) -> dict:
         """Compare the intermediate projection with the validated direct Fisher recipe."""
+        names = list(self.final_names if final_names is None else tuple(final_names))
+        if "As" in names:
+            raise ValueError(
+                "Direct jaxcosmo Fisher comparisons support '10^9As', not 'As'; "
+                "use '10^9As' in final_names."
+            )
         result = self.run(method=method, final_names=final_names, jacobian_method=jacobian_method)
         direct = self.direct_fisher(method=direct_method, final_names=result["final_names"])
         names = list(result["final_names"])

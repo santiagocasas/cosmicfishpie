@@ -99,3 +99,14 @@ def test_reparametrise_validates_shapes():
         reparametrise(fisher.get_fisher_matrix(), np.ones((3, 2)), ["x", "y"])
     with pytest.raises(ValueError):
         jacobian_from_function(lambda x: x, [1.0], method="bogus")
+
+
+@pytest.mark.parametrize("step", [0.0, np.nan, np.inf, -1.0e-6])
+def test_jacobian_from_function_rejects_invalid_steps(step):
+    with pytest.raises(ValueError, match="step must be finite and positive"):
+        jacobian_from_function(lambda x: x**2, [1.0], step=step)
+
+
+def test_reparametrise_rejects_duplicate_names():
+    with pytest.raises(ValueError, match="names must be unique"):
+        reparametrise(_toy_fisher(), np.ones((3, 2)), ["x", "x"])

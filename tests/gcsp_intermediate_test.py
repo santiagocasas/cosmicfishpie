@@ -9,6 +9,7 @@ pytest.importorskip("jax_cosmo")
 from cosmicjellyfish.LSSsurvey.gcsp_intermediate import (  # noqa: E402
     GCspIntermediateForecast,
     IntermediateSpectroObservable,
+    _resolve_fiducial,
 )
 
 OPTIONS = {
@@ -78,7 +79,7 @@ def test_schur_marginalisation_matches_explicit_formula():
 def test_projection_matches_direct_ad(forecast):
     comparison = forecast.compare(method="ad", direct_method="ad")
     assert np.max(np.abs(comparison["sigma_ratio"] - 1.0)) < 1.0e-6
-    assert comparison["max_relative_fisher_difference"] < 1.0e-6
+    assert comparison["max_relative_fisher_difference"] < 1.0e-10
 
 
 def test_fd_projection_matches_ad(forecast):
@@ -87,6 +88,10 @@ def test_fd_projection_matches_ad(forecast):
     sigma_ad = np.sqrt(np.diag(np.linalg.pinv(ad["fisher_final"])))
     sigma_fd = np.sqrt(np.diag(np.linalg.pinv(fd["fisher_final"])))
     np.testing.assert_allclose(sigma_fd, sigma_ad, rtol=1.0e-4)
+    fisher_scale = np.max(np.abs(ad["fisher_final"]))
+    np.testing.assert_allclose(
+        fd["fisher_final"], ad["fisher_final"], rtol=0.0, atol=1.0e-6 * fisher_scale
+    )
 
 
 def test_final_parameter_guard(forecast):
@@ -94,6 +99,17 @@ def test_final_parameter_guard(forecast):
         forecast.final_fiducial_vector(["sigma8"])
     with pytest.raises(ValueError):
         forecast.fisher_intermediate(method="not-a-method")
+    with pytest.raises(ValueError, match="use only one"):
+        forecast.final_fiducial_vector(["As", "10^9As"])
+    with pytest.raises(ValueError, match="use '10"):
+        forecast.compare(final_names=["As"])
+
+
+def test_resolve_fiducial_handles_string_values():
+    assert _resolve_fiducial({"w0": "-0.9"})["w0"] == -0.9
+    with pytest.raises(ValueError, match="'w0' must be numeric"):
+        _resolve_fiducial({"w0": "not-a-number"})
+    assert "dark_energy_model" not in _resolve_fiducial({"dark_energy_model": "CPL"})
 
 
 def test_nonlinear_intermediate_parameters(forecast):
@@ -104,6 +120,10 @@ def test_nonlinear_intermediate_parameters(forecast):
     fiducial = observable.fiducial_params()
     assert all(np.isfinite(value) for value in fiducial.values())
     assert np.all(np.isfinite(observable.lnp_vector(observable.fiducial_vector())))
+    derivatives = observable.jacobian_ad(["lnsigmav_1", "lnsigmap_1"])
+    for name, derivative in derivatives.items():
+        assert np.all(np.isfinite(derivative))
+        assert np.any(derivative != 0.0), name
 
 
 def test_projection_uses_reparametrise_and_binned_constraints(forecast):
@@ -121,3 +141,15 @@ def test_projection_uses_reparametrise_and_binned_constraints(forecast):
         assert binned[key]["sigma"].shape == (forecast.base.nbins,)
         assert np.all(binned[key]["sigma"] > 0.0)
         assert np.all(binned[key]["sigma"] < binned[key]["fiducial"])
+
+
+def test_binned_constraints_reports_unconstrained_parameters(forecast):
+    result = forecast.run(method="ad")
+    reduced = np.array(result["fisher_reduced"], copy=True)
+    index = result["kept_names"].index("lnDA_1")
+    reduced[index, :] = 0.0
+    reduced[:, index] = 0.0
+    binned = forecast.binned_constraints(reduced, result["kept_names"])
+    assert np.isinf(binned["DA"]["sigma"][0])
+    assert np.all(np.isfinite(binned["H"]["sigma"]))
+    assert np.all(np.isfinite(binned["fs8"]["sigma"]))

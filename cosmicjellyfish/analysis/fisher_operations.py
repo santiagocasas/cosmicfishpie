@@ -376,6 +376,8 @@ def jacobian_from_function(function, fiducial, method="fd", step=1.0e-6):
         return np.atleast_2d(np.asarray(jax.jacfwd(function)(jnp.asarray(point))))
     if method != "fd":
         raise ValueError("Error, method must be 'fd' or 'jax'")
+    if not np.isfinite(step) or step <= 0:
+        raise ValueError("Error, finite-difference step must be finite and positive")
     columns = []
     for index, value in enumerate(point):
         delta = step * max(abs(value), 1.0)
@@ -444,6 +446,9 @@ def reparametrise(
         )
     if jac.shape[1] != len(new_names):
         raise ValueError("Error, the number of new names must match the jacobian columns")
+    duplicates = sorted({name for name in new_names if new_names.count(name) > 1})
+    if duplicates:
+        raise ValueError(f"Error, new parameter names must be unique; duplicates: {duplicates}")
     new_matrix = jac.T @ fisher_matrix.get_fisher_matrix() @ jac
     new_matrix = 0.5 * (new_matrix + new_matrix.T)
     fisher_new = fm.fisher_matrix(

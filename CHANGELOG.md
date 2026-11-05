@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Harden Fisher Jacobian inputs and aliases, preserve numeric-string cosmology fiducials,
+  report infinite uncertainties for unconstrained redshift bins, and clarify the direct
+  comparison requirement to use `10^9As`.
+
 - Add a two-stage GCsp forecast in intermediate parameters, following Euclid
   preparation VII, section 4.2.1 (`cosmicjellyfish.LSSsurvey.gcsp_intermediate`).
   Shape parameters `(omegab, h, omegam, ns)` and per-bin `ln D_A`, `ln H`, `ln fsigma8`,

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
@@ -101,8 +103,6 @@ def test_final_parameter_guard(forecast):
         forecast.fisher_intermediate(method="not-a-method")
     with pytest.raises(ValueError, match="use only one"):
         forecast.final_fiducial_vector(["As", "10^9As"])
-    with pytest.raises(ValueError, match="use '10"):
-        forecast.compare(final_names=["As"])
 
 
 def test_resolve_fiducial_handles_string_values():
@@ -110,6 +110,10 @@ def test_resolve_fiducial_handles_string_values():
     with pytest.raises(ValueError, match="'w0' must be numeric"):
         _resolve_fiducial({"w0": "not-a-number"})
     assert "dark_energy_model" not in _resolve_fiducial({"dark_energy_model": "CPL"})
+    with pytest.raises(ValueError, match="'omch2' must be numeric"):
+        _resolve_fiducial({"omch2": "invalid"})
+    assert "Omegam" not in _resolve_fiducial({"omch2": 0.12})
+    assert _resolve_fiducial({"omch2": 0.12, "Omegam": 0.32})["Omegam"] == 0.32
 
 
 def test_nonlinear_intermediate_parameters(forecast):
@@ -153,3 +157,54 @@ def test_binned_constraints_reports_unconstrained_parameters(forecast):
     assert np.isinf(binned["DA"]["sigma"][0])
     assert np.all(np.isfinite(binned["H"]["sigma"]))
     assert np.all(np.isfinite(binned["fs8"]["sigma"]))
+
+
+def test_binned_constraints_detects_null_combinations():
+    forecast = object.__new__(GCspIntermediateForecast)
+    forecast.intermediate = SimpleNamespace(
+        nbins=1,
+        z=np.array([1.0]),
+        lnH_fid=np.zeros(1),
+        lnDA_fid=np.zeros(1),
+        lnfs8_fid=np.zeros(1),
+    )
+    # DA is constrained independently; H and fs8 have an unconstrained difference.
+    reduced = np.array([[4.0, 0.0, 0.0], [0.0, 1.0, 1.0], [0.0, 1.0, 1.0]])
+    binned = forecast.binned_constraints(reduced, ["lnDA_1", "lnH_1", "lnfs8_1"])
+    np.testing.assert_allclose(binned["DA"]["sigma"], [0.5])
+    assert np.isinf(binned["H"]["sigma"][0])
+    assert np.isinf(binned["fs8"]["sigma"][0])
+
+
+@pytest.mark.parametrize("amplitude_name", ["As", "10^9As"])
+def test_direct_fisher_maps_amplitude_alias_without_running_forecast(monkeypatch, amplitude_name):
+    from cosmicjellyfish.analysis.fisher_matrix import fisher_matrix
+    from cosmicjellyfish.fishermatrix import cosmicfish
+
+    forecast = object.__new__(GCspIntermediateForecast)
+    forecast.final_names = (amplitude_name, "h")
+    forecast._freepars = {"As": 0.001, "h": 0.002}
+    forecast._options = {}
+    forecast._specifications = {}
+    forecast._fiducialpars = {"10^9As": 2.1, "h": 0.67}
+    forecast._survey_name = "Euclid"
+    forecast.cosmo_model = "LCDM"
+    forecast.final_fiducial_vector = lambda names: np.array(
+        [2.1e-9 if names[0] == "As" else 2.1, 0.67]
+    )
+    matrix = np.array([[4.0, 0.5], [0.5, 3.0]])
+
+    def fake_fisher(**kwargs):
+        assert kwargs["freepars"] == {"10^9As": 0.001, "h": 0.002}
+        assert kwargs["fiducialpars"]["10^9As"] == 2.1
+        return SimpleNamespace(
+            compute=lambda: fisher_matrix(
+                fisher_matrix=matrix, param_names=["10^9As", "h"], fiducial=[2.1, 0.67]
+            )
+        )
+
+    monkeypatch.setattr(cosmicfish, "FisherMatrix", fake_fisher)
+    result = forecast.direct_fisher()
+    scale = np.diag([1.0e9 if amplitude_name == "As" else 1.0, 1.0])
+    np.testing.assert_allclose(result.fisher_matrix, scale @ matrix @ scale)
+    assert result.param_names == [amplitude_name, "h"]

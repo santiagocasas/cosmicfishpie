@@ -96,7 +96,7 @@ _NUMERIC_COSMOLOGY_KEYS = set(_DEFAULT_FIDUCIAL) | {
     "N_eff",
     "tau",
     "Tcmb",
-    "Omch2",
+    "omch2",
     "ombh2",
     "H0",
     "n_s",
@@ -110,6 +110,8 @@ def _resolve_fiducial(fiducialpars: Mapping | None) -> dict[str, float]:
     fiducial = dict(_DEFAULT_FIDUCIAL)
     if fiducialpars is not None:
         fiducial.update(dict(fiducialpars))
+        if "omch2" in fiducialpars and "Omegam" not in fiducialpars:
+            fiducial.pop("Omegam", None)
     numeric_fiducial = {}
     for key, value in fiducial.items():
         if isinstance(value, str):
@@ -859,8 +861,8 @@ class GCspIntermediateForecast:
         dict
             Keys ``"H"`` (km/s/Mpc), ``"DA"`` (Mpc) and ``"fs8"``; each holds ``z``,
             ``fiducial`` and ``sigma`` arrays over the redshift bins. An unconstrained
-            parameter (a zero-information Fisher row, as for ``lnDA_i`` when AP effects
-            are disabled) is reported with an infinite uncertainty.
+            parameter (including one participating in an unconstrained linear combination)
+            is reported with an infinite uncertainty.
         """
         speed_of_light = 299792.458
         reduced = np.asarray(reduced, dtype=float)
@@ -868,13 +870,21 @@ class GCspIntermediateForecast:
         scale = max(float(np.max(np.abs(diagonal))), 1.0)
         informative = np.flatnonzero(diagonal > np.finfo(float).eps * scale)
         covariance = np.zeros_like(reduced)
+        unconstrained = np.ones(len(kept_names), dtype=bool)
         if informative.size:
-            covariance[np.ix_(informative, informative)] = np.linalg.pinv(
-                reduced[np.ix_(informative, informative)]
-            )
+            block = reduced[np.ix_(informative, informative)]
+            # Normalise before finding null modes so parameter units do not set the cutoff.
+            norm = np.sqrt(diagonal[informative])
+            normalised = block / np.outer(norm, norm)
+            eigenvalues, eigenvectors = np.linalg.eigh(0.5 * (normalised + normalised.T))
+            positive = eigenvalues > 1.0e-12 * np.max(np.abs(eigenvalues))
+            covariance[np.ix_(informative, informative)] = (
+                (eigenvectors[:, positive] / eigenvalues[positive]) @ eigenvectors[:, positive].T
+            ) / np.outer(norm, norm)
+            unconstrained[informative] = np.sum(eigenvectors[:, ~positive] ** 2, axis=1) > 1.0e-10
         sigma = dict(zip(kept_names, np.sqrt(np.maximum(np.diag(covariance), 0.0))))
         for index, name in enumerate(kept_names):
-            if index not in informative:
+            if unconstrained[index]:
                 sigma[name] = np.inf
         fiducial = {
             "H": np.exp(self.intermediate.lnH_fid) * speed_of_light,
@@ -929,7 +939,10 @@ class GCspIntermediateForecast:
         freepars: Mapping | None = None,
     ):
         """Run the validated direct Fisher recipe and marginalise to the final parameters."""
-        from cosmicjellyfish.analysis.fisher_operations import marginalise
+        from cosmicjellyfish.analysis.fisher_operations import (
+            marginalise,
+            reparametrise,
+        )
         from cosmicjellyfish.fishermatrix.cosmicfish import FisherMatrix
         from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import (
             JaxAutodiffProvider,
@@ -937,11 +950,8 @@ class GCspIntermediateForecast:
         )
 
         names = self.final_names if final_names is None else tuple(final_names)
-        if "As" in names:
-            raise ValueError(
-                "Direct jaxcosmo Fisher comparisons support '10^9As', not 'As'; "
-                "use '10^9As' in final_names."
-            )
+        fiducial = self.final_fiducial_vector(names)
+        direct_names = ["10^9As" if name == "As" else name for name in names]
         provider: JaxAutodiffProvider | JaxFiniteDifferenceProvider
         if method == "ad":
             provider = JaxAutodiffProvider()
@@ -951,9 +961,10 @@ class GCspIntermediateForecast:
             raise ValueError(f"Unknown direct derivative method '{method}'.")
         options = dict(self._options)
         options["code"] = "jaxcosmo"
-        if freepars is None:
-            freepars = dict(self._freepars)
-            freepars = {name: step for name, step in freepars.items() if name in names}
+        steps = dict(self._freepars if freepars is None else freepars)
+        if "As" in steps:
+            steps.setdefault("10^9As", steps.pop("As"))
+        freepars = {name: step for name, step in steps.items() if name in direct_names}
         fisher = FisherMatrix(
             options=options,
             specifications=dict(self._specifications),
@@ -965,7 +976,12 @@ class GCspIntermediateForecast:
             derivative_provider=provider,
         )
         matrix = fisher.compute()
-        return marginalise(matrix, list(names))
+        direct = marginalise(matrix, direct_names)
+        if "As" not in names:
+            return direct
+        # Relative perturbations match, but d/dAs = 1e9 * d/d(10^9As).
+        jacobian = np.diag([1.0e9 if name == "As" else 1.0 for name in names])
+        return reparametrise(direct, jacobian, list(names), new_fiducial=fiducial)
 
     @staticmethod
     def covariance(fisher: np.ndarray) -> np.ndarray:
@@ -980,12 +996,6 @@ class GCspIntermediateForecast:
         direct_method: str = "ad",
     ) -> dict:
         """Compare the intermediate projection with the validated direct Fisher recipe."""
-        names = list(self.final_names if final_names is None else tuple(final_names))
-        if "As" in names:
-            raise ValueError(
-                "Direct jaxcosmo Fisher comparisons support '10^9As', not 'As'; "
-                "use '10^9As' in final_names."
-            )
         result = self.run(method=method, final_names=final_names, jacobian_method=jacobian_method)
         direct = self.direct_fisher(method=direct_method, final_names=result["final_names"])
         names = list(result["final_names"])

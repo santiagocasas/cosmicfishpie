@@ -684,7 +684,13 @@ class GCspIntermediateForecast:
         f_keep = fisher[np.ix_(keep, keep)]
         f_cross = fisher[np.ix_(keep, removed)]
         f_removed = fisher[np.ix_(removed, removed)]
-        reduced = f_keep - f_cross @ np.linalg.pinv(f_removed) @ f_cross.T
+        # Normalise the nuisance axes so unit disparities do not push constrained
+        # directions below the pseudoinverse cutoff.
+        scale = np.sqrt(np.abs(np.diag(f_removed)))
+        scale = np.where(scale > 0.0, scale, 1.0)
+        inverse = np.linalg.pinv(f_removed / scale[:, None] / scale[None, :])
+        inverse = inverse / scale[:, None] / scale[None, :]
+        reduced = f_keep - f_cross @ inverse @ f_cross.T
         return reduced, keep
 
     def _kept_names(self, keep: Sequence[int]) -> tuple[str, ...]:
@@ -784,7 +790,10 @@ class GCspIntermediateForecast:
         if method == "fd":
             columns = []
             for index, value in enumerate(reference):
-                delta = step * max(abs(value), 1.0)
+                # Parameters in non-unit scale (physical As ~ 2e-9) need a purely relative step
+                # so the perturbation cannot cross zero.
+                unit = _FINAL_SCALE[names[index]] == 1.0
+                delta = step * (max(abs(value), 1.0) if unit else abs(value))
                 plus = np.array(reference, copy=True)
                 minus = np.array(reference, copy=True)
                 plus[index] += delta

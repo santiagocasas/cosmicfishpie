@@ -386,7 +386,13 @@ def jacobian_from_function(function, fiducial, method="fd", step=1.0e-6):
         plus[index] += delta
         minus[index] -= delta
         diff = np.asarray(function(plus), dtype=float) - np.asarray(function(minus), dtype=float)
-        columns.append(np.atleast_1d(diff) / (2.0 * delta))
+        column = np.atleast_1d(diff) / (2.0 * delta)
+        if not np.all(np.isfinite(column)):
+            raise ValueError(
+                f"Error, non-finite finite-difference derivative for input {index}; "
+                "reduce the step or rescale the inputs"
+            )
+        columns.append(column)
     return np.stack(columns, axis=1)
 
 

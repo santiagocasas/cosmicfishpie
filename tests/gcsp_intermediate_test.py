@@ -78,6 +78,35 @@ def test_schur_marginalisation_matches_explicit_formula():
     assert keep == [0, 1]
 
 
+def test_schur_marginalisation_is_invariant_to_nuisance_units():
+    fisher = np.array(
+        [
+            [4.0, 1.0, 0.5, 0.2],
+            [1.0, 3.0, 0.2, 0.1],
+            [0.5, 0.2, 2.0, 0.3],
+            [0.2, 0.1, 0.3, 1.5],
+        ]
+    )
+    units = np.array([1.0, 1.0, 1.0e9, 1.0])
+    scaled = fisher * units[:, None] * units[None, :]
+    reference, _ = GCspIntermediateForecast.marginalize(fisher, [2, 3])
+    reduced, keep = GCspIntermediateForecast.marginalize(scaled, [2, 3])
+    np.testing.assert_allclose(reduced, reference, rtol=1.0e-9)
+    assert keep == [0, 1]
+
+
+def test_fd_jacobian_handles_physical_amplitude(forecast):
+    names = ["As", "h"]
+    kept = ("omegab", "h", "omegam", "ns", "lnH_1", "lnfs8_1")
+    ad = forecast.final_kept_jacobian(kept, names, method="ad")
+    fd = forecast.final_kept_jacobian(kept, names, method="fd")
+    assert np.all(np.isfinite(fd))
+    for column in range(len(names)):
+        scale = np.max(np.abs(ad[:, column]))
+        assert scale > 0.0
+        np.testing.assert_allclose(fd[:, column], ad[:, column], rtol=0.0, atol=1.0e-5 * scale)
+
+
 def test_projection_matches_direct_ad(forecast):
     comparison = forecast.compare(method="ad", direct_method="ad")
     assert np.max(np.abs(comparison["sigma_ratio"] - 1.0)) < 1.0e-6

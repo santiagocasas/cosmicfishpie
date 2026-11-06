@@ -107,6 +107,11 @@ def test_jacobian_from_function_rejects_invalid_steps(step):
         jacobian_from_function(lambda x: x**2, [1.0], step=step)
 
 
+def test_jacobian_from_function_rejects_non_finite_columns():
+    with pytest.raises(ValueError, match="non-finite finite-difference derivative"):
+        jacobian_from_function(lambda x: np.log(x), [0.5, 1.0], step=1.0)
+
+
 def test_reparametrise_rejects_duplicate_names():
     with pytest.raises(ValueError, match="names must be unique"):
         reparametrise(_toy_fisher(), np.ones((3, 2)), ["x", "x"])

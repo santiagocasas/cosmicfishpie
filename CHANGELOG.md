@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Normalise GCsp Fisher parameter axes before covariance inversion so physical `As`
-  units do not suppress other uncertainties; recommend `10^9As` for forecasts.
+- Normalise GCsp Fisher parameter axes before covariance inversion and nuisance
+  marginalisation so physical `As` units do not suppress other uncertainties; use a
+  purely relative finite-difference step for physical `As` in the final Jacobian; make
+  `jacobian_from_function` raise on non-finite finite-difference columns. Recommend
+  `10^9As` for forecasts.
 - Harden Fisher Jacobian inputs and aliases, preserve numeric-string cosmology fiducials,
   report infinite uncertainties for unconstrained redshift bins and null combinations,
   and map `As`/`10^9As` aliases in direct comparisons without changing relative steps.

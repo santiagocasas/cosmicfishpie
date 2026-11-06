@@ -938,7 +938,11 @@ class GCspIntermediateForecast:
         final_names: Sequence[str] | None = None,
         freepars: Mapping | None = None,
     ):
-        """Run the validated direct Fisher recipe and marginalise to the final parameters."""
+        """Run the direct Fisher recipe and marginalise to the final parameters.
+
+        Prefer ``10^9As`` for the amplitude coordinate to keep parameter scales
+        comparable. Physical ``As`` remains supported through a change of units.
+        """
         from cosmicjellyfish.analysis.fisher_operations import (
             marginalise,
             reparametrise,
@@ -985,8 +989,17 @@ class GCspIntermediateForecast:
 
     @staticmethod
     def covariance(fisher: np.ndarray) -> np.ndarray:
-        """Inverse of a Fisher matrix."""
-        return np.linalg.pinv(fisher)
+        """Pseudoinvert a Fisher matrix after normalising its parameter axes.
+
+        Diagonal scaling prevents a small-unit coordinate such as physical ``As``
+        from suppressing other parameters at the pseudoinverse cutoff. Prefer
+        ``10^9As`` in forecasts to avoid the large scale disparity in the first place.
+        """
+        fisher = np.asarray(fisher, dtype=float)
+        scale = np.sqrt(np.abs(np.diag(fisher)))
+        scale = np.where(scale > 0.0, scale, 1.0)
+        normalised = fisher / scale[:, None] / scale[None, :]
+        return np.linalg.pinv(normalised) / scale[:, None] / scale[None, :]
 
     def compare(
         self,

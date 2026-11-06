@@ -189,6 +189,11 @@ the step shrinks (0.06% at $10^{-3}$, $10^{-8}$ at $10^{-4}$).
 
 ## Things to keep in mind
 
+- **Amplitude units.** Always prefer `10^9As` for forecast inputs and final parameters
+  (for example, `10^9As = 2.1`). This keeps the amplitude on a scale comparable to the
+  other cosmological parameters. Physical `As` is supported, and covariance inversion
+  normalises the parameter axes, but using `10^9As` avoids unnecessarily large
+  differences in Fisher-matrix scales.
 - **Step size.** The no-wiggle spectrum is a Savitzky-Golay smoothing followed by linear
   interpolation in $k$. Finite-difference steps of order $10^{-3}$, at the low end of the
   paper's recommended range, straddle interpolation nodes and bias the derivatives at the

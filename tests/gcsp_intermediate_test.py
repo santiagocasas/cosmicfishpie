@@ -208,3 +208,15 @@ def test_direct_fisher_maps_amplitude_alias_without_running_forecast(monkeypatch
     scale = np.diag([1.0e9 if amplitude_name == "As" else 1.0, 1.0])
     np.testing.assert_allclose(result.fisher_matrix, scale @ matrix @ scale)
     assert result.param_names == [amplitude_name, "h"]
+
+
+def test_covariance_preserves_parameters_with_different_units():
+    """Amplitude units must not remove information about the other coordinates."""
+    covariance = GCspIntermediateForecast.covariance(np.diag([4.0e18, 3.0]))
+    np.testing.assert_allclose(np.diag(covariance), [2.5e-19, 1.0 / 3.0], atol=0.0)
+
+    fisher = np.array([[4.0, 0.5], [0.5, 3.0]])
+    units = np.array([1.0e9, 1.0])
+    scaled = fisher * units[:, None] * units[None, :]
+    expected = np.linalg.inv(fisher) / units[:, None] / units[None, :]
+    np.testing.assert_allclose(GCspIntermediateForecast.covariance(scaled), expected, atol=0.0)

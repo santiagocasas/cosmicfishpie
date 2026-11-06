@@ -1,0 +1,8 @@
+IntermediateSpectroObservable
+=============================
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.gcsp_intermediate
+
+.. autoclass:: IntermediateSpectroObservable
+   :members:
+   :show-inheritance:

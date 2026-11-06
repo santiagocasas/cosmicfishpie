@@ -1,0 +1,8 @@
+GCspIntermediateForecast
+========================
+
+.. currentmodule:: cosmicjellyfish.LSSsurvey.gcsp_intermediate
+
+.. autoclass:: GCspIntermediateForecast
+   :members:
+   :show-inheritance:

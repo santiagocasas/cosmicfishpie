@@ -54,7 +54,7 @@
     <link rel="icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="cosmicjellyfish.LSSsurvey.jaxcosmo_photo" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html" />
+    <link rel="next" title="cosmicjellyfish.LSSsurvey.gcsp_intermediate" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html" />
     <link rel="prev" title="SpectroLikelihood" href="cosmicjellyfish.likelihood.spectro_like.SpectroLikelihood.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -464,8 +464,10 @@
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_columns_rows.html">eliminate_columns_rows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_parameters.html">eliminate_parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.information_gain.html">information_gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.jacobian_from_function.html">jacobian_from_function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise.html">marginalise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise_over.html">marginalise_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reparametrise.html">reparametrise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reshuffle.html">reshuffle</a></li>
 </ul>
 </details></li>
@@ -638,6 +640,11 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">cosmicjellyfish.LSSsurvey</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html">cosmicjellyfish.LSSsurvey.gcsp_intermediate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.GCspIntermediateForecast.html">GCspIntermediateForecast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.IntermediateSpectroObservable.html">IntermediateSpectroObservable</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html">cosmicjellyfish.LSSsurvey.jaxcosmo_photo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.is_bias_key.html">is_bias_key</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html">JaxPhotoObservable</a></li>
@@ -757,25 +764,28 @@
 <p class="rubric">Submodules</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html#module-cosmicjellyfish.LSSsurvey.jaxcosmo_photo" title="cosmicjellyfish.LSSsurvey.jaxcosmo_photo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jaxcosmo_photo</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html#module-cosmicjellyfish.LSSsurvey.gcsp_intermediate" title="cosmicjellyfish.LSSsurvey.gcsp_intermediate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gcsp_intermediate</span></code></a></p></td>
+<td><p>Intermediate-parameter forecast for spectroscopic galaxy clustering.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html#module-cosmicjellyfish.LSSsurvey.jaxcosmo_photo" title="cosmicjellyfish.LSSsurvey.jaxcosmo_photo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jaxcosmo_photo</span></code></a></p></td>
 <td><p>JAX-native photometric (<code class="docutils literal notranslate"><span class="pre">GCph</span></code> + <code class="docutils literal notranslate"><span class="pre">WL</span></code>) angular power spectra for the <code class="docutils literal notranslate"><span class="pre">jaxcosmo</span></code> backend.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_spectro.html#module-cosmicjellyfish.LSSsurvey.jaxcosmo_spectro" title="cosmicjellyfish.LSSsurvey.jaxcosmo_spectro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jaxcosmo_spectro</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_spectro.html#module-cosmicjellyfish.LSSsurvey.jaxcosmo_spectro" title="cosmicjellyfish.LSSsurvey.jaxcosmo_spectro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jaxcosmo_spectro</span></code></a></p></td>
 <td><p>Differentiable spectroscopic galaxy-clustering power spectrum for <code class="docutils literal notranslate"><span class="pre">jaxcosmo</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_cov.html#module-cosmicjellyfish.LSSsurvey.photo_cov" title="cosmicjellyfish.LSSsurvey.photo_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_cov</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_cov.html#module-cosmicjellyfish.LSSsurvey.photo_cov" title="cosmicjellyfish.LSSsurvey.photo_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_cov</span></code></a></p></td>
 <td><p>LSS MAIN</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_obs.html#module-cosmicjellyfish.LSSsurvey.photo_obs" title="cosmicjellyfish.LSSsurvey.photo_obs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_obs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_obs.html#module-cosmicjellyfish.LSSsurvey.photo_obs" title="cosmicjellyfish.LSSsurvey.photo_obs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_obs</span></code></a></p></td>
 <td><p>CLS</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_window.html#module-cosmicjellyfish.LSSsurvey.photo_window" title="cosmicjellyfish.LSSsurvey.photo_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_window</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.photo_window.html#module-cosmicjellyfish.LSSsurvey.photo_window" title="cosmicjellyfish.LSSsurvey.photo_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photo_window</span></code></a></p></td>
 <td><p>LSS_window</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.spectro_cov.html#module-cosmicjellyfish.LSSsurvey.spectro_cov" title="cosmicjellyfish.LSSsurvey.spectro_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectro_cov</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.spectro_cov.html#module-cosmicjellyfish.LSSsurvey.spectro_cov" title="cosmicjellyfish.LSSsurvey.spectro_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectro_cov</span></code></a></p></td>
 <td><p>CLS</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.spectro_obs.html#module-cosmicjellyfish.LSSsurvey.spectro_obs" title="cosmicjellyfish.LSSsurvey.spectro_obs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectro_obs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.LSSsurvey.spectro_obs.html#module-cosmicjellyfish.LSSsurvey.spectro_obs" title="cosmicjellyfish.LSSsurvey.spectro_obs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectro_obs</span></code></a></p></td>
 <td><p>CLS</p></td>
 </tr>
 </tbody>
@@ -803,11 +813,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html"
+       href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">cosmicjellyfish.LSSsurvey.jaxcosmo_photo</p>
+        <p class="prev-next-title">cosmicjellyfish.LSSsurvey.gcsp_intermediate</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

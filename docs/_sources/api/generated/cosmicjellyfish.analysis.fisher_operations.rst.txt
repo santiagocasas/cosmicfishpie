@@ -18,8 +18,10 @@ cosmicjellyfish.analysis.fisher\_operations
       eliminate_columns_rows
       eliminate_parameters
       information_gain
+      jacobian_from_function
       marginalise
       marginalise_over
+      reparametrise
       reshuffle
    
    

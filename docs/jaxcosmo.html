@@ -52,7 +52,7 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Likelihood sampling with Nautilus" href="likelihood_sampling.html" />
+    <link rel="next" title="GCsp forecasts through intermediate parameters" href="gcsp_intermediate.html" />
     <link rel="prev" title="Derivative methods" href="derivatives.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -419,6 +419,7 @@
 <li class="toctree-l1"><a class="reference internal" href="comprehensive_guide.html">Comprehensive guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="derivatives.html">Derivative methods</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">JAXcosmo and automatic differentiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gcsp_intermediate.html">GCsp forecasts through intermediate parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood_sampling.html">Likelihood sampling with Nautilus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cmb_benchmarks.html">CMB benchmarks</a></li>
 </ul>
@@ -815,6 +816,10 @@ example for a controlled comparison.</p>
 supported bias model (<code class="docutils literal notranslate"><span class="pre">linear</span></code>, <code class="docutils literal notranslate"><span class="pre">linear_log</span></code> or <code class="docutils literal notranslate"><span class="pre">linear_Qbias</span></code>). Photometry
 supports the implemented photo-z distributions, galaxy-bias models and eNLA
 intrinsic alignments. Unsupported modelling choices raise explicit errors.</p>
+<p>For the two-stage GCsp forecast in shape, background, growth and bias
+parameters, see <a class="reference internal" href="gcsp_intermediate.html"><span class="doc">GCsp forecasts through intermediate parameters</span></a>. It reuses the GCsp JAX observable and
+adds paper-style finite differences, autodiff comparisons and a Fisher-space
+Jacobian projection.</p>
 <p>Backend configuration lives in
 <code class="docutils literal notranslate"><span class="pre">cosmicjellyfish/configs/default_boltzmann_yaml_files/jaxcosmo/default.yaml</span></code>.
 To customise it, copy the profile and set
@@ -892,11 +897,11 @@ of these Fisher comparisons.</p>
       </div>
     </a>
     <a class="right-next"
-       href="likelihood_sampling.html"
+       href="gcsp_intermediate.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Likelihood sampling with Nautilus</p>
+        <p class="prev-next-title">GCsp forecasts through intermediate parameters</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

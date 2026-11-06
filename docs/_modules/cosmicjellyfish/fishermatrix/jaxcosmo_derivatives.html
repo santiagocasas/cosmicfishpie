@@ -469,8 +469,7 @@
 
 <span class="sd">Usage</span>
 <span class="sd">-----</span>
-<span class="sd">&gt;&gt;&gt; from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider</span>
-<span class="sd">&gt;&gt;&gt; # FisherMatrix(..., derivative_provider=JaxAutodiffProvider())  # doctest: +SKIP</span>
+<span class="sd">&gt;&gt;&gt; from cosmicjellyfish.fishermatrix.jaxcosmo_derivatives import JaxAutodiffProvider  # doctest: +SKIP</span>
 
 <span class="sd">The providers are stateful on purpose: the JAX observable and its compiled Jacobians are cached</span>
 <span class="sd">between calls (and are *not* picklable), so a fresh provider must be created in every worker</span>

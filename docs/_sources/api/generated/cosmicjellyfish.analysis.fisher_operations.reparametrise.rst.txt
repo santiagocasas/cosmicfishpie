@@ -1,0 +1,6 @@
+reparametrise
+=============
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_operations
+
+.. autofunction:: reparametrise

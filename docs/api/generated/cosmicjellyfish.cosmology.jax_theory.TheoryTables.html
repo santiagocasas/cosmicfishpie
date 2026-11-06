@@ -462,8 +462,10 @@
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_columns_rows.html">eliminate_columns_rows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_parameters.html">eliminate_parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.information_gain.html">information_gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.jacobian_from_function.html">jacobian_from_function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise.html">marginalise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise_over.html">marginalise_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reparametrise.html">reparametrise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reshuffle.html">reshuffle</a></li>
 </ul>
 </details></li>
@@ -636,6 +638,11 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.html">cosmicjellyfish.LSSsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html">cosmicjellyfish.LSSsurvey.gcsp_intermediate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.GCspIntermediateForecast.html">GCspIntermediateForecast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.IntermediateSpectroObservable.html">IntermediateSpectroObservable</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html">cosmicjellyfish.LSSsurvey.jaxcosmo_photo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.is_bias_key.html">is_bias_key</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html">JaxPhotoObservable</a></li>
@@ -758,7 +765,7 @@
 <h1>TheoryTables<a class="headerlink" href="#theorytables" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="cosmicjellyfish.cosmology.jax_theory.TheoryTables">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cosmicjellyfish.cosmology.jax_theory.</span></span><span class="sig-name descname"><span class="pre">TheoryTables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_hmpc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_over_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_linear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_nonlinear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h0_over_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_m0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/cosmicjellyfish/cosmology/jax_theory.html#TheoryTables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cosmicjellyfish.cosmology.jax_theory.</span></span><span class="sig-name descname"><span class="pre">TheoryTables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_hmpc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_over_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_linear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk_nonlinear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h0_over_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_m0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma8</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/cosmicjellyfish/cosmology/jax_theory.html#TheoryTables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Differentiable theory quantities on a redshift/wavenumber grid.</p>
 <dl class="py attribute">
@@ -871,6 +878,17 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cosmicjellyfish.cosmology.jax_theory.TheoryTables.sigma8">
+<span class="sig-name descname"><span class="pre">sigma8</span></span><a class="headerlink" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables.sigma8" title="Link to this definition">#</a></dt>
+<dd><p>Present-day <code class="docutils literal notranslate"><span class="pre">sigma8</span></code> times the linear growth factor, i.e. <code class="docutils literal notranslate"><span class="pre">sigma8(z)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(nz,)</span></code>, <em>optional</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -932,6 +950,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables.omega_m"><code class="docutils literal notranslate"><span class="pre">TheoryTables.omega_m</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables.h0_over_c"><code class="docutils literal notranslate"><span class="pre">TheoryTables.h0_over_c</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables.omega_m0"><code class="docutils literal notranslate"><span class="pre">TheoryTables.omega_m0</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cosmicjellyfish.cosmology.jax_theory.TheoryTables.sigma8"><code class="docutils literal notranslate"><span class="pre">TheoryTables.sigma8</span></code></a></li>
 </ul>
 </li>
 </ul>

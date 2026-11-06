@@ -1,0 +1,6 @@
+jacobian\_from\_function
+========================
+
+.. currentmodule:: cosmicjellyfish.analysis.fisher_operations
+
+.. autofunction:: jacobian_from_function

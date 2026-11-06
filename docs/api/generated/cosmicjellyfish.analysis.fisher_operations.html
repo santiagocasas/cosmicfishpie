@@ -47,6 +47,8 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/generated/cosmicjellyfish.analysis.fisher_operations';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../../_static/favicon.ico"/>
@@ -462,8 +464,10 @@
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_columns_rows.html">eliminate_columns_rows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.eliminate_parameters.html">eliminate_parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.information_gain.html">information_gain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.jacobian_from_function.html">jacobian_from_function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise.html">marginalise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise_over.html">marginalise_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reparametrise.html">reparametrise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reshuffle.html">reshuffle</a></li>
 </ul>
 </details></li>
@@ -636,6 +640,11 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.html">cosmicjellyfish.LSSsurvey</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.html">cosmicjellyfish.LSSsurvey.gcsp_intermediate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.GCspIntermediateForecast.html">GCspIntermediateForecast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.gcsp_intermediate.IntermediateSpectroObservable.html">IntermediateSpectroObservable</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.html">cosmicjellyfish.LSSsurvey.jaxcosmo_photo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.is_bias_key.html">is_bias_key</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cosmicjellyfish.LSSsurvey.jaxcosmo_photo.JaxPhotoObservable.html">JaxPhotoObservable</a></li>
@@ -771,11 +780,17 @@ All of them are safeguarded against non-Fisher input.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.information_gain.html#cosmicjellyfish.analysis.fisher_operations.information_gain" title="cosmicjellyfish.analysis.fisher_operations.information_gain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">information_gain</span></code></a></p></td>
 <td><p>This function computes the Fisher approximation of Kullback-Leibler information gain.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise.html#cosmicjellyfish.analysis.fisher_operations.marginalise" title="cosmicjellyfish.analysis.fisher_operations.marginalise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marginalise</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.jacobian_from_function.html#cosmicjellyfish.analysis.fisher_operations.jacobian_from_function" title="cosmicjellyfish.analysis.fisher_operations.jacobian_from_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobian_from_function</span></code></a></p></td>
+<td><p>Jacobian of a vector function at a fiducial point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise.html#cosmicjellyfish.analysis.fisher_operations.marginalise" title="cosmicjellyfish.analysis.fisher_operations.marginalise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marginalise</span></code></a></p></td>
 <td><p>This function marginalises a Fisher matrix over all parameters but the ones in names.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise_over.html#cosmicjellyfish.analysis.fisher_operations.marginalise_over" title="cosmicjellyfish.analysis.fisher_operations.marginalise_over"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marginalise_over</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.marginalise_over.html#cosmicjellyfish.analysis.fisher_operations.marginalise_over" title="cosmicjellyfish.analysis.fisher_operations.marginalise_over"><code class="xref py py-obj docutils literal notranslate"><span class="pre">marginalise_over</span></code></a></p></td>
 <td><p>This function marginalises a Fisher matrix over the parameters in names.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reparametrise.html#cosmicjellyfish.analysis.fisher_operations.reparametrise" title="cosmicjellyfish.analysis.fisher_operations.reparametrise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reparametrise</span></code></a></p></td>
+<td><p>Change the parameters of a Fisher matrix with the chain rule.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="cosmicjellyfish.analysis.fisher_operations.reshuffle.html#cosmicjellyfish.analysis.fisher_operations.reshuffle" title="cosmicjellyfish.analysis.fisher_operations.reshuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshuffle</span></code></a></p></td>
 <td><p>This function reshuffles a Fisher matrix.</p></td>

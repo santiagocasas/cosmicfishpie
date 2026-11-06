@@ -1,0 +1,32 @@
+cosmicjellyfish.LSSsurvey.gcsp\_intermediate
+============================================
+
+.. automodule:: cosmicjellyfish.LSSsurvey.gcsp_intermediate
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      GCspIntermediateForecast
+      IntermediateSpectroObservable
+   
+   
+
+   
+   
+   
+
+
+

@@ -810,6 +810,143 @@
 
 
 <span class="c1"># ***************************************************************************************</span>
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="jacobian_from_function">
+<a class="viewcode-back" href="../../../api/generated/cosmicjellyfish.analysis.fisher_operations.jacobian_from_function.html#cosmicjellyfish.analysis.fisher_operations.jacobian_from_function">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">jacobian_from_function</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">fiducial</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fd&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Jacobian of a vector function at a fiducial point.</span>
+
+<span class="sd">    The returned matrix is :math:`J_{i\alpha} = \partial f_i / \partial x_\alpha`, with rows</span>
+<span class="sd">    indexing the outputs of ``function`` and columns indexing its inputs.</span>
+
+<span class="sd">    :param function: callable mapping a 1D array of inputs to a 1D array of outputs.</span>
+<span class="sd">        With ``method=&#39;jax&#39;`` it must be written with ``jax.numpy``.</span>
+<span class="sd">    :type function: callable</span>
+<span class="sd">    :param fiducial: point where the Jacobian is evaluated.</span>
+<span class="sd">    :type fiducial: array-like</span>
+<span class="sd">    :param method: ``&#39;fd&#39;`` for central finite differences or ``&#39;jax&#39;`` for forward-mode</span>
+<span class="sd">        automatic differentiation (requires jax).</span>
+<span class="sd">    :type method: :class:`string`</span>
+<span class="sd">    :param step: relative finite-difference step; the absolute step for input</span>
+<span class="sd">        :math:`x_\alpha` is ``step * max(|x_alpha|, 1)``. Ignored with ``method=&#39;jax&#39;``.</span>
+<span class="sd">    :type step: :class:`float`</span>
+<span class="sd">    :returns: the Jacobian matrix, shape ``(n_outputs, n_inputs)``.</span>
+<span class="sd">    :rtype: :class:`numpy.ndarray`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fiducial</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error, fiducial must be a 1D array&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;method=&#39;jax&#39; requires jax. Install it with: pip install &#39;cosmicjellyfish[jaxcosmo]&#39;&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">jacfwd</span><span class="p">(</span><span class="n">function</span><span class="p">)(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">))))</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;fd&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error, method must be &#39;fd&#39; or &#39;jax&#39;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error, finite-difference step must be finite and positive&quot;</span><span class="p">)</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">plus</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">minus</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">plus</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">minus</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">delta</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">plus</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">minus</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">column</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error, non-finite finite-difference derivative for input </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;reduce the step or rescale the inputs&quot;</span>
+            <span class="p">)</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ***************************************************************************************</span>
+
+
+<div class="viewcode-block" id="reparametrise">
+<a class="viewcode-back" href="../../../api/generated/cosmicjellyfish.analysis.fisher_operations.reparametrise.html#cosmicjellyfish.analysis.fisher_operations.reparametrise">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reparametrise</span><span class="p">(</span>
+    <span class="n">fisher_matrix</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">,</span> <span class="n">new_names</span><span class="p">,</span> <span class="n">new_names_latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_fiducial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change the parameters of a Fisher matrix with the chain rule.</span>
+
+<span class="sd">    For old parameters :math:`p_i` that are functions of new parameters :math:`q_\alpha`,</span>
+<span class="sd">    the Fisher matrix in the new parameters is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \tilde F_{\alpha\beta} = \sum_{ij} J_{i\alpha} F_{ij} J_{j\beta},</span>
+<span class="sd">        \qquad J_{i\alpha} = \frac{\partial p_i}{\partial q_\alpha}.</span>
+
+<span class="sd">    This is the projection used, for example, to go from the redshift-binned</span>
+<span class="sd">    :math:`H(z_i)`, :math:`D_A(z_i)`, :math:`f\sigma_8(z_i)` constraints of a galaxy</span>
+<span class="sd">    clustering forecast to cosmological parameters. The number of new parameters can be</span>
+<span class="sd">    smaller than the number of old ones.</span>
+
+<span class="sd">    This is different from :class:`cosmicjellyfish.analysis.fisher_derived.fisher_derived`,</span>
+<span class="sd">    which propagates the *covariance* to derived parameters :math:`d_a(p)` through</span>
+<span class="sd">    :math:`A^T F^{-1} A` with :math:`A_{ia} = \partial d_a / \partial p_i`. Use this function</span>
+<span class="sd">    when the old parameters are functions of the new ones; use ``fisher_derived`` when the</span>
+<span class="sd">    new parameters are functions of the old ones.</span>
+
+<span class="sd">    :param fisher_matrix: input Fisher matrix in the old parameters.</span>
+<span class="sd">    :type fisher_matrix: :class:`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`</span>
+<span class="sd">    :param jacobian: matrix :math:`\partial p_i / \partial q_\alpha` with shape</span>
+<span class="sd">        ``(n_old, n_new)``; rows follow ``fisher_matrix.param_names``.</span>
+<span class="sd">    :type jacobian: :class:`numpy.ndarray`</span>
+<span class="sd">    :param new_names: names of the new parameters, one per Jacobian column.</span>
+<span class="sd">    :type new_names: :class:`list` of :class:`string`</span>
+<span class="sd">    :param new_names_latex: optional LaTeX names of the new parameters.</span>
+<span class="sd">    :type new_names_latex: :class:`list` of :class:`string`</span>
+<span class="sd">    :param new_fiducial: optional fiducial values of the new parameters.</span>
+<span class="sd">    :type new_fiducial: :class:`list` of :class:`float`</span>
+<span class="sd">    :param name: optional name of the output Fisher matrix; defaults to the input name</span>
+<span class="sd">        with ``_reparametrised`` appended.</span>
+<span class="sd">    :type name: :class:`string`</span>
+<span class="sd">    :returns: the Fisher matrix in the new parameters.</span>
+<span class="sd">    :rtype: :class:`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fisher_matrix</span><span class="p">,</span> <span class="n">fm</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error, input fisher_matrix is not a fisher_matrix&quot;</span><span class="p">)</span>
+    <span class="n">jac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jacobian</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">new_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_names</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">jac</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">fisher_matrix</span><span class="o">.</span><span class="n">num_params</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Error, jacobian must have shape (n_old, n_new) with n_old = &quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fisher_matrix</span><span class="o">.</span><span class="n">num_params</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_names</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error, the number of new names must match the jacobian columns&quot;</span><span class="p">)</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">new_names</span> <span class="k">if</span> <span class="n">new_names</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error, new parameter names must be unique; duplicates: </span><span class="si">{</span><span class="n">duplicates</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">new_matrix</span> <span class="o">=</span> <span class="n">jac</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">fisher_matrix</span><span class="o">.</span><span class="n">get_fisher_matrix</span><span class="p">()</span> <span class="o">@</span> <span class="n">jac</span>
+    <span class="n">new_matrix</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">new_matrix</span> <span class="o">+</span> <span class="n">new_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">fisher_new</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">fisher_matrix</span><span class="p">(</span>
+        <span class="n">fisher_matrix</span><span class="o">=</span><span class="n">new_matrix</span><span class="p">,</span>
+        <span class="n">param_names</span><span class="o">=</span><span class="n">new_names</span><span class="p">,</span>
+        <span class="n">param_names_latex</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">new_names_latex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_names_latex</span><span class="p">),</span>
+        <span class="n">fiducial</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">new_fiducial</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_fiducial</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">fisher_matrix</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_reparametrised&quot;</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">fisher_new</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">fisher_matrix</span><span class="o">.</span><span class="n">path</span>
+    <span class="n">fisher_new</span><span class="o">.</span><span class="n">indir</span> <span class="o">=</span> <span class="n">fisher_matrix</span><span class="o">.</span><span class="n">indir</span>
+    <span class="k">return</span> <span class="n">fisher_new</span></div>
+
 </pre></div>
 
                 </article>

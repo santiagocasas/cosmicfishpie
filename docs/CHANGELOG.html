@@ -508,7 +508,31 @@
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <section id="unreleased">
 <h2>Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading">#</a></h2>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Normalise GCsp Fisher parameter axes before covariance inversion and nuisance
+marginalisation so physical <code class="docutils literal notranslate"><span class="pre">As</span></code> units do not suppress other uncertainties; use a
+purely relative finite-difference step for physical <code class="docutils literal notranslate"><span class="pre">As</span></code> in the final Jacobian; make
+<code class="docutils literal notranslate"><span class="pre">jacobian_from_function</span></code> raise on non-finite finite-difference columns. Recommend
+<code class="docutils literal notranslate"><span class="pre">10^9As</span></code> for forecasts.</p></li>
+<li><p>Harden Fisher Jacobian inputs and aliases, preserve numeric-string cosmology fiducials,
+report infinite uncertainties for unconstrained redshift bins and null combinations,
+and map <code class="docutils literal notranslate"><span class="pre">As</span></code>/<code class="docutils literal notranslate"><span class="pre">10^9As</span></code> aliases in direct comparisons without changing relative steps.</p></li>
+<li><p>Respect explicit <code class="docutils literal notranslate"><span class="pre">omch2</span></code> fiducials without conflicting default <code class="docutils literal notranslate"><span class="pre">Omegam</span></code> values.</p></li>
+<li><p>Add a two-stage GCsp forecast in intermediate parameters, following Euclid
+preparation VII, section 4.2.1 (<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.LSSsurvey.gcsp_intermediate</span></code>).
+Shape parameters <code class="docutils literal notranslate"><span class="pre">(omegab,</span> <span class="pre">h,</span> <span class="pre">omegam,</span> <span class="pre">ns)</span></code> and per-bin <code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">D_A</span></code>, <code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">H</span></code>, <code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">fsigma8</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ln</span> <span class="pre">bsigma8</span></code> and <code class="docutils literal notranslate"><span class="pre">P_s</span></code> are differentiated with JAX autodiff or paper-style finite
+differences, nuisances are marginalised, and the result is projected onto the final
+cosmological parameters with <code class="docutils literal notranslate"><span class="pre">F</span> <span class="pre">=</span> <span class="pre">J^T</span> <span class="pre">F</span> <span class="pre">J</span></code>. Matches the direct Fisher forecast to
+about 1e-12. <code class="docutils literal notranslate"><span class="pre">TheoryTables</span></code> now exposes an optional <code class="docutils literal notranslate"><span class="pre">sigma8(z)</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">reparametrise</span></code> and <code class="docutils literal notranslate"><span class="pre">jacobian_from_function</span></code> to
+<code class="docutils literal notranslate"><span class="pre">cosmicjellyfish.analysis.fisher_operations</span></code> for general Fisher-space Jacobian
+reparametrisations (in contrast to the covariance pull-back of <code class="docutils literal notranslate"><span class="pre">fisher_derived</span></code>).</p></li>
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">gcsp_intermediate</span></code> documentation page with figures and the notebook
+<code class="docutils literal notranslate"><span class="pre">08-GCsp-intermediate-parameters.ipynb</span></code>. Fix a doctest directive in
+<code class="docutils literal notranslate"><span class="pre">jaxcosmo_derivatives</span></code> that newer Python versions reject.</p></li>
 <li><p>Add the CosmicJellyfish logo, theme-aware README and documentation banners,
 navbar icons, landing-page wordmark and updated favicons.</p></li>
 <li><p>Move the YAML sampler examples to <code class="docutils literal notranslate"><span class="pre">scripts/likelihood/sampler/</span></code>, remove the
@@ -652,6 +676,7 @@ spectra handling.</p></li>
 (legacy notebooks archived); add backend validation and symbolic provenance docs pages.</p></li>
 </ul>
 </section>
+</section>
 <section id="id1">
 <h2>1.3.1<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -736,7 +761,10 @@ Change <code class="docutils literal notranslate"><span class="pre">is</span> <s
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased">Unreleased</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased">Unreleased</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed">Fixed</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.3.1</a></li>
 </ul>
   </nav></div>

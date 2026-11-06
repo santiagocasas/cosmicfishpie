@@ -27,6 +27,7 @@
    :toctree:
    :recursive:
 
+   gcsp_intermediate
    jaxcosmo_photo
    jaxcosmo_spectro
    photo_cov

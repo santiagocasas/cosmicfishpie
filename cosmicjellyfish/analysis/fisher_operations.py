@@ -336,3 +336,134 @@ def information_gain(fisher_1, fisher_2, fisher_prior, units=math.log(2.0), stat
 
 
 # ***************************************************************************************
+
+
+# ***************************************************************************************
+
+
+def jacobian_from_function(function, fiducial, method="fd", step=1.0e-6):
+    r"""
+    Jacobian of a vector function at a fiducial point.
+
+    The returned matrix is :math:`J_{i\alpha} = \partial f_i / \partial x_\alpha`, with rows
+    indexing the outputs of ``function`` and columns indexing its inputs.
+
+    :param function: callable mapping a 1D array of inputs to a 1D array of outputs.
+        With ``method='jax'`` it must be written with ``jax.numpy``.
+    :type function: callable
+    :param fiducial: point where the Jacobian is evaluated.
+    :type fiducial: array-like
+    :param method: ``'fd'`` for central finite differences or ``'jax'`` for forward-mode
+        automatic differentiation (requires jax).
+    :type method: :class:`string`
+    :param step: relative finite-difference step; the absolute step for input
+        :math:`x_\alpha` is ``step * max(|x_alpha|, 1)``. Ignored with ``method='jax'``.
+    :type step: :class:`float`
+    :returns: the Jacobian matrix, shape ``(n_outputs, n_inputs)``.
+    :rtype: :class:`numpy.ndarray`
+    """
+    point = np.asarray(fiducial, dtype=float)
+    if point.ndim != 1:
+        raise ValueError("Error, fiducial must be a 1D array")
+    if method == "jax":
+        try:
+            import jax
+            import jax.numpy as jnp
+        except ImportError as err:  # pragma: no cover
+            raise ImportError(
+                "method='jax' requires jax. Install it with: pip install 'cosmicjellyfish[jaxcosmo]'"
+            ) from err
+        return np.atleast_2d(np.asarray(jax.jacfwd(function)(jnp.asarray(point))))
+    if method != "fd":
+        raise ValueError("Error, method must be 'fd' or 'jax'")
+    if not np.isfinite(step) or step <= 0:
+        raise ValueError("Error, finite-difference step must be finite and positive")
+    columns = []
+    for index, value in enumerate(point):
+        delta = step * max(abs(value), 1.0)
+        plus = point.copy()
+        minus = point.copy()
+        plus[index] += delta
+        minus[index] -= delta
+        diff = np.asarray(function(plus), dtype=float) - np.asarray(function(minus), dtype=float)
+        column = np.atleast_1d(diff) / (2.0 * delta)
+        if not np.all(np.isfinite(column)):
+            raise ValueError(
+                f"Error, non-finite finite-difference derivative for input {index}; "
+                "reduce the step or rescale the inputs"
+            )
+        columns.append(column)
+    return np.stack(columns, axis=1)
+
+
+# ***************************************************************************************
+
+
+def reparametrise(
+    fisher_matrix, jacobian, new_names, new_names_latex=None, new_fiducial=None, name=None
+):
+    r"""
+    Change the parameters of a Fisher matrix with the chain rule.
+
+    For old parameters :math:`p_i` that are functions of new parameters :math:`q_\alpha`,
+    the Fisher matrix in the new parameters is
+
+    .. math::
+
+        \tilde F_{\alpha\beta} = \sum_{ij} J_{i\alpha} F_{ij} J_{j\beta},
+        \qquad J_{i\alpha} = \frac{\partial p_i}{\partial q_\alpha}.
+
+    This is the projection used, for example, to go from the redshift-binned
+    :math:`H(z_i)`, :math:`D_A(z_i)`, :math:`f\sigma_8(z_i)` constraints of a galaxy
+    clustering forecast to cosmological parameters. The number of new parameters can be
+    smaller than the number of old ones.
+
+    This is different from :class:`cosmicjellyfish.analysis.fisher_derived.fisher_derived`,
+    which propagates the *covariance* to derived parameters :math:`d_a(p)` through
+    :math:`A^T F^{-1} A` with :math:`A_{ia} = \partial d_a / \partial p_i`. Use this function
+    when the old parameters are functions of the new ones; use ``fisher_derived`` when the
+    new parameters are functions of the old ones.
+
+    :param fisher_matrix: input Fisher matrix in the old parameters.
+    :type fisher_matrix: :class:`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`
+    :param jacobian: matrix :math:`\partial p_i / \partial q_\alpha` with shape
+        ``(n_old, n_new)``; rows follow ``fisher_matrix.param_names``.
+    :type jacobian: :class:`numpy.ndarray`
+    :param new_names: names of the new parameters, one per Jacobian column.
+    :type new_names: :class:`list` of :class:`string`
+    :param new_names_latex: optional LaTeX names of the new parameters.
+    :type new_names_latex: :class:`list` of :class:`string`
+    :param new_fiducial: optional fiducial values of the new parameters.
+    :type new_fiducial: :class:`list` of :class:`float`
+    :param name: optional name of the output Fisher matrix; defaults to the input name
+        with ``_reparametrised`` appended.
+    :type name: :class:`string`
+    :returns: the Fisher matrix in the new parameters.
+    :rtype: :class:`cosmicjellyfish.analysis.fisher_matrix.fisher_matrix`
+    """
+    if not isinstance(fisher_matrix, fm.fisher_matrix):
+        raise ValueError("Error, input fisher_matrix is not a fisher_matrix")
+    jac = np.asarray(jacobian, dtype=float)
+    new_names = list(new_names)
+    if jac.ndim != 2 or jac.shape[0] != fisher_matrix.num_params:
+        raise ValueError(
+            "Error, jacobian must have shape (n_old, n_new) with n_old = "
+            + str(fisher_matrix.num_params)
+        )
+    if jac.shape[1] != len(new_names):
+        raise ValueError("Error, the number of new names must match the jacobian columns")
+    duplicates = sorted({name for name in new_names if new_names.count(name) > 1})
+    if duplicates:
+        raise ValueError(f"Error, new parameter names must be unique; duplicates: {duplicates}")
+    new_matrix = jac.T @ fisher_matrix.get_fisher_matrix() @ jac
+    new_matrix = 0.5 * (new_matrix + new_matrix.T)
+    fisher_new = fm.fisher_matrix(
+        fisher_matrix=new_matrix,
+        param_names=new_names,
+        param_names_latex=None if new_names_latex is None else list(new_names_latex),
+        fiducial=None if new_fiducial is None else list(new_fiducial),
+        name=fisher_matrix.name + "_reparametrised" if name is None else name,
+    )
+    fisher_new.path = fisher_matrix.path
+    fisher_new.indir = fisher_matrix.indir
+    return fisher_new
